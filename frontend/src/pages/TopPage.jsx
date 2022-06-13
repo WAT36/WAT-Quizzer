@@ -3,7 +3,7 @@ export default function TopPage(){
         <div id="wrapper">
             <h1>WAT Quizzer</h1>
 
-            <div>CSV Quiz Bot</div>
+            <div>Quizzer</div>
             <div>English Quiz Bot</div>
 
         </div>
