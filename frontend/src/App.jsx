@@ -1,15 +1,19 @@
+import React from "react"
 import logo from './logo.svg';
 import './App.css';
 
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 import TopPage from './pages/TopPage';
+import SelectQuizPage from './pages/SelectQuizPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/top" element={<TopPage />} />
-          
+
+        <Route path="/selectquiz" element={<SelectQuizPage />} />
+
         <Route path="/" element={
           <div className="App">
             <header className="App-header">
@@ -25,6 +29,7 @@ function App() {
               >
                 Learn React
               </a>
+              <a href="/top">My Top</a>
             </header>
           </div>
         } />

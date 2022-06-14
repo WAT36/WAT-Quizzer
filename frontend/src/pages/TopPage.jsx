@@ -1,3 +1,4 @@
+import React from "react"
 import { Button, Container } from '@material-ui/core';
 
 const buttonStyle = {
@@ -9,7 +10,7 @@ export default function TopPage(){
         <Container>
             <h1>WAT Quizzer</h1>
 
-            <Button style={buttonStyle} variant="contained" size="large" color="primary" href="/">
+            <Button style={buttonStyle} variant="contained" size="large" color="primary" href="/selectquiz">
                 Quizzer
             </Button>
             <br />
