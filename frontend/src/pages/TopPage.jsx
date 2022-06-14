@@ -1,10 +1,21 @@
+import { Button } from '@material-ui/core';
+
+const buttonStyle = {
+    'margin'     :  '20px',
+}
+
 export default function TopPage(){
     return (
         <div id="wrapper">
             <h1>WAT Quizzer</h1>
 
-            <div>Quizzer</div>
-            <div>English Quiz Bot</div>
+            <Button style={buttonStyle} variant="contained" size="large" color="primary" href="/">
+                Quizzer
+            </Button>
+            <br />
+            <Button style={buttonStyle} variant="contained" size="large" disabled>
+                English Quiz Bot
+            </Button>
 
         </div>
     )
