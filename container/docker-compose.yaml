@@ -1,0 +1,17 @@
+version: "3"
+networks:
+  app-net:
+    driver: bridge
+services:
+  mysql:
+    build: ./mysql
+    volumes:
+      - ../database/initdb.d:/docker-entrypoint-initdb.d #初期処理のフォルダ。初回起動のみでおｋ
+      - ../database/db:/var/lib/mysql #ここにデータ永続化するためのファイルが入る。
+      - ../database/my.cnf:/etc/mysql/conf.d/my.cnf # MySQL設定ファイル
+    image: mysqlapp
+    container_name: "quizzer_db"
+    networks:
+      - app-net
+    ports:
+      - 3307:3306
