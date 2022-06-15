@@ -1,5 +1,8 @@
 .env
 
+# backend
+backend/node_modules
+
 # db
 container/README.md
 database/initdb.d/export_data
