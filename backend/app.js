@@ -13,6 +13,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// allow cross domain
+const allowCrossDomain = (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Disposition,Content-Type,Authorization,Accept");
+  res.header("Access-Control-Expose-Headers", "Content-Disposition,Content-Type");
+  if ("OPTIONS" === req.method) {
+    res.sendStatus(200).send();
+  } else {
+    next();
+  }
+};
+app.use(allowCrossDomain);
+
+
 var api = require('./api/index');
 app.use(api);
 
