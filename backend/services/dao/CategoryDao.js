@@ -1,19 +1,21 @@
 const database = require('../../common/Database');
 
 // SQL 
-const getFileListSQL = `
+const getCategoryByFileSQL = `
     SELECT
         *
     FROM
-        quiz_file
+        category
+    WHERE
+        file_num = ? 
     ORDER BY
-        file_num;
+        category;
 `
 
 // 問題ファイルリスト取得
-const getFileList = async () => {
+const getCategoryList = async (file_num) => {
     try{
-        let data = await database.execQuery(getFileListSQL,[]);
+        let data = await database.execQuery(getCategoryByFileSQL,[file_num]);
         return data
     }catch(error){
         throw error;
@@ -21,5 +23,5 @@ const getFileList = async () => {
 }
 
 module.exports = {
-    getFileList
+    getCategoryList
 }
