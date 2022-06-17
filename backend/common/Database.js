@@ -14,7 +14,7 @@ const pool = mysql.createPool({
 });
 
 // SQLを実行する
-const execQuery = async (query) => {
+const execQuery = async (query, value) => {
     try{
         // DB接続
         const connection = await new Promise((resolve,reject) => {
@@ -28,7 +28,7 @@ const execQuery = async (query) => {
 
         // クエリ実行
         const result = await new Promise((resolve,reject) => {
-            connection.query(query, (error, result) => {
+            connection.query(query, value, (error, result) => {
                 if(error){
                     reject(error);
                 }
