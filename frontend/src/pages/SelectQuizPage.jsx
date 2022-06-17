@@ -60,6 +60,7 @@ class SelectQuizPage extends React.Component{
                         <Select
                             labelId="quiz-file-name"
                             id="quiz-file-id"
+                            defaultValue={-1}
                             // value={age}
                             // onChange={handleChange}
                         >
@@ -77,10 +78,11 @@ class SelectQuizPage extends React.Component{
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
+                            defaultValue={-1}
                             // value={age}
                             // onChange={handleChange}
                         >
-                            <MenuItem value={-1}>選択肢テスト</MenuItem>
+                            <MenuItem value={-1}>選択なし</MenuItem>
                         </Select>
                     </FormControl>
 
