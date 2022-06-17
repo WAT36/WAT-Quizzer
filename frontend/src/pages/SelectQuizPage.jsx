@@ -18,7 +18,27 @@ class SelectQuizPage extends React.Component{
                 })
             }).catch(error => {
                 console.error("componentDidMount:",error)
+            });
+        
+        fetch('http://localhost:4000/get_category',{
+                method: 'POST',
+                body: JSON.stringify({
+                    "file_num": 1
+                }),
+                headers: {'Content-Type': 'application/json'},
             })
+            .then(response => response.json())
+            .then(data => {
+                let categorylist = []
+                for(var i=0;i<data.length;i++){
+                    categorylist.push(<MenuItem value={data[i].category}>{data[i].category}</MenuItem>)
+                }
+                this.setState({
+                    categorylistoption: categorylist,
+                })
+            }).catch(error => {
+                console.error("componentDidMount:",error)
+            });
     }
 
     constructor(props){
@@ -83,6 +103,7 @@ class SelectQuizPage extends React.Component{
                             // onChange={handleChange}
                         >
                             <MenuItem value={-1}>選択なし</MenuItem>
+                            {this.state.categorylistoption}
                         </Select>
                     </FormControl>
 
