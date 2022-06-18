@@ -43,6 +43,7 @@ class SelectQuizPage extends React.Component{
 
     constructor(props){
         super(props);
+        this.selectedFileChange = this.selectedFileChange.bind(this);
         this.rangeSlider = this.rangeSlider.bind(this);
         this.state = {
             value: [20,37]
@@ -50,7 +51,6 @@ class SelectQuizPage extends React.Component{
     }
 
     rangeSlider = () => {
-    
         const handleChange = (event, newValue) => {
             this.setState({value: newValue})
         };
@@ -70,6 +70,29 @@ class SelectQuizPage extends React.Component{
         );
     } 
 
+    selectedFileChange = (e) => {
+
+        fetch('http://localhost:4000/get_category',{
+                method: 'POST',
+                body: JSON.stringify({
+                    "file_num": e.target.value
+                }),
+                headers: {'Content-Type': 'application/json'},
+            })
+            .then(response => response.json())
+            .then(data => {
+                let categorylist = []
+                for(var i=0;i<data.length;i++){
+                    categorylist.push(<MenuItem value={data[i].category}>{data[i].category}</MenuItem>)
+                }
+                this.setState({
+                    categorylistoption: categorylist,
+                })
+            }).catch(error => {
+                console.error(error)
+            });
+    }
+
     render() {
         return (
             <Container>
@@ -82,7 +105,7 @@ class SelectQuizPage extends React.Component{
                             id="quiz-file-id"
                             defaultValue={-1}
                             // value={age}
-                            // onChange={handleChange}
+                            onChange={(e) => this.selectedFileChange(e)}
                         >
                             <MenuItem value={-1}>選択なし</MenuItem>
                             {this.state.filelistoption}
