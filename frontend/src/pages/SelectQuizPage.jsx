@@ -82,7 +82,10 @@ class SelectQuizPage extends React.Component{
                     </FormControl>
 
                     <FormControl>
-                        <TextField label="問題番号" />
+                        <TextField 
+                            label="問題番号" 
+                            onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
+                        />
                     </FormControl>
 
                     <FormControl>
