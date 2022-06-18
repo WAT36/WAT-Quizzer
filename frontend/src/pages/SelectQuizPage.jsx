@@ -1,44 +1,22 @@
 import React from "react";
 import { Button, Card, CardContent, Checkbox, Container, FormControl, FormControlLabel, InputLabel, MenuItem, Select, FormGroup, TextField, Typography, Slider } from "@material-ui/core"
 
+import API from "../common/API";
+
 const buttonStyle = {
     'margin'     :  '10px',
 }
 class SelectQuizPage extends React.Component{
     componentDidMount(){
-        fetch('http://localhost:4000/namelist')
-            .then(response => response.json())
-            .then(data => {
-                let filelist = []
-                for(var i=0;i<data.length;i++){
-                    filelist.push(<MenuItem value={data[i].file_num}>{data[i].file_nickname}</MenuItem>)
-                }
-                this.setState({
-                    filelistoption: filelist,
-                })
-            }).catch(error => {
-                console.error("componentDidMount:",error)
-            });
-        
-        fetch('http://localhost:4000/get_category',{
-                method: 'POST',
-                body: JSON.stringify({
-                    "file_num": 1
-                }),
-                headers: {'Content-Type': 'application/json'},
+        API.get("/namelist",(data) => {
+            let filelist = []
+            for(var i=0;i<data.length;i++){
+                filelist.push(<MenuItem value={data[i].file_num}>{data[i].file_nickname}</MenuItem>)
+            }
+            this.setState({
+                filelistoption: filelist,
             })
-            .then(response => response.json())
-            .then(data => {
-                let categorylist = []
-                for(var i=0;i<data.length;i++){
-                    categorylist.push(<MenuItem value={data[i].category}>{data[i].category}</MenuItem>)
-                }
-                this.setState({
-                    categorylistoption: categorylist,
-                })
-            }).catch(error => {
-                console.error("componentDidMount:",error)
-            });
+        })
     }
 
     constructor(props){
@@ -71,26 +49,17 @@ class SelectQuizPage extends React.Component{
     } 
 
     selectedFileChange = (e) => {
-
-        fetch('http://localhost:4000/get_category',{
-                method: 'POST',
-                body: JSON.stringify({
-                    "file_num": e.target.value
-                }),
-                headers: {'Content-Type': 'application/json'},
+        API.post("/get_category",{
+            "file_num": e.target.value
+        },(data) => {
+            let categorylist = []
+            for(var i=0;i<data.length;i++){
+                categorylist.push(<MenuItem value={data[i].category}>{data[i].category}</MenuItem>)
+            }
+            this.setState({
+                categorylistoption: categorylist,
             })
-            .then(response => response.json())
-            .then(data => {
-                let categorylist = []
-                for(var i=0;i<data.length;i++){
-                    categorylist.push(<MenuItem value={data[i].category}>{data[i].category}</MenuItem>)
-                }
-                this.setState({
-                    categorylistoption: categorylist,
-                })
-            }).catch(error => {
-                console.error(error)
-            });
+        });
     }
 
     render() {
