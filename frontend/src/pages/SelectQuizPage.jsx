@@ -57,6 +57,7 @@ class SelectQuizPage extends React.Component{
                 categorylist.push(<MenuItem value={data[i].category}>{data[i].category}</MenuItem>)
             }
             this.setState({
+                file_num: e.target.value,
                 categorylistoption: categorylist,
             })
         });
@@ -95,7 +96,7 @@ class SelectQuizPage extends React.Component{
                             id="demo-simple-select"
                             defaultValue={-1}
                             // value={age}
-                            // onChange={handleChange}
+                            onChange={(e) => { this.setState({selected_category: e.target.value})}}
                         >
                             <MenuItem value={-1}>選択なし</MenuItem>
                             {this.state.categorylistoption}
