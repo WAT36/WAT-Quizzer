@@ -174,9 +174,6 @@ class SelectQuizPage extends React.Component{
                 <Button style={buttonStyle} variant="contained" color="secondary">
                     最小正解数問出題
                 </Button>
-                <Button style={buttonStyle} variant="contained" color="default">
-                    答え
-                </Button>
                 <Button style={buttonStyle} variant="contained" color="default" disabled>
                     画像表示
                 </Button>
