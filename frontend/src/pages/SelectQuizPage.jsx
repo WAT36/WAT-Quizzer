@@ -24,6 +24,7 @@ class SelectQuizPage extends React.Component{
         this.selectedFileChange = this.selectedFileChange.bind(this);
         this.rangeSlider = this.rangeSlider.bind(this);
         this.answerSection = this.answerSection.bind(this);
+        this.getQuiz = this.getQuiz.bind(this);
         this.state = {
             expanded: false,
             value: [20,37],
@@ -70,10 +71,9 @@ class SelectQuizPage extends React.Component{
             "file_num": this.state.file_num,
             "quiz_num": this.state.quiz_num
         },(data) => {
-            console.log("getQuiz:",data)
             this.setState({
-                quiz_sentense: "問題テスト",
-                answer: "答えテスト",
+                quiz_sentense: data[0].quiz_sentense,
+                answer: data[0].answer,
             })
         });
     }
@@ -96,7 +96,7 @@ class SelectQuizPage extends React.Component{
                 <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
                     <CardContent>
                         <Typography variant="subtitle1" component="h2">
-                            答え文
+                            {this.state.answer}
                         </Typography>
                     </CardContent>
                 </Collapse>
@@ -158,7 +158,11 @@ class SelectQuizPage extends React.Component{
                     </FormControl>
                 </FormGroup>
 
-                <Button style={buttonStyle} variant="contained" color="primary">
+                <Button 
+                    style={buttonStyle} 
+                    variant="contained" 
+                    color="primary"
+                    onClick={(e) => this.getQuiz()}>
                     出題
                 </Button>
                 <Button style={buttonStyle} variant="contained" color="secondary">
@@ -183,7 +187,7 @@ class SelectQuizPage extends React.Component{
                             問題
                         </Typography>
                         <Typography variant="subtitle1" component="h2">
-                            問題文
+                            {this.state.quiz_sentense}
                         </Typography>
                     </CardContent>
                     {this.answerSection()}
