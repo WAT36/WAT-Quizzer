@@ -28,6 +28,7 @@ class SelectQuizPage extends React.Component{
         this.state = {
             expanded: false,
             value: [20,37],
+            checked: false
         }
     }
 
@@ -137,7 +138,7 @@ class SelectQuizPage extends React.Component{
                             id="demo-simple-select"
                             defaultValue={-1}
                             // value={age}
-                            onChange={(e) => { this.setState({selected_category: e.target.value})}}
+                            onChange={(e) => {this.setState({selected_category: e.target.value})}}
                         >
                             <MenuItem value={-1}>選択なし</MenuItem>
                             {this.state.categorylistoption}
@@ -154,6 +155,7 @@ class SelectQuizPage extends React.Component{
                             control={<Checkbox color="primary" />}
                             label="チェック済から出題"
                             labelPlacement="start"
+                            onChange={(e) => this.setState({checked: e.target.checked})}
                         />
                     </FormControl>
                 </FormGroup>
