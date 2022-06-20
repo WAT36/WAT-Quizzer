@@ -6,6 +6,12 @@ import API from "../common/API";
 const buttonStyle = {
     'margin'     :  '10px',
 }
+
+const messageStyle = {
+    'margin'        : '10px 0px 20px',
+    'border-style'  : 'none'
+}
+
 class SelectQuizPage extends React.Component{
     componentDidMount(){
         API.get("/namelist",(data) => {
@@ -126,6 +132,15 @@ class SelectQuizPage extends React.Component{
         return (
             <Container>
                 <h1>WAT Quizzer</h1>
+
+                <Card variant="outlined" style={messageStyle}>
+                    <CardContent>
+                        <Typography variant="h6" component="h6">
+                        メッセージ
+                        </Typography>
+                    </CardContent>
+                </Card>
+
                 <FormGroup>
                     <FormControl>
                         <InputLabel id="quiz-file-input">問題ファイル</InputLabel>
