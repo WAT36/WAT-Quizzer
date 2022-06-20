@@ -19,7 +19,7 @@ class SelectQuizPage extends React.Component{
                 data = data.body
                 let filelist = []
                 for(var i=0;i<data.length;i++){
-                    filelist.push(<MenuItem value={data[i].file_num}>{data[i].file_nickname}</MenuItem>)
+                    filelist.push(<MenuItem value={data[i].file_num} key={data[i].file_num}>{data[i].file_nickname}</MenuItem>)
                 }
                 this.setState({
                     filelistoption: filelist,
@@ -77,7 +77,7 @@ class SelectQuizPage extends React.Component{
                 data = data.body
                 let categorylist = []
                 for(var i=0;i<data.length;i++){
-                    categorylist.push(<MenuItem value={data[i].category}>{data[i].category}</MenuItem>)
+                    categorylist.push(<MenuItem value={data[i].category} key={i}>{data[i].category}</MenuItem>)
                 }
                 this.setState({
                     file_num: e.target.value,
@@ -221,7 +221,7 @@ class SelectQuizPage extends React.Component{
                             // value={age}
                             onChange={(e) => this.selectedFileChange(e)}
                         >
-                            <MenuItem value={-1}>選択なし</MenuItem>
+                            <MenuItem value={-1} key={-1}>選択なし</MenuItem>
                             {this.state.filelistoption}
                         </Select>
                     </FormControl>
