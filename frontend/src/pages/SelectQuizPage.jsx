@@ -9,7 +9,7 @@ const buttonStyle = {
 
 const messageStyle = {
     'margin'        : '10px 0px 20px',
-    'border-style'  : 'none'
+    'borderStyle'  : 'none'
 }
 
 class SelectQuizPage extends React.Component{
@@ -34,7 +34,8 @@ class SelectQuizPage extends React.Component{
         this.state = {
             expanded: false,
             value: [0,100],
-            checked: false
+            checked: false,
+            errorMessage: '　',
         }
     }
 
@@ -136,7 +137,7 @@ class SelectQuizPage extends React.Component{
                 <Card variant="outlined" style={messageStyle}>
                     <CardContent>
                         <Typography variant="h6" component="h6">
-                        メッセージ
+                            {this.state.errorMessage}
                         </Typography>
                     </CardContent>
                 </Card>
