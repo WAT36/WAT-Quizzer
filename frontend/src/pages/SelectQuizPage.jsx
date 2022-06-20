@@ -40,6 +40,7 @@ class SelectQuizPage extends React.Component{
         this.answerSection = this.answerSection.bind(this);
         this.getQuiz = this.getQuiz.bind(this);
         this.state = {
+            file_num: -1,
             expanded: false,
             value: [0,100],
             checked: false,
@@ -72,26 +73,57 @@ class SelectQuizPage extends React.Component{
         API.post("/get_category",{
             "file_num": e.target.value
         },(data) => {
-            let categorylist = []
-            for(var i=0;i<data.length;i++){
-                categorylist.push(<MenuItem value={data[i].category}>{data[i].category}</MenuItem>)
+            if(data.status === 200){
+                data = data.body
+                let categorylist = []
+                for(var i=0;i<data.length;i++){
+                    categorylist.push(<MenuItem value={data[i].category}>{data[i].category}</MenuItem>)
+                }
+                this.setState({
+                    file_num: e.target.value,
+                    categorylistoption: categorylist,
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
             }
-            this.setState({
-                file_num: e.target.value,
-                categorylistoption: categorylist,
-            })
         });
     }
 
     getQuiz = () => {
+        if(this.state.file_num === -1){
+            this.setState({
+                message: 'エラー:問題ファイルを選択して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
         API.post("/get_quiz",{
             "file_num": this.state.file_num,
             "quiz_num": this.state.quiz_num
         },(data) => {
-            this.setState({
-                quiz_sentense: data[0].quiz_sentense,
-                answer: data[0].answer,
-            })
+            if(data.status === 200){
+                data = data.body
+                this.setState({
+                    quiz_sentense: data[0].quiz_sentense,
+                    answer: data[0].answer,
+                    message: '　',
+                    messageColor: 'initial',
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
         });
     }
 
@@ -122,7 +154,14 @@ class SelectQuizPage extends React.Component{
     }
 
     getRandomQuiz = () => {
-        console.log("Random State:",this.state)
+        if(this.state.file_num === -1){
+            this.setState({
+                message: 'エラー:問題ファイルを選択して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
         API.post("/random",{
             "file_num": this.state.file_num,
             "min_rate": this.state.value[0],
@@ -130,11 +169,26 @@ class SelectQuizPage extends React.Component{
             "category": this.state.selected_category === -1 ? null : this.state.selected_category,
             "checked" : this.state.checked,
         },(data) => {
-            console.log("Random data:",data)
-            this.setState({
-                quiz_sentense: data[0].quiz_sentense,
-                answer: data[0].answer,
-            })
+            if(data.status === 200){
+                data = data.body
+                this.setState({
+                    quiz_sentense: data[0].quiz_sentense,
+                    answer: data[0].answer,
+                    message: '　',
+                    messageColor: 'initial',
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                    
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
         });
     }
 

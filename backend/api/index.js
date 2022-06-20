@@ -33,7 +33,11 @@ router.post('/get_category', function(req, res) {
 router.post('/get_quiz', function(req, res) {
     QuizService.getQuiz(req.body.file_num,req.body.quiz_num)
         .then((result) => {
-            res.status(200).send(result);
+            if(result.length > 0){
+                res.status(200).send(result);
+            }else{
+                res.status(404).send(result);
+            }
         })
         .catch((error) => {
             res.status(500).send(error);
@@ -41,10 +45,13 @@ router.post('/get_quiz', function(req, res) {
 });
 
 router.post('/random', function(req, res) {
-    console.log("/random")
     QuizService.getRandomQuiz(req.body.file_num,req.body.min_rate,req.body.max_rate,req.body.category,req.body.checked)
         .then((result) => {
-            res.status(200).send(result);
+            if(result.length > 0){
+                res.status(200).send(result);
+            }else{
+                res.status(404).send(result);
+            }
         })
         .catch((error) => {
             res.status(500).send(error);

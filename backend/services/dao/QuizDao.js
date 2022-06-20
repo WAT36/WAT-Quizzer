@@ -57,7 +57,6 @@ const getRandomQuiz = async (file_num,min_rate,max_rate,category,checked) => {
         let data = await database.execQuery(getRandomQuizSQL,[file_num,min_rate,max_rate,category,checked]);
         return data
     }catch(error){
-        console.log(error)
         throw error;
     }
 }

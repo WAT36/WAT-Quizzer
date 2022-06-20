@@ -18,7 +18,6 @@ const getQuiz = (file_num,quiz_num) => {
 // ファイル番号等からランダムに問題取得
 const getRandomQuiz = (file_num,min_rate,max_rate,category,checked) => {
     return new Promise((resolve, reject) =>{
-        console.log("QuizService")
         QuizDao.getRandomQuiz(file_num,min_rate,max_rate,category,checked)
             .then((result) => {
                 resolve(result);
