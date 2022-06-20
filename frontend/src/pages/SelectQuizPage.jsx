@@ -7,7 +7,7 @@ const buttonStyle = {
     'margin'     :  '10px',
 }
 
-const messageStyle = {
+const messageBoxStyle = {
     'margin'        : '10px 0px 20px',
     'borderStyle'  : 'none'
 }
@@ -15,13 +15,21 @@ const messageStyle = {
 class SelectQuizPage extends React.Component{
     componentDidMount(){
         API.get("/namelist",(data) => {
-            let filelist = []
-            for(var i=0;i<data.length;i++){
-                filelist.push(<MenuItem value={data[i].file_num}>{data[i].file_nickname}</MenuItem>)
+            if(data.status === 200){
+                data = data.body
+                let filelist = []
+                for(var i=0;i<data.length;i++){
+                    filelist.push(<MenuItem value={data[i].file_num}>{data[i].file_nickname}</MenuItem>)
+                }
+                this.setState({
+                    filelistoption: filelist,
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
             }
-            this.setState({
-                filelistoption: filelist,
-            })
         })
     }
 
@@ -35,7 +43,8 @@ class SelectQuizPage extends React.Component{
             expanded: false,
             value: [0,100],
             checked: false,
-            errorMessage: '　',
+            message: '　',
+            messageColor: 'initial',
         }
     }
 
@@ -134,10 +143,10 @@ class SelectQuizPage extends React.Component{
             <Container>
                 <h1>WAT Quizzer</h1>
 
-                <Card variant="outlined" style={messageStyle}>
+                <Card variant="outlined" style={messageBoxStyle}>
                     <CardContent>
-                        <Typography variant="h6" component="h6">
-                            {this.state.errorMessage}
+                        <Typography variant="h6" component="h6" color={this.state.messageColor}>
+                            {this.state.message}
                         </Typography>
                     </CardContent>
                 </Card>
