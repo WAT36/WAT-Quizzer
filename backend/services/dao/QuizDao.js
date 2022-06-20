@@ -99,8 +99,46 @@ const getWorstRateQuiz = async (file_num, category, checked) => {
     }
 }
 
+// 最小正解数問題取得SQL（前半） 
+let getMinimumClearQuizSQLPre = `
+    SELECT
+        *
+    FROM
+        quiz_view
+    WHERE
+        file_num = ?
+
+`
+// 最小正解数問題取得
+const getMinimumClearQuiz = async (file_num, category, checked) => {
+    try{
+        let categorySQL = ''
+        if(category !== null && category !== undefined){
+            categorySQL = ` AND category LIKE '%` + category +`%' `;
+        }
+
+        let checkedSQL = ""
+        if(checked){
+            checkedSQL += ` AND checked = 1 `;
+        }
+
+        // ランダム問題取得SQL作成
+        const getMinimumClearQuizSQL = 
+        getMinimumClearQuizSQLPre 
+            + categorySQL 
+            + checkedSQL 
+            + ' ORDER BY clear_count LIMIT 1; '
+
+        let data = await database.execQuery(getMinimumClearQuizSQL,[file_num]);
+        return data
+    }catch(error){
+        throw error;
+    }
+}
+
 module.exports = {
     getQuiz,
     getRandomQuiz,
     getWorstRateQuiz,
+    getMinimumClearQuiz,
 }

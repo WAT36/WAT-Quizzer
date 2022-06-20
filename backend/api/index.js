@@ -72,4 +72,18 @@ router.post('/worst_rate', function(req, res) {
         });
 });
 
+router.post('/minimum_clear', function(req, res) {
+    QuizService.getMinimumClearQuiz(req.body.file_num,req.body.category,req.body.checked)
+        .then((result) => {
+            if(result.length > 0){
+                res.status(200).send(result);
+            }else{
+                res.status(404).send(result);
+            }
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+});
+
 module.exports = router;

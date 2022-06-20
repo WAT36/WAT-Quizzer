@@ -41,6 +41,7 @@ class SelectQuizPage extends React.Component{
         this.getQuiz = this.getQuiz.bind(this);
         this.getRandomQuiz = this.getRandomQuiz.bind(this);
         this.getWorstRateQuiz = this.getWorstRateQuiz.bind(this);
+        this.getMinimumClearQuiz = this.getMinimumClearQuiz.bind(this);
         this.state = {
             file_num: -1,
             expanded: false,
@@ -235,6 +236,42 @@ class SelectQuizPage extends React.Component{
         });
     }
 
+    getMinimumClearQuiz = () => {
+        if(this.state.file_num === -1){
+            this.setState({
+                message: 'エラー:問題ファイルを選択して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+        API.post("/minimum_clear",{
+            "file_num": this.state.file_num,
+            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
+            "checked" : this.state.checked,
+        },(data) => {
+            if(data.status === 200){
+                data = data.body
+                this.setState({
+                    quiz_sentense: data[0].quiz_sentense,
+                    answer: data[0].answer,
+                    message: '　',
+                    messageColor: 'initial',
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                    
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
+        });
+    }
+
     render() {
         return (
             <Container>
@@ -320,7 +357,11 @@ class SelectQuizPage extends React.Component{
                     onClick={(e) => this.getWorstRateQuiz()}>
                     最低正解率問出題
                 </Button>
-                <Button style={buttonStyle} variant="contained" color="secondary">
+                <Button 
+                    style={buttonStyle} 
+                    variant="contained" 
+                    color="secondary"
+                    onClick={(e) => this.getMinimumClearQuiz()}>
                     最小正解数問出題
                 </Button>
                 <Button style={buttonStyle} variant="contained" color="default" disabled>

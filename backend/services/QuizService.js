@@ -41,9 +41,23 @@ const getWorstRateQuiz = (file_num,category,checked) => {
     });
 };
 
+// ファイル番号等から最小正解数問題取得
+const getMinimumClearQuiz = (file_num,category,checked) => {
+    return new Promise((resolve, reject) =>{
+        QuizDao.getMinimumClearQuiz(file_num,category,checked)
+            .then((result) => {
+                resolve(result);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
 // モジュール化
 module.exports = {
     getQuiz,
     getRandomQuiz,
     getWorstRateQuiz,
+    getMinimumClearQuiz,
 }
