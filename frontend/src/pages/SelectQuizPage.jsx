@@ -27,7 +27,7 @@ class SelectQuizPage extends React.Component{
         this.getQuiz = this.getQuiz.bind(this);
         this.state = {
             expanded: false,
-            value: [20,37],
+            value: [0,100],
             checked: false
         }
     }
@@ -105,6 +105,23 @@ class SelectQuizPage extends React.Component{
         )
     }
 
+    getRandomQuiz = () => {
+        console.log("Random State:",this.state)
+        API.post("/random",{
+            "file_num": this.state.file_num,
+            "min_rate": this.state.value[0],
+            "max_rate": this.state.value[1],
+            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
+            "checked" : this.state.checked,
+        },(data) => {
+            console.log("Random data:",data)
+            this.setState({
+                quiz_sentense: data[0].quiz_sentense,
+                answer: data[0].answer,
+            })
+        });
+    }
+
     render() {
         return (
             <Container>
@@ -167,7 +184,11 @@ class SelectQuizPage extends React.Component{
                     onClick={(e) => this.getQuiz()}>
                     出題
                 </Button>
-                <Button style={buttonStyle} variant="contained" color="secondary">
+                <Button 
+                    style={buttonStyle} 
+                    variant="contained" 
+                    color="secondary"
+                    onClick={(e) => this.getRandomQuiz()}>
                     ランダム出題
                 </Button>
                 <Button style={buttonStyle} variant="contained" color="secondary">
