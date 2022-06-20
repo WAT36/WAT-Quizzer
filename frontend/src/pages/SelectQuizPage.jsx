@@ -99,6 +99,12 @@ class SelectQuizPage extends React.Component{
                 messageColor: 'error',
             })
             return;
+        }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
+            this.setState({
+                message: 'エラー:問題番号を入力して下さい',
+                messageColor: 'error',
+            })
+            return;
         }
 
         API.post("/get_quiz",{
@@ -161,7 +167,7 @@ class SelectQuizPage extends React.Component{
             })
             return;
         }
-
+        console.log(this.state)
         API.post("/random",{
             "file_num": this.state.file_num,
             "min_rate": this.state.value[0],
