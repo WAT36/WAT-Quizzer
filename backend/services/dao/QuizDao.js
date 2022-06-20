@@ -39,7 +39,7 @@ const getRandomQuiz = async (file_num,min_rate,max_rate,category,checked) => {
     try{
         let categorySQL = ''
         if(category !== null && category !== undefined){
-            categorySQL = ` AND category = '` + category +`' `;
+            categorySQL = ` AND category LIKE '%` + category +`%' `;
         }
 
         let checkedSQL = ""
