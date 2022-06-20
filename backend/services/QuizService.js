@@ -28,8 +28,22 @@ const getRandomQuiz = (file_num,min_rate,max_rate,category,checked) => {
     });
 };
 
+// ファイル番号等から最低正解率問題取得
+const getWorstRateQuiz = (file_num,category,checked) => {
+    return new Promise((resolve, reject) =>{
+        QuizDao.getWorstRateQuiz(file_num,category,checked)
+            .then((result) => {
+                resolve(result);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
 // モジュール化
 module.exports = {
     getQuiz,
     getRandomQuiz,
+    getWorstRateQuiz,
 }
