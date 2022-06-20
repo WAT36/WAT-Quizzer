@@ -19,7 +19,11 @@ const post = (path,jsondata,func) => {
     body: JSON.stringify(jsondata),
     headers: {'Content-Type': 'application/json'},
   })
-  .then(response => response.json())
+  .then(response => response.json()
+  .then(data => ({
+    status: response.status,
+    body: data
+  })))
   .then(func
   ).catch(error => {
     console.error("componentDidMount:",error)
