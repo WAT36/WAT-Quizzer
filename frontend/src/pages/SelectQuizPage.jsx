@@ -156,6 +156,18 @@ class SelectQuizPage extends React.Component{
                         <Typography variant="subtitle1" component="h2">
                             {this.state.answer}
                         </Typography>
+                        <Button 
+                            style={buttonStyle} 
+                            variant="contained" 
+                            color="primary">
+                            正解!!
+                        </Button>
+                        <Button 
+                            style={buttonStyle} 
+                            variant="contained" 
+                            color="secondary">
+                            不正解..
+                        </Button>
                     </CardContent>
                 </Collapse>
             </>
