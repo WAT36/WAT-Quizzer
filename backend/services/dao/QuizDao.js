@@ -136,9 +136,50 @@ const getMinimumClearQuiz = async (file_num, category, checked) => {
     }
 }
 
+// 正解数取得SQL 
+const getCorrectNumSQL = `
+    SELECT
+        clear_count
+    FROM
+        quiz
+    WHERE
+        file_num = ?
+        AND quiz_num = ?
+    ;
+`
+
+// 正解登録SQL
+const inputCorrectSQL = `
+    UPDATE
+        quiz
+    SET
+        clear_count = ?
+    WHERE
+        file_num = ?
+        AND quiz_num = ?
+    ;
+`
+
+// 正解登録
+const correctRegister = async (file_num, quiz_num) => {
+    try{
+        // 正解数取得
+        let data = await database.execQuery(getCorrectNumSQL,[file_num,quiz_num]);
+        let clear_count = data[0].clear_count
+
+        // 正解登録
+        let result = await database.execQuery(inputCorrectSQL,[clear_count+1,file_num,quiz_num]);
+        return result
+    }catch(error){
+        throw error;
+    }
+}
+
+
 module.exports = {
     getQuiz,
     getRandomQuiz,
     getWorstRateQuiz,
     getMinimumClearQuiz,
+    correctRegister,
 }

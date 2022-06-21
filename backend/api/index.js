@@ -86,4 +86,14 @@ router.post('/minimum_clear', function(req, res) {
         });
 });
 
+router.post('/correct', function(req, res) {
+    QuizService.correctRegister(req.body.file_num,req.body.quiz_num)
+        .then((result) => {
+            res.status(200).send(result);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+});
+
 module.exports = router;
