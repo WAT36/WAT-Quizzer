@@ -280,6 +280,7 @@ class SelectQuizPage extends React.Component{
             if(data.status === 200){
                 data = data.body
                 this.setState({
+                    quiz_num: data[0].quiz_num,
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
                     message: '　',
@@ -316,6 +317,7 @@ class SelectQuizPage extends React.Component{
             if(data.status === 200){
                 data = data.body
                 this.setState({
+                    quiz_num: data[0].quiz_num,
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
                     message: '　',
@@ -352,6 +354,7 @@ class SelectQuizPage extends React.Component{
             if(data.status === 200){
                 data = data.body
                 this.setState({
+                    quiz_num: data[0].quiz_num,
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
                     message: '　',
