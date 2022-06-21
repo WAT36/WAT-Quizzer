@@ -175,6 +175,45 @@ const correctRegister = async (file_num, quiz_num) => {
     }
 }
 
+// 不正解数取得SQL 
+const getIncorrectNumSQL = `
+    SELECT
+        fail_count
+    FROM
+        quiz
+    WHERE
+        file_num = ?
+        AND quiz_num = ?
+    ;
+`
+
+// 不正解登録SQL
+const inputIncorrectSQL = `
+    UPDATE
+        quiz
+    SET
+        fail_count = ?
+    WHERE
+        file_num = ?
+        AND quiz_num = ?
+    ;
+`
+
+// 不正解登録
+const incorrectRegister = async (file_num, quiz_num) => {
+    try{
+        // 不正解数取得
+        let data = await database.execQuery(getIncorrectNumSQL,[file_num,quiz_num]);
+        let fail_count = data[0].fail_count
+
+        // 不正解登録
+        let result = await database.execQuery(inputIncorrectSQL,[fail_count+1,file_num,quiz_num]);
+        return result
+    }catch(error){
+        throw error;
+    }
+}
+
 
 module.exports = {
     getQuiz,
@@ -182,4 +221,5 @@ module.exports = {
     getWorstRateQuiz,
     getMinimumClearQuiz,
     correctRegister,
+    incorrectRegister,
 }

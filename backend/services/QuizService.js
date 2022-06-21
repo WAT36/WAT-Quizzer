@@ -67,6 +67,19 @@ const correctRegister = (file_num,quiz_num) => {
     });
 };
 
+// 不正解登録
+const incorrectRegister = (file_num,quiz_num) => {
+    return new Promise((resolve, reject) =>{
+        QuizDao.incorrectRegister(file_num,quiz_num)
+            .then((result) => {
+                resolve(result);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
 // モジュール化
 module.exports = {
     getQuiz,
@@ -74,4 +87,5 @@ module.exports = {
     getWorstRateQuiz,
     getMinimumClearQuiz,
     correctRegister,
+    incorrectRegister,
 }
