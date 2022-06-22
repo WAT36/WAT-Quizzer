@@ -90,6 +90,36 @@ export default class EditQuizPage extends React.Component{
         });
     }
 
+    editQuiz = () => {
+        API.post("/edit",{
+            "file_num": this.state.edit_file_num,
+            "quiz_num": this.state.edit_quiz_num,
+            "question": this.state.edit_question,
+            "answer": this.state.edit_answer,
+            "category": this.state.edit_category,
+            "img_file": this.state.edit_image,
+        },(data) => {
+            if(data.status === 200){
+                data = data.body
+                this.setState({
+                    edit_file_num: "",
+                    edit_quiz_num: "",
+                    edit_question: "",
+                    edit_answer: "",
+                    edit_category: "",
+                    edit_image: "",
+                    message: 'Success!! 編集に成功しました',
+                    messageColor: 'initial',
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
+        });
+    }
+
     contents = () => {
         return (
             <Container>
@@ -191,7 +221,7 @@ export default class EditQuizPage extends React.Component{
                     style={buttonStyle} 
                     variant="contained" 
                     color="primary"
-                    //onClick={(e) => this.getQuiz()}
+                    onClick={(e) => this.editQuiz()}
                     >
                     更新
                 </Button>
