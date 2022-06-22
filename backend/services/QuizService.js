@@ -80,6 +80,19 @@ const incorrectRegister = (file_num,quiz_num) => {
     });
 };
 
+// 不正解登録
+const addQuiz = (file_num,input_data) => {
+    return new Promise((resolve, reject) =>{
+        QuizDao.addQuiz(file_num,input_data)
+            .then((result) => {
+                resolve(result);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
 // モジュール化
 module.exports = {
     getQuiz,
@@ -88,4 +101,5 @@ module.exports = {
     getMinimumClearQuiz,
     correctRegister,
     incorrectRegister,
+    addQuiz,
 }

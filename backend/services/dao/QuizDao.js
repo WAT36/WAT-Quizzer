@@ -214,6 +214,95 @@ const incorrectRegister = async (file_num, quiz_num) => {
     }
 }
 
+// 削除済問題番号取得SQL
+const getDeletedQuizNumSQL = `
+    SELECT
+        quiz_num
+    FROM
+        quiz
+    WHERE
+        file_num = ?
+        AND deleted = 1
+    ORDER BY
+        quiz_num
+    LIMIT 1
+`
+
+// 問題追加SQL (ファイル番号、問題番号、問題文、答え文、カテゴリ、画像ファイル名　を入力)
+const addQuizSQL = `
+    INSERT INTO
+        quiz 
+    VALUES(?,?,?,?,0,0,?,?,0,0)
+    ;
+`
+
+// 問題追加SQL(削除済問題のところにアップデート) 
+const addQuizByUpdateSQL = `
+    UPDATE
+        quiz
+    SET
+        quiz_sentense = ? ,
+        answer = ? ,
+        clear_count = 0, 
+        fail_count = 0, 
+        category = ? ,
+        img_file = ? ,
+        checked = 0, 
+        deleted = 0 
+    WHERE 
+        file_num = ? 
+        AND quiz_num = ? 
+    ;
+`
+// 問題数確認SQL
+const getCountSQL = `
+    SELECT 
+        count(*) 
+    FROM 
+        quiz 
+    WHERE 
+        file_num = ?
+`
+
+// 問題追加
+const addQuiz = async (file_num, input_data) => {
+    try{
+        // 入力データを１行ずつに分割
+        let data = input_data.split('\n');
+
+        let result = [];
+
+        for(var i=0;i<data.length;i++){
+
+            // 入力データ作成
+            let data_i = data[i].split(',')
+            let question = data_i[0]
+            let answer = data_i[1]
+            let category = data_i[2]
+            let img_file = data_i[3]
+
+            // データのidを作成
+            var new_quiz_id = -1
+            // 削除済問題がないかチェック、あればそこに入れる
+            let id = await database.execQuery(getDeletedQuizNumSQL,[file_num]);
+            if(id.length > 1){
+                //削除済問題がある場合はそこに入れる
+                new_quiz_id = id[0]['quiz_num'];
+                let result_i = await database.execQuery(addQuizByUpdateSQL,[question,answer,category,img_file,file_num,new_quiz_id]);
+                result.push("Added!! ["+file_num+"-"+new_quiz_id+"]:"+question+","+answer)
+            }else{
+                //削除済問題がない場合は普通にINSERT
+                let now_count = await database.execQuery(getCountSQL,[file_num]);
+                new_quiz_id = now_count[0]['count(*)'] + 1;
+                let result_i = await database.execQuery(addQuizSQL,[file_num,new_quiz_id,question,answer,category,img_file]);
+                result.push("Added!! ["+file_num+"-"+new_quiz_id+"]:"+question+","+answer)
+            }
+        }
+        return result;
+    }catch(error){
+        throw error;
+    }
+}
 
 module.exports = {
     getQuiz,
@@ -222,4 +311,5 @@ module.exports = {
     getMinimumClearQuiz,
     correctRegister,
     incorrectRegister,
+    addQuiz,
 }

@@ -106,4 +106,14 @@ router.post('/incorrect', function(req, res) {
         });
 });
 
+router.post('/add', function(req, res) {
+    QuizService.addQuiz(req.body.file_num,req.body.data)
+        .then((result) => {
+            res.status(200).send(result);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+});
+
 module.exports = router;
