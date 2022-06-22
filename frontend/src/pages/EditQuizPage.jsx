@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Select, FormGroup, Typography, TextField } from "@material-ui/core"
+import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Select, FormGroup, Typography, TextField, Input } from "@material-ui/core"
 
 import API from "../common/API";
 import QuizzerLayout from "./components/QuizzerLayout";
@@ -8,6 +8,11 @@ const messageBoxStyle = {
     'margin'        : '10px 0px 20px',
     'borderStyle'  : 'none'
 }
+
+const buttonStyle = {
+    'margin'     :  '10px',
+}
+
 
 export default class EditQuizPage extends React.Component{
     componentDidMount(){
@@ -40,6 +45,50 @@ export default class EditQuizPage extends React.Component{
         }
     }
 
+    getQuiz = () => {
+        if(this.state.file_num === -1){
+            this.setState({
+                message: 'エラー:問題ファイルを選択して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
+            this.setState({
+                message: 'エラー:問題番号を入力して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
+        API.post("/get_quiz",{
+            "file_num": this.state.file_num,
+            "quiz_num": this.state.quiz_num
+        },(data) => {
+            if(data.status === 200){
+                data = data.body
+                this.setState({
+                    edit_file_num: data[0].file_num,
+                    edit_quiz_num: data[0].quiz_num,
+                    edit_question: data[0].quiz_sentense,
+                    edit_answer: data[0].answer,
+                    edit_category: data[0].category,
+                    edit_image: data[0].img_file,
+                    message: '　',
+                    messageColor: 'initial',
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
+        });
+    }
 
     contents = () => {
         return (
@@ -62,16 +111,90 @@ export default class EditQuizPage extends React.Component{
                             id="quiz-file-id"
                             defaultValue={-1}
                             // value={age}
-                            onChange={(e) => this.selectedFileChange(e)}
+                            onChange={(e) => {this.setState({file_num: e.target.value});}}
                         >
                             <MenuItem value={-1} key={-1}>選択なし</MenuItem>
                             {this.state.filelistoption}
                         </Select>
                     </FormControl>
 
-
+                    <FormControl>
+                        <TextField 
+                            label="問題番号" 
+                            onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
+                        />
+                    </FormControl>
                 </FormGroup>
 
+                <Button 
+                    style={buttonStyle} 
+                    variant="contained" 
+                    color="primary"
+                    onClick={(e) => this.getQuiz()}
+                    >
+                    問題取得
+                </Button>
+
+                <Card variant="outlined">
+                    <CardContent>
+                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                            ファイル：{this.state.edit_file_num}
+                        </Typography>
+
+                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                            問題番号：{this.state.edit_quiz_num}
+                        </Typography>
+
+                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                            問題　　：
+                            <Input
+                                fullWidth
+                                maxRows={1}
+                                value={this.state.edit_question}
+                                onChange={(e) => this.setState({edit_question: e.target.value})}
+                            />
+                        </Typography>
+
+                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                            答え　　：
+                            <Input
+                                fullWidth
+                                maxRows={1}
+                                value={this.state.edit_answer}
+                                onChange={(e) => this.setState({edit_answer: e.target.value})}
+                            />
+                        </Typography>
+
+                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                            カテゴリ：
+                            <Input
+                                fullWidth
+                                maxRows={1}
+                                value={this.state.edit_category}
+                                onChange={(e) => this.setState({edit_category: e.target.value})}
+                            />
+                        </Typography>
+
+                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                            画像ファイル：
+                            <Input
+                                fullWidth
+                                maxRows={1}
+                                value={this.state.edit_image}
+                                onChange={(e) => this.setState({edit_image: e.target.value})}
+                            />
+                        </Typography>
+                    </CardContent>
+                </Card>
+
+                <Button 
+                    style={buttonStyle} 
+                    variant="contained" 
+                    color="primary"
+                    //onClick={(e) => this.getQuiz()}
+                    >
+                    更新
+                </Button>
 
             </Container>
         )
