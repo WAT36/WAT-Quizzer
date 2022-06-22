@@ -80,10 +80,23 @@ const incorrectRegister = (file_num,quiz_num) => {
     });
 };
 
-// 不正解登録
+// 問題追加
 const addQuiz = (file_num,input_data) => {
     return new Promise((resolve, reject) =>{
         QuizDao.addQuiz(file_num,input_data)
+            .then((result) => {
+                resolve(result);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
+// 問題編集
+const editQuiz = (file_num,quiz_num,question,answer,category,img_file) => {
+    return new Promise((resolve, reject) =>{
+        QuizDao.editQuiz(file_num,quiz_num,question,answer,category,img_file)
             .then((result) => {
                 resolve(result);
             })
@@ -102,4 +115,5 @@ module.exports = {
     correctRegister,
     incorrectRegister,
     addQuiz,
+    editQuiz,
 }

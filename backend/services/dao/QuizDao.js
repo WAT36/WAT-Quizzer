@@ -236,8 +236,8 @@ const addQuizSQL = `
     ;
 `
 
-// 問題追加SQL(削除済問題のところにアップデート) 
-const addQuizByUpdateSQL = `
+// 問題編集SQL(削除済問題のところにアップデート) 
+const editQuizSQL = `
     UPDATE
         quiz
     SET
@@ -288,7 +288,7 @@ const addQuiz = async (file_num, input_data) => {
             if(id.length > 1){
                 //削除済問題がある場合はそこに入れる
                 new_quiz_id = id[0]['quiz_num'];
-                let result_i = await database.execQuery(addQuizByUpdateSQL,[question,answer,category,img_file,file_num,new_quiz_id]);
+                let result_i = await database.execQuery(editQuizSQL,[question,answer,category,img_file,file_num,new_quiz_id]);
                 result.push("Added!! ["+file_num+"-"+new_quiz_id+"]:"+question+","+answer)
             }else{
                 //削除済問題がない場合は普通にINSERT
@@ -304,6 +304,16 @@ const addQuiz = async (file_num, input_data) => {
     }
 }
 
+// 問題編集
+const editQuiz = async (file_num,quiz_num,question,answer,category,img_file) => {
+    try{
+        let data = await database.execQuery(editQuizSQL,[question,answer,category,img_file,file_num,quiz_num]);
+        return data
+    }catch(error){
+        throw error;
+    }
+}
+
 module.exports = {
     getQuiz,
     getRandomQuiz,
@@ -312,4 +322,5 @@ module.exports = {
     correctRegister,
     incorrectRegister,
     addQuiz,
+    editQuiz,
 }

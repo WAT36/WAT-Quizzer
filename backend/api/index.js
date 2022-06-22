@@ -116,4 +116,14 @@ router.post('/add', function(req, res) {
         });
 });
 
+router.post('/edit', function(req, res) {
+    QuizService.editQuiz(req.body.file_num,req.body.quiz_num,req.body.question,req.body.answer,req.body.category,req.body.img_file)
+        .then((result) => {
+            res.status(200).send(result);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+});
+
 module.exports = router;
