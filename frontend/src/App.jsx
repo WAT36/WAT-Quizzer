@@ -6,6 +6,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 import TopPage from './pages/TopPage';
 import SelectQuizPage from './pages/SelectQuizPage';
 import AddQuizPage from "./pages/AddQuizPage";
+import EditQuizPage from "./pages/EditQuizPage";
 
 class App extends React.Component {
   render(){
@@ -17,6 +18,8 @@ class App extends React.Component {
           <Route path="/selectquiz" element={<SelectQuizPage />} />
 
           <Route path="/addquiz" element={<AddQuizPage />} />
+
+          <Route path="/editquiz" element={<EditQuizPage />} />
 
           <Route path="/" element={
             <div className="App">
