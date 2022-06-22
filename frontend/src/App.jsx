@@ -7,6 +7,7 @@ import TopPage from './pages/TopPage';
 import SelectQuizPage from './pages/SelectQuizPage';
 import AddQuizPage from "./pages/AddQuizPage";
 import EditQuizPage from "./pages/EditQuizPage";
+import SearchQuizPage from "./pages/SearchQuizPage";
 
 class App extends React.Component {
   render(){
@@ -20,6 +21,8 @@ class App extends React.Component {
           <Route path="/addquiz" element={<AddQuizPage />} />
 
           <Route path="/editquiz" element={<EditQuizPage />} />
+
+          <Route path="/searchquiz" element={<SearchQuizPage />} />
 
           <Route path="/" element={
             <div className="App">
