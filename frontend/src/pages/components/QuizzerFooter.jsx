@@ -33,7 +33,7 @@ export default class QuizzerFooter extends React.Component{
                     <Link to="/addquiz">問題追加</Link>
                     <Link to="/editquiz">問題編集</Link>
                     <Link to="/searchquiz">問題検索</Link>
-                    問題削除
+                    <Link to="/deletequiz">問題削除</Link>
                     カテゴリ別正解率表示
                     画像アップロード
                 </span>
