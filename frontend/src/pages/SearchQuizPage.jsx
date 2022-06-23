@@ -14,26 +14,42 @@ const messageBoxStyle = {
     'borderStyle'  : 'none'
 }
 
+const searchedTableStyle = { 
+    'height': 600, 
+    'width': '100%' 
+}
+
 const columns = [
     {   
-        field: 'quiz_num', 
-        headerName: '問題番号', 
+        field: 'id', 
+        headerName: 'ID', 
+        sortable: false,
+        width: 75,
     },
     {
         field: 'checked',
-        headerName: 'チェック',
+        headerName: '✅',
+        sortable: false,
+        width: 75,
+        //valueGetter: (params) => params.getValue(params.id, 'checked') === 1 ? '✅' : '',
     },
     {
-        field: 'question',
+        field: 'quiz_sentense',
         headerName: '問題',
+        sortable: false,
+        width: 400,
     },
     {
         field: 'answer',
         headerName: '答え',
+        sortable: false,
+        width: 400,
     },
     {
         field: 'category',
         headerName: 'カテゴリ',
+        sortable: false,
+        width: 350,
     },
 ];
 
@@ -64,7 +80,6 @@ export default class SearchQuizPage extends React.Component{
         this.rangeSlider = this.rangeSlider.bind(this);
         this.state = {
             file_num: -1,
-            expanded: false,
             value: [0,100],
             checked: false,
             message: '　',
@@ -116,6 +131,47 @@ export default class SearchQuizPage extends React.Component{
         );
     } 
 
+    searchQuiz = () => {
+        if(this.state.file_num === -1){
+            this.setState({
+                message: 'エラー:問題ファイルを選択して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
+        API.post("/search",{
+            "file_num": this.state.file_num,
+            "query" : this.state.query,
+            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
+            "min_rate": this.state.value[0],
+            "max_rate": this.state.value[1],
+            "cond": {
+                "question": this.state.cond_question,
+                "answer": this.state.cond_answer,
+            }
+        },(data) => {
+            if(data.status === 200){
+                data = data.body
+                this.setState({
+                    searchResult: data,
+                    message: 'Success!! 編集に成功しました',
+                    messageColor: 'initial',
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
+        });
+    }
+
     contents = () => {
         return (
             <Container>
@@ -147,7 +203,7 @@ export default class SearchQuizPage extends React.Component{
                     <FormControl>
                         <TextField 
                             label="検索語句" 
-                            //onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
+                            onChange={(e) => { this.setState({query: e.target.value}); }}
                         />
                     </FormControl>
 
@@ -156,7 +212,7 @@ export default class SearchQuizPage extends React.Component{
                         <FormControlLabel
                             control={
                             <Checkbox 
-                                //onChange={handleChange} 
+                                onChange={(e) => { this.setState({cond_question: e.target.checked}); }}
                                 name="checkedA" 
                             />}
                             label="問題"
@@ -164,7 +220,7 @@ export default class SearchQuizPage extends React.Component{
                         <FormControlLabel
                             control={
                             <Checkbox
-                                //onChange={handleChange}
+                                onChange={(e) => { this.setState({cond_answer: e.target.checked}); }}
                                 name="checkedB"
                             />}
                             label="答え"
@@ -204,17 +260,20 @@ export default class SearchQuizPage extends React.Component{
                     style={buttonStyle} 
                     variant="contained" 
                     color="primary"
-                    //onClick={(e) => this.getQuiz()}
+                    onClick={(e) => this.searchQuiz()}
                     >
                     検索
                 </Button>
 
-                <DataGrid 
-                    rows={this.state.searchResult}
-                    columns={columns}
-                    pageSize={25}
-                    checkboxSelection
-                />
+                <div style={searchedTableStyle}>
+                    <DataGrid 
+                        rows={this.state.searchResult}
+                        columns={columns}
+                        pageSize={15}
+                        checkboxSelection
+                        disableSelectionOnClick
+                    />
+                </div>
 
             </Container>
         )

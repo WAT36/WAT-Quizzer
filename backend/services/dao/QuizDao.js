@@ -314,10 +314,10 @@ const editQuiz = async (file_num,quiz_num,question,answer,category,img_file) => 
     }
 }
 
-// ランダム問題取得SQL（前半） 
+// 問題検索SQL（前半） 
 let searchQuizSQLPre = `
     SELECT
-        *
+        file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate 
     FROM
         quiz_view
     WHERE

@@ -129,7 +129,11 @@ router.post('/edit', function(req, res) {
 router.post('/search', function(req, res) {
     QuizService.searchQuiz(req.body.file_num,req.body.min_rate,req.body.max_rate,req.body.category,req.body.checked,req.body.query,req.body.cond)
         .then((result) => {
-            res.status(200).send(result);
+            if(result.length > 0){
+                res.status(200).send(result);
+            }else{
+                res.status(404).send(result);
+            }
         })
         .catch((error) => {
             res.status(500).send(error);
