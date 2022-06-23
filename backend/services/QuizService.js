@@ -106,6 +106,19 @@ const editQuiz = (file_num,quiz_num,question,answer,category,img_file) => {
     });
 };
 
+// 問題検索
+const searchQuiz = (file_num,min_rate,max_rate,category,checked,query,cond) => {
+    return new Promise((resolve, reject) =>{
+        QuizDao.searchQuiz(file_num,min_rate,max_rate,category,checked,query,cond)
+            .then((result) => {
+                resolve(result);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
 // モジュール化
 module.exports = {
     getQuiz,
@@ -116,4 +129,5 @@ module.exports = {
     incorrectRegister,
     addQuiz,
     editQuiz,
+    searchQuiz,
 }

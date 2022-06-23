@@ -314,6 +314,57 @@ const editQuiz = async (file_num,quiz_num,question,answer,category,img_file) => 
     }
 }
 
+// ランダム問題取得SQL（前半） 
+let searchQuizSQLPre = `
+    SELECT
+        *
+    FROM
+        quiz_view
+    WHERE
+        file_num = ?
+    AND accuracy_rate >= ? 
+    AND accuracy_rate <= ? 
+`
+
+// 問題検索
+const searchQuiz = async (file_num,min_rate,max_rate,category,checked,query,cond) => {
+    try{
+        let categorySQL = ''
+        if(category !== null && category !== undefined){
+            categorySQL = ` AND category LIKE '%` + category +`%' `;
+        }
+
+        let checkedSQL = ""
+        if(checked){
+            checkedSQL += ` AND checked = 1 `;
+        }
+
+        let querySQL = ""
+        let cond_question = (cond !== undefined && cond.question !== undefined && cond.question === true) ? true : false;
+        let cond_answer = (cond !== undefined && cond.answer !== undefined && cond.answer === true) ? true : false;
+        if(cond_question && !cond_answer){
+            querySQL += ` AND quiz_sentense LIKE '%` + query +`%' `;
+        }else if(!cond_question && cond_answer){
+            querySQL += ` AND answer LIKE '%` + query +`%' `;
+        }else{
+            querySQL += ` AND (quiz_sentense LIKE '%` + query +`%' OR answer LIKE '%` + query +`%') `;
+        }
+
+        // ランダム問題取得SQL作成
+        const searchQuizSQL = 
+            searchQuizSQLPre 
+            + categorySQL 
+            + checkedSQL 
+            + querySQL
+            + ' ORDER BY quiz_num; '
+
+            let data = await database.execQuery(searchQuizSQL,[file_num,min_rate,max_rate]);
+        return data
+    }catch(error){
+        throw error;
+    }
+}
+
 module.exports = {
     getQuiz,
     getRandomQuiz,
@@ -323,4 +374,5 @@ module.exports = {
     incorrectRegister,
     addQuiz,
     editQuiz,
+    searchQuiz,
 }
