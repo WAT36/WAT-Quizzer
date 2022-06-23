@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Card, CardContent, CardActions, Checkbox, Container, Collapse, FormControl, FormControlLabel, InputLabel, MenuItem, Select, FormGroup, TextField, Typography, Slider } from "@material-ui/core"
+import { Button, Card, CardContent, Checkbox, Container,  FormControl, FormControlLabel, InputLabel, MenuItem, Select, FormGroup, TextField, Typography, Slider } from "@material-ui/core"
+import { DataGrid } from '@material-ui/data-grid';
 
 import API from "../common/API";
 import QuizzerLayout from "./components/QuizzerLayout";
@@ -12,6 +13,29 @@ const messageBoxStyle = {
     'margin'        : '10px 0px 20px',
     'borderStyle'  : 'none'
 }
+
+const columns = [
+    {   
+        field: 'quiz_num', 
+        headerName: '問題番号', 
+    },
+    {
+        field: 'checked',
+        headerName: 'チェック',
+    },
+    {
+        field: 'question',
+        headerName: '問題',
+    },
+    {
+        field: 'answer',
+        headerName: '答え',
+    },
+    {
+        field: 'category',
+        headerName: 'カテゴリ',
+    },
+];
 
 export default class SearchQuizPage extends React.Component{
     componentDidMount(){
@@ -38,11 +62,6 @@ export default class SearchQuizPage extends React.Component{
         super(props);
         this.selectedFileChange = this.selectedFileChange.bind(this);
         this.rangeSlider = this.rangeSlider.bind(this);
-        this.answerSection = this.answerSection.bind(this);
-        this.getQuiz = this.getQuiz.bind(this);
-        this.getRandomQuiz = this.getRandomQuiz.bind(this);
-        this.getWorstRateQuiz = this.getWorstRateQuiz.bind(this);
-        this.getMinimumClearQuiz = this.getMinimumClearQuiz.bind(this);
         this.state = {
             file_num: -1,
             expanded: false,
@@ -50,28 +69,9 @@ export default class SearchQuizPage extends React.Component{
             checked: false,
             message: '　',
             messageColor: 'initial',
+            searchResult: [],
         }
     }
-
-    rangeSlider = () => {
-        const handleChange = (event, newValue) => {
-            this.setState({value: newValue})
-        };
-    
-        return (
-            <>
-                <Typography id="range-slider" gutterBottom>
-                正解率(%)指定
-                </Typography>
-                <Slider
-                value={this.state.value}
-                onChange={handleChange}
-                valueLabelDisplay="auto"
-                aria-labelledby="range-slider"
-                />
-            </>
-        );
-    } 
 
     selectedFileChange = (e) => {
         API.post("/get_category",{
@@ -96,285 +96,25 @@ export default class SearchQuizPage extends React.Component{
         });
     }
 
-    getQuiz = () => {
-        if(this.state.file_num === -1){
-            this.setState({
-                message: 'エラー:問題ファイルを選択して下さい',
-                messageColor: 'error',
-            })
-            return;
-        }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
-            this.setState({
-                message: 'エラー:問題番号を入力して下さい',
-                messageColor: 'error',
-            })
-            return;
-        }
-
-        API.post("/get_quiz",{
-            "file_num": this.state.file_num,
-            "quiz_num": this.state.quiz_num
-        },(data) => {
-            if(data.status === 200){
-                data = data.body
-                this.setState({
-                    quiz_sentense: data[0].quiz_sentense,
-                    answer: data[0].answer,
-                    message: '　',
-                    messageColor: 'initial',
-                })
-            }else if(data.status === 404){
-                this.setState({
-                    message: 'エラー:条件に合致するデータはありません',
-                    messageColor: 'error',
-                })
-            }else{
-                this.setState({
-                    message: 'エラー:外部APIとの連携に失敗しました',
-                    messageColor: 'error',
-                })
-            }
-        });
-    }
-
-    answerSection = () => {
-        const handleExpandClick = () => {
-            this.setState({expanded: !this.state.expanded})
+    rangeSlider = () => {
+        const handleChange = (event, newValue) => {
+            this.setState({value: newValue})
         };
-
-        const inputCorrect = () => {
-            if(this.state.file_num === -1){
-                this.setState({
-                    message: 'エラー:問題ファイルを選択して下さい',
-                    messageColor: 'error',
-                })
-                return;
-            }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
-                this.setState({
-                    message: 'エラー:問題番号を入力して下さい',
-                    messageColor: 'error',
-                })
-                return;
-            }else if(this.state.quiz_sentense === undefined || this.state.quiz_sentense === null || this.state.quiz_sentense === "" ||
-                    this.state.answer === undefined || this.state.answer === null || this.state.answer === ""){
-                this.setState({
-                    message: 'エラー:問題を出題してから登録して下さい',
-                    messageColor: 'error',
-                })
-                return;
-            }
     
-            API.post("/correct",{
-                "file_num": this.state.file_num,
-                "quiz_num": this.state.quiz_num
-            },(data) => {
-                if(data.status === 200){
-                    data = data.body
-                    this.setState({
-                        quiz_sentense: "",
-                        answer: "",
-                        message: "問題[" + this.state.quiz_num + "] 正解+1! 登録しました",
-                        messageColor: 'initial',
-                    })
-                }else{
-                    this.setState({
-                        message: 'エラー:外部APIとの連携に失敗しました',
-                        messageColor: 'error',
-                    })
-                }
-            });
-        }
-
-        const inputIncorrect = () => {
-            if(this.state.file_num === -1){
-                this.setState({
-                    message: 'エラー:問題ファイルを選択して下さい',
-                    messageColor: 'error',
-                })
-                return;
-            }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
-                this.setState({
-                    message: 'エラー:問題番号を入力して下さい',
-                    messageColor: 'error',
-                })
-                return;
-            }else if(this.state.quiz_sentense === undefined || this.state.quiz_sentense === null || this.state.quiz_sentense === "" ||
-                    this.state.answer === undefined || this.state.answer === null || this.state.answer === ""){
-                this.setState({
-                    message: 'エラー:問題を出題してから登録して下さい',
-                    messageColor: 'error',
-                })
-                return;
-            }
-    
-            API.post("/incorrect",{
-                "file_num": this.state.file_num,
-                "quiz_num": this.state.quiz_num
-            },(data) => {
-                if(data.status === 200){
-                    data = data.body
-                    this.setState({
-                        quiz_sentense: "",
-                        answer: "",
-                        message: "問題[" + this.state.quiz_num + "] 不正解+1.. 登録しました",
-                        messageColor: 'initial',
-                    })
-                }else{
-                    this.setState({
-                        message: 'エラー:外部APIとの連携に失敗しました',
-                        messageColor: 'error',
-                    })
-                }
-            });
-        }
-
         return (
             <>
-                <CardActions>
-                    <Button 
-                        size="small"
-                        onClick={handleExpandClick}
-                        aria-expanded={this.state.expanded}
-                    >答え
-                    </Button>
-                </CardActions>
-                <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-                    <CardContent>
-                        <Typography variant="subtitle1" component="h2">
-                            {this.state.answer}
-                        </Typography>
-                        <Button 
-                            style={buttonStyle} 
-                            variant="contained" 
-                            color="primary"
-                            onClick={inputCorrect}>
-                            正解!!
-                        </Button>
-                        <Button 
-                            style={buttonStyle} 
-                            variant="contained" 
-                            color="secondary"
-                            onClick={inputIncorrect}>
-                            不正解..
-                        </Button>
-                    </CardContent>
-                </Collapse>
+                <Typography id="range-slider" gutterBottom>
+                正解率(%)指定
+                </Typography>
+                <Slider
+                value={this.state.value}
+                onChange={handleChange}
+                valueLabelDisplay="auto"
+                aria-labelledby="range-slider"
+                />
             </>
-        )
-    }
-
-    getRandomQuiz = () => {
-        if(this.state.file_num === -1){
-            this.setState({
-                message: 'エラー:問題ファイルを選択して下さい',
-                messageColor: 'error',
-            })
-            return;
-        }
-        API.post("/random",{
-            "file_num": this.state.file_num,
-            "min_rate": this.state.value[0],
-            "max_rate": this.state.value[1],
-            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
-            "checked" : this.state.checked,
-        },(data) => {
-            if(data.status === 200){
-                data = data.body
-                this.setState({
-                    quiz_num: data[0].quiz_num,
-                    quiz_sentense: data[0].quiz_sentense,
-                    answer: data[0].answer,
-                    message: '　',
-                    messageColor: 'initial',
-                })
-            }else if(data.status === 404){
-                this.setState({
-                    message: 'エラー:条件に合致するデータはありません',
-                    messageColor: 'error',
-                    
-                })
-            }else{
-                this.setState({
-                    message: 'エラー:外部APIとの連携に失敗しました',
-                    messageColor: 'error',
-                })
-            }
-        });
-    }
-
-    getWorstRateQuiz = () => {
-        if(this.state.file_num === -1){
-            this.setState({
-                message: 'エラー:問題ファイルを選択して下さい',
-                messageColor: 'error',
-            })
-            return;
-        }
-        API.post("/worst_rate",{
-            "file_num": this.state.file_num,
-            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
-            "checked" : this.state.checked,
-        },(data) => {
-            if(data.status === 200){
-                data = data.body
-                this.setState({
-                    quiz_num: data[0].quiz_num,
-                    quiz_sentense: data[0].quiz_sentense,
-                    answer: data[0].answer,
-                    message: '　',
-                    messageColor: 'initial',
-                })
-            }else if(data.status === 404){
-                this.setState({
-                    message: 'エラー:条件に合致するデータはありません',
-                    messageColor: 'error',
-                    
-                })
-            }else{
-                this.setState({
-                    message: 'エラー:外部APIとの連携に失敗しました',
-                    messageColor: 'error',
-                })
-            }
-        });
-    }
-
-    getMinimumClearQuiz = () => {
-        if(this.state.file_num === -1){
-            this.setState({
-                message: 'エラー:問題ファイルを選択して下さい',
-                messageColor: 'error',
-            })
-            return;
-        }
-        API.post("/minimum_clear",{
-            "file_num": this.state.file_num,
-            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
-            "checked" : this.state.checked,
-        },(data) => {
-            if(data.status === 200){
-                data = data.body
-                this.setState({
-                    quiz_num: data[0].quiz_num,
-                    quiz_sentense: data[0].quiz_sentense,
-                    answer: data[0].answer,
-                    message: '　',
-                    messageColor: 'initial',
-                })
-            }else if(data.status === 404){
-                this.setState({
-                    message: 'エラー:条件に合致するデータはありません',
-                    messageColor: 'error',
-                    
-                })
-            }else{
-                this.setState({
-                    message: 'エラー:外部APIとの連携に失敗しました',
-                    messageColor: 'error',
-                })
-            }
-        });
-    }
+        );
+    } 
 
     contents = () => {
         return (
@@ -406,10 +146,30 @@ export default class SearchQuizPage extends React.Component{
 
                     <FormControl>
                         <TextField 
-                            label="問題番号" 
-                            onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
+                            label="検索語句" 
+                            //onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
                         />
                     </FormControl>
+
+                    <FormGroup row>
+                        検索対象：
+                        <FormControlLabel
+                            control={
+                            <Checkbox 
+                                //onChange={handleChange} 
+                                name="checkedA" 
+                            />}
+                            label="問題"
+                        />
+                        <FormControlLabel
+                            control={
+                            <Checkbox
+                                //onChange={handleChange}
+                                name="checkedB"
+                            />}
+                            label="答え"
+                        />
+                    </FormGroup>
 
                     <FormControl>
                         <InputLabel id="demo-simple-select-label">カテゴリ</InputLabel>
@@ -444,46 +204,17 @@ export default class SearchQuizPage extends React.Component{
                     style={buttonStyle} 
                     variant="contained" 
                     color="primary"
-                    onClick={(e) => this.getQuiz()}>
-                    出題
-                </Button>
-                <Button 
-                    style={buttonStyle} 
-                    variant="contained" 
-                    color="secondary"
-                    onClick={(e) => this.getRandomQuiz()}>
-                    ランダム出題
-                </Button>
-                <Button 
-                    style={buttonStyle} 
-                    variant="contained" 
-                    color="secondary"
-                    onClick={(e) => this.getWorstRateQuiz()}>
-                    最低正解率問出題
-                </Button>
-                <Button 
-                    style={buttonStyle} 
-                    variant="contained" 
-                    color="secondary"
-                    onClick={(e) => this.getMinimumClearQuiz()}>
-                    最小正解数問出題
-                </Button>
-                <Button style={buttonStyle} variant="contained" color="default" disabled>
-                    画像表示
+                    //onClick={(e) => this.getQuiz()}
+                    >
+                    検索
                 </Button>
 
-                <Card variant="outlined">
-                    <CardContent>
-                        <Typography variant="h5" component="h2">
-                            問題
-                        </Typography>
-                        <Typography variant="subtitle1" component="h2">
-                            {this.state.quiz_sentense}
-                        </Typography>
-                    </CardContent>
-                    {this.answerSection()}
-                </Card>
-
+                <DataGrid 
+                    rows={this.state.searchResult}
+                    columns={columns}
+                    pageSize={25}
+                    checkboxSelection
+                />
 
             </Container>
         )
