@@ -39,85 +39,9 @@ export default class AccuracyRateGraphPage extends React.Component{
         super(props);
         this.state = {
             file_num: -1,
-            input_data: "",
             message: '　',
             messageColor: 'initial',
         }
-    }
-
-    getQuiz = () => {
-        if(this.state.file_num === -1){
-            this.setState({
-                message: 'エラー:問題ファイルを選択して下さい',
-                messageColor: 'error',
-            })
-            return;
-        }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
-            this.setState({
-                message: 'エラー:問題番号を入力して下さい',
-                messageColor: 'error',
-            })
-            return;
-        }
-
-        API.post("/get_quiz",{
-            "file_num": this.state.file_num,
-            "quiz_num": this.state.quiz_num
-        },(data) => {
-            if(data.status === 200){
-                data = data.body
-                this.setState({
-                    edit_file_num: data[0].file_num,
-                    edit_quiz_num: data[0].quiz_num,
-                    edit_question: data[0].quiz_sentense,
-                    edit_answer: data[0].answer,
-                    edit_category: data[0].category,
-                    edit_image: data[0].img_file,
-                    message: '　',
-                    messageColor: 'initial',
-                })
-            }else if(data.status === 404){
-                this.setState({
-                    message: 'エラー:条件に合致するデータはありません',
-                    messageColor: 'error',
-                })
-            }else{
-                this.setState({
-                    message: 'エラー:外部APIとの連携に失敗しました',
-                    messageColor: 'error',
-                })
-            }
-        });
-    }
-
-    editQuiz = () => {
-        API.post("/edit",{
-            "file_num": this.state.edit_file_num,
-            "quiz_num": this.state.edit_quiz_num,
-            "question": this.state.edit_question,
-            "answer": this.state.edit_answer,
-            "category": this.state.edit_category,
-            "img_file": this.state.edit_image,
-        },(data) => {
-            if(data.status === 200){
-                data = data.body
-                this.setState({
-                    edit_file_num: "",
-                    edit_quiz_num: "",
-                    edit_question: "",
-                    edit_answer: "",
-                    edit_category: "",
-                    edit_image: "",
-                    message: 'Success!! 編集に成功しました',
-                    messageColor: 'initial',
-                })
-            }else{
-                this.setState({
-                    message: 'エラー:外部APIとの連携に失敗しました',
-                    messageColor: 'error',
-                })
-            }
-        });
     }
 
     contents = () => {
@@ -148,82 +72,15 @@ export default class AccuracyRateGraphPage extends React.Component{
                         </Select>
                     </FormControl>
 
-                    <FormControl>
-                        <TextField 
-                            label="問題番号" 
-                            onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
-                        />
-                    </FormControl>
                 </FormGroup>
 
                 <Button 
                     style={buttonStyle} 
                     variant="contained" 
                     color="primary"
-                    onClick={(e) => this.getQuiz()}
+                    //onClick={(e) => this.getQuiz()}
                     >
-                    問題取得
-                </Button>
-
-                <Card variant="outlined">
-                    <CardContent>
-                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            ファイル：{this.state.edit_file_num}
-                        </Typography>
-
-                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            問題番号：{this.state.edit_quiz_num}
-                        </Typography>
-
-                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            問題　　：
-                            <Input
-                                fullWidth
-                                maxRows={1}
-                                value={this.state.edit_question}
-                                onChange={(e) => this.setState({edit_question: e.target.value})}
-                            />
-                        </Typography>
-
-                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            答え　　：
-                            <Input
-                                fullWidth
-                                maxRows={1}
-                                value={this.state.edit_answer}
-                                onChange={(e) => this.setState({edit_answer: e.target.value})}
-                            />
-                        </Typography>
-
-                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            カテゴリ：
-                            <Input
-                                fullWidth
-                                maxRows={1}
-                                value={this.state.edit_category}
-                                onChange={(e) => this.setState({edit_category: e.target.value})}
-                            />
-                        </Typography>
-
-                        <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            画像ファイル：
-                            <Input
-                                fullWidth
-                                maxRows={1}
-                                value={this.state.edit_image}
-                                onChange={(e) => this.setState({edit_image: e.target.value})}
-                            />
-                        </Typography>
-                    </CardContent>
-                </Card>
-
-                <Button 
-                    style={buttonStyle} 
-                    variant="contained" 
-                    color="primary"
-                    onClick={(e) => this.editQuiz()}
-                    >
-                    更新
+                    正解率表示
                 </Button>
 
             </Container>
