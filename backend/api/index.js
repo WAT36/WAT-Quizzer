@@ -160,4 +160,14 @@ router.post('/integrate', function(req, res) {
         });
 });
 
+router.post('/replace_category', function(req, res) {
+    CategoryService.replaceAllCategory(req.body.file_num)
+        .then((result) => {
+            res.status(200).send(result);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+});
+
 module.exports = router;

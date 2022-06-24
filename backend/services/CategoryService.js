@@ -15,7 +15,21 @@ const getCategoryList = (file_num) => {
     });
 };
 
+// 問題ファイルのカテゴリリスト取得
+const replaceAllCategory = (file_num) => {
+    return new Promise((resolve, reject) =>{
+        CategoryDao.replaceAllCategory(file_num)
+            .then((result) => {
+                resolve(result);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
 // モジュール化
 module.exports = {
     getCategoryList,
+    replaceAllCategory,
 }
