@@ -388,6 +388,53 @@ const deleteQuiz = async (file_num, quiz_num) => {
     }
 }
 
+// 問題統合SQL
+const integrateQuizSQL = `
+    UPDATE
+        quiz
+    SET
+        clear_count = ?,
+        fail_count = ?,
+        category = ?
+    WHERE 
+        file_num = ? 
+        AND quiz_num = ? 
+`
+
+// 問題統合
+const integrateQuiz = async (pre_file_num, pre_quiz_num, post_file_num, post_quiz_num) => {
+    try{
+        if(pre_file_num !== post_file_num){
+            throw '統合前後のファイル番号は同じにしてください ('+pre_file_num+' != '+post_file_num+')';
+        }
+
+        // 統合前の問題取得
+        let pre_data = await database.execQuery(getQuizSQL,[pre_file_num,pre_quiz_num]);
+
+        // 統合後の問題取得
+        let post_data = await database.execQuery(getQuizSQL,[post_file_num,post_quiz_num]);
+
+        // 統合データ作成
+        new_clear_count = pre_data[0]['clear_count'] + post_data[0]['clear_count']
+        new_fail_count  = pre_data[0]['fail_count'] + post_data[0]['fail_count']
+        pre_category    = new Set(pre_data[0]['category'].split(':'));
+        post_category   = new Set(post_data[0]['category'].split(':'));
+        new_category    = Array.from(new Set([...pre_category, ...post_category])).join(':');
+
+        // 問題統合
+        let result = []
+        let result_i = await database.execQuery(integrateQuizSQL,[new_clear_count,new_fail_count,new_category,post_file_num,post_quiz_num]);
+        result.push(result_i)
+
+        // 統合元データは削除
+        result_i = await database.execQuery(deleteQuizSQL,[pre_file_num,pre_quiz_num]);
+        result.push(result_i)
+
+        return result
+    }catch(error){
+        throw error;
+    }
+}
 
 module.exports = {
     getQuiz,
@@ -400,4 +447,5 @@ module.exports = {
     editQuiz,
     searchQuiz,
     deleteQuiz,
+    integrateQuiz,
 }

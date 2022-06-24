@@ -150,4 +150,14 @@ router.post('/delete', function(req, res) {
         });
 });
 
+router.post('/integrate', function(req, res) {
+    QuizService.integrateQuiz(req.body.pre_file_num,req.body.pre_quiz_num,req.body.post_file_num,req.body.post_quiz_num)
+        .then((result) => {
+            res.status(200).send(result);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+});
+
 module.exports = router;
