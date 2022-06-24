@@ -180,6 +180,61 @@ export default class DeleteQuizPage extends React.Component{
         });
     }
 
+    integrateQuiz = () => {
+        if( (this.state.get_file_num === undefined || this.state.get_file_num === null || this.state.get_file_num === -1 ) || 
+            (this.state.get_quiz_num === undefined || this.state.get_quiz_num === null || this.state.get_quiz_num === "")){
+            this.setState({
+                message: 'エラー:統合元(左)の問題を取得して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }else if(   (this.state.get_file_num === undefined || this.state.get_file_num === null || this.state.get_file_num === -1 ) || 
+                    (this.state.integrate_to_quiz_num === undefined || this.state.integrate_to_quiz_num === null || this.state.integrate_to_quiz_num === "")){
+            this.setState({
+                message: 'エラー:統合先(右)の問題を取得して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
+        API.post("/integrate",{
+            "pre_file_num": this.state.get_file_num,
+            "pre_quiz_num": this.state.get_quiz_num,
+            "post_file_num": this.state.get_file_num,
+            "post_quiz_num": this.state.integrate_to_quiz_num
+        },(data) => {
+            if(data.status === 200){
+                data = data.body
+                let quiz_num = '['+this.state.get_file_num+':'+this.state.get_quiz_num+'->'+this.state.integrate_to_quiz_num+']'
+                this.setState({
+                    message: 'Success! 統合に成功しました'+quiz_num,
+                    messageColor: 'initial',
+                    get_file_num: null,
+                    get_quiz_num: null,
+                    question: "",
+                    answer: "",
+                    category: "",
+                    image: "",
+                    integrate_to_quiz_num: null,
+                    integrate_to_question: "",
+                    integrate_to_answer: "",
+                    integrate_to_category: "",
+                    integrate_to_image: "",
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
+        });
+    }
+
     contents = () => {
         return (
             <Container>
@@ -341,7 +396,7 @@ export default class DeleteQuizPage extends React.Component{
                         style={buttonStyle} 
                         variant="contained" 
                         color="primary"
-                        //onClick={(e) => this.editQuiz()}
+                        onClick={(e) => this.integrateQuiz()}
                         >
                         統合
                     </Button>
