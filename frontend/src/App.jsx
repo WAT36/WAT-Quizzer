@@ -9,6 +9,7 @@ import AddQuizPage from "./pages/AddQuizPage";
 import EditQuizPage from "./pages/EditQuizPage";
 import SearchQuizPage from "./pages/SearchQuizPage";
 import DeleteQuizPage from "./pages/DeleteQuizPage";
+import AccuracyRateGraphPage from "./pages/AccuracyRateGraphPage";
 
 class App extends React.Component {
   render(){
@@ -26,6 +27,8 @@ class App extends React.Component {
           <Route path="/searchquiz" element={<SearchQuizPage />} />
 
           <Route path="/deletequiz" element={<DeleteQuizPage />} />
+
+          <Route path="/accuracyrategraph" element={<AccuracyRateGraphPage />} />
 
           <Route path="/" element={
             <div className="App">
