@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Select, FormGroup, Typography, TextField, Input } from "@material-ui/core"
+import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Paper, Select, FormGroup, Typography, TextField, Input } from "@material-ui/core"
 
 import API from "../common/API";
 import QuizzerLayout from "./components/QuizzerLayout";
@@ -13,6 +13,11 @@ const buttonStyle = {
     'margin'     :  '10px',
 }
 
+const paperStyle = {
+    'width': '40%',
+    'float': 'left',
+    'margin' : '5px',
+}
 
 export default class DeleteQuizPage extends React.Component{
     componentDidMount(){
@@ -90,6 +95,50 @@ export default class DeleteQuizPage extends React.Component{
         });
     }
 
+    getIntegrateToQuiz = () => {
+        if(this.state.file_num === -1){
+            this.setState({
+                message: 'エラー:問題ファイルを選択して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }else if(this.state.integrate_to_quiz_num === undefined || this.state.integrate_to_quiz_num === null || this.state.integrate_to_quiz_num === ""){
+            this.setState({
+                message: 'エラー:問題番号を入力して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
+        API.post("/get_quiz",{
+            "file_num": this.state.get_file_num,
+            "quiz_num": this.state.integrate_to_quiz_num
+        },(data) => {
+            if(data.status === 200){
+                data = data.body
+                this.setState({
+                    integrate_to_quiz_num: data[0].quiz_num,
+                    integrate_to_question: data[0].quiz_sentense,
+                    integrate_to_answer: data[0].answer,
+                    integrate_to_category: data[0].category,
+                    integrate_to_image: data[0].img_file,
+                    message: '　',
+                    messageColor: 'initial',
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
+        });
+    }
+
     contents = () => {
         return (
             <Container>
@@ -103,7 +152,7 @@ export default class DeleteQuizPage extends React.Component{
                     </CardContent>
                 </Card>
 
-                <Card variant="outlined">
+                <Paper variant="outlined" style={paperStyle}>
                     <Card variant="outlined">
                         <CardContent>
 
@@ -138,7 +187,7 @@ export default class DeleteQuizPage extends React.Component{
                                 style={buttonStyle} 
                                 variant="contained" 
                                 color="primary"
-                                onClick={(e) => this.getQuiz()}
+                                onClick={(e) => this.getIntegrateToQuiz()}
                                 >
                                 問題取得
                             </Button>
@@ -148,23 +197,23 @@ export default class DeleteQuizPage extends React.Component{
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                問題番号：{this.state.get_quiz_num}
+                                問題番号：{this.state.integrate_to_quiz_num}
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                問題　　：{this.state.question}
+                                問題　　：{this.state.integrate_to_question}
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                答え　　：{this.state.answer}
+                                答え　　：{this.state.integrate_to_answer}
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                カテゴリ：{this.state.category}
+                                カテゴリ：{this.state.integrate_to_category}
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                画像　　：{this.state.image}
+                                画像　　：{this.state.integrate_to_image}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -177,7 +226,85 @@ export default class DeleteQuizPage extends React.Component{
                         >
                         削除
                     </Button>
-                </Card>
+                </Paper>
+
+
+
+                <Paper variant="outlined" style={paperStyle}>
+                    <Card variant="outlined">
+                        <CardContent>
+
+                            <Typography variant="h6" component="h6" color={this.state.messageColor}>
+                                統合先の問題
+                            </Typography>
+                            
+                            <FormGroup>
+                                <FormControl disabled>
+                                    <InputLabel id="quiz-file-input">問題ファイル</InputLabel>
+                                    <Select
+                                        labelId="quiz-file-name"
+                                        id="quiz-file-id"
+                                        defaultValue={this.state.file_num || -1}
+                                        // value={age}
+                                        //onChange={(e) => {this.setState({file_num: e.target.value});}}
+                                    >
+                                        <MenuItem value={-1} key={-1}>同左</MenuItem>
+                                        {this.state.filelistoption}
+                                    </Select>
+                                </FormControl>
+
+                                <FormControl>
+                                    <TextField 
+                                        label="問題番号" 
+                                        onChange={(e) => { this.setState({integrate_to_quiz_num: e.target.value}); }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+
+                            <Button 
+                                style={buttonStyle} 
+                                variant="contained" 
+                                color="primary"
+                                onClick={(e) => this.getQuiz()}
+                                >
+                                問題取得
+                            </Button>
+
+                            <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                                ファイル：{this.state.get_file_num}
+                            </Typography>
+
+                            <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                                問題番号：{this.state.integrate_to_quiz_num}
+                            </Typography>
+
+                            <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                                問題　　：{this.state.integrate_to_question}
+                            </Typography>
+
+                            <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                                答え　　：{this.state.integrate_to_answer}
+                            </Typography>
+
+                            <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                                カテゴリ：{this.state.integrate_to_category}
+                            </Typography>
+
+                            <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                                画像　　：{this.state.integrate_to_image}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+
+                    <Button 
+                        style={buttonStyle} 
+                        variant="contained" 
+                        color="primary"
+                        //onClick={(e) => this.editQuiz()}
+                        >
+                        統合
+                    </Button>
+                </Paper>
 
             </Container>
         )
