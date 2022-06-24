@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Paper, Select, FormGroup, Typography, TextField, Input } from "@material-ui/core"
+import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Paper, Select, FormGroup, Typography, TextField } from "@material-ui/core"
 
 import API from "../common/API";
 import QuizzerLayout from "./components/QuizzerLayout";
@@ -139,6 +139,47 @@ export default class DeleteQuizPage extends React.Component{
         });
     }
 
+    deleteQuiz = () => {
+        if( (this.state.get_file_num === undefined || this.state.get_file_num === null || this.state.get_file_num === -1 ) || 
+            (this.state.get_quiz_num === undefined || this.state.get_quiz_num === null || this.state.get_quiz_num === "")){
+            this.setState({
+                message: 'エラー:削除する問題を取得して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
+        API.post("/delete",{
+            "file_num": this.state.get_file_num,
+            "quiz_num": this.state.get_quiz_num
+        },(data) => {
+            if(data.status === 200){
+                data = data.body
+                let quiz_num = '['+this.state.get_file_num+'-'+this.state.get_quiz_num+']'
+                this.setState({
+                    message: 'Success! 削除に成功しました'+quiz_num,
+                    messageColor: 'initial',
+                    get_file_num: null,
+                    get_quiz_num: null,
+                    question: "",
+                    answer: "",
+                    category: "",
+                    image: "",
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
+        });
+    }
+
     contents = () => {
         return (
             <Container>
@@ -156,7 +197,7 @@ export default class DeleteQuizPage extends React.Component{
                     <Card variant="outlined">
                         <CardContent>
 
-                            <Typography variant="h6" component="h6" color={this.state.messageColor}>
+                            <Typography variant="h6" component="h6">
                                 削除する(統合元の)問題
                             </Typography>
                             
@@ -187,7 +228,7 @@ export default class DeleteQuizPage extends React.Component{
                                 style={buttonStyle} 
                                 variant="contained" 
                                 color="primary"
-                                onClick={(e) => this.getIntegrateToQuiz()}
+                                onClick={(e) => this.getQuiz()}
                                 >
                                 問題取得
                             </Button>
@@ -197,23 +238,23 @@ export default class DeleteQuizPage extends React.Component{
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                問題番号：{this.state.integrate_to_quiz_num}
+                                問題番号：{this.state.get_quiz_num}
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                問題　　：{this.state.integrate_to_question}
+                                問題　　：{this.state.question}
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                答え　　：{this.state.integrate_to_answer}
+                                答え　　：{this.state.answer}
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                カテゴリ：{this.state.integrate_to_category}
+                                カテゴリ：{this.state.category}
                             </Typography>
 
                             <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                                画像　　：{this.state.integrate_to_image}
+                                画像　　：{this.state.image}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -222,7 +263,7 @@ export default class DeleteQuizPage extends React.Component{
                         style={buttonStyle} 
                         variant="contained" 
                         color="primary"
-                        //onClick={(e) => this.editQuiz()}
+                        onClick={(e) => this.deleteQuiz()}
                         >
                         削除
                     </Button>
@@ -234,7 +275,7 @@ export default class DeleteQuizPage extends React.Component{
                     <Card variant="outlined">
                         <CardContent>
 
-                            <Typography variant="h6" component="h6" color={this.state.messageColor}>
+                            <Typography variant="h6" component="h6">
                                 統合先の問題
                             </Typography>
                             
@@ -265,7 +306,7 @@ export default class DeleteQuizPage extends React.Component{
                                 style={buttonStyle} 
                                 variant="contained" 
                                 color="primary"
-                                onClick={(e) => this.getQuiz()}
+                                onClick={(e) => this.getIntegrateToQuiz()}
                                 >
                                 問題取得
                             </Button>
