@@ -365,6 +365,30 @@ const searchQuiz = async (file_num,min_rate,max_rate,category,checked,query,cond
     }
 }
 
+// 問題削除SQL(削除済にアップデート) 
+const deleteQuizSQL = `
+    UPDATE
+        quiz
+    SET
+        deleted = 1 
+    WHERE 
+        file_num = ? 
+        AND quiz_num = ? 
+    ;
+`
+
+// 問題削除
+const deleteQuiz = async (file_num, quiz_num) => {
+    try{
+        // 削除済にアップデート
+        let result = await database.execQuery(deleteQuizSQL,[file_num,quiz_num]);
+        return result
+    }catch(error){
+        throw error;
+    }
+}
+
+
 module.exports = {
     getQuiz,
     getRandomQuiz,
@@ -375,4 +399,5 @@ module.exports = {
     addQuiz,
     editQuiz,
     searchQuiz,
+    deleteQuiz,
 }

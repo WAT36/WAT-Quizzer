@@ -119,6 +119,19 @@ const searchQuiz = (file_num,min_rate,max_rate,category,checked,query,cond) => {
     });
 };
 
+// 問題削除
+const deleteQuiz = (file_num,quiz_num) => {
+    return new Promise((resolve, reject) =>{
+        QuizDao.deleteQuiz(file_num,quiz_num)
+            .then((result) => {
+                resolve(result);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
 // モジュール化
 module.exports = {
     getQuiz,
@@ -130,4 +143,5 @@ module.exports = {
     addQuiz,
     editQuiz,
     searchQuiz,
+    deleteQuiz,
 }

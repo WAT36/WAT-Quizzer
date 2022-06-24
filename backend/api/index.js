@@ -140,4 +140,14 @@ router.post('/search', function(req, res) {
         });
 });
 
+router.post('/delete', function(req, res) {
+    QuizService.deleteQuiz(req.body.file_num,req.body.quiz_num)
+        .then((result) => {
+            res.status(200).send(result);
+        })
+        .catch((error) => {
+            res.status(500).send(error);
+        });
+});
+
 module.exports = router;
