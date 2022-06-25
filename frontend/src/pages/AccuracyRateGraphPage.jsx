@@ -46,32 +46,95 @@ export default class AccuracyRateGraphPage extends React.Component{
         }
     }
 
+    getAccuracy = () => {
+        if(this.state.file_num === -1){
+            this.setState({
+                message: 'エラー:問題ファイルを選択して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
+        API.post("/get_accuracy_rate_by_category",{
+            "file_num": this.state.file_num
+        },(data) => {
+            if(data.status === 200){
+                data = data.body
+                console.log("data:",data);
+                this.setState({
+                    accuracy_data: data,
+                    message: '　',
+                    messageColor: 'initial',
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
+        });
+    }
+
     displayChart = () => {
 
-        let data = [
+        const display_data = this.state.accuracy_data
+
+        // データがない場合は何もしない
+        if(display_data === undefined 
+            || display_data === null 
+            || display_data.result === undefined 
+            || display_data.checked_result === undefined){
+            return;
+        }
+
+        let visualized_data = [
             [
-                "Element",
-                "Density",
-                { role: "style" },
-                {
-                    sourceColumn: 0,
-                    role: "annotation",
-                    type: "string",
-                    calc: "stringify",
-                },
+                'Name', 
+                'Accuracy_Rate', 
+                { role: 'style' }, 
+                { role: 'annotation' } 
             ],
-            ["Copper", 8.94, "#b87333", null],
-            ["Silver", 10.49, "silver", null],
-            ["Gold", 19.3, "gold", null],
-            ["Platinum", 21.45, "color: #e5e4e2", null],
+            // ["Copper", 8.94, "#b87333", null],
+            // ["Silver", 10.49, "silver", null],
+            // ["Gold", 19.3, "gold", null],
+            // ["Platinum", 21.45, "color: #e5e4e2", null],
         ];
 
+        // チェック済データ追加
+        let checked_rate = display_data.checked_result
+        for(let i=0;i<checked_rate.length;i++){
+            let annotation_i = String(Math.round(parseFloat(checked_rate[i].accuracy_rate) *10)/10)+'% / '+String(checked_rate[i].count)+'問'
+            visualized_data.push(['(チェック済問題)',parseFloat(checked_rate[i].accuracy_rate),'#32CD32',annotation_i])
+        }
+
+        // カテゴリ毎のデータ追加
+        let category_rate = display_data.result
+        for(let i=0;i<category_rate.length;i++){
+            let annotation_i = String(Math.round(parseFloat(category_rate[i].accuracy_rate) *10)/10)+'% / '+String(category_rate[i].count)+'問'
+            visualized_data.push([category_rate[i].c_category,parseFloat(category_rate[i].accuracy_rate),'#76A7FA',annotation_i])
+        }
+
+        // グラフ領域の縦の長さ（＝40 * データの個数）
+        let graph_height = 40 * visualized_data.length
+
         const options = {
-            title: "Density of Precious Metals, in g/cm^3",
-            width: 600,
-            height: 400,
-            bar: { groupWidth: "95%" },
+            height: graph_height,
             legend: { position: "none" },
+            chartArea: {
+                left: '15%',
+                top: 10,
+                width: '75%',
+                height: graph_height-50
+            },
+            hAxis: {
+                minValue: 0,
+                maxValue: 1
+            }
         };
 
         return (
@@ -80,7 +143,7 @@ export default class AccuracyRateGraphPage extends React.Component{
                     chartType="BarChart"
                     width="100%"
                     height="400px"
-                    data={data}
+                    data={visualized_data}
                     options={options}
                 />
             </>
@@ -121,7 +184,7 @@ export default class AccuracyRateGraphPage extends React.Component{
                     style={buttonStyle} 
                     variant="contained" 
                     color="primary"
-                    //onClick={(e) => this.getQuiz()}
+                    onClick={(e) => this.getAccuracy()}
                     >
                     正解率表示
                 </Button>
