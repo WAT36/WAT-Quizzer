@@ -78,7 +78,60 @@ const replaceAllCategory = async (file_num) => {
     }
 }
 
+// カテゴリビューからカテゴリ正解率取得SQL
+const getAccuracyRateByCategorySQL = `
+    SELECT 
+        file_num, 
+        c_category,
+        count,
+        accuracy_rate 
+    FROM 
+        category_view 
+    WHERE 
+        file_num = ? 
+    ORDER BY 
+        accuracy_rate 
+`
+
+// 指定ファイルのチェック済問題の正解率取得SQL
+const getAccuracyRateOfCheckedQuizSQL = `
+    SELECT 
+        checked, 
+        count(*) as count, 
+        SUM(clear_count) as sum_clear, 
+        SUM(fail_count) as sum_fail, 
+        ( 100 * SUM(clear_count) / ( SUM(clear_count) + SUM(fail_count) ) ) as accuracy_rate 
+    FROM 
+        quiz 
+    where 
+        file_num = ? 
+        and checked = 1 
+        and deleted != 1 
+    group by checked;
+`
+
+// カテゴリ正解率取得
+const getAccuracyRateByCategory = async (file_num) => {
+    try{
+        let result = {
+            "result": [],
+            "checked_result": []
+        }
+
+        // カテゴリビューから指定ファイルのカテゴリ毎の正解率取得
+        result["result"] = await database.execQuery(getAccuracyRateByCategorySQL,[file_num]);
+
+        // チェック済問題の正解率取得
+        result["checked_result"] = await database.execQuery(getAccuracyRateOfCheckedQuizSQL,[file_num]);
+
+        return result;
+    }catch(error){
+        throw error;
+    }
+}
+
 module.exports = {
     getCategoryList,
     replaceAllCategory,
+    getAccuracyRateByCategory,
 }
