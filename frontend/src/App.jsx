@@ -10,6 +10,7 @@ import EditQuizPage from "./pages/EditQuizPage";
 import SearchQuizPage from "./pages/SearchQuizPage";
 import DeleteQuizPage from "./pages/DeleteQuizPage";
 import AccuracyRateGraphPage from "./pages/AccuracyRateGraphPage";
+import ImageUploadPage from "./pages/ImageUploadPage";
 
 class App extends React.Component {
   render(){
@@ -29,6 +30,8 @@ class App extends React.Component {
           <Route path="/deletequiz" element={<DeleteQuizPage />} />
 
           <Route path="/accuracyrategraph" element={<AccuracyRateGraphPage />} />
+
+          <Route path="/imageupload" element={<ImageUploadPage />} />
 
           <Route path="/" element={
             <div className="App">
