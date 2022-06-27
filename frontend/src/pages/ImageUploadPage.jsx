@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Container } from "@material-ui/core"
 import { useCallback } from 'react';
-import {useDropzone} from 'react-dropzone';
+import Dropzone from 'react-dropzone'
 
 import QuizzerLayout from "./components/QuizzerLayout";
 
@@ -24,42 +24,42 @@ const dropzoneTextStyle = {
     'font-size': '14px',
 }
 
-export default function ImageUploadPage(props){
+export default class ImageUploadPage extends React.Component{
 
-    const MakeDropZoneArea = () => {
-        const onDrop = useCallback((acceptedFiles) => {
-            // Do something with the files
-            console.log('acceptedFiles:', acceptedFiles);
-        }, []);
-        const {acceptedFiles, getRootProps, getInputProps} = useDropzone({ onDrop });
-        
-        const files = acceptedFiles.map(file => (
-            <li key={file.path}>
-                {file.path} - {file.size} bytes
-            </li>
-        ));
+    constructor(props){
+        super(props);
+        this.state = {
+
+        }
+    }
+
+    makeDropZoneArea = () => {
         
         return (
-            <section className="container">
-                <div {...getRootProps({className: 'dropzone'})} style={dropzoneStyle}>
-                    <input {...getInputProps()} />
-                    <p style={dropzoneTextStyle}>Drag and drop some files here, or click to select files</p>
-                    <p style={dropzoneTextStyle}>ここにファイルをドラッグ&ドロップ　または　クリックしてファイルを選択</p>
-                </div>
-                <aside>
-                    <h4>Files</h4>
-                    <ul>{files}</ul>
-                </aside>
-            </section>
+            <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+                {({getRootProps, getInputProps}) => (
+                    <section>
+                    <div {...getRootProps()} style={dropzoneStyle}>
+                        <input {...getInputProps()} />
+                        <p style={dropzoneTextStyle}>Drag and drop some files here, or click to select files</p>
+                        <p style={dropzoneTextStyle}>ここにファイルをドラッグ&ドロップ　または　クリックしてファイルを選択</p>
+                    </div>
+                    </section>
+                )}
+            </Dropzone>
         );
     }
 
-    const contents = () => {
+    uploadImage = () => {
+
+    }
+
+    contents = () => {
         return (
             <Container>
                 <h1>WAT Quizzer</h1>
 
-                {MakeDropZoneArea()}
+                {this.makeDropZoneArea()}
 
                 <Button 
                     style={buttonStyle} 
@@ -73,12 +73,14 @@ export default function ImageUploadPage(props){
         )
     }
 
-    return (
-        <>
-            <QuizzerLayout 
-                contents={contents()}
-            />
-        </>
-    )
+    render(){
+        return (
+            <>
+                <QuizzerLayout 
+                    contents={this.contents()}
+                />
+            </>
+        )
+    }
 
 }
