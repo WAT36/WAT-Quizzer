@@ -1,9 +1,13 @@
 import React from "react";
-import { Button, Container } from "@material-ui/core"
-import { useCallback } from 'react';
+import { Button, Card, CardContent, Container, Typography } from "@material-ui/core"
 import Dropzone from 'react-dropzone'
 
 import QuizzerLayout from "./components/QuizzerLayout";
+
+const messageBoxStyle = {
+    'margin'        : '10px 0px 20px',
+    'borderStyle'  : 'none'
+}
 
 const buttonStyle = {
     'margin'     :  '10px',
@@ -29,14 +33,26 @@ export default class ImageUploadPage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-
+            message: '　',
+            messageColor: 'initial',
+            selectedFile: undefined
         }
     }
 
     makeDropZoneArea = () => {
         
         return (
-            <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+            <Dropzone 
+                onDrop={acceptedFiles => 
+                    {
+                        console.log(acceptedFiles);
+                        this.setState({
+                            message: '　',
+                            messageColor: 'initial',
+                            selectedFile: acceptedFiles,
+                        })
+                    }
+                    }>
                 {({getRootProps, getInputProps}) => (
                     <section>
                     <div {...getRootProps()} style={dropzoneStyle}>
@@ -51,7 +67,13 @@ export default class ImageUploadPage extends React.Component{
     }
 
     uploadImage = () => {
-
+        if(this.state.selectedFile === undefined || this.state.selectedFile.length < 1){
+            this.setState({
+                message: 'エラー:画像ファイルを選択してください',
+                messageColor: 'error',
+            })
+            return;
+        }
     }
 
     contents = () => {
@@ -59,13 +81,21 @@ export default class ImageUploadPage extends React.Component{
             <Container>
                 <h1>WAT Quizzer</h1>
 
+                <Card variant="outlined" style={messageBoxStyle}>
+                    <CardContent>
+                        <Typography variant="h6" component="h6" color={this.state.messageColor}>
+                            {this.state.message}
+                        </Typography>
+                    </CardContent>
+                </Card>
+
                 {this.makeDropZoneArea()}
 
                 <Button 
                     style={buttonStyle} 
                     variant="contained" 
                     color="primary"
-                    //onClick={(e) => this.getAccuracy()}
+                    onClick={(e) => this.uploadImage()}
                     >
                     アップロード
                 </Button>
