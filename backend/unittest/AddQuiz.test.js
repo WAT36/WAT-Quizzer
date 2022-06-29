@@ -1,7 +1,7 @@
 require('iconv-lite').encodingExists('foo');
 
 const testCommon = require('./TestCommon');
-const addQuiz = require('../services/QuizService').addQuiz;
+const QuizService = require('../services/QuizService');
 
 // 何かひとつ問題を追加するテスト
 test('Add 1 Quiz.',async () => {
@@ -10,7 +10,7 @@ test('Add 1 Quiz.',async () => {
     let result = await testCommon.deleteAllQuizOfFile(0);
 
     // 問題追加
-    result = await addQuiz(0,"addQuizテスト問題,addQuizテスト答え,addQuizテストカテゴリ,addQuizテスト画像");
+    result = await QuizService.addQuiz(0,"addQuizテスト問題,addQuizテスト答え,addQuizテストカテゴリ,addQuizテスト画像");
 
     // 問題取得
     let data = await testCommon.getAllQuizOfFileService(0);
