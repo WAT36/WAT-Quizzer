@@ -45,14 +45,11 @@ const getAllQuizOfFile = async (file_num) => {
 
 const getAllQuizOfFileService = (file_num,input_data) => {
     return new Promise((resolve, reject) =>{
-        console.log("getAllQuizOfFileService")
         getAllQuizOfFile(file_num,input_data)
             .then((result) => {
-                console.log("getAllQuizOfFileService.then")
                 resolve(result);
             })
             .catch((error) => {
-                console.log("getAllQuizOfFileService.error",error)
                 reject(error);
             });
     });
