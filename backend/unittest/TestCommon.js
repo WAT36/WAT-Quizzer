@@ -55,9 +55,32 @@ const getAllQuizOfFileService = (file_num,input_data) => {
     });
 };
 
+// 指定問題の正解不正解数を変更するSQL
+const updateAnswerNumOfQuizSQL = `
+    UPDATE
+        quiz
+    SET
+        clear_count = ?
+        AND fail_count = ?
+    WHERE
+        file_num = ?
+        AND quiz_num = ?
+`
+
+// 指定問題の正解不正解数を変更
+const updateAnswerNumOfQuiz = (clear,fail,file_num,quiz_num) => {
+    try{
+        let data = await database.execQuery(updateAnswerNumOfQuizSQL,[clear,fail,file_num,quiz_num]);
+        return data
+    }catch(error){
+        throw error;
+    }
+};
+
 
 module.exports = {
     deleteAllQuizOfFile,
     getAllQuizOfFile,
     getAllQuizOfFileService,
+    updateAnswerNumOfQuiz,
 }
