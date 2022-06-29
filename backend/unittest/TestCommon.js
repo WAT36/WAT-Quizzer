@@ -30,6 +30,8 @@ const getAllQuizOfFileSQL = `
         quiz
     WHERE
         file_num = ?
+    ORDER BY
+        quiz_num
     ;
 `
 
@@ -68,7 +70,7 @@ const updateAnswerNumOfQuizSQL = `
 `
 
 // 指定問題の正解不正解数を変更
-const updateAnswerNumOfQuiz = (clear,fail,file_num,quiz_num) => {
+const updateAnswerNumOfQuiz = async (clear,fail,file_num,quiz_num) => {
     try{
         let data = await database.execQuery(updateAnswerNumOfQuizSQL,[clear,fail,file_num,quiz_num]);
         return data
