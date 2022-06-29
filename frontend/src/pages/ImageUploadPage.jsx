@@ -1,79 +1,86 @@
 import React from "react";
-import { Button, Card, CardContent, Container, Typography } from "@material-ui/core"
+import { Card, CardContent, Container, Typography } from "@material-ui/core"
 import Dropzone from 'react-dropzone'
+import axios from 'axios';
 
 import QuizzerLayout from "./components/QuizzerLayout";
 
 const messageBoxStyle = {
-    'margin'        : '10px 0px 20px',
-    'borderStyle'  : 'none'
-}
-
-const buttonStyle = {
-    'margin'     :  '10px',
+    'margin': '10px 0px 20px',
+    'borderStyle': 'none'
 }
 
 const dropzoneStyle = {
-    'background-color': '#f4f4f4',
+    'backgroundColor': '#f4f4f4',
     'margin': '10px',
     'padding': '10px',
     'border': '#ddd dashed 5px',
-    'min-height': '200px',
-    'text-align': 'center',
+    'minHeight': '200px',
+    'textAlign': 'center',
 }
 
-const dropzoneTextStyle = {
-    'color': '#999',
-    'font-weight': 'bold',
-    'font-size': '14px',
-}
+export default class ImageUploadPage extends React.Component {
 
-export default class ImageUploadPage extends React.Component{
-
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             message: '　',
             messageColor: 'initial',
-            selectedFile: undefined
-        }
+            selectedFile: undefined,
+            isUploading: false,
+            images: []
+        };
+        this.handleOnDrop = this.handleOnDrop.bind(this);
     }
 
-    makeDropZoneArea = () => {
-        
-        return (
-            <Dropzone 
-                onDrop={acceptedFiles => 
-                    {
-                        console.log(acceptedFiles);
-                        this.setState({
-                            message: '　',
-                            messageColor: 'initial',
-                            selectedFile: acceptedFiles,
-                        })
-                    }
-                    }>
-                {({getRootProps, getInputProps}) => (
-                    <section>
-                    <div {...getRootProps()} style={dropzoneStyle}>
-                        <input {...getInputProps()} />
-                        <p style={dropzoneTextStyle}>Drag and drop some files here, or click to select files</p>
-                        <p style={dropzoneTextStyle}>ここにファイルをドラッグ&ドロップ　または　クリックしてファイルを選択</p>
-                    </div>
-                    </section>
-                )}
-            </Dropzone>
-        );
+    handleOnDrop(files) {
+        this.setState({ 
+            isUploading: true,
+            message: '　',
+            messageColor: 'initial',
+        });
+
+        Promise.all(files.map(file => this.uploadImage(file)))
+            .then(images => {
+                console.log("images:",images);
+                this.setState({
+                    isUploading: false,
+                    images: this.state.images.concat(images),
+                    message: 'アップロードが完了しました:'+images[0].name,
+                    messageColor: 'initial',
+                });
+            }).catch(e => {
+                    console.log(e);
+                    this.setState({
+                        isUploading: false,
+                        message: 'エラー：アップロードに失敗しました',
+                        messageColor: 'error',
+                    });
+                }
+            );
     }
 
-    uploadImage = () => {
-        if(this.state.selectedFile === undefined || this.state.selectedFile.length < 1){
-            this.setState({
-                message: 'エラー:画像ファイルを選択してください',
-                messageColor: 'error',
-            })
-            return;
-        }
+    uploadImage(file) {
+        return axios.post(process.env.REACT_APP_API_SERVER + '/upload', {
+            params: {
+                filename: file.name,
+                filetype: file.type
+            }
+        }).then(res => {
+            const options = {
+                headers: {
+                    'Content-Type': file.type
+                }
+            };
+            return axios.put(res.data.url, file, options);
+        }).then(res => {
+            const { name } = res.config.data;
+            return {
+                name,
+                isUploading: true,
+                url: `https://`+ process.env.REACT_APP_S3_BUCKET_NAME +`.s3.amazonaws.com/${file.name}`
+            };
+        }).catch(e => console.log("frontend axioserrpr:",e));
     }
 
     contents = () => {
@@ -89,24 +96,27 @@ export default class ImageUploadPage extends React.Component{
                     </CardContent>
                 </Card>
 
-                {this.makeDropZoneArea()}
-
-                <Button 
-                    style={buttonStyle} 
-                    variant="contained" 
-                    color="primary"
-                    onClick={(e) => this.uploadImage()}
-                    >
-                    アップロード
-                </Button>
+                <Dropzone onDrop={this.handleOnDrop} >
+                    {({getRootProps, getInputProps}) => (
+                        <section>
+                            <div {...getRootProps()} style={dropzoneStyle}>
+                                <input {...getInputProps()} />
+                                <p>Drag 'n' drop some files here, or click to select files</p>
+                                {this.state.isUploading ?
+                                    <p>ファイルをアップロードしています</p> :
+                                    <p>ここに画像をドラックまたはクリック</p>}
+                            </div>
+                        </section>
+                    )}
+                </Dropzone>
             </Container>
         )
     }
 
-    render(){
+    render() {
         return (
             <>
-                <QuizzerLayout 
+                <QuizzerLayout
                     contents={this.contents()}
                 />
             </>
