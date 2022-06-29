@@ -2,6 +2,8 @@
 
 # backend
 backend/node_modules
+backend/aws/cognito
+backend/aws/s3
 
 # db
 container/README.md
