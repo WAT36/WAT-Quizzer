@@ -45,7 +45,10 @@ SELECT
   img_file,
   checked,
   deleted,
-  100 * clear_count / (clear_count + fail_count) AS accuracy_rate
+  CASE WHEN (clear_count + fail_count = 0) THEN 0
+    ELSE 100 * clear_count / (clear_count + fail_count) 
+    END
+    AS accuracy_rate
 FROM quiz;
 
 
@@ -57,7 +60,10 @@ SELECT
   COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
-  100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+  CASE WHEN (SUM(clear_count) + SUM(fail_count) = 0) THEN 0
+    ELSE 100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) 
+    END
+    AS accuracy_rate
 FROM category as c 
 CROSS JOIN quiz as a 
 WHERE c.file_num = a.file_num 
