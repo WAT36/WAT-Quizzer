@@ -63,10 +63,11 @@ const updateAnswerNumOfQuizSQL = `
         quiz
     SET
         clear_count = ?
-        AND fail_count = ?
+        ,fail_count = ?
     WHERE
         file_num = ?
         AND quiz_num = ?
+    ;
 `
 
 // 指定問題の正解不正解数を変更
