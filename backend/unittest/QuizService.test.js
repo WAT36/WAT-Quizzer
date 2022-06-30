@@ -88,3 +88,29 @@ test('Get 1 Quiz.',async () => {
     expect(data[0].checked).toBe(0);
     expect(data[0].deleted).toBe(0);
 });
+
+// 1つの問題からランダムに問題を取得するテスト
+test('Random Get 1 of 1 Quiz.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,"getQuizテスト問題,getQuizテスト答え,getQuizテストカテゴリ,getQuizテスト画像");
+
+    // 問題取得
+    let data = await QuizService.getRandomQuiz(0,0,100,null,false);
+
+    // 確認
+    expect(data.length).toBe(1);
+    expect(data[0].file_num).toBe(0);
+    expect(data[0].quiz_num).toBe(1);
+    expect(data[0].quiz_sentense).toBe('getQuizテスト問題');
+    expect(data[0].answer).toBe('getQuizテスト答え');
+    expect(data[0].clear_count).toBe(0);
+    expect(data[0].fail_count).toBe(0);
+    expect(data[0].category).toBe('getQuizテストカテゴリ');
+    expect(data[0].img_file).toBe('getQuizテスト画像');
+    expect(data[0].checked).toBe(0);
+    expect(data[0].deleted).toBe(0);
+});
