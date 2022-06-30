@@ -202,3 +202,36 @@ test('Random Get 1 of 5 Quiz of checked.',async () => {
     expect(data[0].checked).toBe(1); //チェック済
     expect(data[0].deleted).toBe(0);
 });
+
+// ランダム取得で指定カテゴリの問題だけ取ってくるテスト
+test('Random Get 1 of 5 Quiz by category.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // カテゴリ
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ1:カテゴリ2:カテゴリ3",0,1)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ4:カテゴリ5:カテゴリ6",0,2)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ7:カテゴリ8:カテゴリ9",0,3)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ10:カテゴリ11:カテゴリ12",0,4)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ13:カテゴリ14:カテゴリ15",0,5)
+
+    // 問題取得(カテゴリ5のみ)
+    let data = await QuizService.getRandomQuiz(0,0,100,"カテゴリ5",false);
+
+    // 確認
+    expect(data.length).toBe(1);
+    expect(data[0].file_num).toBe(0);
+    expect(data[0].quiz_num).toBe(2);
+    expect(data[0].quiz_sentense).toBe('addQuizテスト問題2');
+    expect(data[0].answer).toBe('addQuizテスト答え2');
+    expect(data[0].clear_count).toBe(0);
+    expect(data[0].fail_count).toBe(0);
+    expect(data[0].category).toBe('カテゴリ4:カテゴリ5:カテゴリ6');
+    expect(data[0].img_file).toBe('addQuizテスト画像2');
+    expect(data[0].checked).toBe(0);
+    expect(data[0].deleted).toBe(0);
+});
