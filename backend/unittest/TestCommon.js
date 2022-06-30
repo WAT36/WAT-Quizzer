@@ -80,10 +80,31 @@ const updateAnswerNumOfQuiz = async (clear,fail,file_num,quiz_num) => {
     }
 };
 
+// 指定問題をチェックするSQL
+const doCheckQuizSQL = `
+    UPDATE
+        quiz
+    SET
+        checked = 1
+    WHERE
+        file_num = ?
+        AND quiz_num = ?
+    ;
+`
+// 指定問題をチェック
+const doCheckQuiz = async (file_num,quiz_num) => {
+    try{
+        let data = await database.execQuery(doCheckQuizSQL,[file_num,quiz_num]);
+        return data
+    }catch(error){
+        throw error;
+    }
+};
 
 module.exports = {
     deleteAllQuizOfFile,
     getAllQuizOfFile,
     getAllQuizOfFileService,
     updateAnswerNumOfQuiz,
+    doCheckQuiz,
 }
