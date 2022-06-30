@@ -101,10 +101,32 @@ const doCheckQuiz = async (file_num,quiz_num) => {
     }
 };
 
+// 指定問題のカテゴリを変更するSQL
+const updateCategoryOfQuizSQL = `
+    UPDATE
+        quiz
+    SET
+        category = ?
+    WHERE
+        file_num = ?
+        AND quiz_num = ?
+    ;
+`
+// 指定問題のカテゴリを変更
+const updateCategoryOfQuiz = async (category,file_num,quiz_num) => {
+    try{
+        let data = await database.execQuery(updateCategoryOfQuizSQL,[category,file_num,quiz_num]);
+        return data
+    }catch(error){
+        throw error;
+    }
+};
+
 module.exports = {
     deleteAllQuizOfFile,
     getAllQuizOfFile,
     getAllQuizOfFileService,
     updateAnswerNumOfQuiz,
     doCheckQuiz,
+    updateCategoryOfQuiz,
 }
