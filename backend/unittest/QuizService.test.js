@@ -173,3 +173,32 @@ test('Random Get 1 of 5 Quiz by accuracy_rate.',async () => {
     expect(data[0].checked).toBe(0);
     expect(data[0].deleted).toBe(0);
 });
+
+// ランダム取得でチェック済だけ取ってくるテスト
+test('Random Get 1 of 5 Quiz of checked.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // チェック済(4番目をチェック)
+    result = await testCommon.doCheckQuiz(0,4);
+
+    // 問題取得(チェック済のみ)
+    let data = await QuizService.getRandomQuiz(0,0,100,null,true);
+
+    // 確認
+    expect(data.length).toBe(1);
+    expect(data[0].file_num).toBe(0);
+    expect(data[0].quiz_num).toBe(4);
+    expect(data[0].quiz_sentense).toBe('addQuizテスト問題4');
+    expect(data[0].answer).toBe('addQuizテスト答え4');
+    expect(data[0].clear_count).toBe(0);
+    expect(data[0].fail_count).toBe(0);
+    expect(data[0].category).toBe('addQuizテストカテゴリ4');
+    expect(data[0].img_file).toBe('addQuizテスト画像4');
+    expect(data[0].checked).toBe(1); //チェック済
+    expect(data[0].deleted).toBe(0);
+});
