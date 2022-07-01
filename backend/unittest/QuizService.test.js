@@ -273,4 +273,43 @@ test('Random Get 1 of 5 Quiz by rate and checked.',async () => {
     expect(data[0].deleted).toBe(0);
 });
 
+// ランダム取得 指定正解率範囲×指定カテゴリ
+test('Random Get 1 of 5 Quiz by rate and category.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // 正解率
+    result = await testCommon.updateAnswerNumOfQuiz(0,10,0,1);//0%
+    result = await testCommon.updateAnswerNumOfQuiz(2,8,0,2);//20%
+    result = await testCommon.updateAnswerNumOfQuiz(4,6,0,3);//40%
+    result = await testCommon.updateAnswerNumOfQuiz(6,4,0,4);//60%
+    result = await testCommon.updateAnswerNumOfQuiz(8,2,0,5);//80%
+
+    // カテゴリ
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ0:カテゴリ1",0,1)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ0:カテゴリ1",0,2)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ1:カテゴリ2",0,3)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ1:カテゴリ2",0,4)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリ2:カテゴリ3",0,5)
+
+    // 問題取得(0~50%,カテゴリ2->3のみ)
+    let data = await QuizService.getRandomQuiz(0,0,50,"カテゴリ2",false);
+
+    // 確認
+    expect(data.length).toBe(1);
+    expect(data[0].file_num).toBe(0);
+    expect(data[0].quiz_num).toBe(3);
+    expect(data[0].quiz_sentense).toBe('addQuizテスト問題3');
+    expect(data[0].answer).toBe('addQuizテスト答え3');
+    expect(data[0].clear_count).toBe(4);
+    expect(data[0].fail_count).toBe(6);
+    expect(data[0].category).toBe('カテゴリ1:カテゴリ2');
+    expect(data[0].img_file).toBe('addQuizテスト画像3');
+    expect(data[0].checked).toBe(0);
+    expect(data[0].deleted).toBe(0);
+});
 
