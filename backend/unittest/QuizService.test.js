@@ -235,3 +235,42 @@ test('Random Get 1 of 5 Quiz by category.',async () => {
     expect(data[0].checked).toBe(0);
     expect(data[0].deleted).toBe(0);
 });
+
+// ランダム取得 指定正解率範囲×チェック済
+test('Random Get 1 of 5 Quiz by rate and checked.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // 正解率
+    result = await testCommon.updateAnswerNumOfQuiz(0,10,0,1);//0%
+    result = await testCommon.updateAnswerNumOfQuiz(2,8,0,2);//20%
+    result = await testCommon.updateAnswerNumOfQuiz(4,6,0,3);//40%
+    result = await testCommon.updateAnswerNumOfQuiz(6,4,0,4);//60%
+    result = await testCommon.updateAnswerNumOfQuiz(8,2,0,5);//80%
+
+    // チェック済(1,4番目をチェック)
+    result = await testCommon.doCheckQuiz(0,1);
+    result = await testCommon.doCheckQuiz(0,4);
+
+    // 問題取得(20~100%,チェック済->4のみ)
+    let data = await QuizService.getRandomQuiz(0,20,100,null,true);
+
+    // 確認
+    expect(data.length).toBe(1);
+    expect(data[0].file_num).toBe(0);
+    expect(data[0].quiz_num).toBe(4);
+    expect(data[0].quiz_sentense).toBe('addQuizテスト問題4');
+    expect(data[0].answer).toBe('addQuizテスト答え4');
+    expect(data[0].clear_count).toBe(6);
+    expect(data[0].fail_count).toBe(4);
+    expect(data[0].category).toBe('addQuizテストカテゴリ4');
+    expect(data[0].img_file).toBe('addQuizテスト画像4');
+    expect(data[0].checked).toBe(1);
+    expect(data[0].deleted).toBe(0);
+});
+
+
