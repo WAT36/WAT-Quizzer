@@ -462,3 +462,42 @@ test('Worst Rate of 5 Quiz and checked.',async () => {
     expect(data[0].checked).toBe(1);
     expect(data[0].deleted).toBe(0);
 });
+
+
+// (指定カテゴリの)最低正解率取得
+test('Worst Rate of 5 Quiz and category.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // 正解率
+    result = await testCommon.updateAnswerNumOfQuiz(200,800,0,1);//20%
+    result = await testCommon.updateAnswerNumOfQuiz(4,6,0,2);//40%
+    result = await testCommon.updateAnswerNumOfQuiz(6,4,0,3);//60%
+    result = await testCommon.updateAnswerNumOfQuiz(8,2,0,4);//80%
+    result = await testCommon.updateAnswerNumOfQuiz(1,0,0,5);//100%
+
+    // カテゴリ
+    result = await testCommon.updateCategoryOfQuiz("カテゴリA:カテゴリB",0,2)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリB:カテゴリC",0,3)
+    result = await testCommon.updateCategoryOfQuiz("カテゴリB:カテゴリC",0,4)
+    
+    // 最低正解率問題取得
+    let data = await QuizService.getWorstRateQuiz(0,'カテゴリB',false);
+
+    // 確認
+    expect(data.length).toBe(1);
+    expect(data[0].file_num).toBe(0);
+    expect(data[0].quiz_num).toBe(2);
+    expect(data[0].quiz_sentense).toBe('addQuizテスト問題2');
+    expect(data[0].answer).toBe('addQuizテスト答え2');
+    expect(data[0].clear_count).toBe(4);
+    expect(data[0].fail_count).toBe(6);
+    expect(data[0].category).toBe('カテゴリA:カテゴリB');
+    expect(data[0].img_file).toBe('addQuizテスト画像2');
+    expect(data[0].checked).toBe(0);
+    expect(data[0].deleted).toBe(0);
+});
