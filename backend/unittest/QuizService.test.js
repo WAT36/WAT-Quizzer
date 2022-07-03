@@ -614,7 +614,7 @@ test('Minimum Clear of 5 Quiz and checked.',async () => {
 });
 
 // 最小正解数取得　指定カテゴリ・チェック込み
-test('Minimum Clear of 5 Quiz and category.',async () => {
+test('Minimum Clear of 5 Quiz and category and checked.',async () => {
 
     // まず全消し
     let result = await testCommon.deleteAllQuizOfFile(0);
