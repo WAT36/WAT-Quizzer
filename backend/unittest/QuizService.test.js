@@ -575,3 +575,40 @@ test('Minimum Clear of 5 Quiz.',async () => {
     expect(data[0].checked).toBe(0);
     expect(data[0].deleted).toBe(0);
 });
+
+// 最小正解数取得　チェック込み
+test('Minimum Clear of 5 Quiz and checked.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // 正解数
+    result = await testCommon.updateAnswerNumOfQuiz(200,800,0,1);//20%
+    result = await testCommon.updateAnswerNumOfQuiz(40,60,0,2);//40%
+    result = await testCommon.updateAnswerNumOfQuiz(30,20,0,3);//60%
+    result = await testCommon.updateAnswerNumOfQuiz(16,4,0,4);//80%
+    result = await testCommon.updateAnswerNumOfQuiz(1,0,0,5);//100%
+
+    // チェック済(4番目をチェック)
+    result = await testCommon.doCheckQuiz(0,3);
+    result = await testCommon.doCheckQuiz(0,4);
+    
+    // 最小正解数問題取得
+    let data = await QuizService.getMinimumClearQuiz(0,null,true);
+
+    // 確認
+    expect(data.length).toBe(1);
+    expect(data[0].file_num).toBe(0);
+    expect(data[0].quiz_num).toBe(4);
+    expect(data[0].quiz_sentense).toBe('addQuizテスト問題4');
+    expect(data[0].answer).toBe('addQuizテスト答え4');
+    expect(data[0].clear_count).toBe(16);
+    expect(data[0].fail_count).toBe(4);
+    expect(data[0].category).toBe('addQuizテストカテゴリ4');
+    expect(data[0].img_file).toBe('addQuizテスト画像4');
+    expect(data[0].checked).toBe(1);
+    expect(data[0].deleted).toBe(0);
+});
