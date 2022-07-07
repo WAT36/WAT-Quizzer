@@ -682,3 +682,32 @@ test('Registering Correct.',async () => {
     expect(data[0].checked).toBe(0);
     expect(data[0].deleted).toBe(0);
 });
+
+// 不正解登録
+test('Registering Incorrect.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // 不正解登録
+    result = await QuizService.incorrectRegister(0,1);
+
+    // 問題取得
+    let data = await testCommon.getAllQuizOfFileService(0);
+
+    // 確認
+    expect(data[0].file_num).toBe(0);
+    expect(data[0].quiz_num).toBe(1);
+    expect(data[0].quiz_sentense).toBe('addQuizテスト問題1');
+    expect(data[0].answer).toBe('addQuizテスト答え1');
+    expect(data[0].clear_count).toBe(0);
+    expect(data[0].fail_count).toBe(1);
+    expect(data[0].category).toBe('addQuizテストカテゴリ1');
+    expect(data[0].img_file).toBe('addQuizテスト画像1');
+    expect(data[0].checked).toBe(0);
+    expect(data[0].deleted).toBe(0);
+});
+
