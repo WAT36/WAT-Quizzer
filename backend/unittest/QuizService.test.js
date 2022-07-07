@@ -742,3 +742,32 @@ test('Add Quiz to deleted quiz.',async () => {
     expect(data[2].checked).toBe(0);
     expect(data[2].deleted).toBe(0);
 });
+
+// 問題編集するテスト
+test('Edit quiz.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // 問題削除(3番目)
+    result = await QuizService.editQuiz(0,3,'編集テスト問題文','編集テスト答え','編集テストカテゴリ','編集テスト画像ファイル')
+
+    // 問題取得
+    let data = await testCommon.getAllQuizOfFileService(0);
+    
+    // 確認
+    expect(data.length).toBe(5);
+    expect(data[2].file_num).toBe(0);
+    expect(data[2].quiz_num).toBe(3);    
+    expect(data[2].quiz_sentense).toBe('編集テスト問題文');
+    expect(data[2].answer).toBe('編集テスト答え');
+    expect(data[2].clear_count).toBe(0);
+    expect(data[2].fail_count).toBe(0);
+    expect(data[2].category).toBe('編集テストカテゴリ');
+    expect(data[2].img_file).toBe('編集テスト画像ファイル');
+    expect(data[2].checked).toBe(0);
+    expect(data[2].deleted).toBe(0);
+});
