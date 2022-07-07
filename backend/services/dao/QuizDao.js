@@ -285,7 +285,7 @@ const addQuiz = async (file_num, input_data) => {
             var new_quiz_id = -1
             // 削除済問題がないかチェック、あればそこに入れる
             let id = await database.execQuery(getDeletedQuizNumSQL,[file_num]);
-            if(id.length > 1){
+            if(id.length > 0){
                 //削除済問題がある場合はそこに入れる
                 new_quiz_id = id[0]['quiz_num'];
                 let result_i = await database.execQuery(editQuizSQL,[question,answer,category,img_file,file_num,new_quiz_id]);
