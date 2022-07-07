@@ -711,3 +711,34 @@ test('Registering Incorrect.',async () => {
     expect(data[0].deleted).toBe(0);
 });
 
+// 削除済問題あるときに問題を追加するテスト
+test('Add Quiz to deleted quiz.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // 問題削除(3番目)
+    result = await QuizService.deleteQuiz(0,3)
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,"削除済突っ込みテスト問題,削除済突っ込みテスト答え,削除済突っ込みテストカテゴリ,削除済突っ込みテスト画像");
+
+    // 問題取得
+    let data = await testCommon.getAllQuizOfFileService(0);
+    
+    // 確認
+    expect(data.length).toBe(5);
+    expect(data[2].file_num).toBe(0);
+    expect(data[2].quiz_num).toBe(3);    
+    expect(data[2].quiz_sentense).toBe('削除済突っ込みテスト問題');
+    expect(data[2].answer).toBe('削除済突っ込みテスト答え');
+    expect(data[2].clear_count).toBe(0);
+    expect(data[2].fail_count).toBe(0);
+    expect(data[2].category).toBe('削除済突っ込みテストカテゴリ');
+    expect(data[2].img_file).toBe('削除済突っ込みテスト画像');
+    expect(data[2].checked).toBe(0);
+    expect(data[2].deleted).toBe(0);
+});
