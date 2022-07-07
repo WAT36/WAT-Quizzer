@@ -771,3 +771,22 @@ test('Edit quiz.',async () => {
     expect(data[2].checked).toBe(0);
     expect(data[2].deleted).toBe(0);
 });
+
+// 全件問題検索するテスト
+test('Search All quiz.',async () => {
+
+    // まず全消し
+    let result = await testCommon.deleteAllQuizOfFile(0);
+
+    // 問題追加
+    result = await QuizService.addQuiz(0,add_fivequizs);
+
+    // 問題削除(3番目)
+    result = await QuizService.searchQuiz(0,0,100,null,"","",undefined)
+
+    // 問題取得
+    let data = await testCommon.getAllQuizOfFileService(0);
+    
+    // 確認
+    expect(data.length).toBe(5);
+});
