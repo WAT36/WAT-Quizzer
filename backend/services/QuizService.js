@@ -1,4 +1,4 @@
-require('Promise');
+require('promise');
 
 const QuizDao = require('./dao/QuizDao');
 

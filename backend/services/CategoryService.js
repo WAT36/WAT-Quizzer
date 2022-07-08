@@ -1,4 +1,4 @@
-require('Promise');
+require('promise');
 
 const CategoryDao = require('./dao/CategoryDao');
 
