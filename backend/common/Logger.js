@@ -7,9 +7,10 @@ const env = dotenv.config({path: path.join(__dirname, "../../config/.env")})
 log4js.configure({
     appenders: {
         backend:{
-            type: "file",
+            type: "dateFile",
             filename: process.env.BACKEND_LOG_FILE,
-            pattern: "-yyyy-MM-dd"
+            pattern: "-yyyy-MM-dd",
+            numBackups: 5
         }
     },
     categories: {
