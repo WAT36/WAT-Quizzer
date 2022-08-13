@@ -2,7 +2,6 @@ var log4js = require('log4js');
 
 const env = dotenv.config({path: path.join(__dirname, "../../config/.env")})
 
-var logger = exports = module.exports = {};
 log4js.configure({
     appenders: {
         backend:{
@@ -14,4 +13,7 @@ log4js.configure({
     }
 });
 
-logger.request = log4js.getLogger('request');
+// バックエンド用ロガー取得
+export const getBackendLogger = () => {
+    return log4js.getLogger('backend');
+}
