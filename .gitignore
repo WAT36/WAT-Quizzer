@@ -9,3 +9,9 @@ backend/aws/s3
 container/README.md
 database/initdb.d/export_data
 database/db
+
+# scripts
+local_ec2_script/
+
+# log
+*.log

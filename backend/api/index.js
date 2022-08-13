@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 
+const logger = require("../common/Logger").getBackendLogger();
+
 const QuizFileService = require("../services/QuizFileService");
 const CategoryService = require("../services/CategoryService");
 const QuizService = require("../services/QuizService");
@@ -14,9 +16,11 @@ router.get("/", function (req, res, next) {
 router.get("/namelist", function (req, res) {
     QuizFileService.getQuizFileList()
         .then((result) => {
+            logger.info('namelist')
             res.status(200).send(result);
         })
         .catch((error) => {
+            logger.error('namelist')
             res.status(500).send(error);
         });
 });
