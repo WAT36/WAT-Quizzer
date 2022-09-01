@@ -1,4 +1,7 @@
 version: 0.2
 
-run-as: ec2-user
+run-as: root
 
+artifacts:
+    files:
+        - '**/*'
