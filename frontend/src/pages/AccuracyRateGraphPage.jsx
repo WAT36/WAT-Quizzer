@@ -55,7 +55,7 @@ export default class AccuracyRateGraphPage extends React.Component{
             return;
         }
 
-        API.post("/get_accuracy_rate_by_category",{
+        API.post("/category/accuracy_rate",{
             "file_num": this.state.file_num
         },(data) => {
             if(data.status === 200){
