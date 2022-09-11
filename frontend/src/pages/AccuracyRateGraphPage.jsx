@@ -189,6 +189,15 @@ export default class AccuracyRateGraphPage extends React.Component{
                     正解率表示
                 </Button>
 
+                <Button 
+                    style={buttonStyle} 
+                    variant="contained" 
+                    color="primary"
+                    //onClick={(e) => this.getAccuracy()}
+                    >
+                    カテゴリ更新
+                </Button>
+
                 {this.displayChart()}
 
             </Container>
