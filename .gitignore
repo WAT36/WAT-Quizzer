@@ -10,6 +10,7 @@ container/README.md
 database/initdb.d/export_data
 database/initdb.d/export_prod
 database/db
+database/drawio/erd.svg
 
 # scripts
 local_ec2_script/
