@@ -8,6 +8,7 @@ backend/aws/s3
 # db
 container/README.md
 database/initdb.d/export_data
+database/initdb.d/export_prod
 database/db
 
 # scripts
@@ -15,3 +16,4 @@ local_ec2_script/
 
 # log
 *.log
+log/
