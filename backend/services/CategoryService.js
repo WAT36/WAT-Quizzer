@@ -15,7 +15,7 @@ const getCategoryList = (file_num) => {
     });
 };
 
-// 問題ファイルのカテゴリリスト取得
+// カテゴリリスト総入れ替え（更新）
 const replaceAllCategory = (file_num) => {
     return new Promise((resolve, reject) =>{
         CategoryDao.replaceAllCategory(file_num)

@@ -60,10 +60,41 @@ export default class AccuracyRateGraphPage extends React.Component{
         },(data) => {
             if(data.status === 200){
                 data = data.body
-                console.log("data:",data);
                 this.setState({
                     accuracy_data: data,
                     message: '　',
+                    messageColor: 'initial',
+                })
+            }else if(data.status === 404){
+                this.setState({
+                    message: 'エラー:条件に合致するデータはありません',
+                    messageColor: 'error',
+                })
+            }else{
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
+        });
+    }
+
+    updateCategory = () => {
+        if(this.state.file_num === -1){
+            this.setState({
+                message: 'エラー:問題ファイルを選択して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
+        API.post("/replace_category",{
+            "file_num": this.state.file_num
+        },(data) => {
+            if(data.status === 200){
+                data = data.body
+                this.setState({
+                    message: '指定問題ファイルへのカテゴリ更新に成功しました',
                     messageColor: 'initial',
                 })
             }else if(data.status === 404){
@@ -193,7 +224,7 @@ export default class AccuracyRateGraphPage extends React.Component{
                     style={buttonStyle} 
                     variant="contained" 
                     color="primary"
-                    //onClick={(e) => this.getAccuracy()}
+                    onClick={(e) => this.updateCategory()}
                     >
                     カテゴリ更新
                 </Button>
