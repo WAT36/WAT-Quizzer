@@ -225,14 +225,14 @@ router.post("/integrate", function (req, res) {
         });
 });
 
-router.post("/replace_category", function (req, res) {
+router.post("/category/renewal", function (req, res) {
     CategoryService.replaceAllCategory(req.body.file_num)
         .then((result) => {
-            logger.debug('/replace_category');
+            logger.debug('/category/renewal');
             res.status(200).send(result);
         })
         .catch((error) => {
-            logger.error('/replace_category');
+            logger.error('/category/renewal');
             res.status(500).send(error);
         });
 });

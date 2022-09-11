@@ -88,7 +88,7 @@ export default class AccuracyRateGraphPage extends React.Component{
             return;
         }
 
-        API.post("/replace_category",{
+        API.post("/category/renewal",{
             "file_num": this.state.file_num
         },(data) => {
             if(data.status === 200){
