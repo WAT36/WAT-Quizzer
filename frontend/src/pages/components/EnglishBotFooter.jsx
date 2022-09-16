@@ -6,7 +6,7 @@ const footerStyle = {
     'bottom': 0,
     'width': '100%',
     'height': '30px',
-    'backgroundColor': '#0077B6',
+    'backgroundColor': 'midnightblue',
     'color': 'white',
     'marginTop': '5px',
 }
