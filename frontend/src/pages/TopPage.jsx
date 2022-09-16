@@ -15,7 +15,7 @@ class TopPage extends React.Component {
                     Quizzer
                 </Button>
                 <br />
-                <Button style={buttonStyle} variant="contained" size="large" disabled>
+                <Button style={buttonStyle} variant="contained" size="large" color="secondary" href="/english/top">
                     English Quiz Bot
                 </Button>
 

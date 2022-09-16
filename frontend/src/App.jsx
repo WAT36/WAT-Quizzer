@@ -11,6 +11,8 @@ import DeleteQuizPage from "./pages/DeleteQuizPage";
 import AccuracyRateGraphPage from "./pages/AccuracyRateGraphPage";
 import ImageUploadPage from "./pages/ImageUploadPage";
 
+import EnglishBotTopPage from "./pages/english_bot/EnglishBotTopPage";
+
 class App extends React.Component {
   render(){
     return (
@@ -31,6 +33,8 @@ class App extends React.Component {
           <Route path="/accuracyrategraph" element={<AccuracyRateGraphPage />} />
 
           <Route path="/imageupload" element={<ImageUploadPage />} />
+
+          <Route path="/english/top" element={<EnglishBotTopPage />} />
 
           <Route path="/" element={
             <TopPage />

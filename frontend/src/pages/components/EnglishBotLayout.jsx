@@ -6,7 +6,7 @@ const adjustedSpaceStyle = {
     'height': '40px',
 }
 
-class EnglishBotLayout extends React.Component{
+export default class EnglishBotLayout extends React.Component{
 
     render(){
         return (
@@ -29,5 +29,3 @@ class EnglishBotLayout extends React.Component{
         )
     }
 }
-
-export default EnglishBotLayout;
