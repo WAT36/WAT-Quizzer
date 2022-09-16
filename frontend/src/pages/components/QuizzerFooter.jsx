@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Button } from '@material-ui/core';
 
 const footerStyle = {
     'position': 'fixed',
@@ -28,14 +28,14 @@ export default class QuizzerFooter extends React.Component{
         return (
             <footer style={footerStyle}>
                 <span className="left" style={leftStyle}>
-                    <Link to="/top">トップ</Link>
-                    <Link to="/selectquiz">問題出題</Link>
-                    <Link to="/addquiz">問題追加</Link>
-                    <Link to="/editquiz">問題編集</Link>
-                    <Link to="/searchquiz">問題検索</Link>
-                    <Link to="/deletequiz">問題削除</Link>
-                    <Link to="/accuracyrategraph">カテゴリ別正解率表示</Link>
-                    <Link to="/imageupload">画像アップロード</Link>
+                    <Button size="small" color="inherit" href="/top">トップ</Button>
+                    <Button size="small" color="inherit" href="/selectquiz">問題出題</Button>
+                    <Button size="small" color="inherit" href="/addquiz">問題追加</Button>
+                    <Button size="small" color="inherit" href="/editquiz">問題編集</Button>
+                    <Button size="small" color="inherit" href="/searchquiz">問題検索</Button>
+                    <Button size="small" color="inherit" href="/deletequiz">問題削除</Button>
+                    <Button size="small" color="inherit" href="/accuracyrategraph">カテゴリ別正解率表示</Button>
+                    <Button size="small" color="inherit" href="/imageupload">画像アップロード</Button>
                 </span>
                 <span className="right" style={rightStyle}>
                 ©️ Tatsuroh Wakasugi
