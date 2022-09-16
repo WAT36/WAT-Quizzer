@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Button } from '@material-ui/core';
 
 const footerStyle = {
     'position': 'fixed',
@@ -28,7 +28,7 @@ export default class EnglishBotFooter extends React.Component{
         return (
             <footer style={footerStyle}>
                 <span className="left" style={leftStyle}>
-                    <Link to="/top">トップ</Link>
+                    <Button size="small" color="inherit" href="/top">トップ</Button>
                     {/* <Link to="/selectquiz">問題出題</Link>
                     <Link to="/addquiz">問題追加</Link>
                     <Link to="/editquiz">問題編集</Link>
