@@ -1,8 +1,9 @@
 import React from "react";
-import { Button } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import Drawer from "@material-ui/core/Drawer";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const headerStyle = {
     'position': 'fixed',
@@ -58,7 +59,9 @@ export default class EnglishBotHeader extends React.Component {
                         WAT Quizzer (EnglishBot)
                     </span>
                     <span className="right" style={rightStyle}>
-                        <Button onClick={this.toggleDrawer(true)} >{"TEST"}</Button>
+                        <IconButton onClick={this.toggleDrawer(true)} size='small' >
+                            <MenuIcon style={{ color: "white" }} />
+                        </IconButton>
                     </span>
                 </header>
                 <Drawer
