@@ -2,10 +2,7 @@ import React from "react";
 import { Button } from '@material-ui/core';
 import Drawer from "@material-ui/core/Drawer";
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 
 const headerStyle = {
     'position': 'fixed',
@@ -13,7 +10,7 @@ const headerStyle = {
     'width': '100%',
     'height': '30px',
     'backgroundColor': 'midnightblue',
-    'z-index': '10000',
+    'zIndex': '10000',
 }
 
 const titleStyle = {
@@ -29,7 +26,7 @@ const rightStyle = {
 }
 
 const drawerStyle = {
-    'z-index': '10001',
+    'zIndex': '10001',
 }
 
 export default class EnglishBotHeader extends React.Component {
@@ -53,19 +50,6 @@ export default class EnglishBotHeader extends React.Component {
                 this.setState({ open: open });
             };
 
-    sideBar = () => {
-        return (
-            <Drawer
-                anchor='right'
-                open={this.state.open}
-                onClose={this.toggleDrawer(false)}
-            >
-                {"aaa"}
-                {/* {list(anchor)} */}
-            </Drawer>
-        );
-    }
-
     render() {
         return (
             <>
@@ -74,7 +58,6 @@ export default class EnglishBotHeader extends React.Component {
                         WAT Quizzer (EnglishBot)
                     </span>
                     <span className="right" style={rightStyle}>
-                        {/* <Button onClick={this.toggleDrawer(true)} >{"TEST"}</Button> */}
                         <Button onClick={this.toggleDrawer(true)} >{"TEST"}</Button>
                     </span>
                 </header>
@@ -91,7 +74,6 @@ export default class EnglishBotHeader extends React.Component {
                             </ListItem>
                         ))}
                     </List>
-                    {/* {list(anchor)} */}
                 </Drawer>
             </>
         )
