@@ -3,12 +3,12 @@ import React from "react";
 import EnglishBotLayout from "./components/EnglishBotLayout";
 
 
-class EnglishBotTopPage extends React.Component{
+class EnglishBotTopPage extends React.Component {
     render() {
         return (
             <>
-                <EnglishBotLayout 
-                    contents={"準備中・・・"}
+                <EnglishBotLayout
+                    contents={"準備中・・・\nここはダッシュボードか何かにする"}
                 />
             </>
         )
