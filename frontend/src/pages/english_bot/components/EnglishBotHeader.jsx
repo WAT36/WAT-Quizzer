@@ -4,6 +4,7 @@ import Drawer from "@material-ui/core/Drawer";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Link } from "react-router-dom";
 
 const headerStyle = {
     'position': 'fixed',
@@ -29,6 +30,11 @@ const rightStyle = {
 const drawerStyle = {
     'zIndex': '10001',
 }
+
+const sideBarContents = [
+    { name: 'Top', link: '/english/top' },
+    { name: 'Add Words', link: '/english/add' },
+]
 
 export default class EnglishBotHeader extends React.Component {
     constructor(props) {
@@ -71,9 +77,9 @@ export default class EnglishBotHeader extends React.Component {
                     onClose={this.toggleDrawer(false)}
                 >
                     <List>
-                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                                {text}
+                        {sideBarContents.map((value, index) => (
+                            <ListItem key={value.name} disablePadding>
+                                <Link to={value.link}>{value.name}</Link>
                             </ListItem>
                         ))}
                     </List>
