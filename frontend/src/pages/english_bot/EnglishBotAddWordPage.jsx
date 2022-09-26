@@ -4,11 +4,18 @@ import EnglishBotLayout from "./components/EnglishBotLayout";
 
 
 class EnglishBotAddWordPage extends React.Component {
+
+    contents = () => {
+        return (
+            <p>単語追加ページ</p>
+        )
+    }
+
     render() {
         return (
             <>
                 <EnglishBotLayout
-                    contents={"単語追加ページ"}
+                    contents={this.contents()}
                 />
             </>
         )
