@@ -57,6 +57,25 @@ export default class EnglishBotHeader extends React.Component {
                 this.setState({ open: open });
             };
 
+    sideBar = () => {
+        return (
+            <Drawer
+                style={drawerStyle}
+                anchor='right'
+                open={this.state.open}
+                onClose={this.toggleDrawer(false)}
+            >
+                <List>
+                    {sideBarContents.map((value, index) => (
+                        <ListItem key={value.name} disablePadding>
+                            <Link to={value.link}>{value.name}</Link>
+                        </ListItem>
+                    ))}
+                </List>
+            </Drawer>
+        )
+    }
+
     render() {
         return (
             <>
@@ -70,20 +89,7 @@ export default class EnglishBotHeader extends React.Component {
                         </IconButton>
                     </span>
                 </header>
-                <Drawer
-                    style={drawerStyle}
-                    anchor='right'
-                    open={this.state.open}
-                    onClose={this.toggleDrawer(false)}
-                >
-                    <List>
-                        {sideBarContents.map((value, index) => (
-                            <ListItem key={value.name} disablePadding>
-                                <Link to={value.link}>{value.name}</Link>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Drawer>
+                {this.sideBar()}
             </>
         )
     }
