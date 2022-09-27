@@ -1,15 +1,45 @@
 import React from "react";
-import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Select, FormGroup, Typography, TextField } from "@material-ui/core"
+import Container from '@mui/material/Container';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import FormGroup from '@mui/material/FormGroup';
+import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
 import EnglishBotLayout from "./components/EnglishBotLayout";
 
+const messageBoxStyle = {
+    'margin': '10px 0px 20px',
+    'borderStyle': 'none'
+}
 
 class EnglishBotAddWordPage extends React.Component {
+    componentDidMount() {
+        this.setState({
+            message: '',
+            messageColor: 'error',
+        })
+    }
 
     contents = () => {
         return (
             <Container>
                 <h1>Add Word</h1>
 
+                <Card variant="outlined" style={messageBoxStyle}>
+                    <CardContent>
+                        <Typography variant="h6" component="h6">
+                            {/* color={this.state.messageColor} */}
+                            {/* {this.state.message} */}
+                        </Typography>
+                    </CardContent>
+                </Card>
+
+                <FormGroup>
+                    <FormControl>
+                        <TextField fullWidth label="New Word" id="newWord" />
+                    </FormControl>
+                </FormGroup>
             </Container>
         )
     }
