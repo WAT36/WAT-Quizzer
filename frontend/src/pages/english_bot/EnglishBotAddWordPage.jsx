@@ -12,6 +12,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
+import TableHead from '@mui/material/TableHead';
 
 const messageBoxStyle = {
     'margin': '10px 0px 20px',
@@ -47,6 +48,12 @@ class EnglishBotAddWordPage extends React.Component {
 
                     <TableContainer>
                         <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>{"品詞"}</TableCell>
+                                    <TableCell>{"意味"}</TableCell>
+                                </TableRow>
+                            </TableHead>
                             <TableBody>
                                 <TableRow>
                                     <TableCell>{"品詞"}</TableCell>
