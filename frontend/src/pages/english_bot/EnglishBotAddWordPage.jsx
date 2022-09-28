@@ -7,6 +7,11 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import EnglishBotLayout from "./components/EnglishBotLayout";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
 
 const messageBoxStyle = {
     'margin': '10px 0px 20px',
@@ -39,6 +44,17 @@ class EnglishBotAddWordPage extends React.Component {
                     <FormControl>
                         <TextField fullWidth label="New Word" id="newWord" />
                     </FormControl>
+
+                    <TableContainer>
+                        <Table>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>{"品詞"}</TableCell>
+                                    <TableCell>{"意味"}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </FormGroup>
             </Container>
         )
