@@ -5,9 +5,9 @@ const getPartsofSpeechListSQL = `
     SELECT
         *
     FROM
-        quiz
-    ORDER BY
         partsofspeech
+    ORDER BY
+        id
     ;
 `;
 
