@@ -87,7 +87,7 @@ class EnglishBotAddWordPage extends React.Component {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>{"品詞"}</TableCell>
+                                    <TableCell sx={{ width: 200 }}>{"品詞"}</TableCell>
                                     <TableCell>{"意味"}</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -100,6 +100,7 @@ class EnglishBotAddWordPage extends React.Component {
                                             id="demo-simple-select"
                                             defaultValue={-1}
                                             label="partOfSpeech"
+                                            sx={{ width: 1 }}
                                         //onChange={handleChange}
                                         >
                                             <MenuItem value={-1} key={-1}>選択なし</MenuItem>
@@ -107,7 +108,7 @@ class EnglishBotAddWordPage extends React.Component {
                                         </Select>
                                     </TableCell>
                                     <TableCell>
-                                        <TextField id="input-mean-01" label="意味" variant="outlined" />
+                                        <TextField id="input-mean-01" label="意味" variant="outlined" sx={{ width: 1 }} />
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
