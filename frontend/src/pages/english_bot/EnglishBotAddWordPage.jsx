@@ -98,8 +98,8 @@ class EnglishBotAddWordPage extends React.Component {
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
-                                            //value={age}
-                                            label="Age"
+                                            defaultValue={-1}
+                                            label="partOfSpeech"
                                         //onChange={handleChange}
                                         >
                                             <MenuItem value={-1} key={-1}>選択なし</MenuItem>
