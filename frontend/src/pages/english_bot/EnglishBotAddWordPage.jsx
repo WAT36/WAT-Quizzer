@@ -17,16 +17,50 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
+import API from "../../common/API";
+
 const messageBoxStyle = {
     'margin': '10px 0px 20px',
     'borderStyle': 'none'
 }
 
 class EnglishBotAddWordPage extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.getPartOfSpeechList = this.getPartOfSpeechList.bind(this)
+        this.state = {
+            message: '　',
+            messageColor: 'initial',
+        }
+    }
+
     componentDidMount() {
         this.setState({
             message: '',
-            messageColor: 'error',
+            messageColor: 'initial',
+            posListOption: []
+        })
+        this.getPartOfSpeechList();
+    }
+
+    getPartOfSpeechList = () => {
+        API.get("/english/partsofspeech", (data) => {
+            if (data.status === 200) {
+                data = data.body
+                let posList = []
+                for (var i = 0; i < data.length; i++) {
+                    posList.push(<MenuItem value={data[i].id} key={data[i].id}>{data[i].name}</MenuItem>)
+                }
+                this.setState({
+                    posListOption: posList,
+                })
+            } else {
+                this.setState({
+                    message: 'エラー:外部APIとの連携に失敗しました',
+                    messageColor: 'error',
+                })
+            }
         })
     }
 
@@ -68,9 +102,8 @@ class EnglishBotAddWordPage extends React.Component {
                                             label="Age"
                                         //onChange={handleChange}
                                         >
-                                            <MenuItem value={10}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
+                                            <MenuItem value={-1} key={-1}>選択なし</MenuItem>
+                                            {this.state.posListOption}
                                         </Select>
                                     </TableCell>
                                     <TableCell>
