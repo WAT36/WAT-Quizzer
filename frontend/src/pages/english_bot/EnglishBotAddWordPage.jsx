@@ -16,6 +16,8 @@ import TableHead from '@mui/material/TableHead';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import IconButton from '@mui/material/IconButton';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 import API from "../../common/API";
 
@@ -114,6 +116,9 @@ class EnglishBotAddWordPage extends React.Component {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <IconButton aria-label="delete" sx={{ margin: 'auto' }}>
+                        <AddCircleOutlineIcon />
+                    </IconButton>
                 </FormGroup>
             </Container>
         )
