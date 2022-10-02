@@ -50,7 +50,6 @@ class EnglishBotAddWordPage extends React.Component {
 
     componentDidMount() {
         this.getPartOfSpeechList();
-        this.setTableRow();
     }
 
     getPartOfSpeechList = () => {
@@ -115,7 +114,6 @@ class EnglishBotAddWordPage extends React.Component {
     }
 
     contents = () => {
-        console.log("now inputMeans:", this.inputMeans)
         return (
             <Container>
                 <h1>Add Word</h1>
