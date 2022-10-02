@@ -38,6 +38,7 @@ class EnglishBotAddWordPage extends React.Component {
         this.getTableRow = this.getTableRow.bind(this)
         this.setTableRow = this.setTableRow.bind(this)
         this.addRow = this.addRow.bind(this)
+        this.displayRow = this.displayRow.bind(this)
 
         this.state = {
             message: '　',
@@ -105,7 +106,11 @@ class EnglishBotAddWordPage extends React.Component {
     }
 
     addRow = () => {
-        console.log("addRow")
+        this.setTableRow()
+    }
+
+    displayRow = () => {
+        return this.tableRows.map((value) => { return value })
     }
 
     contents = () => {
@@ -136,7 +141,7 @@ class EnglishBotAddWordPage extends React.Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {this.getTableRow()}
+                                {this.displayRow()}
                             </TableBody>
                         </Table>
                     </TableContainer>
