@@ -28,21 +28,23 @@ const messageBoxStyle = {
 
 class EnglishBotAddWordPage extends React.Component {
 
+    posListOption = [];
+    tableRows = [];
+    inputMeans = [[-1, ""]];
+
     constructor(props) {
         super(props);
         this.getPartOfSpeechList = this.getPartOfSpeechList.bind(this)
+        this.getTableRow = this.getTableRow.bind(this)
+
         this.state = {
             message: '　',
             messageColor: 'initial',
+            posList: this.posListOption,
         }
     }
 
     componentDidMount() {
-        this.setState({
-            message: '',
-            messageColor: 'initial',
-            posListOption: []
-        })
         this.getPartOfSpeechList();
     }
 
@@ -54,8 +56,9 @@ class EnglishBotAddWordPage extends React.Component {
                 for (var i = 0; i < data.length; i++) {
                     posList.push(<MenuItem value={data[i].id} key={data[i].id}>{data[i].name}</MenuItem>)
                 }
+                this.posListOption = posList
                 this.setState({
-                    posListOption: posList,
+                    posList: this.posListOption
                 })
             } else {
                 this.setState({
@@ -66,6 +69,30 @@ class EnglishBotAddWordPage extends React.Component {
         })
     }
 
+    getTableRow = () => {
+        return (
+            <TableRow>
+                <TableCell>
+                    <InputLabel id="demo-simple-select-label"></InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        defaultValue={-1}
+                        label="partOfSpeech"
+                        sx={{ width: 1 }}
+                    //onChange={handleChange}
+                    >
+                        <MenuItem value={-1} key={-1}>選択なし</MenuItem>
+                        {this.state.posList}
+                    </Select>
+                </TableCell>
+                <TableCell>
+                    <TextField id="input-mean-01" label="意味" variant="outlined" sx={{ width: 1 }} />
+                </TableCell>
+            </TableRow>
+        )
+    }
+
     contents = () => {
         return (
             <Container>
@@ -74,8 +101,8 @@ class EnglishBotAddWordPage extends React.Component {
                 <Card variant="outlined" style={messageBoxStyle}>
                     <CardContent>
                         <Typography variant="h6" component="h6">
-                            {/* color={this.state.messageColor} */}
-                            {/* {this.state.message} */}
+                            color={this.state.messageColor}
+                            {this.state.message}
                         </Typography>
                     </CardContent>
                 </Card>
@@ -94,25 +121,7 @@ class EnglishBotAddWordPage extends React.Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                <TableRow>
-                                    <TableCell>
-                                        <InputLabel id="demo-simple-select-label"></InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            defaultValue={-1}
-                                            label="partOfSpeech"
-                                            sx={{ width: 1 }}
-                                        //onChange={handleChange}
-                                        >
-                                            <MenuItem value={-1} key={-1}>選択なし</MenuItem>
-                                            {this.state.posListOption}
-                                        </Select>
-                                    </TableCell>
-                                    <TableCell>
-                                        <TextField id="input-mean-01" label="意味" variant="outlined" sx={{ width: 1 }} />
-                                    </TableCell>
-                                </TableRow>
+                                {this.getTableRow()}
                             </TableBody>
                         </Table>
                     </TableContainer>
