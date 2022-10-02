@@ -36,16 +36,19 @@ class EnglishBotAddWordPage extends React.Component {
         super(props);
         this.getPartOfSpeechList = this.getPartOfSpeechList.bind(this)
         this.getTableRow = this.getTableRow.bind(this)
+        this.setTableRow = this.setTableRow.bind(this)
 
         this.state = {
             message: '　',
             messageColor: 'initial',
             posList: this.posListOption,
+            rowList: this.tableRows,
         }
     }
 
     componentDidMount() {
         this.getPartOfSpeechList();
+        this.setTableRow();
     }
 
     getPartOfSpeechList = () => {
@@ -66,6 +69,13 @@ class EnglishBotAddWordPage extends React.Component {
                     messageColor: 'error',
                 })
             }
+        })
+    }
+
+    setTableRow = () => {
+        this.tableRows.push(this.getTableRow())
+        this.setState({
+            rowList: this.tableRows
         })
     }
 
@@ -100,8 +110,8 @@ class EnglishBotAddWordPage extends React.Component {
 
                 <Card variant="outlined" style={messageBoxStyle}>
                     <CardContent>
-                        <Typography variant="h6" component="h6">
-                            color={this.state.messageColor}
+                        <Typography variant="h6" component="h6"
+                            color={this.state.messageColor}>
                             {this.state.message}
                         </Typography>
                     </CardContent>
