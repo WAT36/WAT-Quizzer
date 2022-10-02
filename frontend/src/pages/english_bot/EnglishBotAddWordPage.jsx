@@ -30,7 +30,7 @@ class EnglishBotAddWordPage extends React.Component {
 
     posListOption = [];
     tableRows = [];
-    inputMeans = [[-1, ""]];
+    inputMeans = [];
 
     constructor(props) {
         super(props);
@@ -76,6 +76,7 @@ class EnglishBotAddWordPage extends React.Component {
 
     setTableRow = () => {
         this.tableRows.push(this.getTableRow())
+        this.inputMeans.push([-1, ""])
         this.setState({
             rowList: this.tableRows
         })
@@ -114,6 +115,7 @@ class EnglishBotAddWordPage extends React.Component {
     }
 
     contents = () => {
+        console.log("now inputMeans:", this.inputMeans)
         return (
             <Container>
                 <h1>Add Word</h1>
