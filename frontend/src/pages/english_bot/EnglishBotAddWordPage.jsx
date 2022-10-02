@@ -37,6 +37,7 @@ class EnglishBotAddWordPage extends React.Component {
         this.getPartOfSpeechList = this.getPartOfSpeechList.bind(this)
         this.getTableRow = this.getTableRow.bind(this)
         this.setTableRow = this.setTableRow.bind(this)
+        this.addRow = this.addRow.bind(this)
 
         this.state = {
             message: '　',
@@ -103,6 +104,10 @@ class EnglishBotAddWordPage extends React.Component {
         )
     }
 
+    addRow = () => {
+        console.log("addRow")
+    }
+
     contents = () => {
         return (
             <Container>
@@ -135,7 +140,7 @@ class EnglishBotAddWordPage extends React.Component {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <IconButton aria-label="delete" sx={{ margin: 'auto' }}>
+                    <IconButton aria-label="delete" sx={{ margin: 'auto' }} onClick={this.addRow}>
                         <AddCircleOutlineIcon />
                     </IconButton>
                 </FormGroup>
