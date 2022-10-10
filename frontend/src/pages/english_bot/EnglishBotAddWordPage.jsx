@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import IconButton from '@mui/material/IconButton';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Button from '@mui/material/Button'
 
 import API from "../../common/API";
 
@@ -162,6 +163,8 @@ class EnglishBotAddWordPage extends React.Component {
                         <AddCircleOutlineIcon />
                     </IconButton>
                 </FormGroup>
+
+                <Button variant="contained">登録</Button>
             </Container>
         )
     }
