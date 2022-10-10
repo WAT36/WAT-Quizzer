@@ -39,6 +39,7 @@ class EnglishBotAddWordPage extends React.Component {
         this.setTableRow = this.setTableRow.bind(this)
         this.addRow = this.addRow.bind(this)
         this.displayRow = this.displayRow.bind(this)
+        this.changeSelect = this.changeSelect.bind(this)
 
         this.state = {
             message: '　',
@@ -74,14 +75,14 @@ class EnglishBotAddWordPage extends React.Component {
     }
 
     setTableRow = () => {
-        this.tableRows.push(this.getTableRow())
+        this.tableRows.push(this.getTableRow(this.tableRows.length))
         this.inputMeans.push([-1, ""])
         this.setState({
             rowList: this.tableRows
         })
     }
 
-    getTableRow = () => {
+    getTableRow = (i) => {
         return (
             <TableRow>
                 <TableCell>
@@ -91,15 +92,16 @@ class EnglishBotAddWordPage extends React.Component {
                         id="demo-simple-select"
                         defaultValue={-1}
                         label="partOfSpeech"
+                        key={i}
                         sx={{ width: 1 }}
-                    //onChange={handleChange}
+                        onChange={(e) => { this.changeSelect(e, i, false) }}
                     >
                         <MenuItem value={-1} key={-1}>選択なし</MenuItem>
                         {this.state.posList}
                     </Select>
                 </TableCell>
                 <TableCell>
-                    <TextField id="input-mean-01" label="意味" variant="outlined" sx={{ width: 1 }} />
+                    <TextField id="input-mean-01" label="意味" variant="outlined" key={i} sx={{ width: 1 }} onChange={(e) => { this.changeSelect(e, i, true) }} />
                 </TableCell>
             </TableRow>
         )
@@ -111,6 +113,17 @@ class EnglishBotAddWordPage extends React.Component {
 
     displayRow = () => {
         return this.tableRows.map((value) => { return value })
+    }
+
+    changeSelect = (e, i, isMean) => {
+        if (i + 1 <= this.inputMeans.length) {
+            this.inputMeans[i] = isMean ? [this.inputMeans[i][0], e.target.value] : [e.target.value, this.inputMeans[i][1]]
+        } else {
+            while (i >= this.inputMeans.length) {
+                this.inputMeans.push([])
+            }
+            this.inputMeans[i] = [i, ""]
+        }
     }
 
     contents = () => {
