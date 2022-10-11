@@ -57,6 +57,13 @@ class EnglishBotAddWordPage extends React.Component {
         this.getPartOfSpeechList();
     }
 
+    messeageClear() {
+        this.setState({
+            message: '　',
+            messageColor: 'initial',
+        })
+    }
+
     getPartOfSpeechList = () => {
         API.get("/english/partsofspeech", (data) => {
             if (data.status === 200) {
@@ -112,6 +119,7 @@ class EnglishBotAddWordPage extends React.Component {
     }
 
     addRow = () => {
+        this.messeageClear()
         this.setTableRow()
     }
 
@@ -131,6 +139,7 @@ class EnglishBotAddWordPage extends React.Component {
     }
 
     inputWordName = (e) => {
+        this.messeageClear()
         this.inputWord = e.target.value
     }
 
@@ -138,6 +147,13 @@ class EnglishBotAddWordPage extends React.Component {
         console.log("addWord")
 
         console.log(this.inputWord)
+
+        if (this.inputWord === "") {
+            this.setState({
+                message: 'エラー:単語が入力されておりません',
+                messageColor: 'error',
+            })
+        }
     }
 
     contents = () => {
