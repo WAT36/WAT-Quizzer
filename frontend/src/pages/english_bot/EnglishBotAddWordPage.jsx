@@ -32,6 +32,7 @@ class EnglishBotAddWordPage extends React.Component {
     posListOption = [];
     tableRows = [];
     inputMeans = [];
+    inputWord = "";
 
     constructor(props) {
         super(props);
@@ -41,6 +42,7 @@ class EnglishBotAddWordPage extends React.Component {
         this.addRow = this.addRow.bind(this)
         this.displayRow = this.displayRow.bind(this)
         this.changeSelect = this.changeSelect.bind(this)
+        this.inputWordName = this.inputWordName.bind(this)
         this.addWord = this.addWord.bind(this)
 
         this.state = {
@@ -128,8 +130,14 @@ class EnglishBotAddWordPage extends React.Component {
         }
     }
 
+    inputWordName = (e) => {
+        this.inputWord = e.target.value
+    }
+
     addWord = () => {
         console.log("addWord")
+
+        console.log(this.inputWord)
     }
 
     contents = () => {
@@ -149,7 +157,7 @@ class EnglishBotAddWordPage extends React.Component {
                 <Button variant="contained" onClick={this.addWord}>登録</Button>
                 <FormGroup>
                     <FormControl>
-                        <TextField fullWidth label="New Word" id="newWord" />
+                        <TextField fullWidth label="New Word" id="newWord" onChange={(e) => this.inputWordName(e)} />
                     </FormControl>
 
                     <TableContainer>
