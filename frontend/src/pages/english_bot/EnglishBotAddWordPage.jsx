@@ -41,6 +41,7 @@ class EnglishBotAddWordPage extends React.Component {
         this.addRow = this.addRow.bind(this)
         this.displayRow = this.displayRow.bind(this)
         this.changeSelect = this.changeSelect.bind(this)
+        this.addWord = this.addWord.bind(this)
 
         this.state = {
             message: '　',
@@ -127,6 +128,10 @@ class EnglishBotAddWordPage extends React.Component {
         }
     }
 
+    addWord = () => {
+        console.log("addWord")
+    }
+
     contents = () => {
         return (
             <Container>
@@ -141,7 +146,7 @@ class EnglishBotAddWordPage extends React.Component {
                     </CardContent>
                 </Card>
 
-                <Button variant="contained">登録</Button>
+                <Button variant="contained" onClick={this.addWord}>登録</Button>
                 <FormGroup>
                     <FormControl>
                         <TextField fullWidth label="New Word" id="newWord" />
