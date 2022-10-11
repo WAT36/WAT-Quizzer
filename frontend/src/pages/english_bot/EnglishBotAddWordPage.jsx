@@ -141,6 +141,7 @@ class EnglishBotAddWordPage extends React.Component {
                     </CardContent>
                 </Card>
 
+                <Button variant="contained">登録</Button>
                 <FormGroup>
                     <FormControl>
                         <TextField fullWidth label="New Word" id="newWord" />
@@ -163,8 +164,6 @@ class EnglishBotAddWordPage extends React.Component {
                         <AddCircleOutlineIcon />
                     </IconButton>
                 </FormGroup>
-
-                <Button variant="contained">登録</Button>
             </Container>
         )
     }
