@@ -9,6 +9,7 @@ const QuizService = require("../services/QuizService");
 const S3Service = require("../aws/S3Service");
 
 const PartsofSpeechService = require("../services/english/PartsofSpeechService");
+const WordService = require("../services/english/WordService");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -263,6 +264,10 @@ router.post("/upload", (req, res) => {
     });
 });
 
+/////////////////
+//
+/////////////////
+
 router.get("/english/partsofspeech", function (req, res) {
   PartsofSpeechService.getPartsofSpeech()
     .then((result) => {
@@ -271,6 +276,18 @@ router.get("/english/partsofspeech", function (req, res) {
     })
     .catch((error) => {
       logger.error("/english/partsofspeech");
+      res.status(500).send(error);
+    });
+});
+
+router.post("/english/word/add", function (req, res) {
+  WordService.addWordAndMean(req.body.wordName, req.body.pronounce)
+    .then((result) => {
+      logger.debug("/english/word/add");
+      res.status(200).send(result);
+    })
+    .catch((error) => {
+      logger.error("/english/word/add");
       res.status(500).send(error);
     });
 });
