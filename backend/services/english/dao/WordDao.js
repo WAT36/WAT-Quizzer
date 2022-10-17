@@ -16,14 +16,21 @@ const addMeanSQL = `
 `;
 
 // 単語と意味追加
-const addWordAndMean = async (wordName, pronounce) => {
+const addWordAndMean = async (wordName, pronounce, meanArrayData) => {
   try {
     let wordData = await database.execQueryForEnglish(addWordSQL, [
       wordName,
       pronounce,
     ]);
-    console.log(wordData);
-    console.log(wordData.insertId);
+
+    for (let i = 0; i < meanArrayData.length; i++) {
+      await database.execQueryForEnglish(addMeanSQL, [
+        wordData.insertId,
+        i + 1,
+        meanArrayData[i].partOfSpeechId,
+        meanArrayData[i].meaning,
+      ]);
+    }
     return { wordData };
   } catch (error) {
     throw error;

@@ -280,8 +280,19 @@ router.get("/english/partsofspeech", function (req, res) {
     });
 });
 
+// meanArrayData: [
+//  {
+//    partOfSpeechId: 品詞ID(number)
+//    meaning: 意味(string)
+//  }
+//  ・・・
+// ]
 router.post("/english/word/add", function (req, res) {
-  WordService.addWordAndMean(req.body.wordName, req.body.pronounce)
+  WordService.addWordAndMean(
+    req.body.wordName,
+    req.body.pronounce,
+    req.body.meanArrayData
+  )
     .then((result) => {
       logger.debug("/english/word/add");
       res.status(200).send(result);
