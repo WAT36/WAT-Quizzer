@@ -1,18 +1,22 @@
 import React from "react";
 import EnglishBotHeader from "./EnglishBotHeader";
 import EnglishBotFooter from "./EnglishBotFooter";
+import EnglishBotSideBar from "./EnglishBotSideBar";
 
 const adjustedSpaceStyle = {
     'height': '40px',
 }
 
-export default class EnglishBotLayout extends React.Component{
+export default class EnglishBotLayout extends React.Component {
 
-    render(){
+    render() {
         return (
             <>
                 {/*ヘッダ*/}
                 <EnglishBotHeader />
+
+                {/*サイドバー*/}
+                <EnglishBotSideBar />
 
                 {/*ヘッダとコンテンツ間の調整余白 */}
                 <div style={adjustedSpaceStyle}></div>
