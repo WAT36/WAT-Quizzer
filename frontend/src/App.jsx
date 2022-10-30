@@ -13,6 +13,7 @@ import ImageUploadPage from "./pages/ImageUploadPage";
 
 import EnglishBotTopPage from "./pages/english_bot/EnglishBotTopPage";
 import EnglishBotAddWordPage from "./pages/english_bot/EnglishBotAddWordPage";
+import EnglishBotDictionaryPage from "./pages/english_bot/EnglishBotDictinoaryPage";
 
 class App extends React.Component {
   render() {
@@ -38,6 +39,8 @@ class App extends React.Component {
           <Route path="/english/top" element={<EnglishBotTopPage />} />
 
           <Route path="/english/add" element={<EnglishBotAddWordPage />} />
+
+          <Route path="/english/dictionary" element={<EnglishBotDictionaryPage />} />
 
           <Route path="/" element={
             <TopPage />

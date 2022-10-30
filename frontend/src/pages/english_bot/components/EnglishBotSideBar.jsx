@@ -1,4 +1,5 @@
 import React from "react";
+import { atom, useRecoilState } from 'recoil';
 import Drawer from "@material-ui/core/Drawer";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,17 +12,21 @@ const drawerStyle = {
 const sideBarContents = [
     { name: 'Top', link: '/english/top' },
     { name: 'Add Words', link: '/english/add' },
+    { name: 'Dictionary', link: '/english/dictionary' },
 ]
 
-export default class EnglishBotSideBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: props.open || false,
-        }
-    }
+export const isOpenState = atom({
+    key: 'isOpen',
+    default:
+    {
+        open: false
+    },
+});
 
-    toggleDrawer =
+export default function EnglishBotSideBar() {
+    const [sidebarState, setSidebarState] = useRecoilState(isOpenState);
+
+    const toggleDrawer =
         (open) =>
             (event) => {
                 if (
@@ -31,25 +36,23 @@ export default class EnglishBotSideBar extends React.Component {
                     return;
                 }
 
-                this.setState({ open: open });
+                setSidebarState({ open: false });
             };
 
-    render() {
-        return (
-            <Drawer
-                style={drawerStyle}
-                anchor='right'
-                open={this.state.open}
-                onClose={this.toggleDrawer(false)}
-            >
-                <List>
-                    {sideBarContents.map((value) => (
-                        <ListItem key={value.name} disablePadding>
-                            <Link to={value.link}>{value.name}</Link>
-                        </ListItem>
-                    ))}
-                </List>
-            </Drawer>
-        )
-    }
+    return (
+        <Drawer
+            style={drawerStyle}
+            anchor='right'
+            open={sidebarState.open}
+            onClose={toggleDrawer(false)}
+        >
+            <List>
+                {sideBarContents.map((value) => (
+                    <ListItem key={value.name} disablePadding>
+                        <Link to={value.link}>{value.name}</Link>
+                    </ListItem>
+                ))}
+            </List>
+        </Drawer>
+    )
 }
