@@ -7,29 +7,27 @@ const adjustedSpaceStyle = {
     'height': '40px',
 }
 
-export default class EnglishBotLayout extends React.Component {
+export default function EnglishBotLayout(props) {
 
-    render() {
-        return (
-            <>
-                {/*ヘッダ*/}
-                <EnglishBotHeader />
+    return (
+        <>
+            {/*ヘッダ*/}
+            <EnglishBotHeader />
 
-                {/*サイドバー*/}
-                <EnglishBotSideBar />
+            {/*サイドバー*/}
+            <EnglishBotSideBar />
 
-                {/*ヘッダとコンテンツ間の調整余白 */}
-                <div style={adjustedSpaceStyle}></div>
+            {/*ヘッダとコンテンツ間の調整余白 */}
+            <div style={adjustedSpaceStyle}></div>
 
-                {/*内容*/}
-                {this.props.contents}
+            {/*内容*/}
+            {props.contents}
 
-                {/*フッタとコンテンツ間の調整余白 */}
-                <div style={adjustedSpaceStyle}></div>
+            {/*フッタとコンテンツ間の調整余白 */}
+            <div style={adjustedSpaceStyle}></div>
 
-                {/*フッタ*/}
-                <EnglishBotFooter />
-            </>
-        )
-    }
+            {/*フッタ*/}
+            <EnglishBotFooter />
+        </>
+    )
 }
