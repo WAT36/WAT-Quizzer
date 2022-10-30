@@ -4,9 +4,9 @@ import Container from '@mui/material/Container';
 import EnglishBotLayout from "./components/EnglishBotLayout";
 
 
-class EnglishBotDictionaryPage extends React.Component {
+export default function EnglishBotDictionaryPage() {
 
-    contents = () => {
+    const contents = () => {
         return (
             <Container>
                 <h1>Dictionary</h1>
@@ -14,16 +14,12 @@ class EnglishBotDictionaryPage extends React.Component {
         )
     }
 
-    render() {
-        return (
-            <>
-                <EnglishBotLayout
-                    contents={this.contents()}
-                />
-            </>
-        )
-    }
+    return (
+        <>
+            <EnglishBotLayout
+                contents={contents()}
+            />
+        </>
+    )
 
 }
-
-export default EnglishBotDictionaryPage;
