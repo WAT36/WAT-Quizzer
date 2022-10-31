@@ -24,6 +24,7 @@ router.get("/namelist", function (req, res) {
     })
     .catch((error) => {
       logger.error("/namelist");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -36,6 +37,7 @@ router.post("/get_category", function (req, res) {
     })
     .catch((error) => {
       logger.error("/get_category");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -49,10 +51,12 @@ router.post("/get_quiz", function (req, res) {
       } else {
         logger.error("/get_quiz");
         res.status(404).send(result);
+        logger.error(error);
       }
     })
     .catch((error) => {
       res.status(500).send(error);
+      logger.error(error);
     });
 });
 
@@ -70,11 +74,13 @@ router.post("/random", function (req, res) {
         res.status(200).send(result);
       } else {
         logger.error("/random");
+        logger.error(error);
         res.status(404).send(result);
       }
     })
     .catch((error) => {
       res.status(500).send(error);
+      logger.error(error);
     });
 });
 
@@ -95,6 +101,7 @@ router.post("/worst_rate", function (req, res) {
     })
     .catch((error) => {
       logger.error("/worst_rate");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -116,6 +123,7 @@ router.post("/minimum_clear", function (req, res) {
     })
     .catch((error) => {
       logger.error("/minimum_clear");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -128,6 +136,7 @@ router.post("/correct", function (req, res) {
     })
     .catch((error) => {
       logger.error("/correct");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -140,6 +149,7 @@ router.post("/incorrect", function (req, res) {
     })
     .catch((error) => {
       logger.error("/incorrect");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -152,6 +162,7 @@ router.post("/add", function (req, res) {
     })
     .catch((error) => {
       logger.error("/add");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -171,6 +182,7 @@ router.post("/edit", function (req, res) {
     })
     .catch((error) => {
       logger.error("/edit");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -195,6 +207,7 @@ router.post("/search", function (req, res) {
       }
     })
     .catch((error) => {
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -207,6 +220,7 @@ router.post("/delete", function (req, res) {
     })
     .catch((error) => {
       logger.error("/delete");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -224,6 +238,7 @@ router.post("/integrate", function (req, res) {
     })
     .catch((error) => {
       logger.error("/integrate");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -236,6 +251,7 @@ router.post("/category/renewal", function (req, res) {
     })
     .catch((error) => {
       logger.error("/category/renewal");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -248,6 +264,7 @@ router.post("/category/accuracy_rate", function (req, res) {
     })
     .catch((error) => {
       logger.error("/category/accuracy_rate");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -260,7 +277,7 @@ router.post("/upload", (req, res) => {
     })
     .catch((e) => {
       logger.error("/upload");
-      console.log(e);
+      logger.error(error);
     });
 });
 
@@ -276,6 +293,7 @@ router.get("/english/partsofspeech", function (req, res) {
     })
     .catch((error) => {
       logger.error("/english/partsofspeech");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
@@ -299,6 +317,7 @@ router.post("/english/word/add", function (req, res) {
     })
     .catch((error) => {
       logger.error("/english/word/add");
+      logger.error(error);
       res.status(500).send(error);
     });
 });
