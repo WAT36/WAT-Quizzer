@@ -37,6 +37,31 @@ const addWordAndMean = async (wordName, pronounce, meanArrayData) => {
   }
 };
 
+const searchWordSQL = `
+    SELECT 
+      * 
+    FROM 
+      word
+    WHERE
+      name LIKE ?
+    ORDER BY
+      id
+    ;
+`;
+
+// 単語検索
+const searchWord = async (wordName) => {
+  try {
+    let wordData = await database.execQueryForEnglish(searchWordSQL, [
+      "%" + (wordName || "") + "%",
+    ]);
+    return { wordData };
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   addWordAndMean,
+  searchWord,
 };

@@ -16,7 +16,22 @@ const addWordAndMean = (wordName, pronounce, meanArrayData) => {
   });
 };
 
+// 単語検索
+const searchWord = (wordName) => {
+  return new Promise((resolve, reject) => {
+    wordDao
+      .searchWord(wordName)
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 // モジュール化
 module.exports = {
   addWordAndMean,
+  searchWord,
 };

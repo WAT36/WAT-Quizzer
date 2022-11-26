@@ -322,4 +322,23 @@ router.post("/english/word/add", function (req, res) {
     });
 });
 
+// 単語検索
+/**リクエストデータ
+ * {
+ *  wordName: 単語名
+ * }
+ */
+router.post("/english/word/search", function (req, res) {
+  WordService.searchWord(req.body.wordName)
+    .then((result) => {
+      logger.debug("/english/word/search");
+      res.status(200).send(result);
+    })
+    .catch((error) => {
+      logger.error("/english/word/search");
+      logger.error(error);
+      res.status(500).send(error);
+    });
+});
+
 module.exports = router;
