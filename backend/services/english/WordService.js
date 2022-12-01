@@ -16,7 +16,7 @@ const addWordAndMean = (wordName, pronounce, meanArrayData) => {
   });
 };
 
-// 単語検索
+// 単語を検索
 const searchWord = (wordName) => {
   return new Promise((resolve, reject) => {
     wordDao
