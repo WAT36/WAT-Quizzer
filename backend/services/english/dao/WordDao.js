@@ -45,7 +45,7 @@ const searchWordSQL = `
     WHERE
       name LIKE ?
     ORDER BY
-      id
+      name, id
     ;
 `;
 
