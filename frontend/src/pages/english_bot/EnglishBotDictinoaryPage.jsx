@@ -45,10 +45,7 @@ export default function EnglishBotDictionaryPage() {
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
-                            <TableCell align="right">Name</TableCell>
-                            <TableCell align="right">未定</TableCell>
-                            <TableCell align="right">未定</TableCell>
-                            <TableCell align="right">未定</TableCell>
+                            <TableCell align="left">Name</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -60,10 +57,7 @@ export default function EnglishBotDictionaryPage() {
                                 <TableCell component="th" scope="row">
                                     {data.id}
                                 </TableCell>
-                                <TableCell align="right">{data.name}</TableCell>
-                                <TableCell align="right"></TableCell>
-                                <TableCell align="right"></TableCell>
-                                <TableCell align="right"></TableCell>
+                                <TableCell align="left">{data.name}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
