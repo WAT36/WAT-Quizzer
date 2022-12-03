@@ -7,10 +7,7 @@ import { Link } from "react-router-dom";
 
 import { sideBarContents, toggleDrawer } from '../utils/SideBar'
 import { isOpenState } from '../atoms/SideBar'
-
-const drawerStyle = {
-    'zIndex': '10001',
-}
+import { drawerStyle } from '../styles/SideBar'
 
 export default function EnglishBotSideBar() {
     const [sidebarState, setSidebarState] = useRecoilState(isOpenState);

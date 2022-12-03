@@ -21,15 +21,7 @@ import Button from '@mui/material/Button'
 
 import EnglishBotLayout from "../components/EnglishBotLayout";
 import API from "../../../common/API";
-
-const messageBoxStyle = {
-    'margin': '10px 0px 20px',
-    'borderStyle': 'none'
-}
-
-const buttonStyle = {
-    'margin': '10px 0px 20px',
-}
+import { messageBoxStyle, buttonStyle } from '../styles/Pages';
 
 class EnglishBotAddWordPage extends React.Component {
 

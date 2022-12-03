@@ -13,11 +13,7 @@ import Paper from '@mui/material/Paper';
 
 import API from "../../../common/API";
 import EnglishBotLayout from "../components/EnglishBotLayout";
-
-const messageBoxStyle = {
-    'margin': '10px 0px 20px',
-    'borderStyle': 'none'
-}
+import { messageBoxStyle } from '../styles/Pages';
 
 export default function EnglishBotDictionaryPage() {
 

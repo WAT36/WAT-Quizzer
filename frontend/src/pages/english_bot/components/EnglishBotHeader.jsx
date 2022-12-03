@@ -5,27 +5,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 import { isOpenState } from '../atoms/SideBar'
 import { toggleDrawer } from '../utils/SideBar'
+import { headerStyle, titleStyle, rightStyle } from '../styles/Header'
 
-const headerStyle = {
-    'position': 'fixed',
-    'top': 0,
-    'width': '100%',
-    'height': '30px',
-    'backgroundColor': 'midnightblue',
-    'zIndex': '10000',
-}
-
-const titleStyle = {
-    'color': 'white',
-    'fontWeight': 'bolder',
-    'lineHeight': '30px',
-}
-
-const rightStyle = {
-    'position': 'absolute',/*←絶対位置*/
-    'right': '10px',
-    'lineHeight': '30px',
-}
 export default function EnglishBotHeader() {
     const setSidebarState = useSetRecoilState(isOpenState);
 
