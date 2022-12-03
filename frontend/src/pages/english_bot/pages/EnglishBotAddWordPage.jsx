@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import FormGroup from '@mui/material/FormGroup';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
-import EnglishBotLayout from "./components/EnglishBotLayout";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -20,7 +19,8 @@ import IconButton from '@mui/material/IconButton';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Button from '@mui/material/Button'
 
-import API from "../../common/API";
+import EnglishBotLayout from "../components/EnglishBotLayout";
+import API from "../../../common/API";
 
 const messageBoxStyle = {
     'margin': '10px 0px 20px',
