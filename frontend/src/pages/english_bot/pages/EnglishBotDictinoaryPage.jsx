@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Container from '@mui/material/Container';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,6 +14,10 @@ import Paper from '@mui/material/Paper';
 import API from "../../../common/API";
 import EnglishBotLayout from "../components/EnglishBotLayout";
 
+const messageBoxStyle = {
+    'margin': '10px 0px 20px',
+    'borderStyle': 'none'
+}
 
 export default function EnglishBotDictionaryPage() {
 
@@ -71,6 +78,14 @@ export default function EnglishBotDictionaryPage() {
         return (
             <Container>
                 <h1>Dictionary</h1>
+                <Card variant="outlined" style={messageBoxStyle}>
+                    <CardContent>
+                        <Typography variant="h6" component="h6"
+                            color={message.messageColor}>
+                            {message.message}
+                        </Typography>
+                    </CardContent>
+                </Card>
                 {makeTableData()}
             </Container>
         )
