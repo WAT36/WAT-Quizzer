@@ -3,7 +3,8 @@ import { useSetRecoilState } from 'recoil';
 import { IconButton } from '@material-ui/core';
 import MenuIcon from '@mui/icons-material/Menu';
 
-import { isOpenState } from "./EnglishBotSideBar";
+import { isOpenState } from '../atoms/SideBar'
+import { toggleDrawer } from '../utils/SideBar'
 
 const headerStyle = {
     'position': 'fixed',
@@ -28,26 +29,13 @@ const rightStyle = {
 export default function EnglishBotHeader() {
     const setSidebarState = useSetRecoilState(isOpenState);
 
-    const toggleDrawer =
-        (isOpen) =>
-            (event) => {
-                if (
-                    event.type === 'keydown' &&
-                    (event.key === 'Tab' || 'Shift')
-                ) {
-                    return;
-                }
-
-                setSidebarState({ open: isOpen });
-            };
-
     return (
         <header style={headerStyle}>
             <span style={titleStyle}>
                 WAT Quizzer (EnglishBot)
             </span>
             <span className="right" style={rightStyle}>
-                <IconButton onClick={toggleDrawer(true)} size='small' >
+                <IconButton onClick={toggleDrawer(true, setSidebarState)} size='small' >
                     <MenuIcon style={{ color: "white" }} />
                 </IconButton>
             </span>
