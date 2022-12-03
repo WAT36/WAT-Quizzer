@@ -29,7 +29,7 @@ export default function EnglishBotHeader() {
     const setSidebarState = useSetRecoilState(isOpenState);
 
     const toggleDrawer =
-        (open) =>
+        (isOpen) =>
             (event) => {
                 if (
                     event.type === 'keydown' &&
@@ -38,7 +38,7 @@ export default function EnglishBotHeader() {
                     return;
                 }
 
-                setSidebarState({ open: true });
+                setSidebarState({ open: isOpen });
             };
 
     return (

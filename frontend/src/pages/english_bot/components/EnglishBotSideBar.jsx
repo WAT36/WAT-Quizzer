@@ -27,7 +27,7 @@ export default function EnglishBotSideBar() {
     const [sidebarState, setSidebarState] = useRecoilState(isOpenState);
 
     const toggleDrawer =
-        (open) =>
+        (isOpen) =>
             (event) => {
                 if (
                     event.type === 'keydown' &&
@@ -36,7 +36,7 @@ export default function EnglishBotSideBar() {
                     return;
                 }
 
-                setSidebarState({ open: false });
+                setSidebarState({ open: isOpen });
             };
 
     return (
@@ -49,7 +49,7 @@ export default function EnglishBotSideBar() {
             <List>
                 {sideBarContents.map((value) => (
                     <ListItem key={value.name} disablePadding>
-                        <Link to={value.link}>{value.name}</Link>
+                        <Link to={value.link} onClick={toggleDrawer(false)}>{value.name}</Link>
                     </ListItem>
                 ))}
             </List>
