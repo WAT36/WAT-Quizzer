@@ -1,8 +1,8 @@
 import React from "react";
-import EnglishBotHeader from "./EnglishBotHeader";
-import EnglishBotFooter from "./EnglishBotFooter";
-import EnglishBotSideBar from "./EnglishBotSideBar";
-import { adjustedSpaceStyle } from '../styles/Layout'
+import EnglishBotHeader from "./EnglishBotHeader.tsx";
+import EnglishBotFooter from "./EnglishBotFooter.tsx";
+import EnglishBotSideBar from "./EnglishBotSideBar.tsx";
+import { adjustedSpaceStyle } from '../styles/Layout.ts'
 
 export default function EnglishBotLayout(props) {
 

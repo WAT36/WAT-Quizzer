@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Select, FormGroup, Typography, TextField, Input } from "@material-ui/core"
 
-import API from "../common/API";
-import QuizzerLayout from "./components/QuizzerLayout";
+import { get, post } from "../common/API.ts";
+import QuizzerLayout from "./components/QuizzerLayout.tsx";
 
 const messageBoxStyle = {
     'margin'        : '10px 0px 20px',
@@ -16,7 +16,7 @@ const buttonStyle = {
 
 export default class EditQuizPage extends React.Component{
     componentDidMount(){
-        API.get("/namelist",(data) => {
+        get("/namelist",(data) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -60,7 +60,7 @@ export default class EditQuizPage extends React.Component{
             return;
         }
 
-        API.post("/get_quiz",{
+        post("/get_quiz",{
             "file_num": this.state.file_num,
             "quiz_num": this.state.quiz_num
         },(data) => {
@@ -91,7 +91,7 @@ export default class EditQuizPage extends React.Component{
     }
 
     editQuiz = () => {
-        API.post("/edit",{
+        post("/edit",{
             "file_num": this.state.edit_file_num,
             "quiz_num": this.state.edit_quiz_num,
             "question": this.state.edit_question,

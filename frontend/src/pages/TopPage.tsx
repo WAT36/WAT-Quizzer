@@ -5,7 +5,7 @@ const buttonStyle = {
     'margin'     :  '20px',
 }
 
-class TopPage extends React.Component {
+export default class TopPage extends React.Component {
     render(){
         return (
             <Container>
@@ -23,5 +23,3 @@ class TopPage extends React.Component {
         )
     }
 }
-
-export default TopPage

@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Paper, Select, FormGroup, Typography, TextField } from "@material-ui/core"
 
-import API from "../common/API";
-import QuizzerLayout from "./components/QuizzerLayout";
+import { get, post } from "../common/API.ts";
+import QuizzerLayout from "./components/QuizzerLayout.tsx";
 
 const messageBoxStyle = {
     'margin'        : '10px 0px 20px',
@@ -21,7 +21,7 @@ const paperStyle = {
 
 export default class DeleteQuizPage extends React.Component{
     componentDidMount(){
-        API.get("/namelist",(data) => {
+        get("/namelist",(data) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -65,7 +65,7 @@ export default class DeleteQuizPage extends React.Component{
             return;
         }
 
-        API.post("/get_quiz",{
+        post("/get_quiz",{
             "file_num": this.state.file_num,
             "quiz_num": this.state.quiz_num
         },(data) => {
@@ -110,7 +110,7 @@ export default class DeleteQuizPage extends React.Component{
             return;
         }
 
-        API.post("/get_quiz",{
+        post("/get_quiz",{
             "file_num": this.state.get_file_num,
             "quiz_num": this.state.integrate_to_quiz_num
         },(data) => {
@@ -149,7 +149,7 @@ export default class DeleteQuizPage extends React.Component{
             return;
         }
 
-        API.post("/delete",{
+        post("/delete",{
             "file_num": this.state.get_file_num,
             "quiz_num": this.state.get_quiz_num
         },(data) => {
@@ -197,7 +197,7 @@ export default class DeleteQuizPage extends React.Component{
             return;
         }
 
-        API.post("/integrate",{
+        post("/integrate",{
             "pre_file_num": this.state.get_file_num,
             "pre_quiz_num": this.state.get_quiz_num,
             "post_file_num": this.state.get_file_num,

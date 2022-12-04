@@ -3,7 +3,7 @@ import { Card, CardContent, Container, Typography } from "@material-ui/core"
 import Dropzone from 'react-dropzone'
 import axios from 'axios';
 
-import QuizzerLayout from "./components/QuizzerLayout";
+import QuizzerLayout from "./components/QuizzerLayout.tsx";
 
 const messageBoxStyle = {
     'margin': '10px 0px 20px',

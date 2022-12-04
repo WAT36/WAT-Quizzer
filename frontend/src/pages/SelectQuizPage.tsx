@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Card, CardContent, CardActions, Checkbox, Container, Collapse, FormControl, FormControlLabel, InputLabel, MenuItem, Select, FormGroup, TextField, Typography, Slider } from "@material-ui/core"
 
-import API from "../common/API";
-import QuizzerLayout from "./components/QuizzerLayout";
+import { get, post } from "../common/API.ts";
+import QuizzerLayout from "./components/QuizzerLayout.tsx";
 
 const buttonStyle = {
     'margin'     :  '10px',
@@ -13,9 +13,9 @@ const messageBoxStyle = {
     'borderStyle'  : 'none'
 }
 
-class SelectQuizPage extends React.Component{
+export default class SelectQuizPage extends React.Component{
     componentDidMount(){
-        API.get("/namelist",(data) => {
+        get("/namelist",(data) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -74,7 +74,7 @@ class SelectQuizPage extends React.Component{
     } 
 
     selectedFileChange = (e) => {
-        API.post("/get_category",{
+        post("/get_category",{
             "file_num": e.target.value
         },(data) => {
             if(data.status === 200){
@@ -111,7 +111,7 @@ class SelectQuizPage extends React.Component{
             return;
         }
 
-        API.post("/get_quiz",{
+        post("/get_quiz",{
             "file_num": this.state.file_num,
             "quiz_num": this.state.quiz_num
         },(data) => {
@@ -164,7 +164,7 @@ class SelectQuizPage extends React.Component{
                 return;
             }
     
-            API.post("/correct",{
+            post("/correct",{
                 "file_num": this.state.file_num,
                 "quiz_num": this.state.quiz_num
             },(data) => {
@@ -207,7 +207,7 @@ class SelectQuizPage extends React.Component{
                 return;
             }
     
-            API.post("/incorrect",{
+            post("/incorrect",{
                 "file_num": this.state.file_num,
                 "quiz_num": this.state.quiz_num
             },(data) => {
@@ -271,7 +271,7 @@ class SelectQuizPage extends React.Component{
             })
             return;
         }
-        API.post("/random",{
+        post("/random",{
             "file_num": this.state.file_num,
             "min_rate": this.state.value[0],
             "max_rate": this.state.value[1],
@@ -310,7 +310,7 @@ class SelectQuizPage extends React.Component{
             })
             return;
         }
-        API.post("/worst_rate",{
+        post("/worst_rate",{
             "file_num": this.state.file_num,
             "category": this.state.selected_category === -1 ? null : this.state.selected_category,
             "checked" : this.state.checked,
@@ -347,7 +347,7 @@ class SelectQuizPage extends React.Component{
             })
             return;
         }
-        API.post("/minimum_clear",{
+        post("/minimum_clear",{
             "file_num": this.state.file_num,
             "category": this.state.selected_category === -1 ? null : this.state.selected_category,
             "checked" : this.state.checked,
@@ -500,5 +500,3 @@ class SelectQuizPage extends React.Component{
     }
 
 }
-
-export default SelectQuizPage;

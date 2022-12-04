@@ -19,9 +19,9 @@ import IconButton from '@mui/material/IconButton';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Button from '@mui/material/Button'
 
-import EnglishBotLayout from "../components/EnglishBotLayout";
-import API from "../../../common/API";
-import { messageBoxStyle, buttonStyle } from '../styles/Pages';
+import EnglishBotLayout from "../components/EnglishBotLayout.tsx";
+import { get, post } from "../../../common/API.ts";
+import { messageBoxStyle, buttonStyle } from '../styles/Pages.ts';
 
 class EnglishBotAddWordPage extends React.Component {
 
@@ -61,7 +61,7 @@ class EnglishBotAddWordPage extends React.Component {
     }
 
     getPartOfSpeechList = () => {
-        API.get("/english/partsofspeech", (data) => {
+        get("/english/partsofspeech", (data) => {
             if (data.status === 200) {
                 data = data.body
                 let posList = []
@@ -150,7 +150,7 @@ class EnglishBotAddWordPage extends React.Component {
             return;
         }
 
-        API.post("/english/word/add", {
+        post("/english/word/add", {
             "wordName": this.state.inputWord,
             "pronounce": "",
             "meanArrayData": this.inputMeans.reduce((previousValue, currentValue) => {

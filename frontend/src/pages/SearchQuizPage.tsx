@@ -2,8 +2,8 @@ import React from "react";
 import { Button, Card, CardContent, Checkbox, Container,  FormControl, FormControlLabel, InputLabel, MenuItem, Select, FormGroup, TextField, Typography, Slider } from "@material-ui/core"
 import { DataGrid } from '@material-ui/data-grid';
 
-import API from "../common/API";
-import QuizzerLayout from "./components/QuizzerLayout";
+import { get, post } from "../common/API.ts";
+import QuizzerLayout from "./components/QuizzerLayout.tsx";
 
 const buttonStyle = {
     'margin'     :  '10px',
@@ -55,7 +55,7 @@ const columns = [
 
 export default class SearchQuizPage extends React.Component{
     componentDidMount(){
-        API.get("/namelist",(data) => {
+        get("/namelist",(data) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -89,7 +89,7 @@ export default class SearchQuizPage extends React.Component{
     }
 
     selectedFileChange = (e) => {
-        API.post("/get_category",{
+        post("/get_category",{
             "file_num": e.target.value
         },(data) => {
             if(data.status === 200){
@@ -140,7 +140,7 @@ export default class SearchQuizPage extends React.Component{
             return;
         }
 
-        API.post("/search",{
+        post("/search",{
             "file_num": this.state.file_num,
             "query" : this.state.query,
             "category": this.state.selected_category === -1 ? null : this.state.selected_category,

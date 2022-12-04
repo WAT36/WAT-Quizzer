@@ -11,9 +11,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-import API from "../../../common/API";
-import EnglishBotLayout from "../components/EnglishBotLayout";
-import { messageBoxStyle } from '../styles/Pages';
+import { get, post } from "../../../common/API.ts";
+import EnglishBotLayout from "../components/EnglishBotLayout.tsx";
+import { messageBoxStyle } from '../styles/Pages.ts';
 
 export default function EnglishBotDictionaryPage() {
 
@@ -28,7 +28,7 @@ export default function EnglishBotDictionaryPage() {
     }, [])
 
     const comingDisplay = () => {
-        API.post("/english/word/search", {
+        post("/english/word/search", {
             "wordName": ""
         }, (data) => {
             if (data.status === 200) {
