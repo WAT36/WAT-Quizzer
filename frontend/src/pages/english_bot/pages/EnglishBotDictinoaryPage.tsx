@@ -11,7 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-import { get, post } from "../../../common/API.ts";
+import { post } from "../../../common/API.ts";
 import EnglishBotLayout from "../components/EnglishBotLayout.tsx";
 import { messageBoxStyle } from '../styles/Pages.ts';
 
