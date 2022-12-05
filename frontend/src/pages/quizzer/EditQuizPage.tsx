@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Select, FormGroup, Typography, TextField, Input } from "@material-ui/core"
 
-import { get, post } from "../common/API.ts";
+import { get, post } from "../../common/API.ts";
 import QuizzerLayout from "./components/QuizzerLayout.tsx";
 
 const messageBoxStyle = {

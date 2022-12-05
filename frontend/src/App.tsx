@@ -2,14 +2,14 @@ import React from "react"
 import './App.css';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import TopPage from './pages/TopPage.tsx';
-import SelectQuizPage from './pages/SelectQuizPage.tsx';
-import AddQuizPage from "./pages/AddQuizPage.tsx";
-import EditQuizPage from "./pages/EditQuizPage.tsx";
-import SearchQuizPage from "./pages/SearchQuizPage.tsx";
-import DeleteQuizPage from "./pages/DeleteQuizPage.tsx";
-import AccuracyRateGraphPage from "./pages/AccuracyRateGraphPage.tsx";
-import ImageUploadPage from "./pages/ImageUploadPage.tsx";
+import TopPage from './pages/quizzer/TopPage.tsx';
+import SelectQuizPage from './pages/quizzer/SelectQuizPage.tsx';
+import AddQuizPage from "./pages/quizzer/AddQuizPage.tsx";
+import EditQuizPage from "./pages/quizzer/EditQuizPage.tsx";
+import SearchQuizPage from "./pages/quizzer/SearchQuizPage.tsx";
+import DeleteQuizPage from "./pages/quizzer/DeleteQuizPage.tsx";
+import AccuracyRateGraphPage from "./pages/quizzer/AccuracyRateGraphPage.tsx";
+import ImageUploadPage from "./pages/quizzer/ImageUploadPage.tsx";
 
 import EnglishBotTopPage from "./pages/english_bot/pages/EnglishBotTopPage.tsx";
 import EnglishBotAddWordPage from "./pages/english_bot/pages/EnglishBotAddWordPage.tsx";
