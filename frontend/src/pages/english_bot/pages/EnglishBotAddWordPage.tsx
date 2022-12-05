@@ -19,9 +19,9 @@ import IconButton from '@mui/material/IconButton';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Button from '@mui/material/Button'
 
-import EnglishBotLayout from "../components/EnglishBotLayout.tsx";
-import { get, post } from "../../../common/API.ts";
-import { messageBoxStyle, buttonStyle } from '../styles/Pages.ts';
+import EnglishBotLayout from "../components/EnglishBotLayout";
+import { get, post } from "../../../common/API";
+import { messageBoxStyle, buttonStyle } from '../styles/Pages';
 
 class EnglishBotAddWordPage extends React.Component {
 

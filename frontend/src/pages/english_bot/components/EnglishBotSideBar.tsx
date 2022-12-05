@@ -5,9 +5,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { Link } from "react-router-dom";
 
-import { sideBarContents, toggleDrawer } from '../utils/SideBar.ts'
-import { isOpenState } from '../atoms/SideBar.ts'
-import { drawerStyle } from '../styles/SideBar.ts'
+import { sideBarContents, toggleDrawer } from '../utils/SideBar'
+import { isOpenState } from '../atoms/SideBar'
+import { drawerStyle } from '../styles/SideBar'
 
 export default function EnglishBotSideBar() {
     const [sidebarState, setSidebarState] = useRecoilState(isOpenState);

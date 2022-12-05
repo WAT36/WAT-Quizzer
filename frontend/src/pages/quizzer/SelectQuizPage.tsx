@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Card, CardContent, CardActions, Checkbox, Container, Collapse, FormControl, FormControlLabel, InputLabel, MenuItem, Select, FormGroup, TextField, Typography, Slider } from "@material-ui/core"
 
-import { get, post } from "../../common/API.ts";
-import QuizzerLayout from "./components/QuizzerLayout.tsx";
+import { get, post } from "../../common/API";
+import QuizzerLayout from "./components/QuizzerLayout";
 
 const buttonStyle = {
     'margin'     :  '10px',

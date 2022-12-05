@@ -3,9 +3,9 @@ import { useSetRecoilState } from 'recoil';
 import { IconButton } from '@material-ui/core';
 import MenuIcon from '@mui/icons-material/Menu';
 
-import { isOpenState } from '../atoms/SideBar.ts'
-import { toggleDrawer } from '../utils/SideBar.ts'
-import { headerStyle, titleStyle, rightStyle } from '../styles/Header.ts'
+import { isOpenState } from '../atoms/SideBar'
+import { toggleDrawer } from '../utils/SideBar'
+import { headerStyle, titleStyle, rightStyle } from '../styles/Header'
 
 export default function EnglishBotHeader() {
     const setSidebarState = useSetRecoilState(isOpenState);

@@ -2,18 +2,18 @@ import React from "react"
 import './App.css';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import TopPage from './pages/quizzer/TopPage.tsx';
-import SelectQuizPage from './pages/quizzer/SelectQuizPage.tsx';
-import AddQuizPage from "./pages/quizzer/AddQuizPage.tsx";
-import EditQuizPage from "./pages/quizzer/EditQuizPage.tsx";
-import SearchQuizPage from "./pages/quizzer/SearchQuizPage.tsx";
-import DeleteQuizPage from "./pages/quizzer/DeleteQuizPage.tsx";
-import AccuracyRateGraphPage from "./pages/quizzer/AccuracyRateGraphPage.tsx";
-import ImageUploadPage from "./pages/quizzer/ImageUploadPage.tsx";
+import TopPage from './pages/quizzer/TopPage';
+import SelectQuizPage from './pages/quizzer/SelectQuizPage';
+import AddQuizPage from "./pages/quizzer/AddQuizPage";
+import EditQuizPage from "./pages/quizzer/EditQuizPage";
+import SearchQuizPage from "./pages/quizzer/SearchQuizPage";
+import DeleteQuizPage from "./pages/quizzer/DeleteQuizPage";
+import AccuracyRateGraphPage from "./pages/quizzer/AccuracyRateGraphPage";
+import ImageUploadPage from "./pages/quizzer/ImageUploadPage";
 
-import EnglishBotTopPage from "./pages/english_bot/pages/EnglishBotTopPage.tsx";
-import EnglishBotAddWordPage from "./pages/english_bot/pages/EnglishBotAddWordPage.tsx";
-import EnglishBotDictionaryPage from "./pages/english_bot/pages/EnglishBotDictinoaryPage.tsx";
+import EnglishBotTopPage from "./pages/english_bot/pages/EnglishBotTopPage";
+import EnglishBotAddWordPage from "./pages/english_bot/pages/EnglishBotAddWordPage";
+import EnglishBotDictionaryPage from "./pages/english_bot/pages/EnglishBotDictinoaryPage";
 
 export default class App extends React.Component {
   render() {

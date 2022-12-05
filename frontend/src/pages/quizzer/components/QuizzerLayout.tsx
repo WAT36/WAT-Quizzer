@@ -1,6 +1,6 @@
 import React from "react";
-import QuizzerHeader from "./QuizzerHeader.tsx";
-import QuizzerFooter from "./QuizzerFooter.tsx";
+import QuizzerHeader from "./QuizzerHeader";
+import QuizzerFooter from "./QuizzerFooter";
 
 const adjustedSpaceStyle = {
     'height': '40px',

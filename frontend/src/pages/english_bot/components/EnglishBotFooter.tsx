@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from '@material-ui/core';
-import { footerStyle, leftStyle, rightStyle } from '../styles/Footer.ts';
+import { footerStyle, leftStyle, rightStyle } from '../styles/Footer';
 
 export default function EnglishBotFooter() {
     return (

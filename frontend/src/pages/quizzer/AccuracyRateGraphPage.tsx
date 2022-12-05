@@ -2,8 +2,8 @@ import React from "react";
 import { Button, Card, CardContent, Container, FormControl, InputLabel, MenuItem, Select, FormGroup, Typography } from "@material-ui/core"
 import { Chart } from "react-google-charts";
 
-import { get, post } from "../../common/API.ts";
-import QuizzerLayout from "./components/QuizzerLayout.tsx";
+import { get, post } from "../../common/API";
+import QuizzerLayout from "./components/QuizzerLayout";
 
 const messageBoxStyle = {
     'margin'        : '10px 0px 20px',
