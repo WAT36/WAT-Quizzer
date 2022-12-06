@@ -21,7 +21,7 @@ export default function EnglishBotSideBar() {
         >
             <List>
                 {sideBarContents.map((value) => (
-                    <ListItem key={value.name} disablePadding>
+                    <ListItem key={value.name}>
                         <Link to={value.link} onClick={toggleDrawer(false, setSidebarState)}>{value.name}</Link>
                     </ListItem>
                 ))}
