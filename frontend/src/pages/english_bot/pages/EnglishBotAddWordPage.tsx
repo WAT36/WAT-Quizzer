@@ -163,6 +163,22 @@ class EnglishBotAddWordPage extends React.Component<{},AddWordPageState> {
             return;
         }
 
+        for(let i = 0;i<this.inputMeans.length;i++){
+            if(this.inputMeans[i][0] === -1){
+                this.setState({
+                    message: `エラー:${i+1}行目の品詞を入力してください`,
+                    messageColor: 'error',
+                })
+                return;
+            }else if(this.inputMeans[i][1] === ""){
+                this.setState({
+                    message: `エラー:${i+1}行目の意味を入力してください`,
+                    messageColor: 'error',
+                })
+                return;
+            }
+        }
+
         post("/english/word/add", {
             "wordName": this.state.inputWord,
             "pronounce": "",
