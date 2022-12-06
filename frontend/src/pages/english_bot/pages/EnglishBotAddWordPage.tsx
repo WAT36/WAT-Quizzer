@@ -23,13 +23,26 @@ import EnglishBotLayout from "../components/EnglishBotLayout";
 import { get, post } from "../../../common/API";
 import { messageBoxStyle, buttonStyle } from '../styles/Pages';
 
-class EnglishBotAddWordPage extends React.Component {
+interface AddWordPageState {
+    message: string,
+    messageColor: string,
+    posList: JSX.Element[],
+    rowList: JSX.Element[],
+    inputWord: string,
+}
 
-    posListOption = [];
-    tableRows = [];
-    inputMeans = [];
+interface SendToAddWordApiData {
+    partOfSpeechId: number,
+    meaning: string
+}
 
-    constructor(props) {
+class EnglishBotAddWordPage extends React.Component<{},AddWordPageState> {
+
+    posListOption: JSX.Element[] = [];
+    tableRows: JSX.Element[] = [];
+    inputMeans: [number,string][] = [];
+
+    constructor(props: any) {
         super(props);
         this.getPartOfSpeechList = this.getPartOfSpeechList.bind(this)
         this.getTableRow = this.getTableRow.bind(this)
@@ -46,7 +59,7 @@ class EnglishBotAddWordPage extends React.Component {
             posList: this.posListOption,
             rowList: this.tableRows,
             inputWord: '',
-        }
+        } as AddWordPageState;
     }
 
     componentDidMount() {
@@ -61,7 +74,7 @@ class EnglishBotAddWordPage extends React.Component {
     }
 
     getPartOfSpeechList = () => {
-        get("/english/partsofspeech", (data) => {
+        get("/english/partsofspeech", (data: any) => {
             if (data.status === 200) {
                 data = data.body
                 let posList = []
@@ -89,7 +102,7 @@ class EnglishBotAddWordPage extends React.Component {
         })
     }
 
-    getTableRow = (i) => {
+    getTableRow = (i: number) => {
         return (
             <TableRow>
                 <TableCell>
@@ -101,14 +114,14 @@ class EnglishBotAddWordPage extends React.Component {
                         label="partOfSpeech"
                         key={i}
                         sx={{ width: 1 }}
-                        onChange={(e) => { this.changeSelect(e, i, false) }}
+                        onChange={(e) => { this.changeSelect(String(e.target.value), i, false) }}
                     >
                         <MenuItem value={-1} key={-1}>選択なし</MenuItem>
                         {this.state.posList}
                     </Select>
                 </TableCell>
                 <TableCell>
-                    <TextField id="input-mean-01" label="意味" variant="outlined" key={i} sx={{ width: 1 }} onChange={(e) => { this.changeSelect(e, i, true) }} />
+                    <TextField id="input-mean-01" label="意味" variant="outlined" key={i} sx={{ width: 1 }} onChange={(e) => { this.changeSelect(e.target.value, i, true) }} />
                 </TableCell>
             </TableRow>
         )
@@ -123,21 +136,21 @@ class EnglishBotAddWordPage extends React.Component {
         return this.tableRows.map((value) => { return value })
     }
 
-    changeSelect = (e, i, isMean) => {
+    changeSelect = (value: string, i: number, isMean: boolean) => {
         if (i + 1 <= this.inputMeans.length) {
-            this.inputMeans[i] = isMean ? [this.inputMeans[i][0], e.target.value] : [e.target.value, this.inputMeans[i][1]]
+            this.inputMeans[i] = isMean ? [this.inputMeans[i][0], value] : [Number(value), this.inputMeans[i][1]]
         } else {
             while (i >= this.inputMeans.length) {
-                this.inputMeans.push([])
+                this.inputMeans.push([-1,""])
             }
-            this.inputMeans[i] = [i, ""]
+            this.inputMeans[i] = [-1, ""]
         }
     }
 
-    inputWordName = (e) => {
+    inputWordName = (value: string) => {
         this.messeageClear()
         this.setState({
-            inputWord: e.target.value
+            inputWord: value
         })
     }
 
@@ -153,18 +166,18 @@ class EnglishBotAddWordPage extends React.Component {
         post("/english/word/add", {
             "wordName": this.state.inputWord,
             "pronounce": "",
-            "meanArrayData": this.inputMeans.reduce((previousValue, currentValue) => {
+            "meanArrayData": this.inputMeans.reduce((previousValue: SendToAddWordApiData[], currentValue) => {
                 if (currentValue[0] >= 0) {
                     previousValue.push({
-                        "partOfSpeechId": currentValue[0],
-                        "meaning": currentValue[1]
+                        partOfSpeechId: currentValue[0],
+                        meaning: currentValue[1]
                     })
                 }
                 return previousValue
             }
                 ,
                 [])
-        }, (data) => {
+        }, (data: any) => {
             console.log("data:", data)
             if (data.status === 200) {
                 this.setState({
@@ -200,7 +213,7 @@ class EnglishBotAddWordPage extends React.Component {
                 <Button variant="contained" style={buttonStyle} onClick={this.addWord}>登録</Button>
                 <FormGroup>
                     <FormControl>
-                        <TextField fullWidth label="New Word" id="newWord" value={this.state.inputWord} onChange={(e) => this.inputWordName(e)} />
+                        <TextField fullWidth label="New Word" id="newWord" value={this.state.inputWord} onChange={(e) => this.inputWordName(e.target.value)} />
                     </FormControl>
 
                     <TableContainer>
