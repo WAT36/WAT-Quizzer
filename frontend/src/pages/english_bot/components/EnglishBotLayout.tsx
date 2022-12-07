@@ -4,7 +4,7 @@ import EnglishBotFooter from "./EnglishBotFooter";
 import EnglishBotSideBar from "./EnglishBotSideBar";
 import { adjustedSpaceStyle } from '../styles/Layout'
 
-export default function EnglishBotLayout(props) {
+export default function EnglishBotLayout(props: any) {
 
     return (
         <>
