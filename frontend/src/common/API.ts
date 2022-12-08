@@ -1,6 +1,6 @@
-const baseURL = process.env.REACT_APP_API_SERVER
+const baseURL: string = process.env.REACT_APP_API_SERVER
 
-export const get = (path,func) => {
+export const get = (path: string,func: any) => {
   fetch(baseURL + path)
   .then(response => response.json()
   .then(data => ({
@@ -13,7 +13,7 @@ export const get = (path,func) => {
   });
 }
 
-export const post = (path,jsondata,func) => {
+export const post = (path: string,jsondata: object,func: any) => {
   fetch(baseURL + path,{
     method: 'POST',
     body: JSON.stringify(jsondata),
