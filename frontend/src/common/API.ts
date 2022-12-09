@@ -13,6 +13,7 @@ export const get = (path: string,func: any) => {
   });
 }
 
+// post,JSONデータを忘れず
 export const post = (path: string,jsondata: object,func: any) => {
   fetch(baseURL + path,{
     method: 'POST',
