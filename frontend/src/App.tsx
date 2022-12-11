@@ -14,6 +14,7 @@ import ImageUploadPage from "./pages/quizzer/ImageUploadPage";
 import EnglishBotTopPage from "./pages/english_bot/pages/EnglishBotTopPage";
 import EnglishBotAddWordPage from "./pages/english_bot/pages/EnglishBotAddWordPage";
 import EnglishBotDictionaryPage from "./pages/english_bot/pages/EnglishBotDictinoaryPage";
+import EnglishBotWordDetailPage from "./pages/english_bot/pages/EnglishBotWordDetailPage";
 
 export default class App extends React.Component {
   render() {
@@ -41,6 +42,8 @@ export default class App extends React.Component {
           <Route path="/english/add" element={<EnglishBotAddWordPage />} />
 
           <Route path="/english/dictionary" element={<EnglishBotDictionaryPage />} />
+
+          <Route path="/english/word/:name" element={<EnglishBotWordDetailPage />} />
 
           <Route path="/" element={
             <TopPage />
