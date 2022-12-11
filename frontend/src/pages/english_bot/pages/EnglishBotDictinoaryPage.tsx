@@ -14,6 +14,7 @@ import Paper from '@mui/material/Paper';
 import { post } from "../../../common/API";
 import EnglishBotLayout from "../components/EnglishBotLayout";
 import { messageBoxStyle } from '../styles/Pages';
+import { Link } from "react-router-dom";
 
 export default function EnglishBotDictionaryPage() {
 
@@ -61,7 +62,9 @@ export default function EnglishBotDictionaryPage() {
                                 <TableCell component="th" scope="row">
                                     {data.id}
                                 </TableCell>
-                                <TableCell align="left">{data.name}</TableCell>
+                                <TableCell align="left">
+                                    <Link to={`/about/english/word/${data.name}`}>{data.name}</Link>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

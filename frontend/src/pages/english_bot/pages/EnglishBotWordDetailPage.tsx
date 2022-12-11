@@ -11,7 +11,7 @@ export default function EnglishBotWordDetailPage() {
     const contents = () => {
         return (
             <Container>
-                <h1>Word Detail</h1>
+                <h1>{name}</h1>
             </Container>
         )
     }
