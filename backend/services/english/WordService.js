@@ -1,6 +1,6 @@
-require("promise");
+require('promise')
 
-const wordDao = require("./dao/WordDao");
+const wordDao = require('./dao/WordDao')
 
 // 単語と意味追加
 const addWordAndMean = (wordName, pronounce, meanArrayData) => {
@@ -8,13 +8,13 @@ const addWordAndMean = (wordName, pronounce, meanArrayData) => {
     wordDao
       .addWordAndMean(wordName, pronounce, meanArrayData)
       .then((result) => {
-        resolve(result);
+        resolve(result)
       })
       .catch((error) => {
-        reject(error);
-      });
-  });
-};
+        reject(error)
+      })
+  })
+}
 
 // 単語を検索
 const searchWord = (wordName) => {
@@ -22,16 +22,31 @@ const searchWord = (wordName) => {
     wordDao
       .searchWord(wordName)
       .then((result) => {
-        resolve(result);
+        resolve(result)
       })
       .catch((error) => {
-        reject(error);
-      });
-  });
-};
+        reject(error)
+      })
+  })
+}
+
+// 単語の意味取得
+const getWordMean = (wordName) => {
+  return new Promise((resolve, reject) => {
+    wordDao
+      .getWordMean(wordName)
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 // モジュール化
 module.exports = {
   addWordAndMean,
   searchWord,
-};
+  getWordMean
+}
