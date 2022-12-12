@@ -66,7 +66,7 @@ const getWordMeanSQL = `
     SELECT 
       mean.wordmean_id,
       mean.meaning,
-      partsofspeech.name
+      partsofspeech.name as partsofspeech
     FROM 
       word
     INNER JOIN
