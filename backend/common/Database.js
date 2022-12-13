@@ -1,8 +1,8 @@
-const dotenv = require("dotenv");
-const path = require("path");
-const mysql = require("mysql2");
+const dotenv = require('dotenv')
+const path = require('path')
+const mysql = require('mysql2')
 
-const env = dotenv.config({ path: path.join(__dirname, "../../config/.env") });
+const env = dotenv.config({ path: path.join(__dirname, '../../config/.env') })
 
 // DB接続子を返す
 const dbinfo = {
@@ -10,8 +10,8 @@ const dbinfo = {
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
-  database: process.env.DB_DBNAME,
-};
+  database: process.env.DB_DBNAME
+}
 
 // (english用)DB接続子を返す
 const english_dbinfo = {
@@ -19,58 +19,60 @@ const english_dbinfo = {
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
-  database: process.env.DB_ENGLISHDBNAME,
-};
+  database: process.env.DB_ENGLISHDBNAME
+}
 
 // SQLを実行する
 const execQuery = async (query, value) => {
   try {
     // DB接続
-    const connection = mysql.createConnection(dbinfo);
+    const connection = mysql.createConnection(dbinfo)
 
     // クエリ実行
     const result = await new Promise((resolve, reject) => {
       connection.query(query, value, (error, result) => {
         if (error) {
-          reject(error);
+          reject(error)
         }
-        resolve(result);
-      });
-    });
+        resolve(result)
+      })
+    })
 
     // 接続終了
-    await connection.end();
-    return result;
+    await connection.end()
+    return result
   } catch (error) {
-    throw error;
+    console.error(error)
+    console.error(dbinfo)
+    throw error
   }
-};
+}
 
 // (英語DBへ)SQLを実行する
 const execQueryForEnglish = async (query, value) => {
   try {
     // DB接続
-    const connection = mysql.createConnection(english_dbinfo);
+    const connection = mysql.createConnection(english_dbinfo)
 
     // クエリ実行
     const result = await new Promise((resolve, reject) => {
       connection.query(query, value, (error, result) => {
         if (error) {
-          reject(error);
+          reject(error)
         }
-        resolve(result);
-      });
-    });
+        resolve(result)
+      })
+    })
 
     // 接続終了
-    await connection.end();
-    return result;
+    await connection.end()
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 module.exports = {
   execQuery,
-  execQueryForEnglish,
-};
+  execQueryForEnglish
+}
