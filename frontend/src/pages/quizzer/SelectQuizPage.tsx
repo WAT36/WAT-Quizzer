@@ -15,7 +15,7 @@ const messageBoxStyle = {
 
 export default class SelectQuizPage extends React.Component{
     componentDidMount(){
-        get("/namelist",(data) => {
+        get("/namelist",(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -34,7 +34,7 @@ export default class SelectQuizPage extends React.Component{
         })
     }
 
-    constructor(props){
+    constructor(props: any){
         super(props);
         this.selectedFileChange = this.selectedFileChange.bind(this);
         this.rangeSlider = this.rangeSlider.bind(this);
