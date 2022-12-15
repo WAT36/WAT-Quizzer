@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Card, CardContent, Checkbox, Container,  FormControl, FormControlLabel, InputLabel, MenuItem, Select, FormGroup, TextField, Typography, Slider } from "@material-ui/core"
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid, GridRowsProp } from '@material-ui/data-grid';
 
 import { get, post } from "../../common/API";
 import QuizzerLayout from "./components/QuizzerLayout";
@@ -53,9 +53,24 @@ const columns = [
     },
 ];
 
-export default class SearchQuizPage extends React.Component{
+interface SearchQuizPageState {
+    file_num: number,
+    value: number[] | number,
+    checked: boolean,
+    message: string,
+    messageColor: "error" | "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | undefined,
+    searchResult: GridRowsProp,
+    query: string,
+    selected_category: string,
+    cond_question: boolean,
+    cond_answer: boolean,
+    filelistoption: JSX.Element[],
+    categorylistoption: JSX.Element[],
+}
+
+export default class SearchQuizPage extends React.Component<{},SearchQuizPageState>{
     componentDidMount(){
-        get("/namelist",(data) => {
+        get("/namelist",(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -74,24 +89,24 @@ export default class SearchQuizPage extends React.Component{
         })
     }
 
-    constructor(props){
+    constructor(props: any){
         super(props);
         this.selectedFileChange = this.selectedFileChange.bind(this);
         this.rangeSlider = this.rangeSlider.bind(this);
         this.state = {
             file_num: -1,
-            value: [0,100],
+            value: [0, 100],
             checked: false,
             message: '　',
             messageColor: 'initial',
-            searchResult: [],
-        }
+            //searchResult: [],
+        } as SearchQuizPageState
     }
 
-    selectedFileChange = (e) => {
+    selectedFileChange = (e: any) => {
         post("/get_category",{
             "file_num": e.target.value
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let categorylist = []
@@ -112,7 +127,7 @@ export default class SearchQuizPage extends React.Component{
     }
 
     rangeSlider = () => {
-        const handleChange = (event, newValue) => {
+        const handleChange = (event: React.ChangeEvent<{}>, newValue: number[] | number ) => {
             this.setState({value: newValue})
         };
     
@@ -143,14 +158,14 @@ export default class SearchQuizPage extends React.Component{
         post("/search",{
             "file_num": this.state.file_num,
             "query" : this.state.query,
-            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
-            "min_rate": this.state.value[0],
-            "max_rate": this.state.value[1],
+            "category": this.state.selected_category === "" ? null : this.state.selected_category,
+            "min_rate": Array.isArray(this.state.value) ? this.state.value[0] : this.state.value,
+            "max_rate": Array.isArray(this.state.value) ? this.state.value[1] : this.state.value,
             "cond": {
                 "question": this.state.cond_question,
                 "answer": this.state.cond_answer,
             }
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
@@ -234,7 +249,7 @@ export default class SearchQuizPage extends React.Component{
                             id="demo-simple-select"
                             defaultValue={-1}
                             // value={age}
-                            onChange={(e) => {this.setState({selected_category: e.target.value})}}
+                            onChange={(e) => {this.setState({selected_category: String(e.target.value)})}}
                         >
                             <MenuItem value={-1}>選択なし</MenuItem>
                             {this.state.categorylistoption}
@@ -248,10 +263,9 @@ export default class SearchQuizPage extends React.Component{
                     <FormControl>
                         <FormControlLabel
                             value="only-checked"
-                            control={<Checkbox color="primary" />}
+                            control={<Checkbox color="primary" onChange={(e) => this.setState({checked: e.target.checked})} />}
                             label="チェック済から出題"
                             labelPlacement="start"
-                            onChange={(e) => this.setState({checked: e.target.checked})}
                         />
                     </FormControl>
                 </FormGroup>
