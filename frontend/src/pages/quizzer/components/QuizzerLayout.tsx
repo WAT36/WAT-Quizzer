@@ -6,7 +6,11 @@ const adjustedSpaceStyle = {
     'height': '40px',
 }
 
-class QuizzerLayout extends React.Component{
+type Props = {
+    contents: JSX.Element;
+}
+
+class QuizzerLayout extends React.Component<Props,{}>{
 
     render(){
         return (
