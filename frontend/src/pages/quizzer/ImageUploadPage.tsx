@@ -16,24 +16,36 @@ const dropzoneStyle = {
     'padding': '10px',
     'border': '#ddd dashed 5px',
     'minHeight': '200px',
-    'textAlign': 'center',
+    'textAlign': 'center' as "center",
 }
 
-export default class ImageUploadPage extends React.Component {
+interface ImageUploadPageState {
+    message: string,
+    messageColor: "error" | "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | undefined,
+    isUploading: boolean,
+    images: ImageUploadReturnValue[]
+}
 
-    constructor(props) {
+interface ImageUploadReturnValue {
+    name: string,
+    isUploading: boolean,
+    url: string
+}
+
+export default class ImageUploadPage extends React.Component<{},ImageUploadPageState> {
+
+    constructor(props: any) {
         super(props);
         this.state = {
             message: '　',
             messageColor: 'initial',
-            selectedFile: undefined,
             isUploading: false,
             images: []
-        };
+        } as ImageUploadPageState;
         this.handleOnDrop = this.handleOnDrop.bind(this);
     }
 
-    handleOnDrop(files) {
+    handleOnDrop(files: File[]) {
         this.setState({ 
             isUploading: true,
             message: '　',
@@ -60,7 +72,7 @@ export default class ImageUploadPage extends React.Component {
             );
     }
 
-    uploadImage(file) {
+    uploadImage(file: File) {
         return axios.post(process.env.REACT_APP_API_SERVER + '/upload', {
             params: {
                 filename: file.name,
@@ -74,13 +86,16 @@ export default class ImageUploadPage extends React.Component {
             };
             return axios.put(res.data.url, file, options);
         }).then(res => {
-            const { name } = res.config.data;
+            const name = String(res.config.data);
             return {
                 name,
                 isUploading: true,
                 url: `https://`+ process.env.REACT_APP_S3_BUCKET_NAME +`.s3.amazonaws.com/${file.name}`
-            };
-        }).catch(e => console.log("frontend axioserrpr:",e));
+            } as ImageUploadReturnValue;
+        }).catch(e => {
+            console.log("frontend axioserrpr:",e)
+            return {} as ImageUploadReturnValue;
+        });
     }
 
     contents = () => {
