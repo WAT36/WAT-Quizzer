@@ -13,10 +13,33 @@ const buttonStyle = {
     'margin'     :  '10px',
 }
 
+interface EditQuizPageState {
+    file_num: number,
+    message: string,
+    messageColor: "error" | "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | undefined,
+    quiz_num: number,
+    edit_file_num: number,
+    edit_quiz_num: number,
+    edit_question: string,
+    edit_answer: string,
+    edit_category: string,
+    edit_image: string,
 
-export default class EditQuizPage extends React.Component{
+    value: number[] | number,
+    checked: boolean,
+    searchResult: GridRowsProp,
+    query: string,
+    selected_category: string,
+    cond_question: boolean,
+    cond_answer: boolean,
+    filelistoption: JSX.Element[],
+    categorylistoption: JSX.Element[],
+}
+
+
+export default class EditQuizPage extends React.Component<{},EditQuizPageState>{
     componentDidMount(){
-        get("/namelist",(data) => {
+        get("/namelist",(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -35,14 +58,13 @@ export default class EditQuizPage extends React.Component{
         })
     }
 
-    constructor(props){
+    constructor(props: any){
         super(props);
         this.state = {
             file_num: -1,
-            input_data: "",
             message: '　',
             messageColor: 'initial',
-        }
+        } as EditQuizPageState
     }
 
     getQuiz = () => {
@@ -63,7 +85,7 @@ export default class EditQuizPage extends React.Component{
         post("/get_quiz",{
             "file_num": this.state.file_num,
             "quiz_num": this.state.quiz_num
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
@@ -98,11 +120,11 @@ export default class EditQuizPage extends React.Component{
             "answer": this.state.edit_answer,
             "category": this.state.edit_category,
             "img_file": this.state.edit_image,
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
-                    edit_file_num: "",
+                    edit_file_num: -1
                     edit_quiz_num: "",
                     edit_question: "",
                     edit_answer: "",
