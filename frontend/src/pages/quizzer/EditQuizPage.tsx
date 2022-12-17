@@ -74,7 +74,7 @@ export default class EditQuizPage extends React.Component<{},EditQuizPageState>{
                 messageColor: 'error',
             })
             return;
-        }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
+        }else if(!this.state.quiz_num){
             this.setState({
                 message: 'エラー:問題番号を入力して下さい',
                 messageColor: 'error',
