@@ -190,6 +190,7 @@ export default class SelectQuizPage extends React.Component<{},SelectQuizPageSta
                         answer: "",
                         message: "問題[" + this.state.quiz_num + "] 正解+1! 登録しました",
                         messageColor: 'initial',
+                        expanded: !this.state.expanded
                     })
                 }else{
                     this.setState({
