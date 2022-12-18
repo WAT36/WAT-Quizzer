@@ -24,16 +24,7 @@ interface EditQuizPageState {
     edit_answer: string,
     edit_category: string,
     edit_image: string,
-
-    value: number[] | number,
-    checked: boolean,
-    searchResult: GridRowsProp,
-    query: string,
-    selected_category: string,
-    cond_question: boolean,
-    cond_answer: boolean,
     filelistoption: JSX.Element[],
-    categorylistoption: JSX.Element[],
 }
 
 
@@ -124,8 +115,8 @@ export default class EditQuizPage extends React.Component<{},EditQuizPageState>{
             if(data.status === 200){
                 data = data.body
                 this.setState({
-                    edit_file_num: -1
-                    edit_quiz_num: "",
+                    edit_file_num: -1,
+                    edit_quiz_num: -1,
                     edit_question: "",
                     edit_answer: "",
                     edit_category: "",
@@ -163,7 +154,7 @@ export default class EditQuizPage extends React.Component<{},EditQuizPageState>{
                             id="quiz-file-id"
                             defaultValue={-1}
                             // value={age}
-                            onChange={(e) => {this.setState({file_num: e.target.value});}}
+                            onChange={(e) => {this.setState({file_num: Number(e.target.value)})}}
                         >
                             <MenuItem value={-1} key={-1}>選択なし</MenuItem>
                             {this.state.filelistoption}
@@ -173,7 +164,7 @@ export default class EditQuizPage extends React.Component<{},EditQuizPageState>{
                     <FormControl>
                         <TextField 
                             label="問題番号" 
-                            onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
+                            onChange={(e) => { this.setState({quiz_num: Number(e.target.value) }); }}
                         />
                     </FormControl>
                 </FormGroup>
