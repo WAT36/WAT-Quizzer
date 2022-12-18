@@ -14,10 +14,18 @@ const buttonStyle = {
     'margin'     :  '10px',
 }
 
+interface AccuracyRateGraphPageState {
+    file_num: number,
+    message: string,
+    messageColor: "error" | "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | undefined,
+    accuracy_data: any,
+    filelistoption: JSX.Element[],
+}
 
-export default class AccuracyRateGraphPage extends React.Component{
+
+export default class AccuracyRateGraphPage extends React.Component<{},AccuracyRateGraphPageState>{
     componentDidMount(){
-        get("/namelist",(data) => {
+        get("/namelist",(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -36,14 +44,14 @@ export default class AccuracyRateGraphPage extends React.Component{
         })
     }
 
-    constructor(props){
+    constructor(props: any){
         super(props);
         this.displayChart = this.displayChart.bind(this);
         this.state = {
             file_num: -1,
             message: '　',
             messageColor: 'initial',
-        }
+        } as AccuracyRateGraphPageState
     }
 
     getAccuracy = () => {
@@ -57,7 +65,7 @@ export default class AccuracyRateGraphPage extends React.Component{
 
         post("/category/accuracy_rate",{
             "file_num": this.state.file_num
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
@@ -90,7 +98,7 @@ export default class AccuracyRateGraphPage extends React.Component{
 
         post("/category/renewal",{
             "file_num": this.state.file_num
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
@@ -123,7 +131,8 @@ export default class AccuracyRateGraphPage extends React.Component{
             return;
         }
 
-        let visualized_data = [
+        let visualized_data = []
+        visualized_data.push(
             [
                 'Name', 
                 'Accuracy_Rate', 
@@ -134,7 +143,7 @@ export default class AccuracyRateGraphPage extends React.Component{
             // ["Silver", 10.49, "silver", null],
             // ["Gold", 19.3, "gold", null],
             // ["Platinum", 21.45, "color: #e5e4e2", null],
-        ];
+        );
 
         // チェック済データ追加
         let checked_rate = display_data.checked_result
@@ -202,7 +211,7 @@ export default class AccuracyRateGraphPage extends React.Component{
                             id="quiz-file-id"
                             defaultValue={-1}
                             // value={age}
-                            onChange={(e) => {this.setState({file_num: e.target.value});}}
+                            onChange={(e) => {this.setState({file_num: Number(e.target.value)});}}
                         >
                             <MenuItem value={-1} key={-1}>選択なし</MenuItem>
                             {this.state.filelistoption}
