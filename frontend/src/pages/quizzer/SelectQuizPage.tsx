@@ -135,6 +135,7 @@ export default class SelectQuizPage extends React.Component<{},SelectQuizPageSta
                 this.setState({
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
+                    expanded: false,
                     message: '　',
                     messageColor: 'initial',
                 })
@@ -190,7 +191,7 @@ export default class SelectQuizPage extends React.Component<{},SelectQuizPageSta
                         answer: "",
                         message: "問題[" + this.state.quiz_num + "] 正解+1! 登録しました",
                         messageColor: 'initial',
-                        expanded: !this.state.expanded
+                        expanded: false
                     })
                 }else{
                     this.setState({
@@ -234,6 +235,7 @@ export default class SelectQuizPage extends React.Component<{},SelectQuizPageSta
                         answer: "",
                         message: "問題[" + this.state.quiz_num + "] 不正解+1.. 登録しました",
                         messageColor: 'initial',
+                        expanded: false,
                     })
                 }else{
                     this.setState({
@@ -300,6 +302,7 @@ export default class SelectQuizPage extends React.Component<{},SelectQuizPageSta
                     quiz_num: data[0].quiz_num,
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
+                    expanded: false,
                     message: '　',
                     messageColor: 'initial',
                 })
@@ -337,6 +340,7 @@ export default class SelectQuizPage extends React.Component<{},SelectQuizPageSta
                     quiz_num: data[0].quiz_num,
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
+                    expanded: false,
                     message: '　',
                     messageColor: 'initial',
                 })
@@ -374,6 +378,7 @@ export default class SelectQuizPage extends React.Component<{},SelectQuizPageSta
                     quiz_num: data[0].quiz_num,
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
+                    expanded: false,
                     message: '　',
                     messageColor: 'initial',
                 })
