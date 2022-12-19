@@ -72,6 +72,12 @@ export default class AddQuizPage extends React.Component<{},AddQuizPageState>{
                 messageColor: 'error',
             })
             return;
+        }else if(!this.state.input_data || this.state.input_data === ""){
+            this.setState({
+                message: 'エラー:追加する問題を入力して下さい',
+                messageColor: 'error',
+            })
+            return;
         }
 
         post("/add",{
