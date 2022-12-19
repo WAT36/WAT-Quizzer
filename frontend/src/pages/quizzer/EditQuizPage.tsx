@@ -181,11 +181,11 @@ export default class EditQuizPage extends React.Component<{},EditQuizPageState>{
                 <Card variant="outlined">
                     <CardContent>
                         <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            ファイル：{this.state.edit_file_num}
+                            ファイル：{this.state.edit_file_num === -1 ? '' : this.state.edit_file_num }
                         </Typography>
 
                         <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            問題番号：{this.state.edit_quiz_num}
+                            問題番号：{this.state.edit_quiz_num === -1 ? '' : this.state.edit_quiz_num }
                         </Typography>
 
                         <Typography variant="h6" component="h6" style={messageBoxStyle}>
