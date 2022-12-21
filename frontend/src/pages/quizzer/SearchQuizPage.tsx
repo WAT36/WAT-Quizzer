@@ -157,7 +157,7 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
 
         post("/search",{
             "file_num": this.state.file_num,
-            "query" : this.state.query,
+            "query" : this.state.query || "",
             "category": this.state.selected_category === "" ? null : this.state.selected_category,
             "min_rate": Array.isArray(this.state.value) ? this.state.value[0] : this.state.value,
             "max_rate": Array.isArray(this.state.value) ? this.state.value[1] : this.state.value,
@@ -170,7 +170,7 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
                 data = data.body
                 this.setState({
                     searchResult: data,
-                    message: 'Success!! 編集に成功しました',
+                    message: '　',
                     messageColor: 'initial',
                 })
             }else if(data.status === 404){
