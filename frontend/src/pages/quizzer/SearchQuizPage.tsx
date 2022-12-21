@@ -99,7 +99,7 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
             checked: false,
             message: '　',
             messageColor: 'initial',
-            //searchResult: [],
+            searchResult: [] as GridRowsProp,
         } as SearchQuizPageState
     }
 
