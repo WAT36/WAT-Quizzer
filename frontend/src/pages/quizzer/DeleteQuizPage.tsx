@@ -158,7 +158,7 @@ export default class DeleteQuizPage extends React.Component<{},DeleteQuizPageSta
     }
 
     deleteQuiz = () => {
-        if( !this.state.get_file_num || !this.state.get_quiz_num ){
+        if( (this.state.get_file_num == null) || (this.state.get_quiz_num == null) ){
             this.setState({
                 message: 'エラー:削除する問題を取得して下さい',
                 messageColor: 'error',
@@ -198,13 +198,13 @@ export default class DeleteQuizPage extends React.Component<{},DeleteQuizPageSta
     }
 
     integrateQuiz = () => {
-        if( !this.state.get_file_num || !this.state.get_quiz_num ){
+        if( (this.state.get_file_num == null) || (this.state.get_quiz_num == null) ){
             this.setState({
                 message: 'エラー:統合元(左)の問題を取得して下さい',
                 messageColor: 'error',
             })
             return;
-        }else if( !this.state.get_file_num || !this.state.integrate_to_quiz_num ){
+        }else if( (this.state.get_file_num == null) || (this.state.integrate_to_quiz_num == null) ){
             this.setState({
                 message: 'エラー:統合先(右)の問題を取得して下さい',
                 messageColor: 'error',
