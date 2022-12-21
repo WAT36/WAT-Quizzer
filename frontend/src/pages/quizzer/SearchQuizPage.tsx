@@ -37,19 +37,25 @@ const columns = [
         field: 'quiz_sentense',
         headerName: '問題',
         sortable: false,
-        width: 400,
+        width: 300,
     },
     {
         field: 'answer',
         headerName: '答え',
         sortable: false,
-        width: 400,
+        width: 300,
     },
     {
         field: 'category',
         headerName: 'カテゴリ',
         sortable: false,
-        width: 350,
+        width: 250,
+    },
+    {
+        field: 'accuracy_rate',
+        headerName: '正解率',
+        sortable: true,
+        width: 150,
     },
 ];
 
