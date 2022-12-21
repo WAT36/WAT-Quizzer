@@ -9,6 +9,7 @@ const getQuizSQL = `
     WHERE
         file_num = ?
         AND quiz_num = ?
+        AND deleted = 0
     ;
 `
 
@@ -32,6 +33,7 @@ let getRandomQuizSQLPre = `
         file_num = ?
     AND accuracy_rate >= ? 
     AND accuracy_rate <= ? 
+    AND deleted = 0 
 `
 
 // ランダムに問題取得
@@ -79,6 +81,7 @@ let getWorstRateQuizSQLPre = `
         quiz_view
     WHERE
         file_num = ?
+    AND deleted = 0 
 
 `
 
@@ -117,6 +120,7 @@ let getMinimumClearQuizSQLPre = `
         quiz_view
     WHERE
         file_num = ?
+    AND deleted = 0 
 
 `
 // 最小正解数問題取得
@@ -155,6 +159,7 @@ const getCorrectNumSQL = `
     WHERE
         file_num = ?
         AND quiz_num = ?
+        AND deleted = 0 
     ;
 `
 
@@ -167,6 +172,7 @@ const inputCorrectSQL = `
     WHERE
         file_num = ?
         AND quiz_num = ?
+        AND deleted = 0 
     ;
 `
 
@@ -198,6 +204,7 @@ const getIncorrectNumSQL = `
     WHERE
         file_num = ?
         AND quiz_num = ?
+        AND deleted = 0
     ;
 `
 
@@ -210,6 +217,7 @@ const inputIncorrectSQL = `
     WHERE
         file_num = ?
         AND quiz_num = ?
+        AND deleted = 0
     ;
 `
 
@@ -283,6 +291,7 @@ const getCountSQL = `
         quiz 
     WHERE 
         file_num = ?
+    AND deleted = 0
 `
 
 // 問題追加
@@ -390,6 +399,7 @@ let searchQuizSQLPre = `
         file_num = ?
     AND accuracy_rate >= ? 
     AND accuracy_rate <= ? 
+    AND deleted = 0 
 `
 
 // 問題検索
