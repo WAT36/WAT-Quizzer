@@ -1,4 +1,4 @@
-const database = require('../../common/Database');
+import { execQuery } from '../../common/Database';
 
 // SQL 
 const getFileListSQL = `
@@ -11,15 +11,11 @@ const getFileListSQL = `
 `
 
 // 問題ファイルリスト取得
-const getFileList = async () => {
+export const getFileList = async () => {
     try{
-        let data = await database.execQuery(getFileListSQL,[]);
+        let data = await execQuery(getFileListSQL,[]);
         return data
     }catch(error){
         throw error;
     }
-}
-
-module.exports = {
-    getFileList
 }
