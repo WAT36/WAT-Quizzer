@@ -1,6 +1,6 @@
-const log4js = require('log4js');
-const dotenv = require('dotenv');
-const path = require("path");
+import log4js from 'log4js';
+import dotenv from 'dotenv';
+import path from "path";
 
 const env = dotenv.config({path: path.join(__dirname, "../../config/.env")})
 
