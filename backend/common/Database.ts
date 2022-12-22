@@ -1,6 +1,6 @@
-const dotenv = require("dotenv");
-const path = require("path");
-const mysql = require("mysql2");
+import dotenv from "dotenv";
+import path from "path";
+import mysql from "mysql2";
 
 const env = dotenv.config({ path: path.join(__dirname, "../../config/.env") });
 
@@ -9,7 +9,7 @@ const dbinfo = {
   host: process.env.DB_HOSTNAME,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  port: Number(process.env.DB_PORT),
   database: process.env.DB_DBNAME,
 };
 
@@ -18,12 +18,12 @@ const english_dbinfo = {
   host: process.env.DB_HOSTNAME,
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  port: Number(process.env.DB_PORT),
   database: process.env.DB_ENGLISHDBNAME,
 };
 
 // SQLを実行する
-const execQuery = async (query, value) => {
+const execQuery = async (query: string, value:(string | number)[]) => {
   try {
     // DB接続
     const connection = mysql.createConnection(dbinfo);
@@ -47,7 +47,7 @@ const execQuery = async (query, value) => {
 };
 
 // (英語DBへ)SQLを実行する
-const execQueryForEnglish = async (query, value) => {
+const execQueryForEnglish = async (query: string, value:(string | number)[]) => {
   try {
     // DB接続
     const connection = mysql.createConnection(english_dbinfo);
