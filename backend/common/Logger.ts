@@ -22,10 +22,6 @@ log4js.configure({
 });
 
 // バックエンド用ロガー取得
-const getBackendLogger = () => {
+export const getBackendLogger = () => {
     return log4js.getLogger();
-}
-
-module.exports = {
-    getBackendLogger
 }

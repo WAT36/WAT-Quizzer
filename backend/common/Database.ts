@@ -23,7 +23,7 @@ const english_dbinfo = {
 };
 
 // SQLを実行する
-const execQuery = async (query: string, value:(string | number)[]) => {
+export const execQuery = async (query: string, value:(string | number)[]) => {
   try {
     // DB接続
     const connection = mysql.createConnection(dbinfo);
@@ -47,7 +47,7 @@ const execQuery = async (query: string, value:(string | number)[]) => {
 };
 
 // (英語DBへ)SQLを実行する
-const execQueryForEnglish = async (query: string, value:(string | number)[]) => {
+export const execQueryForEnglish = async (query: string, value:(string | number)[]) => {
   try {
     // DB接続
     const connection = mysql.createConnection(english_dbinfo);
@@ -68,9 +68,4 @@ const execQueryForEnglish = async (query: string, value:(string | number)[]) => 
   } catch (error) {
     throw error;
   }
-};
-
-module.exports = {
-  execQuery,
-  execQueryForEnglish,
 };
