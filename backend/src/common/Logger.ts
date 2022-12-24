@@ -2,7 +2,7 @@ import log4js from 'log4js';
 import dotenv from 'dotenv';
 import path from "path";
 
-const env = dotenv.config({path: path.join(__dirname, "../../config/.env")})
+const env = dotenv.config({path: path.join(__dirname, "../../../config/.env")})
 
 log4js.configure({
     appenders: {

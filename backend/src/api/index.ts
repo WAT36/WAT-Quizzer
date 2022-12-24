@@ -1,5 +1,5 @@
-import express from 'express';
-const router = express.Router()
+import express from 'express'
+const app: express.Express = express()
 
 import { getBackendLogger } from "../common/Logger";
 const logger = getBackendLogger()
@@ -13,11 +13,12 @@ import { getPartsofSpeechService } from "../services/english/PartsofSpeechServic
 import { addWordAndMeanService, getWordMeanService, searchWordService } from "../services/english/WordService";
 
 /* GET home page. */
-router.get("/", function (req, res, next) {
+app.get("/", function (req, res, next) {
+  logger.debug("/")
   res.send("Welcome to Quizzer!!")
 })
 
-router.get("/namelist", function (req, res) {
+app.get("/namelist", function (req, res) {
   getQuizFileListService()
     .then((result:any) => {
       logger.debug("/namelist")
@@ -30,7 +31,7 @@ router.get("/namelist", function (req, res) {
     })
 })
 
-router.post("/get_category", function (req, res) {
+app.post("/get_category", function (req, res) {
   getCategoryListService(req.body.file_num)
     .then((result:any) => {
       logger.debug("/get_category")
@@ -43,7 +44,7 @@ router.post("/get_category", function (req, res) {
     })
 })
 
-router.post("/get_quiz", function (req, res) {
+app.post("/get_quiz", function (req, res) {
   getQuizService(req.body.file_num, req.body.quiz_num)
     .then((result:any) => {
       if (result.length > 0) {
@@ -61,7 +62,7 @@ router.post("/get_quiz", function (req, res) {
     })
 })
 
-router.post("/random", function (req, res) {
+app.post("/random", function (req, res) {
   getRandomQuizService(
     req.body.file_num,
     req.body.min_rate,
@@ -85,7 +86,7 @@ router.post("/random", function (req, res) {
     })
 })
 
-router.post("/worst_rate", function (req, res) {
+app.post("/worst_rate", function (req, res) {
   getWorstRateQuizService(
     req.body.file_num,
     req.body.category,
@@ -107,7 +108,7 @@ router.post("/worst_rate", function (req, res) {
     })
 })
 
-router.post("/minimum_clear", function (req, res) {
+app.post("/minimum_clear", function (req, res) {
   getMinimumClearQuizService(
     req.body.file_num,
     req.body.category,
@@ -129,7 +130,7 @@ router.post("/minimum_clear", function (req, res) {
     })
 })
 
-router.post("/correct", function (req, res) {
+app.post("/correct", function (req, res) {
   correctRegisterService(req.body.file_num, req.body.quiz_num)
     .then((result:any) => {
       logger.debug("/correct")
@@ -142,7 +143,7 @@ router.post("/correct", function (req, res) {
     })
 })
 
-router.post("/incorrect", function (req, res) {
+app.post("/incorrect", function (req, res) {
   incorrectRegisterService(req.body.file_num, req.body.quiz_num)
     .then((result:any) => {
       logger.debug("/incorrect")
@@ -155,7 +156,7 @@ router.post("/incorrect", function (req, res) {
     })
 })
 
-router.post("/add", function (req, res) {
+app.post("/add", function (req, res) {
   addQuizService(req.body.file_num, req.body.data)
     .then((result:any) => {
       logger.debug("/add")
@@ -168,7 +169,7 @@ router.post("/add", function (req, res) {
     })
 })
 
-router.post("/edit", function (req, res) {
+app.post("/edit", function (req, res) {
   editQuizService(
     req.body.file_num,
     req.body.quiz_num,
@@ -188,7 +189,7 @@ router.post("/edit", function (req, res) {
     })
 })
 
-router.post("/search", function (req, res) {
+app.post("/search", function (req, res) {
   searchQuizService(
     req.body.file_num,
     req.body.min_rate,
@@ -214,7 +215,7 @@ router.post("/search", function (req, res) {
     })
 })
 
-router.post("/delete", function (req, res) {
+app.post("/delete", function (req, res) {
   deleteQuizService(req.body.file_num, req.body.quiz_num)
     .then((result:any) => {
       logger.debug("/delete")
@@ -227,7 +228,7 @@ router.post("/delete", function (req, res) {
     })
 })
 
-router.post("/integrate", function (req, res) {
+app.post("/integrate", function (req, res) {
   integrateQuizService(
     req.body.pre_file_num,
     req.body.pre_quiz_num,
@@ -245,7 +246,7 @@ router.post("/integrate", function (req, res) {
     })
 })
 
-router.post("/category/renewal", function (req, res) {
+app.post("/category/renewal", function (req, res) {
   replaceAllCategoryService(req.body.file_num)
     .then((result:any) => {
       logger.debug("/category/renewal")
@@ -258,7 +259,7 @@ router.post("/category/renewal", function (req, res) {
     })
 })
 
-router.post("/category/accuracy_rate", function (req, res) {
+app.post("/category/accuracy_rate", function (req, res) {
   getAccuracyRateByCategoryService(req.body.file_num)
     .then((result:any) => {
       logger.debug("/category/accuracy_rate")
@@ -271,7 +272,7 @@ router.post("/category/accuracy_rate", function (req, res) {
     })
 })
 
-router.post("/upload", (req, res) => {
+app.post("/upload", (req, res) => {
   upload(req.body.params)
     .then((url:any) => {
       logger.debug("/upload")
@@ -287,7 +288,7 @@ router.post("/upload", (req, res) => {
 //以下は英語版
 /////////////////
 
-router.get("/english/partsofspeech", function (req, res) {
+app.get("/english/partsofspeech", function (req, res) {
   getPartsofSpeechService()
     .then((result:any) => {
       logger.debug("/english/partsofspeech")
@@ -307,7 +308,7 @@ router.get("/english/partsofspeech", function (req, res) {
 //  }
 //  ・・・
 // ]
-router.post("/english/word/add", function (req, res) {
+app.post("/english/word/add", function (req, res) {
   addWordAndMeanService(
     req.body.wordName,
     req.body.pronounce,
@@ -330,7 +331,7 @@ router.post("/english/word/add", function (req, res) {
  *  wordName: 単語名
  * }
  */
-router.post("/english/word/search", function (req, res) {
+app.post("/english/word/search", function (req, res) {
   searchWordService(req.body.wordName)
     .then((result:any) => {
       logger.debug("/english/word/search")
@@ -349,7 +350,7 @@ router.post("/english/word/search", function (req, res) {
  *  wordName: 単語名
  * }
  */
-router.post("/english/word/mean", function (req, res) {
+app.post("/english/word/mean", function (req, res) {
   getWordMeanService(req.body.wordName)
     .then((result:any) => {
       logger.debug("/english/word/mean")
@@ -362,4 +363,9 @@ router.post("/english/word/mean", function (req, res) {
     })
 })
 
-module.exports = router
+const backendPort = process.env.BACKEND_PORT || 4000
+app.listen(backendPort,()=>{
+  console.log(`ポート${backendPort}番で起動しました。`)
+})
+
+//module.exports = router
