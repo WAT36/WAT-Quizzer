@@ -1,11 +1,9 @@
-require('promise');
-
-const CategoryDao = require('./dao/CategoryDao');
+import {getAccuracyRateByCategory, getCategoryList, replaceAllCategory} from './dao/CategoryDao';
 
 // 問題ファイルのカテゴリリスト取得
-const getCategoryList = (file_num) => {
+export const getCategoryListService = (file_num: number) => {
     return new Promise((resolve, reject) =>{
-        CategoryDao.getCategoryList(file_num)
+        getCategoryList(file_num)
             .then((result) => {
                 resolve(result);
             })
@@ -16,9 +14,9 @@ const getCategoryList = (file_num) => {
 };
 
 // カテゴリリスト総入れ替え（更新）
-const replaceAllCategory = (file_num) => {
+export const replaceAllCategoryService = (file_num: number) => {
     return new Promise((resolve, reject) =>{
-        CategoryDao.replaceAllCategory(file_num)
+        replaceAllCategory(file_num)
             .then((result) => {
                 resolve(result);
             })
@@ -29,9 +27,9 @@ const replaceAllCategory = (file_num) => {
 };
 
 // カテゴリ毎の正解率取得
-const getAccuracyRateByCategory = (file_num) => {
+export const getAccuracyRateByCategoryService = (file_num: number) => {
     return new Promise((resolve, reject) =>{
-        CategoryDao.getAccuracyRateByCategory(file_num)
+        getAccuracyRateByCategory(file_num)
             .then((result) => {
                 resolve(result);
             })
@@ -39,11 +37,4 @@ const getAccuracyRateByCategory = (file_num) => {
                 reject(error);
             });
     });
-}
-
-// モジュール化
-module.exports = {
-    getCategoryList,
-    replaceAllCategory,
-    getAccuracyRateByCategory,
 }
