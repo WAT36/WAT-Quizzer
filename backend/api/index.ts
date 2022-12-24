@@ -9,7 +9,7 @@ import { getAccuracyRateByCategoryService, getCategoryListService, replaceAllCat
 import { addQuizService, correctRegisterService, deleteQuizService, editQuizService, getMinimumClearQuizService, getQuizService, getRandomQuizService, getWorstRateQuizService, incorrectRegisterService, integrateQuizService, searchQuizService } from "../services/QuizService";
 import { upload } from "../aws/S3Service";
 
-import PartsofSpeechService from "../services/english/PartsofSpeechService";
+import { getPartsofSpeechService } from "../services/english/PartsofSpeechService";
 import WordService from "../services/english/WordService";
 
 /* GET home page. */
@@ -288,7 +288,7 @@ router.post("/upload", (req, res) => {
 /////////////////
 
 router.get("/english/partsofspeech", function (req, res) {
-  PartsofSpeechService.getPartsofSpeech()
+  getPartsofSpeechService()
     .then((result:any) => {
       logger.debug("/english/partsofspeech")
       res.status(200).send(result)
