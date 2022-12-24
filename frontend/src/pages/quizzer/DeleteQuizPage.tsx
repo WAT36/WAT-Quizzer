@@ -15,13 +15,32 @@ const buttonStyle = {
 
 const paperStyle = {
     'width': '40%',
-    'float': 'left',
+    'float': 'left' as "left",
     'margin' : '5px',
 }
 
-export default class DeleteQuizPage extends React.Component{
+interface DeleteQuizPageState {
+    file_num: number,
+    message: string,
+    messageColor: "error" | "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | undefined,
+    filelistoption: JSX.Element[],
+    quiz_num: number,
+    get_file_num: number | null,
+    get_quiz_num: number | null,
+    question: string,
+    answer: string,
+    category: string,
+    image: string,
+    integrate_to_quiz_num: number | null,
+    integrate_to_question: string,
+    integrate_to_answer: string,
+    integrate_to_category: string,
+    integrate_to_image: string,
+}
+
+export default class DeleteQuizPage extends React.Component<{},DeleteQuizPageState>{
     componentDidMount(){
-        get("/namelist",(data) => {
+        get("/namelist",(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -40,14 +59,13 @@ export default class DeleteQuizPage extends React.Component{
         })
     }
 
-    constructor(props){
+    constructor(props: any){
         super(props);
         this.state = {
             file_num: -1,
-            input_data: "",
             message: '　',
             messageColor: 'initial',
-        }
+        } as DeleteQuizPageState
     }
 
     getQuiz = () => {
@@ -57,7 +75,7 @@ export default class DeleteQuizPage extends React.Component{
                 messageColor: 'error',
             })
             return;
-        }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
+        }else if(!this.state.quiz_num){
             this.setState({
                 message: 'エラー:問題番号を入力して下さい',
                 messageColor: 'error',
@@ -68,7 +86,7 @@ export default class DeleteQuizPage extends React.Component{
         post("/get_quiz",{
             "file_num": this.state.file_num,
             "quiz_num": this.state.quiz_num
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
@@ -102,7 +120,7 @@ export default class DeleteQuizPage extends React.Component{
                 messageColor: 'error',
             })
             return;
-        }else if(this.state.integrate_to_quiz_num === undefined || this.state.integrate_to_quiz_num === null || this.state.integrate_to_quiz_num === ""){
+        }else if(!this.state.integrate_to_quiz_num){
             this.setState({
                 message: 'エラー:問題番号を入力して下さい',
                 messageColor: 'error',
@@ -113,7 +131,7 @@ export default class DeleteQuizPage extends React.Component{
         post("/get_quiz",{
             "file_num": this.state.get_file_num,
             "quiz_num": this.state.integrate_to_quiz_num
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
@@ -140,8 +158,7 @@ export default class DeleteQuizPage extends React.Component{
     }
 
     deleteQuiz = () => {
-        if( (this.state.get_file_num === undefined || this.state.get_file_num === null || this.state.get_file_num === -1 ) || 
-            (this.state.get_quiz_num === undefined || this.state.get_quiz_num === null || this.state.get_quiz_num === "")){
+        if( (this.state.get_file_num == null) || (this.state.get_quiz_num == null) ){
             this.setState({
                 message: 'エラー:削除する問題を取得して下さい',
                 messageColor: 'error',
@@ -152,7 +169,7 @@ export default class DeleteQuizPage extends React.Component{
         post("/delete",{
             "file_num": this.state.get_file_num,
             "quiz_num": this.state.get_quiz_num
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let quiz_num = '['+this.state.get_file_num+'-'+this.state.get_quiz_num+']'
@@ -181,15 +198,13 @@ export default class DeleteQuizPage extends React.Component{
     }
 
     integrateQuiz = () => {
-        if( (this.state.get_file_num === undefined || this.state.get_file_num === null || this.state.get_file_num === -1 ) || 
-            (this.state.get_quiz_num === undefined || this.state.get_quiz_num === null || this.state.get_quiz_num === "")){
+        if( (this.state.get_file_num == null) || (this.state.get_quiz_num == null) ){
             this.setState({
                 message: 'エラー:統合元(左)の問題を取得して下さい',
                 messageColor: 'error',
             })
             return;
-        }else if(   (this.state.get_file_num === undefined || this.state.get_file_num === null || this.state.get_file_num === -1 ) || 
-                    (this.state.integrate_to_quiz_num === undefined || this.state.integrate_to_quiz_num === null || this.state.integrate_to_quiz_num === "")){
+        }else if( (this.state.get_file_num == null) || (this.state.integrate_to_quiz_num == null) ){
             this.setState({
                 message: 'エラー:統合先(右)の問題を取得して下さい',
                 messageColor: 'error',
@@ -202,7 +217,7 @@ export default class DeleteQuizPage extends React.Component{
             "pre_quiz_num": this.state.get_quiz_num,
             "post_file_num": this.state.get_file_num,
             "post_quiz_num": this.state.integrate_to_quiz_num
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let quiz_num = '['+this.state.get_file_num+':'+this.state.get_quiz_num+'->'+this.state.integrate_to_quiz_num+']'
@@ -264,7 +279,7 @@ export default class DeleteQuizPage extends React.Component{
                                         id="quiz-file-id"
                                         defaultValue={-1}
                                         // value={age}
-                                        onChange={(e) => {this.setState({file_num: e.target.value});}}
+                                        onChange={(e) => {this.setState({file_num: Number(e.target.value)});}}
                                     >
                                         <MenuItem value={-1} key={-1}>選択なし</MenuItem>
                                         {this.state.filelistoption}
@@ -274,7 +289,7 @@ export default class DeleteQuizPage extends React.Component{
                                 <FormControl>
                                     <TextField 
                                         label="問題番号" 
-                                        onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
+                                        onChange={(e) => { this.setState({quiz_num: Number(e.target.value)}); }}
                                     />
                                 </FormControl>
                             </FormGroup>
@@ -352,7 +367,7 @@ export default class DeleteQuizPage extends React.Component{
                                 <FormControl>
                                     <TextField 
                                         label="問題番号" 
-                                        onChange={(e) => { this.setState({integrate_to_quiz_num: e.target.value}); }}
+                                        onChange={(e) => { this.setState({integrate_to_quiz_num: Number(e.target.value)}); }}
                                     />
                                 </FormControl>
                             </FormGroup>

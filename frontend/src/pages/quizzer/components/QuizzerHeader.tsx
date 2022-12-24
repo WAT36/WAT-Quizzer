@@ -1,12 +1,12 @@
 import React from "react";
 
 const headerStyle = {
-    'position': 'fixed',
+    'position': 'fixed' as 'fixed',
     'top': 0,
     'width': '100%',
     'height': '30px',
     'backgroundColor': '#0077B6',
-    'z-index': '10000',
+    'zIndex': '10000',
 }
 
 const titleStyle = {

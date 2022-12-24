@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from '@material-ui/core';
 
 const footerStyle = {
-    'position': 'fixed',
+    'position': 'fixed' as 'fixed',
     'bottom': 0,
     'width': '100%',
     'height': '30px',
@@ -12,13 +12,13 @@ const footerStyle = {
 }
 
 const leftStyle = {
-    'position': 'absolute',/*←絶対位置*/
+    'position': 'absolute' as 'absolute', /*←絶対位置*/
     'left': '0px',
     'lineHeight': '30px',
 }
 
 const rightStyle = {
-    'position': 'absolute',/*←絶対位置*/
+    'position': 'absolute' as 'absolute',/*←絶対位置*/
     'right': '10px',
     'lineHeight': '30px',
 }

@@ -50,8 +50,8 @@ router.post('/get_quiz', function (req, res) {
         res.status(200).send(result)
       } else {
         logger.error('/get_quiz')
+        logger.error('404 Not Found')
         res.status(404).send(result)
-        logger.error(error)
       }
     })
     .catch((error) => {
@@ -74,7 +74,7 @@ router.post('/random', function (req, res) {
         res.status(200).send(result)
       } else {
         logger.error('/random')
-        logger.error(error)
+        logger.error('404 Not Found')
         res.status(404).send(result)
       }
     })
@@ -203,6 +203,7 @@ router.post('/search', function (req, res) {
         res.status(200).send(result)
       } else {
         logger.error('/search')
+        logger.error('404 Not Found')
         res.status(404).send(result)
       }
     })
@@ -275,7 +276,7 @@ router.post('/upload', (req, res) => {
       logger.debug('/upload')
       res.json({ url: url })
     })
-    .catch((e) => {
+    .catch((error) => {
       logger.error('/upload')
       logger.error(error)
     })

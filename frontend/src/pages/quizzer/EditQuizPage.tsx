@@ -13,10 +13,24 @@ const buttonStyle = {
     'margin'     :  '10px',
 }
 
+interface EditQuizPageState {
+    file_num: number,
+    message: string,
+    messageColor: "error" | "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | undefined,
+    quiz_num: number,
+    edit_file_num: number,
+    edit_quiz_num: number,
+    edit_question: string,
+    edit_answer: string,
+    edit_category: string,
+    edit_image: string,
+    filelistoption: JSX.Element[],
+}
 
-export default class EditQuizPage extends React.Component{
+
+export default class EditQuizPage extends React.Component<{},EditQuizPageState>{
     componentDidMount(){
-        get("/namelist",(data) => {
+        get("/namelist",(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -35,14 +49,13 @@ export default class EditQuizPage extends React.Component{
         })
     }
 
-    constructor(props){
+    constructor(props: any){
         super(props);
         this.state = {
             file_num: -1,
-            input_data: "",
             message: '　',
             messageColor: 'initial',
-        }
+        } as EditQuizPageState
     }
 
     getQuiz = () => {
@@ -52,7 +65,7 @@ export default class EditQuizPage extends React.Component{
                 messageColor: 'error',
             })
             return;
-        }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
+        }else if(!this.state.quiz_num){
             this.setState({
                 message: 'エラー:問題番号を入力して下さい',
                 messageColor: 'error',
@@ -63,7 +76,7 @@ export default class EditQuizPage extends React.Component{
         post("/get_quiz",{
             "file_num": this.state.file_num,
             "quiz_num": this.state.quiz_num
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
@@ -98,12 +111,12 @@ export default class EditQuizPage extends React.Component{
             "answer": this.state.edit_answer,
             "category": this.state.edit_category,
             "img_file": this.state.edit_image,
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
-                    edit_file_num: "",
-                    edit_quiz_num: "",
+                    edit_file_num: -1,
+                    edit_quiz_num: -1,
                     edit_question: "",
                     edit_answer: "",
                     edit_category: "",
@@ -141,7 +154,7 @@ export default class EditQuizPage extends React.Component{
                             id="quiz-file-id"
                             defaultValue={-1}
                             // value={age}
-                            onChange={(e) => {this.setState({file_num: e.target.value});}}
+                            onChange={(e) => {this.setState({file_num: Number(e.target.value)})}}
                         >
                             <MenuItem value={-1} key={-1}>選択なし</MenuItem>
                             {this.state.filelistoption}
@@ -151,7 +164,7 @@ export default class EditQuizPage extends React.Component{
                     <FormControl>
                         <TextField 
                             label="問題番号" 
-                            onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
+                            onChange={(e) => { this.setState({quiz_num: Number(e.target.value) }); }}
                         />
                     </FormControl>
                 </FormGroup>
@@ -168,11 +181,11 @@ export default class EditQuizPage extends React.Component{
                 <Card variant="outlined">
                     <CardContent>
                         <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            ファイル：{this.state.edit_file_num}
+                            ファイル：{this.state.edit_file_num === -1 ? '' : this.state.edit_file_num }
                         </Typography>
 
                         <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                            問題番号：{this.state.edit_quiz_num}
+                            問題番号：{this.state.edit_quiz_num === -1 ? '' : this.state.edit_quiz_num }
                         </Typography>
 
                         <Typography variant="h6" component="h6" style={messageBoxStyle}>

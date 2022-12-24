@@ -13,9 +13,24 @@ const messageBoxStyle = {
     'borderStyle'  : 'none'
 }
 
-export default class SelectQuizPage extends React.Component{
+interface SelectQuizPageState {
+    filelistoption: JSX.Element[],
+    categorylistoption: JSX.Element[],
+    file_num: number,
+    quiz_num: number,
+    quiz_sentense: string,
+    answer: string,
+    selected_category: string,
+    expanded: boolean,
+    value: number[] | number,
+    checked: boolean,
+    message: string,
+    messageColor: "error" | "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | undefined,
+}
+
+export default class SelectQuizPage extends React.Component<{},SelectQuizPageState>{
     componentDidMount(){
-        get("/namelist",(data) => {
+        get("/namelist",(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -34,7 +49,7 @@ export default class SelectQuizPage extends React.Component{
         })
     }
 
-    constructor(props){
+    constructor(props: any){
         super(props);
         this.selectedFileChange = this.selectedFileChange.bind(this);
         this.rangeSlider = this.rangeSlider.bind(this);
@@ -50,11 +65,11 @@ export default class SelectQuizPage extends React.Component{
             checked: false,
             message: '　',
             messageColor: 'initial',
-        }
+        } as SelectQuizPageState
     }
 
     rangeSlider = () => {
-        const handleChange = (event, newValue) => {
+        const handleChange = (event: React.ChangeEvent<{}>, newValue: number[] | number ) => {
             this.setState({value: newValue})
         };
     
@@ -73,10 +88,10 @@ export default class SelectQuizPage extends React.Component{
         );
     } 
 
-    selectedFileChange = (e) => {
+    selectedFileChange = (e: any) => {
         post("/get_category",{
             "file_num": e.target.value
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let categorylist = []
@@ -103,7 +118,7 @@ export default class SelectQuizPage extends React.Component{
                 messageColor: 'error',
             })
             return;
-        }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
+        }else if(!this.state.quiz_num){
             this.setState({
                 message: 'エラー:問題番号を入力して下さい',
                 messageColor: 'error',
@@ -114,12 +129,13 @@ export default class SelectQuizPage extends React.Component{
         post("/get_quiz",{
             "file_num": this.state.file_num,
             "quiz_num": this.state.quiz_num
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
+                    expanded: false,
                     message: '　',
                     messageColor: 'initial',
                 })
@@ -149,7 +165,7 @@ export default class SelectQuizPage extends React.Component{
                     messageColor: 'error',
                 })
                 return;
-            }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
+            }else if(!this.state.quiz_num){
                 this.setState({
                     message: 'エラー:問題番号を入力して下さい',
                     messageColor: 'error',
@@ -167,7 +183,7 @@ export default class SelectQuizPage extends React.Component{
             post("/correct",{
                 "file_num": this.state.file_num,
                 "quiz_num": this.state.quiz_num
-            },(data) => {
+            },(data: any) => {
                 if(data.status === 200){
                     data = data.body
                     this.setState({
@@ -175,6 +191,7 @@ export default class SelectQuizPage extends React.Component{
                         answer: "",
                         message: "問題[" + this.state.quiz_num + "] 正解+1! 登録しました",
                         messageColor: 'initial',
+                        expanded: false
                     })
                 }else{
                     this.setState({
@@ -192,7 +209,7 @@ export default class SelectQuizPage extends React.Component{
                     messageColor: 'error',
                 })
                 return;
-            }else if(this.state.quiz_num === undefined || this.state.quiz_num === null || this.state.quiz_num === ""){
+            }else if(!this.state.quiz_num){
                 this.setState({
                     message: 'エラー:問題番号を入力して下さい',
                     messageColor: 'error',
@@ -210,7 +227,7 @@ export default class SelectQuizPage extends React.Component{
             post("/incorrect",{
                 "file_num": this.state.file_num,
                 "quiz_num": this.state.quiz_num
-            },(data) => {
+            },(data: any) => {
                 if(data.status === 200){
                     data = data.body
                     this.setState({
@@ -218,6 +235,7 @@ export default class SelectQuizPage extends React.Component{
                         answer: "",
                         message: "問題[" + this.state.quiz_num + "] 不正解+1.. 登録しました",
                         messageColor: 'initial',
+                        expanded: false,
                     })
                 }else{
                     this.setState({
@@ -273,17 +291,18 @@ export default class SelectQuizPage extends React.Component{
         }
         post("/random",{
             "file_num": this.state.file_num,
-            "min_rate": this.state.value[0],
-            "max_rate": this.state.value[1],
-            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
+            "min_rate": Array.isArray(this.state.value) ? this.state.value[0] : this.state.value,
+            "max_rate": Array.isArray(this.state.value) ? this.state.value[1] : this.state.value,
+            "category": this.state.selected_category === "" ? null : this.state.selected_category,
             "checked" : this.state.checked,
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
                     quiz_num: data[0].quiz_num,
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
+                    expanded: false,
                     message: '　',
                     messageColor: 'initial',
                 })
@@ -312,15 +331,16 @@ export default class SelectQuizPage extends React.Component{
         }
         post("/worst_rate",{
             "file_num": this.state.file_num,
-            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
+            "category": this.state.selected_category === "" ? null : this.state.selected_category,
             "checked" : this.state.checked,
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
                     quiz_num: data[0].quiz_num,
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
+                    expanded: false,
                     message: '　',
                     messageColor: 'initial',
                 })
@@ -349,15 +369,16 @@ export default class SelectQuizPage extends React.Component{
         }
         post("/minimum_clear",{
             "file_num": this.state.file_num,
-            "category": this.state.selected_category === -1 ? null : this.state.selected_category,
+            "category": this.state.selected_category === "" ? null : this.state.selected_category,
             "checked" : this.state.checked,
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
                     quiz_num: data[0].quiz_num,
                     quiz_sentense: data[0].quiz_sentense,
                     answer: data[0].answer,
+                    expanded: false,
                     message: '　',
                     messageColor: 'initial',
                 })
@@ -407,7 +428,7 @@ export default class SelectQuizPage extends React.Component{
                     <FormControl>
                         <TextField 
                             label="問題番号" 
-                            onChange={(e) => { this.setState({quiz_num: e.target.value}); }}
+                            onChange={(e) => { this.setState({quiz_num: Number(e.target.value)}); }}
                         />
                     </FormControl>
 
@@ -416,9 +437,9 @@ export default class SelectQuizPage extends React.Component{
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            defaultValue={-1}
+                            defaultValue={""}
                             // value={age}
-                            onChange={(e) => {this.setState({selected_category: e.target.value})}}
+                            onChange={(e) => {this.setState({selected_category: String(e.target.value)})}}
                         >
                             <MenuItem value={-1}>選択なし</MenuItem>
                             {this.state.categorylistoption}
@@ -432,10 +453,9 @@ export default class SelectQuizPage extends React.Component{
                     <FormControl>
                         <FormControlLabel
                             value="only-checked"
-                            control={<Checkbox color="primary" />}
+                            control={<Checkbox color="primary" onChange={(e) => this.setState({checked: e.target.checked})}/>}
                             label="チェック済から出題"
                             labelPlacement="start"
-                            onChange={(e) => this.setState({checked: e.target.checked})}
                         />
                     </FormControl>
                 </FormGroup>

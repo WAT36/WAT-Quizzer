@@ -19,9 +19,18 @@ const typoStyles = {
     },
 }
 
-export default class AddQuizPage extends React.Component{
+interface AddQuizPageState {
+    file_num: number,
+    input_data: string,
+    message: string,
+    messageColor: "error" | "initial" | "inherit" | "primary" | "secondary" | "textPrimary" | "textSecondary" | undefined,
+    addLog: any,
+    filelistoption: JSX.Element[],
+}
+
+export default class AddQuizPage extends React.Component<{},AddQuizPageState>{
     componentDidMount(){
-        get("/namelist",(data) => {
+        get("/namelist",(data: any) => {
             if(data.status === 200){
                 data = data.body
                 let filelist = []
@@ -40,17 +49,17 @@ export default class AddQuizPage extends React.Component{
         })
     }
 
-    constructor(props){
+    constructor(props: any){
         super(props);
         this.state = {
             file_num: -1,
             input_data: "",
             message: '　',
             messageColor: 'initial',
-        }
+        } as AddQuizPageState
     }
 
-    selectedFileChange = (e) => {
+    selectedFileChange = (e: any) => {
         this.setState({
             file_num: e.target.value,
         })
@@ -63,12 +72,18 @@ export default class AddQuizPage extends React.Component{
                 messageColor: 'error',
             })
             return;
+        }else if(!this.state.input_data || this.state.input_data === ""){
+            this.setState({
+                message: 'エラー:追加する問題を入力して下さい',
+                messageColor: 'error',
+            })
+            return;
         }
 
         post("/add",{
             "file_num": this.state.file_num,
             "data": this.state.input_data
-        },(data) => {
+        },(data: any) => {
             if(data.status === 200){
                 data = data.body
                 this.setState({
@@ -77,7 +92,10 @@ export default class AddQuizPage extends React.Component{
                     addLog: data,
                 })
                 //入力データをクリア
-                document.getElementsByClassName("input-quiz-fields").value = ""
+                const inputQuizField = document.getElementsByTagName('textarea').item(0) as HTMLTextAreaElement;
+                if(inputQuizField){
+                    inputQuizField.value = "";
+                }
             }else{
                 this.setState({
                     message: 'エラー:外部APIとの連携に失敗しました',
@@ -142,7 +160,7 @@ export default class AddQuizPage extends React.Component{
 
                 <Card variant="outlined">
                     <CardContent>
-                        <Typography className={typoStyles.title} color="textSecondary" gutterBottom>
+                        <Typography style={typoStyles.title} color="textSecondary" gutterBottom>
                             --実行ログ--
                         </Typography>
                         <Typography variant="h6" component="h6">
