@@ -5,6 +5,8 @@ import quizzerController from './controller/Quizzer'
 import englishBotController from './controller/EnglishBot'
 
 import bodyParser from 'body-parser'
+import cors from 'cors'
+app.use(cors())
 
 app.use(
   bodyParser.urlencoded({
