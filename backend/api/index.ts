@@ -4,7 +4,7 @@ const router = express.Router()
 import { getBackendLogger } from "../common/Logger";
 const logger = getBackendLogger()
 
-import QuizFileService from "../services/QuizFileService";
+import { getQuizFileListService } from "../services/QuizFileService";
 import { getAccuracyRateByCategoryService, getCategoryListService, replaceAllCategoryService } from "../services/CategoryService";
 import QuizService from "../services/QuizService";
 import S3Service from "../aws/S3Service";
@@ -18,7 +18,7 @@ router.get("/", function (req, res, next) {
 })
 
 router.get("/namelist", function (req, res) {
-  QuizFileService.getQuizFileList()
+  getQuizFileListService()
     .then((result:any) => {
       logger.debug("/namelist")
       res.status(200).send(result)
