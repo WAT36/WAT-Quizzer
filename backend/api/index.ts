@@ -7,7 +7,7 @@ const logger = getBackendLogger()
 import { getQuizFileListService } from "../services/QuizFileService";
 import { getAccuracyRateByCategoryService, getCategoryListService, replaceAllCategoryService } from "../services/CategoryService";
 import { addQuizService, correctRegisterService, deleteQuizService, editQuizService, getMinimumClearQuizService, getQuizService, getRandomQuizService, getWorstRateQuizService, incorrectRegisterService, integrateQuizService, searchQuizService } from "../services/QuizService";
-import S3Service from "../aws/S3Service";
+import { upload } from "../aws/S3Service";
 
 import PartsofSpeechService from "../services/english/PartsofSpeechService";
 import WordService from "../services/english/WordService";
@@ -272,7 +272,7 @@ router.post("/category/accuracy_rate", function (req, res) {
 })
 
 router.post("/upload", (req, res) => {
-  S3Service.upload(req.body.params)
+  upload(req.body.params)
     .then((url:any) => {
       logger.debug("/upload")
       res.json({ url: url })
