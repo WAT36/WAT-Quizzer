@@ -1,4 +1,4 @@
-import { execQueryForEnglish } from '../../../common/Database';
+import { execQueryForEnglish } from '../../../common/Database'
 
 // SQL
 const addWordSQL = `
@@ -16,7 +16,11 @@ const addMeanSQL = `
 `
 
 // 単語と意味追加
-export const addWordAndMean = async (wordName: string, pronounce: string, meanArrayData: any) => {
+export const addWordAndMean = async (
+  wordName: string,
+  pronounce: string,
+  meanArrayData: any
+) => {
   try {
     let wordData: any = await execQueryForEnglish(addWordSQL, [
       wordName,
@@ -87,9 +91,7 @@ const getWordMeanSQL = `
 // 単語意味検索
 export const getWordMean = async (wordName: string) => {
   try {
-    let wordData = await execQueryForEnglish(getWordMeanSQL, [
-      wordName
-    ])
+    let wordData = await execQueryForEnglish(getWordMeanSQL, [wordName])
     return { wordData }
   } catch (error) {
     throw error

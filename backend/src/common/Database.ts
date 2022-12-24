@@ -42,8 +42,6 @@ export const execQuery = async (query: string, value: (string | number)[]) => {
     await connection.end()
     return result
   } catch (error) {
-    console.error(error)
-    console.error(dbinfo)
     throw error
   }
 }
