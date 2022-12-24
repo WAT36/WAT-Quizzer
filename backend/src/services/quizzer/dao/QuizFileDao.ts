@@ -1,6 +1,6 @@
-import { execQuery } from '../../../common/Database';
+import { execQuery } from '../../../common/Database'
 
-// SQL 
+// SQL
 const getFileListSQL = `
     SELECT
         *
@@ -12,10 +12,10 @@ const getFileListSQL = `
 
 // 問題ファイルリスト取得
 export const getFileList = async () => {
-    try{
-        let data = await execQuery(getFileListSQL,[]);
-        return data
-    }catch(error){
-        throw error;
-    }
+  try {
+    let data = await execQuery(getFileListSQL, [])
+    return data
+  } catch (error) {
+    throw error
+  }
 }

@@ -1,6 +1,6 @@
-import { execQuery } from '../../../common/Database';
+import { execQuery } from '../../../common/Database'
 
-// SQL 
+// SQL
 const getCategoryByFileSQL = `
     SELECT
         *
@@ -14,12 +14,12 @@ const getCategoryByFileSQL = `
 
 // 問題ファイルリスト取得
 export const getCategoryList = async (file_num: number) => {
-    try{
-        let data = await execQuery(getCategoryByFileSQL,[file_num]);
-        return data
-    }catch(error){
-        throw error;
-    }
+  try {
+    let data = await execQuery(getCategoryByFileSQL, [file_num])
+    return data
+  } catch (error) {
+    throw error
+  }
 }
 
 // カテゴリ全削除SQL
@@ -50,32 +50,32 @@ const insertCategoriesSQL = `
 
 // カテゴリ総入れ替え
 export const replaceAllCategory = async (file_num: number) => {
-    try{
-        //まずカテゴリを全削除
-        let data: any = await execQuery(deleteAllCategorySQL,[file_num]);
+  try {
+    //まずカテゴリを全削除
+    let data: any = await execQuery(deleteAllCategorySQL, [file_num])
 
-        //指定ファイルのカテゴリ取得
-        let results: any = await execQuery(getDistinctCategoryByFileSQL,[file_num]);
+    //指定ファイルのカテゴリ取得
+    let results: any = await execQuery(getDistinctCategoryByFileSQL, [file_num])
 
-        //カテゴリデータ作成
-        let categories: any = new Set([])
-        for(var i=0;i<results.length;i++){
-            let result_i = new Set(results[i]['category'].split(':'))
-            categories = new Set([...result_i, ...categories])
-        }
-        categories = Array.from(categories)
-        data=[]
-        for(var i=0;i<categories.length;i++){
-            data.push([file_num,categories[i]])
-        }
-
-        //カテゴリデータ全挿入
-        let result = await execQuery(insertCategoriesSQL,[data]);
-
-        return result
-    }catch(error){
-        throw error;
+    //カテゴリデータ作成
+    let categories: any = new Set([])
+    for (var i = 0; i < results.length; i++) {
+      let result_i = new Set(results[i]['category'].split(':'))
+      categories = new Set([...result_i, ...categories])
     }
+    categories = Array.from(categories)
+    data = []
+    for (var i = 0; i < categories.length; i++) {
+      data.push([file_num, categories[i]])
+    }
+
+    //カテゴリデータ全挿入
+    let result = await execQuery(insertCategoriesSQL, [data])
+
+    return result
+  } catch (error) {
+    throw error
+  }
 }
 
 // カテゴリビューからカテゴリ正解率取得SQL
@@ -112,20 +112,23 @@ const getAccuracyRateOfCheckedQuizSQL = `
 
 // カテゴリ正解率取得
 export const getAccuracyRateByCategory = async (file_num: number) => {
-    try{
-        let result: any = {
-            "result": [],
-            "checked_result": []
-        }
-
-        // カテゴリビューから指定ファイルのカテゴリ毎の正解率取得
-        result["result"] = await execQuery(getAccuracyRateByCategorySQL,[file_num]);
-
-        // チェック済問題の正解率取得
-        result["checked_result"] = await execQuery(getAccuracyRateOfCheckedQuizSQL,[file_num]);
-
-        return result;
-    }catch(error){
-        throw error;
+  try {
+    let result: any = {
+      result: [],
+      checked_result: []
     }
+
+    // カテゴリビューから指定ファイルのカテゴリ毎の正解率取得
+    result['result'] = await execQuery(getAccuracyRateByCategorySQL, [file_num])
+
+    // チェック済問題の正解率取得
+    result['checked_result'] = await execQuery(
+      getAccuracyRateOfCheckedQuizSQL,
+      [file_num]
+    )
+
+    return result
+  } catch (error) {
+    throw error
+  }
 }

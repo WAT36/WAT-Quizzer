@@ -1,4 +1,4 @@
-import { execQueryForEnglish } from "../../../common/Database";
+import { execQueryForEnglish } from '../../../common/Database'
 
 // SQL
 const getPartsofSpeechListSQL = `
@@ -9,14 +9,14 @@ const getPartsofSpeechListSQL = `
     ORDER BY
         id
     ;
-`;
+`
 
 // 品詞取得
 export const getPartsofSpeech = async () => {
   try {
-    let data = await execQueryForEnglish(getPartsofSpeechListSQL, []);
-    return data;
+    let data = await execQueryForEnglish(getPartsofSpeechListSQL, [])
+    return data
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
