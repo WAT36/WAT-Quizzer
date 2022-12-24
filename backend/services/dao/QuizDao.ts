@@ -404,7 +404,7 @@ let searchQuizSQLPre = `
 
 // 問題検索
 export const searchQuiz = async (
-  file_num: string,
+  file_num: number,
   min_rate: number,
   max_rate: number,
   category: string,

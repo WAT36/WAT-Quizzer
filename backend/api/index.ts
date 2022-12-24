@@ -6,7 +6,7 @@ const logger = getBackendLogger()
 
 import { getQuizFileListService } from "../services/QuizFileService";
 import { getAccuracyRateByCategoryService, getCategoryListService, replaceAllCategoryService } from "../services/CategoryService";
-import QuizService from "../services/QuizService";
+import { addQuizService, correctRegisterService, deleteQuizService, editQuizService, getMinimumClearQuizService, getQuizService, getRandomQuizService, getWorstRateQuizService, incorrectRegisterService, integrateQuizService, searchQuizService } from "../services/QuizService";
 import S3Service from "../aws/S3Service";
 
 import PartsofSpeechService from "../services/english/PartsofSpeechService";
@@ -44,7 +44,7 @@ router.post("/get_category", function (req, res) {
 })
 
 router.post("/get_quiz", function (req, res) {
-  QuizService.getQuiz(req.body.file_num, req.body.quiz_num)
+  getQuizService(req.body.file_num, req.body.quiz_num)
     .then((result:any) => {
       if (result.length > 0) {
         logger.debug("/get_quiz")
@@ -62,7 +62,7 @@ router.post("/get_quiz", function (req, res) {
 })
 
 router.post("/random", function (req, res) {
-  QuizService.getRandomQuiz(
+  getRandomQuizService(
     req.body.file_num,
     req.body.min_rate,
     req.body.max_rate,
@@ -86,7 +86,7 @@ router.post("/random", function (req, res) {
 })
 
 router.post("/worst_rate", function (req, res) {
-  QuizService.getWorstRateQuiz(
+  getWorstRateQuizService(
     req.body.file_num,
     req.body.category,
     req.body.checked
@@ -108,7 +108,7 @@ router.post("/worst_rate", function (req, res) {
 })
 
 router.post("/minimum_clear", function (req, res) {
-  QuizService.getMinimumClearQuiz(
+  getMinimumClearQuizService(
     req.body.file_num,
     req.body.category,
     req.body.checked
@@ -130,7 +130,7 @@ router.post("/minimum_clear", function (req, res) {
 })
 
 router.post("/correct", function (req, res) {
-  QuizService.correctRegister(req.body.file_num, req.body.quiz_num)
+  correctRegisterService(req.body.file_num, req.body.quiz_num)
     .then((result:any) => {
       logger.debug("/correct")
       res.status(200).send(result)
@@ -143,7 +143,7 @@ router.post("/correct", function (req, res) {
 })
 
 router.post("/incorrect", function (req, res) {
-  QuizService.incorrectRegister(req.body.file_num, req.body.quiz_num)
+  incorrectRegisterService(req.body.file_num, req.body.quiz_num)
     .then((result:any) => {
       logger.debug("/incorrect")
       res.status(200).send(result)
@@ -156,7 +156,7 @@ router.post("/incorrect", function (req, res) {
 })
 
 router.post("/add", function (req, res) {
-  QuizService.addQuiz(req.body.file_num, req.body.data)
+  addQuizService(req.body.file_num, req.body.data)
     .then((result:any) => {
       logger.debug("/add")
       res.status(200).send(result)
@@ -169,7 +169,7 @@ router.post("/add", function (req, res) {
 })
 
 router.post("/edit", function (req, res) {
-  QuizService.editQuiz(
+  editQuizService(
     req.body.file_num,
     req.body.quiz_num,
     req.body.question,
@@ -189,7 +189,7 @@ router.post("/edit", function (req, res) {
 })
 
 router.post("/search", function (req, res) {
-  QuizService.searchQuiz(
+  searchQuizService(
     req.body.file_num,
     req.body.min_rate,
     req.body.max_rate,
@@ -215,7 +215,7 @@ router.post("/search", function (req, res) {
 })
 
 router.post("/delete", function (req, res) {
-  QuizService.deleteQuiz(req.body.file_num, req.body.quiz_num)
+  deleteQuizService(req.body.file_num, req.body.quiz_num)
     .then((result:any) => {
       logger.debug("/delete")
       res.status(200).send(result)
@@ -228,7 +228,7 @@ router.post("/delete", function (req, res) {
 })
 
 router.post("/integrate", function (req, res) {
-  QuizService.integrateQuiz(
+  integrateQuizService(
     req.body.pre_file_num,
     req.body.pre_quiz_num,
     req.body.post_file_num,
