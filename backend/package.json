@@ -12,6 +12,7 @@
     "@emotion/styled": "^11.10.4",
     "@mui/material": "^5.10.7",
     "aws-sdk": "^2.1163.0",
+    "body-parser": "^1.20.1",
     "cookie-parser": "~1.4.4",
     "crypto": "^1.0.1",
     "debug": "~2.6.9",

@@ -46,7 +46,6 @@ router.get('/namelist', function (req, res) {
 })
 
 router.post('/get_category', function (req, res) {
-  console.log(req)
   getCategoryListService(req.body.file_num)
     .then((result: any) => {
       logger.debug('/get_category')

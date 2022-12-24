@@ -4,6 +4,15 @@ const app: express.Express = express()
 import quizzerController from './controller/Quizzer'
 import englishBotController from './controller/EnglishBot'
 
+import bodyParser from 'body-parser'
+
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+)
+app.use(bodyParser.json())
+
 app.use('/', quizzerController)
 app.use('/english', englishBotController)
 
