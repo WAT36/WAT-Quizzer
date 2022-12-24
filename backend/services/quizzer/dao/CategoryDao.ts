@@ -1,4 +1,4 @@
-import { execQuery } from '../../common/Database';
+import { execQuery } from '../../../common/Database';
 
 // SQL 
 const getCategoryByFileSQL = `

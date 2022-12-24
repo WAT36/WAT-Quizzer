@@ -4,9 +4,9 @@ const router = express.Router()
 import { getBackendLogger } from "../common/Logger";
 const logger = getBackendLogger()
 
-import { getQuizFileListService } from "../services/QuizFileService";
-import { getAccuracyRateByCategoryService, getCategoryListService, replaceAllCategoryService } from "../services/CategoryService";
-import { addQuizService, correctRegisterService, deleteQuizService, editQuizService, getMinimumClearQuizService, getQuizService, getRandomQuizService, getWorstRateQuizService, incorrectRegisterService, integrateQuizService, searchQuizService } from "../services/QuizService";
+import { getQuizFileListService } from "../services/quizzer/QuizFileService";
+import { getAccuracyRateByCategoryService, getCategoryListService, replaceAllCategoryService } from "../services/quizzer/CategoryService";
+import { addQuizService, correctRegisterService, deleteQuizService, editQuizService, getMinimumClearQuizService, getQuizService, getRandomQuizService, getWorstRateQuizService, incorrectRegisterService, integrateQuizService, searchQuizService } from "../services/quizzer/QuizService";
 import { upload } from "../aws/S3Service";
 
 import { getPartsofSpeechService } from "../services/english/PartsofSpeechService";
