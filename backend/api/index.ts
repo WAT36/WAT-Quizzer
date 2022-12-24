@@ -10,7 +10,7 @@ import { addQuizService, correctRegisterService, deleteQuizService, editQuizServ
 import { upload } from "../aws/S3Service";
 
 import { getPartsofSpeechService } from "../services/english/PartsofSpeechService";
-import WordService from "../services/english/WordService";
+import { addWordAndMeanService, getWordMeanService, searchWordService } from "../services/english/WordService";
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -308,7 +308,7 @@ router.get("/english/partsofspeech", function (req, res) {
 //  ・・・
 // ]
 router.post("/english/word/add", function (req, res) {
-  WordService.addWordAndMean(
+  addWordAndMeanService(
     req.body.wordName,
     req.body.pronounce,
     req.body.meanArrayData
@@ -331,7 +331,7 @@ router.post("/english/word/add", function (req, res) {
  * }
  */
 router.post("/english/word/search", function (req, res) {
-  WordService.searchWord(req.body.wordName)
+  searchWordService(req.body.wordName)
     .then((result:any) => {
       logger.debug("/english/word/search")
       res.status(200).send(result)
@@ -350,7 +350,7 @@ router.post("/english/word/search", function (req, res) {
  * }
  */
 router.post("/english/word/mean", function (req, res) {
-  WordService.getWordMean(req.body.wordName)
+  getWordMeanService(req.body.wordName)
     .then((result:any) => {
       logger.debug("/english/word/mean")
       res.status(200).send(result)
