@@ -1,11 +1,9 @@
-require('promise');
-
-const QuizFileDao = require('./dao/QuizFileDao');
+import { getFileList } from './dao/QuizFileDao';
 
 // 問題ファイルのリスト取得
-const getQuizFileList = () => {
+export const getQuizFileListService = () => {
     return new Promise((resolve, reject) =>{
-        QuizFileDao.getFileList()
+        getFileList()
             .then((result) => {
                 resolve(result);
             })
@@ -15,7 +13,3 @@ const getQuizFileList = () => {
     });
 };
 
-// モジュール化
-module.exports = {
-    getQuizFileList,
-}

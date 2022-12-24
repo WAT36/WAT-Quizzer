@@ -1,5 +1,6 @@
 .env*
 node_modules
+dist
 
 # backend
 backend/node_modules

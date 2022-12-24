@@ -1,4 +1,4 @@
-const database = require('../../../common/Database')
+import { execQueryForEnglish } from '../../../common/Database';
 
 // SQL
 const addWordSQL = `
@@ -16,15 +16,15 @@ const addMeanSQL = `
 `
 
 // 単語と意味追加
-const addWordAndMean = async (wordName, pronounce, meanArrayData) => {
+export const addWordAndMean = async (wordName: string, pronounce: string, meanArrayData: any) => {
   try {
-    let wordData = await database.execQueryForEnglish(addWordSQL, [
+    let wordData: any = await execQueryForEnglish(addWordSQL, [
       wordName,
       pronounce
     ])
 
     for (let i = 0; i < meanArrayData.length; i++) {
-      await database.execQueryForEnglish(addMeanSQL, [
+      await execQueryForEnglish(addMeanSQL, [
         wordData.insertId,
         i + 1,
         meanArrayData[i].partOfSpeechId,
@@ -50,9 +50,9 @@ const searchWordSQL = `
 `
 
 // 単語検索
-const searchWord = async (wordName) => {
+export const searchWord = async (wordName: string) => {
   try {
-    let wordData = await database.execQueryForEnglish(searchWordSQL, [
+    let wordData = await execQueryForEnglish(searchWordSQL, [
       '%' + (wordName || '') + '%'
     ])
     return { wordData }
@@ -85,19 +85,13 @@ const getWordMeanSQL = `
 `
 
 // 単語意味検索
-const getWordMean = async (wordName) => {
+export const getWordMean = async (wordName: string) => {
   try {
-    let wordData = await database.execQueryForEnglish(getWordMeanSQL, [
+    let wordData = await execQueryForEnglish(getWordMeanSQL, [
       wordName
     ])
     return { wordData }
   } catch (error) {
     throw error
   }
-}
-
-module.exports = {
-  addWordAndMean,
-  searchWord,
-  getWordMean
 }

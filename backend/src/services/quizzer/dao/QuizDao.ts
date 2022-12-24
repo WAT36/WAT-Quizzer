@@ -1,4 +1,4 @@
-const database = require('../../common/Database')
+import { execQuery } from '../../../common/Database';
 
 // SQL
 const getQuizSQL = `
@@ -14,9 +14,9 @@ const getQuizSQL = `
 `
 
 // 問題取得
-const getQuiz = async (file_num, quiz_num) => {
+export const getQuiz = async (file_num: number, quiz_num: number) => {
   try {
-    let data = await database.execQuery(getQuizSQL, [file_num, quiz_num])
+    let data = await execQuery(getQuizSQL, [file_num, quiz_num])
     return data
   } catch (error) {
     throw error
@@ -37,12 +37,12 @@ let getRandomQuizSQLPre = `
 `
 
 // ランダムに問題取得
-const getRandomQuiz = async (
-  file_num,
-  min_rate,
-  max_rate,
-  category,
-  checked
+export const getRandomQuiz = async (
+  file_num: number,
+  min_rate: number,
+  max_rate: number,
+  category: string,
+  checked: boolean
 ) => {
   try {
     let categorySQL = ''
@@ -62,7 +62,7 @@ const getRandomQuiz = async (
       checkedSQL +
       ' ORDER BY rand() LIMIT 1; '
 
-    let data = await database.execQuery(getRandomQuizSQL, [
+    let data = await execQuery(getRandomQuizSQL, [
       file_num,
       min_rate,
       max_rate
@@ -86,7 +86,7 @@ let getWorstRateQuizSQLPre = `
 `
 
 // 最低正解率問題取得
-const getWorstRateQuiz = async (file_num, category, checked) => {
+export const getWorstRateQuiz = async (file_num: number, category: string, checked: boolean) => {
   try {
     let categorySQL = ''
     if (category !== null && category !== undefined) {
@@ -105,7 +105,7 @@ const getWorstRateQuiz = async (file_num, category, checked) => {
       checkedSQL +
       ' ORDER BY accuracy_rate LIMIT 1; '
 
-    let data = await database.execQuery(getWorstRateQuizSQL, [file_num])
+    let data = await execQuery(getWorstRateQuizSQL, [file_num])
     return data
   } catch (error) {
     throw error
@@ -124,7 +124,7 @@ let getMinimumClearQuizSQLPre = `
 
 `
 // 最小正解数問題取得
-const getMinimumClearQuiz = async (file_num, category, checked) => {
+export const getMinimumClearQuiz = async (file_num: number, category: string, checked: boolean) => {
   try {
     let categorySQL = ''
     if (category !== null && category !== undefined) {
@@ -143,7 +143,7 @@ const getMinimumClearQuiz = async (file_num, category, checked) => {
       checkedSQL +
       ' ORDER BY clear_count LIMIT 1; '
 
-    let data = await database.execQuery(getMinimumClearQuizSQL, [file_num])
+    let data = await execQuery(getMinimumClearQuizSQL, [file_num])
     return data
   } catch (error) {
     throw error
@@ -177,14 +177,14 @@ const inputCorrectSQL = `
 `
 
 // 正解登録
-const correctRegister = async (file_num, quiz_num) => {
+export const correctRegister = async (file_num: number, quiz_num: number) => {
   try {
     // 正解数取得
-    let data = await database.execQuery(getCorrectNumSQL, [file_num, quiz_num])
+    let data: any = await execQuery(getCorrectNumSQL, [file_num, quiz_num])
     let clear_count = data[0].clear_count
 
     // 正解登録
-    let result = await database.execQuery(inputCorrectSQL, [
+    let result = await execQuery(inputCorrectSQL, [
       clear_count + 1,
       file_num,
       quiz_num
@@ -222,17 +222,17 @@ const inputIncorrectSQL = `
 `
 
 // 不正解登録
-const incorrectRegister = async (file_num, quiz_num) => {
+export const incorrectRegister = async (file_num: number, quiz_num: number) => {
   try {
     // 不正解数取得
-    let data = await database.execQuery(getIncorrectNumSQL, [
+    let data: any = await execQuery(getIncorrectNumSQL, [
       file_num,
       quiz_num
     ])
     let fail_count = data[0].fail_count
 
     // 不正解登録
-    let result = await database.execQuery(inputIncorrectSQL, [
+    let result = await execQuery(inputIncorrectSQL, [
       fail_count + 1,
       file_num,
       quiz_num
@@ -295,7 +295,7 @@ const getCountSQL = `
 `
 
 // 問題追加
-const addQuiz = async (file_num, input_data) => {
+export const addQuiz = async (file_num: number, input_data: string) => {
   try {
     // 入力データを１行ずつに分割
     let data = input_data.split('\n')
@@ -313,11 +313,11 @@ const addQuiz = async (file_num, input_data) => {
       // データのidを作成
       var new_quiz_id = -1
       // 削除済問題がないかチェック、あればそこに入れる
-      let id = await database.execQuery(getDeletedQuizNumSQL, [file_num])
+      let id: any = await execQuery(getDeletedQuizNumSQL, [file_num])
       if (id.length > 0) {
         //削除済問題がある場合はそこに入れる
         new_quiz_id = id[0]['quiz_num']
-        let result_i = await database.execQuery(editQuizSQL, [
+        let result_i = await execQuery(editQuizSQL, [
           question,
           answer,
           category,
@@ -337,9 +337,9 @@ const addQuiz = async (file_num, input_data) => {
         )
       } else {
         //削除済問題がない場合は普通にINSERT
-        let now_count = await database.execQuery(getCountSQL, [file_num])
+        let now_count: any = await execQuery(getCountSQL, [file_num])
         new_quiz_id = now_count[0]['count(*)'] + 1
-        let result_i = await database.execQuery(addQuizSQL, [
+        let result_i = await execQuery(addQuizSQL, [
           file_num,
           new_quiz_id,
           question,
@@ -366,16 +366,16 @@ const addQuiz = async (file_num, input_data) => {
 }
 
 // 問題編集
-const editQuiz = async (
-  file_num,
-  quiz_num,
-  question,
-  answer,
-  category,
-  img_file
+export const editQuiz = async (
+  file_num: number,
+  quiz_num: number,
+  question: string,
+  answer: string,
+  category: string,
+  img_file: string
 ) => {
   try {
-    let data = await database.execQuery(editQuizSQL, [
+    let data = await execQuery(editQuizSQL, [
       question,
       answer,
       category,
@@ -403,14 +403,14 @@ let searchQuizSQLPre = `
 `
 
 // 問題検索
-const searchQuiz = async (
-  file_num,
-  min_rate,
-  max_rate,
-  category,
-  checked,
-  query,
-  cond
+export const searchQuiz = async (
+  file_num: number,
+  min_rate: number,
+  max_rate: number,
+  category: string,
+  checked: boolean,
+  query: string,
+  cond: any
 ) => {
   try {
     let categorySQL = ''
@@ -455,7 +455,7 @@ const searchQuiz = async (
       querySQL +
       ' ORDER BY quiz_num; '
 
-    let data = await database.execQuery(searchQuizSQL, [
+    let data = await execQuery(searchQuizSQL, [
       file_num,
       min_rate,
       max_rate
@@ -479,10 +479,10 @@ const deleteQuizSQL = `
 `
 
 // 問題削除
-const deleteQuiz = async (file_num, quiz_num) => {
+export const deleteQuiz = async (file_num: number, quiz_num: number) => {
   try {
     // 削除済にアップデート
-    let result = await database.execQuery(deleteQuizSQL, [file_num, quiz_num])
+    let result = await execQuery(deleteQuizSQL, [file_num, quiz_num])
     return result
   } catch (error) {
     throw error
@@ -503,11 +503,11 @@ const integrateQuizSQL = `
 `
 
 // 問題統合
-const integrateQuiz = async (
-  pre_file_num,
-  pre_quiz_num,
-  post_file_num,
-  post_quiz_num
+export const integrateQuiz = async (
+  pre_file_num: number,
+  pre_quiz_num: number,
+  post_file_num: number,
+  post_quiz_num: number
 ) => {
   try {
     if (pre_file_num !== post_file_num) {
@@ -521,29 +521,29 @@ const integrateQuiz = async (
     }
 
     // 統合前の問題取得
-    let pre_data = await database.execQuery(getQuizSQL, [
+    let pre_data: any = await execQuery(getQuizSQL, [
       pre_file_num,
       pre_quiz_num
     ])
 
     // 統合後の問題取得
-    let post_data = await database.execQuery(getQuizSQL, [
+    let post_data: any = await execQuery(getQuizSQL, [
       post_file_num,
       post_quiz_num
     ])
 
     // 統合データ作成
-    new_clear_count = pre_data[0]['clear_count'] + post_data[0]['clear_count']
-    new_fail_count = pre_data[0]['fail_count'] + post_data[0]['fail_count']
-    pre_category = new Set(pre_data[0]['category'].split(':'))
-    post_category = new Set(post_data[0]['category'].split(':'))
-    new_category = Array.from(
+    const new_clear_count = pre_data[0]['clear_count'] + post_data[0]['clear_count']
+    const new_fail_count = pre_data[0]['fail_count'] + post_data[0]['fail_count']
+    const pre_category = new Set(pre_data[0]['category'].split(':'))
+    const post_category = new Set(post_data[0]['category'].split(':'))
+    const new_category = Array.from(
       new Set([...pre_category, ...post_category])
     ).join(':')
 
     // 問題統合
     let result = []
-    let result_i = await database.execQuery(integrateQuizSQL, [
+    let result_i = await execQuery(integrateQuizSQL, [
       new_clear_count,
       new_fail_count,
       new_category,
@@ -553,7 +553,7 @@ const integrateQuiz = async (
     result.push(result_i)
 
     // 統合元データは削除
-    result_i = await database.execQuery(deleteQuizSQL, [
+    result_i = await execQuery(deleteQuizSQL, [
       pre_file_num,
       pre_quiz_num
     ])
@@ -563,18 +563,4 @@ const integrateQuiz = async (
   } catch (error) {
     throw error
   }
-}
-
-module.exports = {
-  getQuiz,
-  getRandomQuiz,
-  getWorstRateQuiz,
-  getMinimumClearQuiz,
-  correctRegister,
-  incorrectRegister,
-  addQuiz,
-  editQuiz,
-  searchQuiz,
-  deleteQuiz,
-  integrateQuiz
 }

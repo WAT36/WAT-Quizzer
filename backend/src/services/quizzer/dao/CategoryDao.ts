@@ -1,4 +1,4 @@
-const database = require('../../common/Database');
+import { execQuery } from '../../../common/Database';
 
 // SQL 
 const getCategoryByFileSQL = `
@@ -13,9 +13,9 @@ const getCategoryByFileSQL = `
 `
 
 // 問題ファイルリスト取得
-const getCategoryList = async (file_num) => {
+export const getCategoryList = async (file_num: number) => {
     try{
-        let data = await database.execQuery(getCategoryByFileSQL,[file_num]);
+        let data = await execQuery(getCategoryByFileSQL,[file_num]);
         return data
     }catch(error){
         throw error;
@@ -49,16 +49,16 @@ const insertCategoriesSQL = `
 `
 
 // カテゴリ総入れ替え
-const replaceAllCategory = async (file_num) => {
+export const replaceAllCategory = async (file_num: number) => {
     try{
         //まずカテゴリを全削除
-        let data = await database.execQuery(deleteAllCategorySQL,[file_num]);
+        let data: any = await execQuery(deleteAllCategorySQL,[file_num]);
 
         //指定ファイルのカテゴリ取得
-        let results = await database.execQuery(getDistinctCategoryByFileSQL,[file_num]);
+        let results: any = await execQuery(getDistinctCategoryByFileSQL,[file_num]);
 
         //カテゴリデータ作成
-        let categories = new Set([])
+        let categories: any = new Set([])
         for(var i=0;i<results.length;i++){
             let result_i = new Set(results[i]['category'].split(':'))
             categories = new Set([...result_i, ...categories])
@@ -70,7 +70,7 @@ const replaceAllCategory = async (file_num) => {
         }
 
         //カテゴリデータ全挿入
-        let result = await database.execQuery(insertCategoriesSQL,[data]);
+        let result = await execQuery(insertCategoriesSQL,[data]);
 
         return result
     }catch(error){
@@ -111,27 +111,21 @@ const getAccuracyRateOfCheckedQuizSQL = `
 `
 
 // カテゴリ正解率取得
-const getAccuracyRateByCategory = async (file_num) => {
+export const getAccuracyRateByCategory = async (file_num: number) => {
     try{
-        let result = {
+        let result: any = {
             "result": [],
             "checked_result": []
         }
 
         // カテゴリビューから指定ファイルのカテゴリ毎の正解率取得
-        result["result"] = await database.execQuery(getAccuracyRateByCategorySQL,[file_num]);
+        result["result"] = await execQuery(getAccuracyRateByCategorySQL,[file_num]);
 
         // チェック済問題の正解率取得
-        result["checked_result"] = await database.execQuery(getAccuracyRateOfCheckedQuizSQL,[file_num]);
+        result["checked_result"] = await execQuery(getAccuracyRateOfCheckedQuizSQL,[file_num]);
 
         return result;
     }catch(error){
         throw error;
     }
-}
-
-module.exports = {
-    getCategoryList,
-    replaceAllCategory,
-    getAccuracyRateByCategory,
 }
