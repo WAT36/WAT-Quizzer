@@ -9,7 +9,7 @@ import { sideBarContents, toggleDrawer } from '../utils/SideBar'
 import { isOpenState } from '../../../atoms/SideBar'
 import { drawerStyle } from '../../../styles/SideBar'
 
-export default function EnglishBotSideBar() {
+export default function QuizzerSideBar() {
     const [sidebarState, setSidebarState] = useRecoilState(isOpenState);
 
     return (

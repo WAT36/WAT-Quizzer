@@ -29,13 +29,6 @@ export default class QuizzerFooter extends React.Component{
             <footer style={footerStyle}>
                 <span className="left" style={leftStyle}>
                     <Button size="small" color="inherit" href="/top">トップ</Button>
-                    <Button size="small" color="inherit" href="/selectquiz">問題出題</Button>
-                    <Button size="small" color="inherit" href="/addquiz">問題追加</Button>
-                    <Button size="small" color="inherit" href="/editquiz">問題編集</Button>
-                    <Button size="small" color="inherit" href="/searchquiz">問題検索</Button>
-                    <Button size="small" color="inherit" href="/deletequiz">問題削除</Button>
-                    <Button size="small" color="inherit" href="/accuracyrategraph">カテゴリ別正解率表示</Button>
-                    <Button size="small" color="inherit" href="/imageupload">画像アップロード</Button>
                 </span>
                 <span className="right" style={rightStyle}>
                 ©️ Tatsuroh Wakasugi
