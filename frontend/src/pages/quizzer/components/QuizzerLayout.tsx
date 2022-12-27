@@ -11,31 +11,27 @@ type Props = {
     contents: JSX.Element;
 }
 
-class QuizzerLayout extends React.Component<Props,{}>{
+export default function QuizzerLayout(props: Props) {
 
-    render(){
-        return (
-            <>
-                {/*ヘッダ*/}
-                <QuizzerHeader />
+    return (
+        <>
+            {/*ヘッダ*/}
+            <QuizzerHeader />
 
-                {/*サイドバー*/}
-                <QuizzerSideBar />
+            {/*サイドバー*/}
+            <QuizzerSideBar />
 
-                {/*ヘッダとコンテンツ間の調整余白 */}
-                <div style={adjustedSpaceStyle}></div>
+            {/*ヘッダとコンテンツ間の調整余白 */}
+            <div style={adjustedSpaceStyle}></div>
 
-                {/*内容*/}
-                {this.props.contents}
+            {/*内容*/}
+            {props.contents}
 
-                {/*フッタとコンテンツ間の調整余白 */}
-                <div style={adjustedSpaceStyle}></div>
+            {/*フッタとコンテンツ間の調整余白 */}
+            <div style={adjustedSpaceStyle}></div>
 
-                {/*フッタ*/}
-                <QuizzerFooter />
-            </>
-        )
-    }
+            {/*フッタ*/}
+            <QuizzerFooter />
+        </>
+    )
 }
-
-export default QuizzerLayout;
