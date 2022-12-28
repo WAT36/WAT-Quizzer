@@ -23,17 +23,15 @@ const rightStyle = {
     'lineHeight': '30px',
 }
 
-export default class QuizzerFooter extends React.Component{
-    render(){
-        return (
-            <footer style={footerStyle}>
-                <span className="left" style={leftStyle}>
-                    <Button size="small" color="inherit" href="/top">トップ</Button>
-                </span>
-                <span className="right" style={rightStyle}>
-                ©️ Tatsuroh Wakasugi
-                </span>
-            </footer>
-        )
-    }
+export default function QuizzerFooter(){
+    return (
+        <footer style={footerStyle}>
+            <span className="left" style={leftStyle}>
+                <Button size="small" color="inherit" href="/top">トップ</Button>
+            </span>
+            <span className="right" style={rightStyle}>
+            ©️ Tatsuroh Wakasugi
+            </span>
+        </footer>
+    )
 }
