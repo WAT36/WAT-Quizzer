@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Card, CardContent, Checkbox, Container,  FormControl, FormControlLabel, InputLabel, MenuItem, Select, FormGroup, TextField, Typography, Slider } from "@material-ui/core"
-import { DataGrid, GridRowsProp } from '@material-ui/data-grid';
+import { DataGrid, GridRowsProp, GridSelectionModel } from '@material-ui/data-grid';
 
 import { get, post } from "../../common/API";
 import QuizzerLayout from "./components/QuizzerLayout";
@@ -17,6 +17,14 @@ const messageBoxStyle = {
 const searchedTableStyle = { 
     'height': 600, 
     'width': '100%' 
+}
+
+const groupStyle = {
+    'border': 'solid thin lightgray',
+    'border-radius': '5px',
+    'margin': '10px 0px',
+    'padding': '0px 5px',
+    'align-items': 'center',
 }
 
 const columns = [
@@ -72,6 +80,7 @@ interface SearchQuizPageState {
     cond_answer: boolean,
     filelistoption: JSX.Element[],
     categorylistoption: JSX.Element[],
+    checkedIdList: number[],
 }
 
 export default class SearchQuizPage extends React.Component<{},SearchQuizPageState>{
@@ -106,6 +115,7 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
             message: '　',
             messageColor: 'initial',
             searchResult: [] as GridRowsProp,
+            checkedIdList: [] as number[],
         } as SearchQuizPageState
     }
 
@@ -191,6 +201,13 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
                 })
             }
         });
+    }
+
+    // チェックした問題のIDをステートに登録
+    checkedIdList = (selectionModel: GridSelectionModel, details?: any) => {
+        this.setState({
+            checkedIdList: selectionModel as number[]
+        })
     }
 
     contents = () => {
@@ -292,8 +309,27 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
                         pageSize={15}
                         checkboxSelection
                         disableSelectionOnClick
+                        onSelectionModelChange={(selectionModel,details) => this.checkedIdList(selectionModel,details)}
                     />
                 </div>
+
+                <FormGroup style={groupStyle} row>
+                    カテゴリ
+                    <FormControl>
+                        <TextField
+                            id="change-category"
+                        />
+                    </FormControl>
+                    を
+                    <Button 
+                        style={buttonStyle} 
+                        variant="contained" 
+                        color="primary"
+                        //onClick={(e) => this.searchQuiz()}
+                        >
+                        一括カテゴリ登録
+                    </Button>
+                </FormGroup>
 
             </Container>
         )
