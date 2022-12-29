@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Card, CardContent, Checkbox, Container,  FormControl, FormControlLabel, InputLabel, MenuItem, Select, FormGroup, TextField, Typography, Slider } from "@material-ui/core"
 import { DataGrid, GridRowsProp, GridSelectionModel } from '@material-ui/data-grid';
 
-import { get, post } from "../../common/API";
+import { baseURL, get, post } from "../../common/API";
 import QuizzerLayout from "./components/QuizzerLayout";
 
 const buttonStyle = {
@@ -81,6 +81,7 @@ interface SearchQuizPageState {
     filelistoption: JSX.Element[],
     categorylistoption: JSX.Element[],
     checkedIdList: number[],
+    changedCategory: string,
 }
 
 export default class SearchQuizPage extends React.Component<{},SearchQuizPageState>{
@@ -116,6 +117,7 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
             messageColor: 'initial',
             searchResult: [] as GridRowsProp,
             checkedIdList: [] as number[],
+            changedCategory: "",
         } as SearchQuizPageState
     }
 
@@ -209,6 +211,59 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
             checkedIdList: selectionModel as number[]
         })
     }
+
+    // チェックした問題に指定カテゴリを一括登録する
+    registerCategoryToChecked = async () => {
+        if(this.state.checkedIdList.length === 0){
+            this.setState({
+                message: 'エラー:チェックされた問題がありません',
+                messageColor: 'error',
+            })
+            return;
+        }else if(this.state.changedCategory === ""){
+            this.setState({
+                message: 'エラー:一括登録するカテゴリ名を入力して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
+        // チェックした問題にカテゴリを登録
+        const failureIdList: number[] = []
+        for(const checkedId of this.state.checkedIdList){
+            const result = await fetch(baseURL + "/edit/category/add",{
+                method: 'POST',
+                body: JSON.stringify({
+                        "file_num": this.state.file_num,
+                        "quiz_num": checkedId,
+                        "category": this.state.changedCategory,
+                    }),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            if(result.status !== 200){
+                failureIdList.push(checkedId)
+            }
+        }
+
+        let message: string;
+        let messageColor: "error" | "initial"
+        if(failureIdList.length > 0){
+            message = `エラー:問題ID[${failureIdList.join()}]へのカテゴリ登録に失敗しました（${this.state.checkedIdList.length - failureIdList.length}/${this.state.checkedIdList.length}件登録成功）`;
+            messageColor = 'error';
+        }else{
+            message = `チェック問題(${this.state.checkedIdList.length}件)へのカテゴリ登録に成功しました`;
+            messageColor = 'initial';
+        }
+
+        // 終わったらチェック全て外す、入力カテゴリも消す
+        this.setState({
+            checkedIdList: [],
+            changedCategory: "",
+            message,
+            messageColor
+        })
+    }
+
 
     contents = () => {
         return (
@@ -314,18 +369,20 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
                 </div>
 
                 <FormGroup style={groupStyle} row>
-                    カテゴリ
+                    チェックした問題全てにカテゴリ「
                     <FormControl>
                         <TextField
                             id="change-category"
+                            value={this.state.changedCategory}
+                            onChange={(e:React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => this.setState({changedCategory: e.target.value})}
                         />
                     </FormControl>
-                    を
+                    」を
                     <Button 
                         style={buttonStyle} 
                         variant="contained" 
                         color="primary"
-                        //onClick={(e) => this.searchQuiz()}
+                        onClick={async (e) => await this.registerCategoryToChecked()}
                         >
                         一括カテゴリ登録
                     </Button>

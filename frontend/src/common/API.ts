@@ -1,4 +1,4 @@
-const baseURL: string = process.env.REACT_APP_API_SERVER || ''
+export const baseURL: string = process.env.REACT_APP_API_SERVER || ''
 
 export const get = (path: string, func: any) => {
   fetch(baseURL + path)

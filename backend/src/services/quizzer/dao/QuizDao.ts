@@ -565,13 +565,15 @@ export const integrateQuiz = async (
 const getCategoryOfQuizSQL = `
     SELECT
       category
+    FROM
+      quiz
     WHERE 
       file_num = ? 
       AND quiz_num = ? 
 `
 
 // カテゴリ更新SQL
-const updateCategoriOfQuizSQL = `
+const updateCategoryOfQuizSQL = `
     UPDATE
         quiz
     SET
@@ -602,7 +604,7 @@ export const addCategoryToQuiz = async (
     }
 
     // 更新
-    const result = await execQuery(updateCategoriOfQuizSQL, [
+    const result = await execQuery(updateCategoryOfQuizSQL, [
       newCategory,
       file_num,
       quiz_num
