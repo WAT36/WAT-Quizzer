@@ -560,3 +560,56 @@ export const integrateQuiz = async (
     throw error
   }
 }
+
+// 問題統合SQL
+const getCategoryOfQuizSQL = `
+    SELECT
+      category
+    WHERE 
+      file_num = ? 
+      AND quiz_num = ? 
+`
+
+// カテゴリ更新SQL
+const updateCategoriOfQuizSQL = `
+    UPDATE
+        quiz
+    SET
+        category = ?
+    WHERE 
+        file_num = ? 
+        AND quiz_num = ? 
+`
+
+// 問題にカテゴリ追加
+export const addCategoryToQuiz = async (
+  file_num: number,
+  quiz_num: number,
+  category: string
+) => {
+  try {
+    // 現在のカテゴリ取得
+    let nowCategory: any = await execQuery(getCategoryOfQuizSQL, [
+      file_num,
+      quiz_num
+    ])
+    nowCategory = nowCategory[0]['category']
+
+    // カテゴリ追加
+    let newCategory = nowCategory + ':' + category
+    while (newCategory.includes('::')) {
+      newCategory = newCategory.replace('::', ':')
+    }
+
+    // 更新
+    const result = await execQuery(updateCategoriOfQuizSQL, [
+      newCategory,
+      file_num,
+      quiz_num
+    ])
+
+    return result
+  } catch (error) {
+    throw error
+  }
+}

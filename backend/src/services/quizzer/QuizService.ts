@@ -1,4 +1,5 @@
 import {
+  addCategoryToQuiz,
   addQuiz,
   correctRegister,
   deleteQuiz,
@@ -183,6 +184,23 @@ export const integrateQuizService = (
 ) => {
   return new Promise((resolve, reject) => {
     integrateQuiz(pre_file_num, pre_quiz_num, post_file_num, post_quiz_num)
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+// 問題にカテゴリ追加
+export const addCategoryToQuizService = (
+  file_num: number,
+  quiz_num: number,
+  category: string
+) => {
+  return new Promise((resolve, reject) => {
+    addCategoryToQuiz(file_num, quiz_num, category)
       .then((result) => {
         resolve(result)
       })

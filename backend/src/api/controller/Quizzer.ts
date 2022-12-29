@@ -12,6 +12,7 @@ import {
   replaceAllCategoryService
 } from '../../services/quizzer/CategoryService'
 import {
+  addCategoryToQuizService,
   addQuizService,
   correctRegisterService,
   deleteQuizService,
@@ -295,6 +296,23 @@ router.post('/upload', (req, res) => {
     .catch((error: any) => {
       logger.error('/upload')
       logger.error(error)
+    })
+})
+
+router.post('/edit/category/add', function (req, res) {
+  addCategoryToQuizService(
+    req.body.file_num,
+    req.body.quiz_num,
+    req.body.category
+  )
+    .then((result: any) => {
+      logger.debug('/edit/category/add')
+      res.status(200).send(result)
+    })
+    .catch((error: any) => {
+      logger.error('/edit/category/add')
+      logger.error(error)
+      res.status(500).send(error)
     })
 })
 
