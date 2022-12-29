@@ -378,14 +378,27 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
                         />
                     </FormControl>
                     」を
-                    <Button 
-                        style={buttonStyle} 
-                        variant="contained" 
-                        color="primary"
-                        onClick={async (e) => await this.registerCategoryToChecked()}
-                        >
-                        一括カテゴリ登録
-                    </Button>
+                    <FormControl>
+                        <Button 
+                            style={buttonStyle} 
+                            variant="contained" 
+                            color="primary"
+                            onClick={async (e) => await this.registerCategoryToChecked()}
+                            >
+                            一括カテゴリ登録
+                        </Button>
+                    </FormControl>
+                    or
+                    <FormControl>
+                        <Button 
+                            style={buttonStyle} 
+                            variant="contained" 
+                            color="primary"
+                            //onClick={async (e) => await this.registerCategoryToChecked()}
+                            >
+                            一括カテゴリ削除
+                        </Button>
+                    </FormControl>
                 </FormGroup>
 
             </Container>
