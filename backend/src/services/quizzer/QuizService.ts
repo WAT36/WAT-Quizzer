@@ -10,6 +10,7 @@ import {
   getWorstRateQuiz,
   incorrectRegister,
   integrateQuiz,
+  removeCategoryFromQuiz,
   searchQuiz
 } from './dao/QuizDao'
 
@@ -201,6 +202,23 @@ export const addCategoryToQuizService = (
 ) => {
   return new Promise((resolve, reject) => {
     addCategoryToQuiz(file_num, quiz_num, category)
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+// 問題からカテゴリ削除
+export const removeCategoryFromQuizService = (
+  file_num: number,
+  quiz_num: number,
+  category: string
+) => {
+  return new Promise((resolve, reject) => {
+    removeCategoryFromQuiz(file_num, quiz_num, category)
       .then((result) => {
         resolve(result)
       })
