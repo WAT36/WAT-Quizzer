@@ -229,21 +229,22 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
         }
 
         // チェックした問題にカテゴリを登録
-        const failureIdList: number[] = []
-        for(const checkedId of this.state.checkedIdList){
-            const result = await fetch(baseURL + "/edit/category/add",{
-                method: 'POST',
-                body: JSON.stringify({
-                        "file_num": this.state.file_num,
-                        "quiz_num": checkedId,
-                        "category": this.state.changedCategory,
-                    }),
-                headers: { 'Content-Type': 'application/json' }
-            })
-            if(result.status !== 200){
-                failureIdList.push(checkedId)
+        const addCategoriesToQuiz = async (idList: number[]) => {
+            const failureIdList: number[] = []
+            for(const checkedId of idList){
+                const result = await post("/edit/category/add",{
+                    "file_num": this.state.file_num,
+                    "quiz_num": checkedId,
+                    "category": this.state.changedCategory,
+                },(data: any)=>{        
+                    if(data.status !== 200){
+                        failureIdList.push(checkedId)
+                    }
+                })
             }
+            return { failureIdList }
         }
+        const { failureIdList } = await addCategoriesToQuiz(this.state.checkedIdList);
 
         let message: string;
         let messageColor: "error" | "initial"
@@ -280,11 +281,6 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
             return;
         }
 
-        this.setState({
-            message: '更新中・・・',
-            messageColor: 'initial',
-        })
-
         // チェックした問題からカテゴリを削除
         const removeCategories = async (idList: number[]) => {
             const failureIdList: number[] = []
@@ -297,10 +293,8 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
                     if(data.status !== 200){
                         failureIdList.push(checkedId)
                     }
-                    console.log("failurreIdList:",failureIdList)
                 })
             }
-            console.log("failureidlist内:",failureIdList)
             return { failureIdList }
         }
         const { failureIdList } = await removeCategories(this.state.checkedIdList);
@@ -308,7 +302,6 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
 
         let message: string;
         let messageColor: "error" | "initial"
-        console.log("failurreIdList後:",failureIdList)
         if(failureIdList.length > 0){
             message = `エラー:問題ID[${failureIdList.join()}]のカテゴリ削除に失敗しました（${this.state.checkedIdList.length - failureIdList.length}/${this.state.checkedIdList.length}件削除成功）`;
             messageColor = 'error';
