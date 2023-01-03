@@ -1,7 +1,7 @@
 export const baseURL: string = process.env.REACT_APP_API_SERVER || ''
 
-export const get = (path: string, func: any) => {
-  fetch(baseURL + path)
+export const get = async (path: string, func: any) => {
+  await fetch(baseURL + path)
     .then((response) =>
       response.json().then((data) => ({
         status: response.status,
