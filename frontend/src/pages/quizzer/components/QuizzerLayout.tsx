@@ -1,41 +1,40 @@
-import React from "react";
-import QuizzerHeader from "./QuizzerHeader";
-import QuizzerFooter from "./QuizzerFooter";
-import QuizzerSideBar from "./QuizzerSideBar";
+import React from 'react'
+import QuizzerHeader from './QuizzerHeader'
+import QuizzerFooter from './QuizzerFooter'
+import QuizzerSideBar from './QuizzerSideBar'
 
 const adjustedSpaceStyle = {
-    'height': '40px',
+  height: '40px'
 }
 
 type Props = {
-    contents: JSX.Element;
+  contents: JSX.Element
 }
 
-class QuizzerLayout extends React.Component<Props,{}>{
+class QuizzerLayout extends React.Component<Props, {}> {
+  render() {
+    return (
+      <>
+        {/*ヘッダ*/}
+        <QuizzerHeader />
 
-    render(){
-        return (
-            <>
-                {/*ヘッダ*/}
-                <QuizzerHeader />
+        {/*サイドバー*/}
+        <QuizzerSideBar />
 
-                {/*サイドバー*/}
-                <QuizzerSideBar />
+        {/*ヘッダとコンテンツ間の調整余白 */}
+        <div style={adjustedSpaceStyle}></div>
 
-                {/*ヘッダとコンテンツ間の調整余白 */}
-                <div style={adjustedSpaceStyle}></div>
+        {/*内容*/}
+        {this.props.contents}
 
-                {/*内容*/}
-                {this.props.contents}
+        {/*フッタとコンテンツ間の調整余白 */}
+        <div style={adjustedSpaceStyle}></div>
 
-                {/*フッタとコンテンツ間の調整余白 */}
-                <div style={adjustedSpaceStyle}></div>
-
-                {/*フッタ*/}
-                <QuizzerFooter />
-            </>
-        )
-    }
+        {/*フッタ*/}
+        <QuizzerFooter />
+      </>
+    )
+  }
 }
 
-export default QuizzerLayout;
+export default QuizzerLayout
