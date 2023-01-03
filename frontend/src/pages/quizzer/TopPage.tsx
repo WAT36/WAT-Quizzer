@@ -4,7 +4,7 @@ import { Button, Container } from '@material-ui/core'
 const buttonStyle = {
   margin: '20px',
   width: '100px',
-  height: '100px',
+  height: '100px'
 }
 
 export default class TopPage extends React.Component {
