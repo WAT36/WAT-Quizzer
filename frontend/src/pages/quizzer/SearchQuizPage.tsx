@@ -264,6 +264,67 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
         })
     }
 
+    // チェックした問題から指定カテゴリを一括削除する
+    removeCategoryFromChecked = async () => {
+        if(this.state.checkedIdList.length === 0){
+            this.setState({
+                message: 'エラー:チェックされた問題がありません',
+                messageColor: 'error',
+            })
+            return;
+        }else if(this.state.changedCategory === ""){
+            this.setState({
+                message: 'エラー:一括削除するカテゴリ名を入力して下さい',
+                messageColor: 'error',
+            })
+            return;
+        }
+
+        this.setState({
+            message: '更新中・・・',
+            messageColor: 'initial',
+        })
+
+        // チェックした問題からカテゴリを削除
+        const removeCategories = async (idList: number[]) => {
+            const failureIdList: number[] = []
+            for(const checkedId of idList){
+                const result = await post("/edit/category/remove",{
+                    "file_num": this.state.file_num,
+                    "quiz_num": checkedId,
+                    "category": this.state.changedCategory,
+                },(data: any)=>{        
+                    if(data.status !== 200){
+                        failureIdList.push(checkedId)
+                    }
+                    console.log("failurreIdList:",failureIdList)
+                })
+            }
+            console.log("failureidlist内:",failureIdList)
+            return { failureIdList }
+        }
+        const { failureIdList } = await removeCategories(this.state.checkedIdList);
+
+
+        let message: string;
+        let messageColor: "error" | "initial"
+        console.log("failurreIdList後:",failureIdList)
+        if(failureIdList.length > 0){
+            message = `エラー:問題ID[${failureIdList.join()}]のカテゴリ削除に失敗しました（${this.state.checkedIdList.length - failureIdList.length}/${this.state.checkedIdList.length}件削除成功）`;
+            messageColor = 'error';
+        }else{
+            message = `チェック問題(${this.state.checkedIdList.length}件)のカテゴリ削除に成功しました`;
+            messageColor = 'initial';
+        }
+
+        // 終わったらチェック全て外す、入力カテゴリも消す
+        this.setState({
+            checkedIdList: [],
+            changedCategory: "",
+            message,
+            messageColor
+        })
+    }
 
     contents = () => {
         return (
@@ -394,7 +455,7 @@ export default class SearchQuizPage extends React.Component<{},SearchQuizPageSta
                             style={buttonStyle} 
                             variant="contained" 
                             color="primary"
-                            //onClick={async (e) => await this.registerCategoryToChecked()}
+                            onClick={async (e) => await this.removeCategoryFromChecked()}
                             >
                             一括カテゴリ削除
                         </Button>

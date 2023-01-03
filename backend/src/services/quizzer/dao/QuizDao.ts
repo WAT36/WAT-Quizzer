@@ -632,7 +632,9 @@ export const removeCategoryFromQuiz = async (
 
     // 指定カテゴリが含まれているか確認、含まれていなければ終了
     if (!nowCategory.includes(category)) {
-      return 1
+      return {
+        result: null
+      }
     }
 
     // カテゴリ削除
@@ -648,9 +650,15 @@ export const removeCategoryFromQuiz = async (
     }
 
     // 更新
-    await execQuery(updateCategoryOfQuizSQL, [newCategory, file_num, quiz_num])
+    const result = await execQuery(updateCategoryOfQuizSQL, [
+      newCategory,
+      file_num,
+      quiz_num
+    ])
 
-    return 0
+    return {
+      result
+    }
   } catch (error) {
     throw error
   }

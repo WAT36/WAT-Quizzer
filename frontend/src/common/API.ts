@@ -14,8 +14,8 @@ export const get = (path: string, func: any) => {
     })
 }
 
-export const post = (path: string, jsondata: object, func: any) => {
-  fetch(baseURL + path, {
+export const post = async (path: string, jsondata: object, func: any) => {
+  await fetch(baseURL + path, {
     method: 'POST',
     body: JSON.stringify(jsondata),
     headers: { 'Content-Type': 'application/json' }
