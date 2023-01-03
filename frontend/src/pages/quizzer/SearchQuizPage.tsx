@@ -39,7 +39,7 @@ const columns = [
         headerName: '✅',
         sortable: false,
         width: 75,
-        //valueGetter: (params) => params.getValue(params.id, 'checked') === 1 ? '✅' : '',
+        type: 'boolean',
     },
     {
         field: 'quiz_sentense',
