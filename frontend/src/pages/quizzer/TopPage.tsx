@@ -2,7 +2,9 @@ import React from 'react'
 import { Button, Container } from '@material-ui/core'
 
 const buttonStyle = {
-  margin: '20px'
+  margin: '20px',
+  width: '100px',
+  height: '100px',
 }
 
 export default class TopPage extends React.Component {
@@ -10,7 +12,6 @@ export default class TopPage extends React.Component {
     return (
       <Container>
         <h1>WAT Quizzer</h1>
-
         <Button
           style={buttonStyle}
           variant="contained"
@@ -20,7 +21,6 @@ export default class TopPage extends React.Component {
         >
           Quizzer
         </Button>
-        <br />
         <Button
           style={buttonStyle}
           variant="contained"
