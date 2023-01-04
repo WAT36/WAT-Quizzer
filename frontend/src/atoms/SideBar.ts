@@ -1,9 +1,8 @@
-import { atom } from 'recoil';
+import { atom } from 'recoil'
 
 export const isOpenState = atom({
-    key: 'isOpen',
-    default:
-    {
-        open: false
-    },
-});
+  key: 'isOpen',
+  default: {
+    open: false
+  }
+})

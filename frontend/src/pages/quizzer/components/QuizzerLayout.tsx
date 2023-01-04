@@ -1,14 +1,14 @@
-import React from "react";
-import QuizzerHeader from "./QuizzerHeader";
-import QuizzerFooter from "./QuizzerFooter";
-import QuizzerSideBar from "./QuizzerSideBar";
+import React from 'react'
+import QuizzerHeader from './QuizzerHeader'
+import QuizzerFooter from './QuizzerFooter'
+import QuizzerSideBar from './QuizzerSideBar'
 
 const adjustedSpaceStyle = {
-    'height': '40px',
+  height: '40px'
 }
 
 type Props = {
-    contents: JSX.Element;
+  contents: JSX.Element
 }
 
 export default function QuizzerLayout(props: Props) {

@@ -1,7 +1,7 @@
-const baseURL: string = process.env.REACT_APP_API_SERVER || ''
+export const baseURL: string = process.env.REACT_APP_API_SERVER || ''
 
-export const get = (path: string, func: any) => {
-  fetch(baseURL + path)
+export const get = async (path: string, func: any) => {
+  await fetch(baseURL + path)
     .then((response) =>
       response.json().then((data) => ({
         status: response.status,
@@ -14,8 +14,8 @@ export const get = (path: string, func: any) => {
     })
 }
 
-export const post = (path: string, jsondata: object, func: any) => {
-  fetch(baseURL + path, {
+export const post = async (path: string, jsondata: object, func: any) => {
+  await fetch(baseURL + path, {
     method: 'POST',
     body: JSON.stringify(jsondata),
     headers: { 'Content-Type': 'application/json' }

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "npx tsc && node ./dist/api/index.js",
     "start:dev": "npx tsc-watch --onSuccess \"node ./dist/api/index.js\"",
-    "format": "prettier --config ../.prettierrc './**/*.ts' --write",
+    "format": "prettier --config ../.prettierrc './**/*.{js,jsx,ts,tsx}' --write",
     "test": "jest"
   },
   "dependencies": {

@@ -1,3 +1,3 @@
 export const drawerStyle = {
-    'zIndex': '10001',
+  zIndex: '10001'
 }
