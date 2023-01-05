@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -30,34 +30,31 @@ const messageBoxStyle = {
   borderStyle: 'none'
 }
 
-interface SelectQuizPageState {
-  filelistoption: JSX.Element[]
-  categorylistoption: JSX.Element[]
-  file_num: number
-  quiz_num: number
-  quiz_sentense: string
-  answer: string
-  selected_category: string
-  expanded: boolean
-  value: number[] | number
-  checked: boolean
-  message: string
-  messageColor:
-    | 'error'
-    | 'initial'
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'textPrimary'
-    | 'textSecondary'
-    | undefined
-}
+type messageColorType =
+  | 'error'
+  | 'initial'
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'textPrimary'
+  | 'textSecondary'
+  | undefined
 
-export default class SelectQuizPage extends React.Component<
-  {},
-  SelectQuizPageState
-> {
-  componentDidMount() {
+export default function SelectQuizPage() {
+  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
+  const [categorylistoption, setCategorylistoption] = useState<JSX.Element[]>()
+  const [file_num, setFileNum] = useState<number>(-1)
+  const [quiz_num, setQuizNum] = useState<number>()
+  const [quiz_sentense, setQuizSentense] = useState<string>()
+  const [answer, setAnswer] = useState<string>()
+  const [selected_category, setSelectedCategory] = useState<string>()
+  const [expanded, setExpanded] = useState<boolean>(false)
+  const [value, setValue] = useState<number[] | number>([0, 100])
+  const [checked, setChecked] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>('　')
+  const [messageColor, setMessageColor] = useState<messageColorType>('initial')
+
+  useEffect(() => {
     get('/namelist', (data: any) => {
       if (data.status === 200) {
         data = data.body
@@ -69,43 +66,20 @@ export default class SelectQuizPage extends React.Component<
             </MenuItem>
           )
         }
-        this.setState({
-          filelistoption: filelist
-        })
+        setFilelistoption(filelist)
       } else {
-        this.setState({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        })
+        setMessage('エラー:外部APIとの連携に失敗しました')
+        setMessageColor('error')
       }
     })
-  }
+  }, [])
 
-  constructor(props: any) {
-    super(props)
-    this.selectedFileChange = this.selectedFileChange.bind(this)
-    this.rangeSlider = this.rangeSlider.bind(this)
-    this.answerSection = this.answerSection.bind(this)
-    this.getQuiz = this.getQuiz.bind(this)
-    this.getRandomQuiz = this.getRandomQuiz.bind(this)
-    this.getWorstRateQuiz = this.getWorstRateQuiz.bind(this)
-    this.getMinimumClearQuiz = this.getMinimumClearQuiz.bind(this)
-    this.state = {
-      file_num: -1,
-      expanded: false,
-      value: [0, 100],
-      checked: false,
-      message: '　',
-      messageColor: 'initial'
-    } as SelectQuizPageState
-  }
-
-  rangeSlider = () => {
+  const rangeSlider = () => {
     const handleChange = (
       event: React.ChangeEvent<{}>,
       newValue: number[] | number
     ) => {
-      this.setState({ value: newValue })
+      setValue(newValue)
     }
 
     return (
@@ -114,7 +88,7 @@ export default class SelectQuizPage extends React.Component<
           正解率(%)指定
         </Typography>
         <Slider
-          value={this.state.value}
+          value={value}
           onChange={handleChange}
           valueLabelDisplay="auto"
           aria-labelledby="range-slider"
@@ -123,7 +97,7 @@ export default class SelectQuizPage extends React.Component<
     )
   }
 
-  selectedFileChange = (e: any) => {
+  const selectedFileChange = (e: any) => {
     post(
       '/get_category',
       {
@@ -140,175 +114,140 @@ export default class SelectQuizPage extends React.Component<
               </MenuItem>
             )
           }
-          this.setState({
-            file_num: e.target.value,
-            categorylistoption: categorylist
-          })
+          setFileNum(e.target.value)
+          setCategorylistoption(categorylist)
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  getQuiz = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
+  const getQuiz = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
       return
-    } else if (!this.state.quiz_num) {
-      this.setState({
-        message: 'エラー:問題番号を入力して下さい',
-        messageColor: 'error'
-      })
+    } else if (!quiz_num) {
+      setMessage('エラー:問題番号を入力して下さい')
+      setMessageColor('error')
       return
     }
 
     post(
       '/get_quiz',
       {
-        file_num: this.state.file_num,
-        quiz_num: this.state.quiz_num
+        file_num: file_num,
+        quiz_num: quiz_num
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            quiz_sentense: data[0].quiz_sentense,
-            answer: data[0].answer,
-            expanded: false,
-            message: '　',
-            messageColor: 'initial'
-          })
+          setQuizSentense(data[0].quiz_sentense)
+          setAnswer(data[0].answer)
+          setExpanded(false)
+          setMessage('　')
+          setMessageColor('initial')
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  answerSection = () => {
+  const answerSection = () => {
     const handleExpandClick = () => {
-      this.setState({ expanded: !this.state.expanded })
+      setExpanded(!expanded)
     }
 
     const inputCorrect = () => {
-      if (this.state.file_num === -1) {
-        this.setState({
-          message: 'エラー:問題ファイルを選択して下さい',
-          messageColor: 'error'
-        })
+      if (file_num === -1) {
+        setMessage('エラー:問題ファイルを選択して下さい')
+        setMessageColor('error')
         return
-      } else if (!this.state.quiz_num) {
-        this.setState({
-          message: 'エラー:問題番号を入力して下さい',
-          messageColor: 'error'
-        })
+      } else if (!quiz_num) {
+        setMessage('エラー:問題番号を入力して下さい')
+        setMessageColor('error')
         return
       } else if (
-        this.state.quiz_sentense === undefined ||
-        this.state.quiz_sentense === null ||
-        this.state.quiz_sentense === '' ||
-        this.state.answer === undefined ||
-        this.state.answer === null ||
-        this.state.answer === ''
+        quiz_sentense === undefined ||
+        quiz_sentense === null ||
+        quiz_sentense === '' ||
+        answer === undefined ||
+        answer === null ||
+        answer === ''
       ) {
-        this.setState({
-          message: 'エラー:問題を出題してから登録して下さい',
-          messageColor: 'error'
-        })
+        setMessage('エラー:問題を出題してから登録して下さい')
+        setMessageColor('error')
         return
       }
 
       post(
         '/correct',
         {
-          file_num: this.state.file_num,
-          quiz_num: this.state.quiz_num
+          file_num: file_num,
+          quiz_num: quiz_num
         },
         (data: any) => {
           if (data.status === 200) {
             data = data.body
-            this.setState({
-              quiz_sentense: '',
-              answer: '',
-              message: '問題[' + this.state.quiz_num + '] 正解+1! 登録しました',
-              messageColor: 'initial',
-              expanded: false
-            })
+            setQuizSentense('')
+            setAnswer('')
+            setMessage('問題[' + quiz_num + '] 正解+1! 登録しました')
+            setMessageColor('initial')
+            setExpanded(false)
           } else {
-            this.setState({
-              message: 'エラー:外部APIとの連携に失敗しました',
-              messageColor: 'error'
-            })
+            setMessage('エラー:外部APIとの連携に失敗しました')
+            setMessageColor('error')
           }
         }
       )
     }
 
     const inputIncorrect = () => {
-      if (this.state.file_num === -1) {
-        this.setState({
-          message: 'エラー:問題ファイルを選択して下さい',
-          messageColor: 'error'
-        })
+      if (file_num === -1) {
+        setMessage('エラー:問題ファイルを選択して下さい')
+        setMessageColor('error')
         return
-      } else if (!this.state.quiz_num) {
-        this.setState({
-          message: 'エラー:問題番号を入力して下さい',
-          messageColor: 'error'
-        })
+      } else if (!quiz_num) {
+        setMessage('エラー:問題番号を入力して下さい')
+        setMessageColor('error')
         return
       } else if (
-        this.state.quiz_sentense === undefined ||
-        this.state.quiz_sentense === null ||
-        this.state.quiz_sentense === '' ||
-        this.state.answer === undefined ||
-        this.state.answer === null ||
-        this.state.answer === ''
+        quiz_sentense === undefined ||
+        quiz_sentense === null ||
+        quiz_sentense === '' ||
+        answer === undefined ||
+        answer === null ||
+        answer === ''
       ) {
-        this.setState({
-          message: 'エラー:問題を出題してから登録して下さい',
-          messageColor: 'error'
-        })
+        setMessage('エラー:問題を出題してから登録して下さい')
+        setMessageColor('error')
         return
       }
 
       post(
         '/incorrect',
         {
-          file_num: this.state.file_num,
-          quiz_num: this.state.quiz_num
+          file_num: file_num,
+          quiz_num: quiz_num
         },
         (data: any) => {
           if (data.status === 200) {
             data = data.body
-            this.setState({
-              quiz_sentense: '',
-              answer: '',
-              message:
-                '問題[' + this.state.quiz_num + '] 不正解+1.. 登録しました',
-              messageColor: 'initial',
-              expanded: false
-            })
+            setQuizSentense('')
+            setAnswer('')
+            setMessage('問題[' + quiz_num + '] 不正解+1.. 登録しました')
+            setMessageColor('initial')
+            setExpanded(false)
           } else {
-            this.setState({
-              message: 'エラー:外部APIとの連携に失敗しました',
-              messageColor: 'error'
-            })
+            setMessage('エラー:外部APIとの連携に失敗しました')
+            setMessageColor('error')
           }
         }
       )
@@ -320,15 +259,15 @@ export default class SelectQuizPage extends React.Component<
           <Button
             size="small"
             onClick={handleExpandClick}
-            aria-expanded={this.state.expanded}
+            aria-expanded={expanded}
           >
             答え
           </Button>
         </CardActions>
-        <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
             <Typography variant="subtitle1" component="h2">
-              {this.state.answer}
+              {answer}
             </Typography>
             <Button
               style={buttonStyle}
@@ -352,157 +291,116 @@ export default class SelectQuizPage extends React.Component<
     )
   }
 
-  getRandomQuiz = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
+  const getRandomQuiz = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
       return
     }
     post(
       '/random',
       {
-        file_num: this.state.file_num,
-        min_rate: Array.isArray(this.state.value)
-          ? this.state.value[0]
-          : this.state.value,
-        max_rate: Array.isArray(this.state.value)
-          ? this.state.value[1]
-          : this.state.value,
-        category:
-          this.state.selected_category === ''
-            ? null
-            : this.state.selected_category,
-        checked: this.state.checked
+        file_num: file_num,
+        min_rate: Array.isArray(value) ? value[0] : value,
+        max_rate: Array.isArray(value) ? value[1] : value,
+        category: selected_category === '' ? null : selected_category,
+        checked: checked
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            quiz_num: data[0].quiz_num,
-            quiz_sentense: data[0].quiz_sentense,
-            answer: data[0].answer,
-            expanded: false,
-            message: '　',
-            messageColor: 'initial'
-          })
+          setQuizNum(data[0].quiz_num)
+          setQuizSentense(data[0].quiz_sentense)
+          setAnswer(data[0].answer)
+          setMessage('　')
+          setMessageColor('initial')
+          setExpanded(false)
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  getWorstRateQuiz = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
+  const getWorstRateQuiz = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
       return
     }
     post(
       '/worst_rate',
       {
-        file_num: this.state.file_num,
-        category:
-          this.state.selected_category === ''
-            ? null
-            : this.state.selected_category,
-        checked: this.state.checked
+        file_num: file_num,
+        category: selected_category === '' ? null : selected_category,
+        checked: checked
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            quiz_num: data[0].quiz_num,
-            quiz_sentense: data[0].quiz_sentense,
-            answer: data[0].answer,
-            expanded: false,
-            message: '　',
-            messageColor: 'initial'
-          })
+          setQuizNum(data[0].quiz_num)
+          setQuizSentense(data[0].quiz_sentense)
+          setAnswer(data[0].answer)
+          setMessage('　')
+          setMessageColor('initial')
+          setExpanded(false)
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  getMinimumClearQuiz = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
+  const getMinimumClearQuiz = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
       return
     }
     post(
       '/minimum_clear',
       {
-        file_num: this.state.file_num,
-        category:
-          this.state.selected_category === ''
-            ? null
-            : this.state.selected_category,
-        checked: this.state.checked
+        file_num: file_num,
+        category: selected_category === '' ? null : selected_category,
+        checked: checked
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            quiz_num: data[0].quiz_num,
-            quiz_sentense: data[0].quiz_sentense,
-            answer: data[0].answer,
-            expanded: false,
-            message: '　',
-            messageColor: 'initial'
-          })
+          setQuizNum(data[0].quiz_num)
+          setQuizSentense(data[0].quiz_sentense)
+          setAnswer(data[0].answer)
+          setMessage('　')
+          setMessageColor('initial')
+          setExpanded(false)
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  contents = () => {
+  const contents = () => {
     return (
       <Container>
         <h1>WAT Quizzer</h1>
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography
-              variant="h6"
-              component="h6"
-              color={this.state.messageColor}
-            >
-              {this.state.message}
+            <Typography variant="h6" component="h6" color={messageColor}>
+              {message}
             </Typography>
           </CardContent>
         </Card>
@@ -515,12 +413,12 @@ export default class SelectQuizPage extends React.Component<
               id="quiz-file-id"
               defaultValue={-1}
               // value={age}
-              onChange={(e) => this.selectedFileChange(e)}
+              onChange={(e) => selectedFileChange(e)}
             >
               <MenuItem value={-1} key={-1}>
                 選択なし
               </MenuItem>
-              {this.state.filelistoption}
+              {filelistoption}
             </Select>
           </FormControl>
 
@@ -528,7 +426,7 @@ export default class SelectQuizPage extends React.Component<
             <TextField
               label="問題番号"
               onChange={(e) => {
-                this.setState({ quiz_num: Number(e.target.value) })
+                setQuizNum(Number(e.target.value))
               }}
             />
           </FormControl>
@@ -541,15 +439,15 @@ export default class SelectQuizPage extends React.Component<
               defaultValue={''}
               // value={age}
               onChange={(e) => {
-                this.setState({ selected_category: String(e.target.value) })
+                setSelectedCategory(String(e.target.value))
               }}
             >
               <MenuItem value={-1}>選択なし</MenuItem>
-              {this.state.categorylistoption}
+              {categorylistoption}
             </Select>
           </FormControl>
 
-          <FormControl>{this.rangeSlider()}</FormControl>
+          <FormControl>{rangeSlider()}</FormControl>
 
           <FormControl>
             <FormControlLabel
@@ -557,7 +455,7 @@ export default class SelectQuizPage extends React.Component<
               control={
                 <Checkbox
                   color="primary"
-                  onChange={(e) => this.setState({ checked: e.target.checked })}
+                  onChange={(e) => setChecked(e.target.checked)}
                 />
               }
               label="チェック済から出題"
@@ -570,7 +468,7 @@ export default class SelectQuizPage extends React.Component<
           style={buttonStyle}
           variant="contained"
           color="primary"
-          onClick={(e) => this.getQuiz()}
+          onClick={(e) => getQuiz()}
         >
           出題
         </Button>
@@ -578,7 +476,7 @@ export default class SelectQuizPage extends React.Component<
           style={buttonStyle}
           variant="contained"
           color="secondary"
-          onClick={(e) => this.getRandomQuiz()}
+          onClick={(e) => getRandomQuiz()}
         >
           ランダム出題
         </Button>
@@ -586,7 +484,7 @@ export default class SelectQuizPage extends React.Component<
           style={buttonStyle}
           variant="contained"
           color="secondary"
-          onClick={(e) => this.getWorstRateQuiz()}
+          onClick={(e) => getWorstRateQuiz()}
         >
           最低正解率問出題
         </Button>
@@ -594,7 +492,7 @@ export default class SelectQuizPage extends React.Component<
           style={buttonStyle}
           variant="contained"
           color="secondary"
-          onClick={(e) => this.getMinimumClearQuiz()}
+          onClick={(e) => getMinimumClearQuiz()}
         >
           最小正解数問出題
         </Button>
@@ -613,20 +511,18 @@ export default class SelectQuizPage extends React.Component<
               問題
             </Typography>
             <Typography variant="subtitle1" component="h2">
-              {this.state.quiz_sentense}
+              {quiz_sentense}
             </Typography>
           </CardContent>
-          {this.answerSection()}
+          {answerSection()}
         </Card>
       </Container>
     )
   }
 
-  render() {
-    return (
-      <>
-        <QuizzerLayout contents={this.contents()} />
-      </>
-    )
-  }
+  return (
+    <>
+      <QuizzerLayout contents={contents()} />
+    </>
+  )
 }
