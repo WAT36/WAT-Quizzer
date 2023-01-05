@@ -50,8 +50,7 @@ type messageColorType =
   | 'textSecondary'
   | undefined
 
-export default function ImageUploadPage(){
-
+export default function ImageUploadPage() {
   const [message, setMessage] = useState<string>('　')
   const [messageColor, setMessageColor] = useState<messageColorType>('initial')
   const [isUploading, setIsUploading] = useState<boolean>(false)
@@ -117,11 +116,7 @@ export default function ImageUploadPage(){
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography
-              variant="h6"
-              component="h6"
-              color={messageColor}
-            >
+            <Typography variant="h6" component="h6" color={messageColor}>
               {message}
             </Typography>
           </CardContent>
