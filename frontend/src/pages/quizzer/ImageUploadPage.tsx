@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardContent, Container, Typography } from '@material-ui/core'
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
@@ -40,49 +40,44 @@ interface ImageUploadReturnValue {
   url: string
 }
 
-export default class ImageUploadPage extends React.Component<
-  {},
-  ImageUploadPageState
-> {
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      message: '　',
-      messageColor: 'initial',
-      isUploading: false,
-      images: []
-    } as ImageUploadPageState
-    this.handleOnDrop = this.handleOnDrop.bind(this)
-  }
+type messageColorType =
+  | 'error'
+  | 'initial'
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'textPrimary'
+  | 'textSecondary'
+  | undefined
 
-  handleOnDrop(files: File[]) {
-    this.setState({
-      isUploading: true,
-      message: '　',
-      messageColor: 'initial'
-    })
+export default function ImageUploadPage(){
 
-    Promise.all(files.map((file) => this.uploadImage(file)))
-      .then((images) => {
-        console.log('images:', images)
-        this.setState({
-          isUploading: false,
-          images: this.state.images.concat(images),
-          message: 'アップロードが完了しました:' + images[0].name,
-          messageColor: 'initial'
-        })
+  const [message, setMessage] = useState<string>('　')
+  const [messageColor, setMessageColor] = useState<messageColorType>('initial')
+  const [isUploading, setIsUploading] = useState<boolean>(false)
+  const [images, setImages] = useState<ImageUploadReturnValue[]>([])
+
+  const handleOnDrop = (files: File[]) => {
+    setIsUploading(true)
+    setMessage('　')
+    setMessageColor('initial')
+
+    Promise.all(files.map((file) => uploadImage(file)))
+      .then((image) => {
+        setIsUploading(false)
+        setImages(images.concat(image))
+        setMessage('アップロードが完了しました:' + image[0].name)
+        setMessageColor('initial')
       })
       .catch((e) => {
-        console.log(e)
-        this.setState({
-          isUploading: false,
-          message: 'エラー：アップロードに失敗しました',
-          messageColor: 'error'
-        })
+        console.error(e)
+        setIsUploading(false)
+        setMessage('エラー：アップロードに失敗しました')
+        setMessageColor('error')
       })
   }
 
-  uploadImage(file: File) {
+  const uploadImage = (file: File) => {
     return axios
       .post(process.env.REACT_APP_API_SERVER + '/upload', {
         params: {
@@ -115,7 +110,7 @@ export default class ImageUploadPage extends React.Component<
       })
   }
 
-  contents = () => {
+  const contents = () => {
     return (
       <Container>
         <h1>WAT Quizzer</h1>
@@ -125,20 +120,20 @@ export default class ImageUploadPage extends React.Component<
             <Typography
               variant="h6"
               component="h6"
-              color={this.state.messageColor}
+              color={messageColor}
             >
-              {this.state.message}
+              {message}
             </Typography>
           </CardContent>
         </Card>
 
-        <Dropzone onDrop={this.handleOnDrop}>
+        <Dropzone onDrop={handleOnDrop}>
           {({ getRootProps, getInputProps }) => (
             <section>
               <div {...getRootProps()} style={dropzoneStyle}>
                 <input {...getInputProps()} />
                 <p>Drag 'n' drop some files here, or click to select files</p>
-                {this.state.isUploading ? (
+                {isUploading ? (
                   <p>ファイルをアップロードしています</p>
                 ) : (
                   <p>ここに画像をドラックまたはクリック</p>
@@ -151,11 +146,9 @@ export default class ImageUploadPage extends React.Component<
     )
   }
 
-  render() {
-    return (
-      <>
-        <QuizzerLayout contents={this.contents()} />
-      </>
-    )
-  }
+  return (
+    <>
+      <QuizzerLayout contents={contents()} />
+    </>
+  )
 }
