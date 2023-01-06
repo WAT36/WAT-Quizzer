@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -21,7 +21,7 @@ import {
   GridSelectionModel
 } from '@material-ui/data-grid'
 
-import { baseURL, get, post } from '../../common/API'
+import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
 
 const buttonStyle = {
@@ -86,36 +86,33 @@ const columns = [
   }
 ]
 
-interface SearchQuizPageState {
-  file_num: number
-  value: number[] | number
-  checked: boolean
-  message: string
-  messageColor:
-    | 'error'
-    | 'initial'
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'textPrimary'
-    | 'textSecondary'
-    | undefined
-  searchResult: GridRowsProp
-  query: string
-  selected_category: string
-  cond_question: boolean
-  cond_answer: boolean
-  filelistoption: JSX.Element[]
-  categorylistoption: JSX.Element[]
-  checkedIdList: number[]
-  changedCategory: string
-}
+type messageColorType =
+  | 'error'
+  | 'initial'
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'textPrimary'
+  | 'textSecondary'
+  | undefined
 
-export default class SearchQuizPage extends React.Component<
-  {},
-  SearchQuizPageState
-> {
-  componentDidMount() {
+export default function SearchQuizPage(){
+  const [file_num, setFileNum] = useState<number>(-1)
+  const [value, setValue] = useState<number[] | number>([0, 100])
+  const [checked, setChecked] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>('　')
+  const [messageColor, setMessageColor] = useState<messageColorType>('initial')
+  const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp)
+  const [query, setQuery] = useState<string>()
+  const [selected_category, setSelectedCategory] = useState<string>()
+  const [cond_question, setCondQuestion] = useState<boolean>()
+  const [cond_answer, setCondAnswer] = useState<boolean>()
+  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
+  const [categorylistoption, setCategorylistoption] = useState<JSX.Element[]>()
+  const [checkedIdList, setCheckedIdList] = useState<number[]>([] as number[])
+  const [changedCategory, setChangedCategory] = useState<string>('')
+
+  useEffect(() => {
     get('/namelist', (data: any) => {
       if (data.status === 200) {
         data = data.body
@@ -127,35 +124,15 @@ export default class SearchQuizPage extends React.Component<
             </MenuItem>
           )
         }
-        this.setState({
-          filelistoption: filelist
-        })
+        setFilelistoption(filelist)
       } else {
-        this.setState({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        })
+        setMessage('エラー:外部APIとの連携に失敗しました')
+        setMessageColor('error')
       }
     })
-  }
+  })
 
-  constructor(props: any) {
-    super(props)
-    this.selectedFileChange = this.selectedFileChange.bind(this)
-    this.rangeSlider = this.rangeSlider.bind(this)
-    this.state = {
-      file_num: -1,
-      value: [0, 100],
-      checked: false,
-      message: '　',
-      messageColor: 'initial',
-      searchResult: [] as GridRowsProp,
-      checkedIdList: [] as number[],
-      changedCategory: ''
-    } as SearchQuizPageState
-  }
-
-  selectedFileChange = (e: any) => {
+  const selectedFileChange = (e: any) => {
     post(
       '/get_category',
       {
@@ -172,26 +149,22 @@ export default class SearchQuizPage extends React.Component<
               </MenuItem>
             )
           }
-          this.setState({
-            file_num: e.target.value,
-            categorylistoption: categorylist
-          })
+          setFileNum(e.target.value)
+          setCategorylistoption(categorylist)
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  rangeSlider = () => {
+  const rangeSlider = () => {
     const handleChange = (
       event: React.ChangeEvent<{}>,
       newValue: number[] | number
     ) => {
-      this.setState({ value: newValue })
+      setValue(newValue)
     }
 
     return (
@@ -200,7 +173,7 @@ export default class SearchQuizPage extends React.Component<
           正解率(%)指定
         </Typography>
         <Slider
-          value={this.state.value}
+          value={value}
           onChange={handleChange}
           valueLabelDisplay="auto"
           aria-labelledby="range-slider"
@@ -209,78 +182,65 @@ export default class SearchQuizPage extends React.Component<
     )
   }
 
-  searchQuiz = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
+  const searchQuiz = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
       return
     }
 
     post(
       '/search',
       {
-        file_num: this.state.file_num,
-        query: this.state.query || '',
+        file_num: file_num,
+        query: query || '',
         category:
-          this.state.selected_category === ''
+          selected_category === ''
             ? null
-            : this.state.selected_category,
-        min_rate: Array.isArray(this.state.value)
-          ? this.state.value[0]
-          : this.state.value,
-        max_rate: Array.isArray(this.state.value)
-          ? this.state.value[1]
-          : this.state.value,
+            : selected_category,
+        min_rate: Array.isArray(value)
+          ? value[0]
+          : value,
+        max_rate: Array.isArray(value)
+          ? value[1]
+          : value,
         cond: {
-          question: this.state.cond_question,
-          answer: this.state.cond_answer
-        }
+          question: cond_question,
+          answer: cond_answer
+        },
+        checked: checked
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            searchResult: data,
-            message: '　',
-            messageColor: 'initial'
-          })
+          setSearchResult(data)
+          setMessage('　')
+          setMessageColor('initial')
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
   // チェックした問題のIDをステートに登録
-  checkedIdList = (selectionModel: GridSelectionModel, details?: any) => {
-    this.setState({
-      checkedIdList: selectionModel as number[]
-    })
+  const registerCheckedIdList = (selectionModel: GridSelectionModel, details?: any) => {
+    setCheckedIdList(selectionModel as number[])
   }
 
   // チェックした問題に指定カテゴリを一括登録する
-  registerCategoryToChecked = async () => {
-    if (this.state.checkedIdList.length === 0) {
-      this.setState({
-        message: 'エラー:チェックされた問題がありません',
-        messageColor: 'error'
-      })
+  const registerCategoryToChecked = async () => {
+    if (checkedIdList.length === 0) {
+      setMessage('エラー:チェックされた問題がありません')
+      setMessageColor('error')
       return
-    } else if (this.state.changedCategory === '') {
-      this.setState({
-        message: 'エラー:一括登録するカテゴリ名を入力して下さい',
-        messageColor: 'error'
-      })
+    } else if (changedCategory === '') {
+      setMessage('エラー:一括登録するカテゴリ名を入力して下さい')
+      setMessageColor('error')
       return
     }
 
@@ -288,12 +248,12 @@ export default class SearchQuizPage extends React.Component<
     const addCategoriesToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = []
       for (const checkedId of idList) {
-        const result = await post(
+        await post(
           '/edit/category/add',
           {
-            file_num: this.state.file_num,
+            file_num: file_num,
             quiz_num: checkedId,
-            category: this.state.changedCategory
+            category: changedCategory
           },
           (data: any) => {
             if (data.status !== 200) {
@@ -305,43 +265,37 @@ export default class SearchQuizPage extends React.Component<
       return { failureIdList }
     }
     const { failureIdList } = await addCategoriesToQuiz(
-      this.state.checkedIdList
+      checkedIdList
     )
 
     let message: string
     let messageColor: 'error' | 'initial'
     if (failureIdList.length > 0) {
       message = `エラー:問題ID[${failureIdList.join()}]へのカテゴリ登録に失敗しました（${
-        this.state.checkedIdList.length - failureIdList.length
-      }/${this.state.checkedIdList.length}件登録成功）`
+        checkedIdList.length - failureIdList.length
+      }/${checkedIdList.length}件登録成功）`
       messageColor = 'error'
     } else {
-      message = `チェック問題(${this.state.checkedIdList.length}件)へのカテゴリ登録に成功しました`
+      message = `チェック問題(${checkedIdList.length}件)へのカテゴリ登録に成功しました`
       messageColor = 'initial'
     }
 
     // 終わったらチェック全て外す、入力カテゴリも消す
-    this.setState({
-      checkedIdList: [],
-      changedCategory: '',
-      message,
-      messageColor
-    })
+    setCheckedIdList([])
+    setChangedCategory('')
+    setMessage(message)
+    setMessageColor(messageColor)
   }
 
   // チェックした問題から指定カテゴリを一括削除する
-  removeCategoryFromChecked = async () => {
-    if (this.state.checkedIdList.length === 0) {
-      this.setState({
-        message: 'エラー:チェックされた問題がありません',
-        messageColor: 'error'
-      })
+  const removeCategoryFromChecked = async () => {
+    if (checkedIdList.length === 0) {
+      setMessage('エラー:チェックされた問題がありません')
+      setMessageColor('error')
       return
-    } else if (this.state.changedCategory === '') {
-      this.setState({
-        message: 'エラー:一括削除するカテゴリ名を入力して下さい',
-        messageColor: 'error'
-      })
+    } else if (changedCategory === '') {
+      setMessage('エラー:一括削除するカテゴリ名を入力して下さい')
+      setMessageColor('error')
       return
     }
 
@@ -349,12 +303,12 @@ export default class SearchQuizPage extends React.Component<
     const removeCategories = async (idList: number[]) => {
       const failureIdList: number[] = []
       for (const checkedId of idList) {
-        const result = await post(
+        await post(
           '/edit/category/remove',
           {
-            file_num: this.state.file_num,
+            file_num: file_num,
             quiz_num: checkedId,
-            category: this.state.changedCategory
+            category: changedCategory
           },
           (data: any) => {
             if (data.status !== 200) {
@@ -365,30 +319,28 @@ export default class SearchQuizPage extends React.Component<
       }
       return { failureIdList }
     }
-    const { failureIdList } = await removeCategories(this.state.checkedIdList)
+    const { failureIdList } = await removeCategories(checkedIdList)
 
     let message: string
     let messageColor: 'error' | 'initial'
     if (failureIdList.length > 0) {
       message = `エラー:問題ID[${failureIdList.join()}]のカテゴリ削除に失敗しました（${
-        this.state.checkedIdList.length - failureIdList.length
-      }/${this.state.checkedIdList.length}件削除成功）`
+        checkedIdList.length - failureIdList.length
+      }/${checkedIdList.length}件削除成功）`
       messageColor = 'error'
     } else {
-      message = `チェック問題(${this.state.checkedIdList.length}件)のカテゴリ削除に成功しました`
+      message = `チェック問題(${checkedIdList.length}件)のカテゴリ削除に成功しました`
       messageColor = 'initial'
     }
 
     // 終わったらチェック全て外す、入力カテゴリも消す
-    this.setState({
-      checkedIdList: [],
-      changedCategory: '',
-      message,
-      messageColor
-    })
+    setCheckedIdList([])
+    setChangedCategory('')
+    setMessage(message)
+    setMessageColor(messageColor)
   }
 
-  contents = () => {
+  const contents = () => {
     return (
       <Container>
         <h1>WAT Quizzer</h1>
@@ -398,9 +350,9 @@ export default class SearchQuizPage extends React.Component<
             <Typography
               variant="h6"
               component="h6"
-              color={this.state.messageColor}
+              color={messageColor}
             >
-              {this.state.message}
+              {message}
             </Typography>
           </CardContent>
         </Card>
@@ -413,12 +365,12 @@ export default class SearchQuizPage extends React.Component<
               id="quiz-file-id"
               defaultValue={-1}
               // value={age}
-              onChange={(e) => this.selectedFileChange(e)}
+              onChange={(e) => selectedFileChange(e)}
             >
               <MenuItem value={-1} key={-1}>
                 選択なし
               </MenuItem>
-              {this.state.filelistoption}
+              {filelistoption}
             </Select>
           </FormControl>
 
@@ -426,7 +378,7 @@ export default class SearchQuizPage extends React.Component<
             <TextField
               label="検索語句"
               onChange={(e) => {
-                this.setState({ query: e.target.value })
+                setQuery(e.target.value)
               }}
             />
           </FormControl>
@@ -437,7 +389,7 @@ export default class SearchQuizPage extends React.Component<
               control={
                 <Checkbox
                   onChange={(e) => {
-                    this.setState({ cond_question: e.target.checked })
+                    setCondQuestion(e.target.checked)
                   }}
                   name="checkedA"
                 />
@@ -448,7 +400,7 @@ export default class SearchQuizPage extends React.Component<
               control={
                 <Checkbox
                   onChange={(e) => {
-                    this.setState({ cond_answer: e.target.checked })
+                    setCondAnswer(e.target.checked)
                   }}
                   name="checkedB"
                 />
@@ -465,15 +417,15 @@ export default class SearchQuizPage extends React.Component<
               defaultValue={-1}
               // value={age}
               onChange={(e) => {
-                this.setState({ selected_category: String(e.target.value) })
+                setSelectedCategory(String(e.target.value))
               }}
             >
               <MenuItem value={-1}>選択なし</MenuItem>
-              {this.state.categorylistoption}
+              {categorylistoption}
             </Select>
           </FormControl>
 
-          <FormControl>{this.rangeSlider()}</FormControl>
+          <FormControl>{rangeSlider()}</FormControl>
 
           <FormControl>
             <FormControlLabel
@@ -481,7 +433,7 @@ export default class SearchQuizPage extends React.Component<
               control={
                 <Checkbox
                   color="primary"
-                  onChange={(e) => this.setState({ checked: e.target.checked })}
+                  onChange={(e) => setChecked(e.target.checked)}
                 />
               }
               label="チェック済から出題"
@@ -494,20 +446,20 @@ export default class SearchQuizPage extends React.Component<
           style={buttonStyle}
           variant="contained"
           color="primary"
-          onClick={(e) => this.searchQuiz()}
+          onClick={(e) => searchQuiz()}
         >
           検索
         </Button>
 
         <div style={searchedTableStyle}>
           <DataGrid
-            rows={this.state.searchResult}
+            rows={searchResult}
             columns={columns}
             pageSize={15}
             checkboxSelection
             disableSelectionOnClick
             onSelectionModelChange={(selectionModel, details) =>
-              this.checkedIdList(selectionModel, details)
+              registerCheckedIdList(selectionModel, details)
             }
           />
         </div>
@@ -517,10 +469,10 @@ export default class SearchQuizPage extends React.Component<
           <FormControl>
             <TextField
               id="change-category"
-              value={this.state.changedCategory}
+              value={changedCategory}
               onChange={(
                 e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-              ) => this.setState({ changedCategory: e.target.value })}
+              ) => setChangedCategory(e.target.value)}
             />
           </FormControl>
           」を
@@ -529,7 +481,7 @@ export default class SearchQuizPage extends React.Component<
               style={buttonStyle}
               variant="contained"
               color="primary"
-              onClick={async (e) => await this.registerCategoryToChecked()}
+              onClick={async (e) => await registerCategoryToChecked()}
             >
               一括カテゴリ登録
             </Button>
@@ -540,7 +492,7 @@ export default class SearchQuizPage extends React.Component<
               style={buttonStyle}
               variant="contained"
               color="primary"
-              onClick={async (e) => await this.removeCategoryFromChecked()}
+              onClick={async (e) => await removeCategoryFromChecked()}
             >
               一括カテゴリ削除
             </Button>
@@ -550,11 +502,9 @@ export default class SearchQuizPage extends React.Component<
     )
   }
 
-  render() {
-    return (
-      <>
-        <QuizzerLayout contents={this.contents()} />
-      </>
-    )
-  }
+  return (
+    <>
+      <QuizzerLayout contents={contents()} />
+    </>
+  )
 }
