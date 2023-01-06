@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -48,11 +48,31 @@ interface EditQuizPageState {
   filelistoption: JSX.Element[]
 }
 
-export default class EditQuizPage extends React.Component<
-  {},
-  EditQuizPageState
-> {
-  componentDidMount() {
+type messageColorType =
+  | 'error'
+  | 'initial'
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'textPrimary'
+  | 'textSecondary'
+  | undefined
+
+export default function EditQuizPage() {
+
+  const [file_num, setFileNum] = useState<number>(-1)
+  const [message, setMessage] = useState<string>('　')
+  const [messageColor, setMessageColor] = useState<messageColorType>('initial')
+  const [quiz_num, setQuizNum] = useState<number>()
+  const [edit_file_num, setEditFileNum] = useState<number>()
+  const [edit_quiz_num, setEditQuizNum] = useState<number>()
+  const [edit_question, setEditQuestion] = useState<string>()
+  const [edit_answer, setEditAnswer] = useState<string>()
+  const [edit_category, setEditCategory] = useState<string>()
+  const [edit_image, setEditImage] = useState<string>()
+  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
+
+  useEffect(() => {
     get('/namelist', (data: any) => {
       if (data.status === 200) {
         data = data.body
@@ -64,111 +84,84 @@ export default class EditQuizPage extends React.Component<
             </MenuItem>
           )
         }
-        this.setState({
-          filelistoption: filelist
-        })
+        setFilelistoption(filelist)
       } else {
-        this.setState({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        })
+        setMessage('エラー:外部APIとの連携に失敗しました')
+        setMessageColor('error')
       }
     })
-  }
+  })
 
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      file_num: -1,
-      message: '　',
-      messageColor: 'initial'
-    } as EditQuizPageState
-  }
-
-  getQuiz = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
+  const getQuiz = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
       return
-    } else if (!this.state.quiz_num) {
-      this.setState({
-        message: 'エラー:問題番号を入力して下さい',
-        messageColor: 'error'
-      })
+    } else if (!quiz_num) {
+      setMessage('エラー:問題番号を入力して下さい')
+      setMessageColor('error')
       return
     }
 
     post(
       '/get_quiz',
       {
-        file_num: this.state.file_num,
-        quiz_num: this.state.quiz_num
+        file_num: file_num,
+        quiz_num: quiz_num
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            edit_file_num: data[0].file_num,
-            edit_quiz_num: data[0].quiz_num,
-            edit_question: data[0].quiz_sentense,
-            edit_answer: data[0].answer,
-            edit_category: data[0].category,
-            edit_image: data[0].img_file,
-            message: '　',
-            messageColor: 'initial'
-          })
+          setEditFileNum(data[0].file_num)
+          setEditQuizNum(data[0].quiz_num)
+          setEditQuestion(data[0].quiz_sentense)
+          setEditAnswer(data[0].answer)
+          setEditCategory(data[0].category)
+          setEditImage(data[0].img_file)
+          setMessage('　')
+          setMessageColor('initial')    
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')    
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')    
         }
       }
     )
   }
 
-  editQuiz = () => {
+  const editQuiz = () => {
     post(
       '/edit',
       {
-        file_num: this.state.edit_file_num,
-        quiz_num: this.state.edit_quiz_num,
-        question: this.state.edit_question,
-        answer: this.state.edit_answer,
-        category: this.state.edit_category,
-        img_file: this.state.edit_image
+        file_num: edit_file_num,
+        quiz_num: edit_quiz_num,
+        question: edit_question,
+        answer: edit_answer,
+        category: edit_category,
+        img_file: edit_image
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            edit_file_num: -1,
-            edit_quiz_num: -1,
-            edit_question: '',
-            edit_answer: '',
-            edit_category: '',
-            edit_image: '',
-            message: 'Success!! 編集に成功しました',
-            messageColor: 'initial'
-          })
+          setEditFileNum(-1)
+          setEditQuizNum(-1)
+          setEditQuestion('')
+          setEditAnswer('')
+          setEditCategory('')
+          setEditImage('')
+          setMessage('Success!! 編集に成功しました')
+          setMessageColor('initial')  
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')  
         }
       }
     )
   }
 
-  contents = () => {
+  const contents = () => {
     return (
       <Container>
         <h1>WAT Quizzer</h1>
@@ -178,9 +171,9 @@ export default class EditQuizPage extends React.Component<
             <Typography
               variant="h6"
               component="h6"
-              color={this.state.messageColor}
+              color={messageColor}
             >
-              {this.state.message}
+              {message}
             </Typography>
           </CardContent>
         </Card>
@@ -194,13 +187,13 @@ export default class EditQuizPage extends React.Component<
               defaultValue={-1}
               // value={age}
               onChange={(e) => {
-                this.setState({ file_num: Number(e.target.value) })
+                setFileNum(Number(e.target.value))
               }}
             >
               <MenuItem value={-1} key={-1}>
                 選択なし
               </MenuItem>
-              {this.state.filelistoption}
+              {filelistoption}
             </Select>
           </FormControl>
 
@@ -208,7 +201,7 @@ export default class EditQuizPage extends React.Component<
             <TextField
               label="問題番号"
               onChange={(e) => {
-                this.setState({ quiz_num: Number(e.target.value) })
+                setQuizNum(Number(e.target.value))
               }}
             />
           </FormControl>
@@ -218,7 +211,7 @@ export default class EditQuizPage extends React.Component<
           style={buttonStyle}
           variant="contained"
           color="primary"
-          onClick={(e) => this.getQuiz()}
+          onClick={(e) => getQuiz()}
         >
           問題取得
         </Button>
@@ -227,12 +220,12 @@ export default class EditQuizPage extends React.Component<
           <CardContent>
             <Typography variant="h6" component="h6" style={messageBoxStyle}>
               ファイル：
-              {this.state.edit_file_num === -1 ? '' : this.state.edit_file_num}
+              {edit_file_num === -1 ? '' : edit_file_num}
             </Typography>
 
             <Typography variant="h6" component="h6" style={messageBoxStyle}>
               問題番号：
-              {this.state.edit_quiz_num === -1 ? '' : this.state.edit_quiz_num}
+              {edit_quiz_num === -1 ? '' : edit_quiz_num}
             </Typography>
 
             <Typography variant="h6" component="h6" style={messageBoxStyle}>
@@ -240,9 +233,9 @@ export default class EditQuizPage extends React.Component<
               <Input
                 fullWidth
                 maxRows={1}
-                value={this.state.edit_question}
+                value={edit_question}
                 onChange={(e) =>
-                  this.setState({ edit_question: e.target.value })
+                  setEditQuestion(e.target.value)
                 }
               />
             </Typography>
@@ -252,8 +245,8 @@ export default class EditQuizPage extends React.Component<
               <Input
                 fullWidth
                 maxRows={1}
-                value={this.state.edit_answer}
-                onChange={(e) => this.setState({ edit_answer: e.target.value })}
+                value={edit_answer}
+                onChange={(e) => setEditAnswer(e.target.value)}
               />
             </Typography>
 
@@ -262,9 +255,9 @@ export default class EditQuizPage extends React.Component<
               <Input
                 fullWidth
                 maxRows={1}
-                value={this.state.edit_category}
+                value={edit_category}
                 onChange={(e) =>
-                  this.setState({ edit_category: e.target.value })
+                  setEditCategory(e.target.value)
                 }
               />
             </Typography>
@@ -274,8 +267,8 @@ export default class EditQuizPage extends React.Component<
               <Input
                 fullWidth
                 maxRows={1}
-                value={this.state.edit_image}
-                onChange={(e) => this.setState({ edit_image: e.target.value })}
+                value={edit_image}
+                onChange={(e) => setEditImage(e.target.value)}
               />
             </Typography>
           </CardContent>
@@ -285,7 +278,7 @@ export default class EditQuizPage extends React.Component<
           style={buttonStyle}
           variant="contained"
           color="primary"
-          onClick={(e) => this.editQuiz()}
+          onClick={(e) => editQuiz()}
         >
           更新
         </Button>
@@ -293,11 +286,9 @@ export default class EditQuizPage extends React.Component<
     )
   }
 
-  render() {
-    return (
-      <>
-        <QuizzerLayout contents={this.contents()} />
-      </>
-    )
-  }
+  return (
+    <>
+      <QuizzerLayout contents={contents()} />
+    </>
+  )
 }
