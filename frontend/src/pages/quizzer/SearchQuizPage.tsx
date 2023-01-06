@@ -96,13 +96,15 @@ type messageColorType =
   | 'textSecondary'
   | undefined
 
-export default function SearchQuizPage(){
+export default function SearchQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1)
   const [value, setValue] = useState<number[] | number>([0, 100])
   const [checked, setChecked] = useState<boolean>(false)
   const [message, setMessage] = useState<string>('　')
   const [messageColor, setMessageColor] = useState<messageColorType>('initial')
-  const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp)
+  const [searchResult, setSearchResult] = useState<GridRowsProp>(
+    [] as GridRowsProp
+  )
   const [query, setQuery] = useState<string>()
   const [selected_category, setSelectedCategory] = useState<string>()
   const [cond_question, setCondQuestion] = useState<boolean>()
@@ -194,16 +196,9 @@ export default function SearchQuizPage(){
       {
         file_num: file_num,
         query: query || '',
-        category:
-          selected_category === ''
-            ? null
-            : selected_category,
-        min_rate: Array.isArray(value)
-          ? value[0]
-          : value,
-        max_rate: Array.isArray(value)
-          ? value[1]
-          : value,
+        category: selected_category === '' ? null : selected_category,
+        min_rate: Array.isArray(value) ? value[0] : value,
+        max_rate: Array.isArray(value) ? value[1] : value,
         cond: {
           question: cond_question,
           answer: cond_answer
@@ -228,7 +223,10 @@ export default function SearchQuizPage(){
   }
 
   // チェックした問題のIDをステートに登録
-  const registerCheckedIdList = (selectionModel: GridSelectionModel, details?: any) => {
+  const registerCheckedIdList = (
+    selectionModel: GridSelectionModel,
+    details?: any
+  ) => {
     setCheckedIdList(selectionModel as number[])
   }
 
@@ -264,9 +262,7 @@ export default function SearchQuizPage(){
       }
       return { failureIdList }
     }
-    const { failureIdList } = await addCategoriesToQuiz(
-      checkedIdList
-    )
+    const { failureIdList } = await addCategoriesToQuiz(checkedIdList)
 
     let message: string
     let messageColor: 'error' | 'initial'
@@ -347,11 +343,7 @@ export default function SearchQuizPage(){
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography
-              variant="h6"
-              component="h6"
-              color={messageColor}
-            >
+            <Typography variant="h6" component="h6" color={messageColor}>
               {message}
             </Typography>
           </CardContent>
