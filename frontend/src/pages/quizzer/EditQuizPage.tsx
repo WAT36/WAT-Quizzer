@@ -26,28 +26,6 @@ const buttonStyle = {
   margin: '10px'
 }
 
-interface EditQuizPageState {
-  file_num: number
-  message: string
-  messageColor:
-    | 'error'
-    | 'initial'
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'textPrimary'
-    | 'textSecondary'
-    | undefined
-  quiz_num: number
-  edit_file_num: number
-  edit_quiz_num: number
-  edit_question: string
-  edit_answer: string
-  edit_category: string
-  edit_image: string
-  filelistoption: JSX.Element[]
-}
-
 type messageColorType =
   | 'error'
   | 'initial'
@@ -59,7 +37,6 @@ type messageColorType =
   | undefined
 
 export default function EditQuizPage() {
-
   const [file_num, setFileNum] = useState<number>(-1)
   const [message, setMessage] = useState<string>('　')
   const [messageColor, setMessageColor] = useState<messageColorType>('initial')
@@ -119,13 +96,13 @@ export default function EditQuizPage() {
           setEditCategory(data[0].category)
           setEditImage(data[0].img_file)
           setMessage('　')
-          setMessageColor('initial')    
+          setMessageColor('initial')
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません')
-          setMessageColor('error')    
+          setMessageColor('error')
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました')
-          setMessageColor('error')    
+          setMessageColor('error')
         }
       }
     )
@@ -152,10 +129,10 @@ export default function EditQuizPage() {
           setEditCategory('')
           setEditImage('')
           setMessage('Success!! 編集に成功しました')
-          setMessageColor('initial')  
+          setMessageColor('initial')
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました')
-          setMessageColor('error')  
+          setMessageColor('error')
         }
       }
     )
@@ -168,11 +145,7 @@ export default function EditQuizPage() {
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography
-              variant="h6"
-              component="h6"
-              color={messageColor}
-            >
+            <Typography variant="h6" component="h6" color={messageColor}>
               {message}
             </Typography>
           </CardContent>
@@ -234,9 +207,7 @@ export default function EditQuizPage() {
                 fullWidth
                 maxRows={1}
                 value={edit_question}
-                onChange={(e) =>
-                  setEditQuestion(e.target.value)
-                }
+                onChange={(e) => setEditQuestion(e.target.value)}
               />
             </Typography>
 
@@ -256,9 +227,7 @@ export default function EditQuizPage() {
                 fullWidth
                 maxRows={1}
                 value={edit_category}
-                onChange={(e) =>
-                  setEditCategory(e.target.value)
-                }
+                onChange={(e) => setEditCategory(e.target.value)}
               />
             </Typography>
 
