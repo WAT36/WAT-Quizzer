@@ -19,21 +19,6 @@ const dropzoneStyle = {
   textAlign: 'center' as 'center'
 }
 
-interface ImageUploadPageState {
-  message: string
-  messageColor:
-    | 'error'
-    | 'initial'
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'textPrimary'
-    | 'textSecondary'
-    | undefined
-  isUploading: boolean
-  images: ImageUploadReturnValue[]
-}
-
 interface ImageUploadReturnValue {
   name: string
   isUploading: boolean
