@@ -42,7 +42,7 @@ type messageColorType =
   | 'textSecondary'
   | undefined
 
-export default function DeleteQuizPage(){
+export default function DeleteQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1)
   const [message, setMessage] = useState<string>('　')
   const [messageColor, setMessageColor] = useState<messageColorType>('initial')
@@ -54,7 +54,9 @@ export default function DeleteQuizPage(){
   const [answer, setAnswer] = useState<string>()
   const [category, setCategory] = useState<string>()
   const [image, setImage] = useState<string>()
-  const [integrate_to_quiz_num, setIntegrateToQuizNum] = useState<number | null>()
+  const [integrate_to_quiz_num, setIntegrateToQuizNum] = useState<
+    number | null
+  >()
   const [integrate_to_question, setIntegrateToQuestion] = useState<string>()
   const [integrate_to_answer, setIntegrateToAnswer] = useState<string>()
   const [integrate_to_category, setIntegrateToCategory] = useState<string>()
@@ -84,7 +86,7 @@ export default function DeleteQuizPage(){
     if (file_num === -1) {
       setMessage('エラー:問題ファイルを選択して下さい')
       setMessageColor('error')
-    return
+      return
     } else if (!quiz_num) {
       setMessage('エラー:問題番号を入力して下さい')
       setMessageColor('error')
@@ -110,10 +112,10 @@ export default function DeleteQuizPage(){
           setMessageColor('initial')
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません')
-          setMessageColor('error')    
+          setMessageColor('error')
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました')
-          setMessageColor('error')    
+          setMessageColor('error')
         }
       }
     )
@@ -122,11 +124,11 @@ export default function DeleteQuizPage(){
   const getIntegrateToQuiz = () => {
     if (file_num === -1) {
       setMessage('エラー:問題ファイルを選択して下さい')
-      setMessageColor('error')    
-  return
+      setMessageColor('error')
+      return
     } else if (!integrate_to_quiz_num) {
       setMessage('エラー:問題番号を入力して下さい')
-      setMessageColor('error')    
+      setMessageColor('error')
       return
     }
 
@@ -148,10 +150,10 @@ export default function DeleteQuizPage(){
           setMessageColor('initial')
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません')
-          setMessageColor('error')        
+          setMessageColor('error')
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました')
-          setMessageColor('error')        
+          setMessageColor('error')
         }
       }
     )
@@ -160,7 +162,7 @@ export default function DeleteQuizPage(){
   const deleteQuiz = () => {
     if (get_file_num == null || get_quiz_num == null) {
       setMessage('エラー:削除する問題を取得して下さい')
-      setMessageColor('error')        
+      setMessageColor('error')
       return
     }
 
@@ -173,8 +175,7 @@ export default function DeleteQuizPage(){
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          let quiz_num =
-            '[' + get_file_num + '-' + get_quiz_num + ']'
+          let quiz_num = '[' + get_file_num + '-' + get_quiz_num + ']'
           setMessage('Success! 削除に成功しました' + quiz_num)
           setMessageColor('initial')
           setGetFileNum(null)
@@ -185,10 +186,10 @@ export default function DeleteQuizPage(){
           setImage('')
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません')
-          setMessageColor('error')        
+          setMessageColor('error')
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました')
-          setMessageColor('error')        
+          setMessageColor('error')
         }
       }
     )
@@ -197,14 +198,11 @@ export default function DeleteQuizPage(){
   const integrateQuiz = () => {
     if (get_file_num == null || get_quiz_num == null) {
       setMessage('エラー:統合元(左)の問題を取得して下さい')
-      setMessageColor('error')        
+      setMessageColor('error')
       return
-    } else if (
-      get_file_num == null ||
-      integrate_to_quiz_num == null
-    ) {
+    } else if (get_file_num == null || integrate_to_quiz_num == null) {
       setMessage('エラー:統合元(右)の問題を取得して下さい')
-      setMessageColor('error')        
+      setMessageColor('error')
       return
     }
 
@@ -244,10 +242,10 @@ export default function DeleteQuizPage(){
           setMessageColor('initial')
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません')
-          setMessageColor('error')            
+          setMessageColor('error')
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました')
-          setMessageColor('error')            
+          setMessageColor('error')
         }
       }
     )
@@ -260,11 +258,7 @@ export default function DeleteQuizPage(){
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography
-              variant="h6"
-              component="h6"
-              color={messageColor}
-            >
+            <Typography variant="h6" component="h6" color={messageColor}>
               {message}
             </Typography>
           </CardContent>
