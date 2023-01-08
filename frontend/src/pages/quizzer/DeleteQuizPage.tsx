@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -32,38 +32,35 @@ const paperStyle = {
   margin: '5px'
 }
 
-interface DeleteQuizPageState {
-  file_num: number
-  message: string
-  messageColor:
-    | 'error'
-    | 'initial'
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'textPrimary'
-    | 'textSecondary'
-    | undefined
-  filelistoption: JSX.Element[]
-  quiz_num: number
-  get_file_num: number | null
-  get_quiz_num: number | null
-  question: string
-  answer: string
-  category: string
-  image: string
-  integrate_to_quiz_num: number | null
-  integrate_to_question: string
-  integrate_to_answer: string
-  integrate_to_category: string
-  integrate_to_image: string
-}
+type messageColorType =
+  | 'error'
+  | 'initial'
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'textPrimary'
+  | 'textSecondary'
+  | undefined
 
-export default class DeleteQuizPage extends React.Component<
-  {},
-  DeleteQuizPageState
-> {
-  componentDidMount() {
+export default function DeleteQuizPage(){
+  const [file_num, setFileNum] = useState<number>(-1)
+  const [message, setMessage] = useState<string>('　')
+  const [messageColor, setMessageColor] = useState<messageColorType>('initial')
+  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
+  const [quiz_num, setQuizNum] = useState<number>()
+  const [get_file_num, setGetFileNum] = useState<number | null>()
+  const [get_quiz_num, setGetQuizNum] = useState<number | null>()
+  const [question, setQuestion] = useState<string>()
+  const [answer, setAnswer] = useState<string>()
+  const [category, setCategory] = useState<string>()
+  const [image, setImage] = useState<string>()
+  const [integrate_to_quiz_num, setIntegrateToQuizNum] = useState<number | null>()
+  const [integrate_to_question, setIntegrateToQuestion] = useState<string>()
+  const [integrate_to_answer, setIntegrateToAnswer] = useState<string>()
+  const [integrate_to_category, setIntegrateToCategory] = useState<string>()
+  const [integrate_to_image, setIntegrateToImage] = useState<string>()
+
+  useEffect(() => {
     get('/namelist', (data: any) => {
       if (data.status === 200) {
         data = data.body
@@ -75,237 +72,188 @@ export default class DeleteQuizPage extends React.Component<
             </MenuItem>
           )
         }
-        this.setState({
-          filelistoption: filelist
-        })
+        setFilelistoption(filelist)
       } else {
-        this.setState({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        })
+        setMessage('エラー:外部APIとの連携に失敗しました')
+        setMessageColor('error')
       }
     })
-  }
+  })
 
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      file_num: -1,
-      message: '　',
-      messageColor: 'initial'
-    } as DeleteQuizPageState
-  }
-
-  getQuiz = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
-      return
-    } else if (!this.state.quiz_num) {
-      this.setState({
-        message: 'エラー:問題番号を入力して下さい',
-        messageColor: 'error'
-      })
+  const getQuiz = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
+    return
+    } else if (!quiz_num) {
+      setMessage('エラー:問題番号を入力して下さい')
+      setMessageColor('error')
       return
     }
 
     post(
       '/get_quiz',
       {
-        file_num: this.state.file_num,
-        quiz_num: this.state.quiz_num
+        file_num: file_num,
+        quiz_num: quiz_num
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            get_file_num: data[0].file_num,
-            get_quiz_num: data[0].quiz_num,
-            question: data[0].quiz_sentense,
-            answer: data[0].answer,
-            category: data[0].category,
-            image: data[0].img_file,
-            message: '　',
-            messageColor: 'initial'
-          })
+          setGetFileNum(data[0].file_num)
+          setGetQuizNum(data[0].quiz_num)
+          setQuestion(data[0].quiz_sentense)
+          setAnswer(data[0].answer)
+          setCategory(data[0].category)
+          setImage(data[0].img_file)
+          setMessage('　')
+          setMessageColor('initial')
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')    
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')    
         }
       }
     )
   }
 
-  getIntegrateToQuiz = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
-      return
-    } else if (!this.state.integrate_to_quiz_num) {
-      this.setState({
-        message: 'エラー:問題番号を入力して下さい',
-        messageColor: 'error'
-      })
+  const getIntegrateToQuiz = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')    
+  return
+    } else if (!integrate_to_quiz_num) {
+      setMessage('エラー:問題番号を入力して下さい')
+      setMessageColor('error')    
       return
     }
 
     post(
       '/get_quiz',
       {
-        file_num: this.state.get_file_num,
-        quiz_num: this.state.integrate_to_quiz_num
+        file_num: get_file_num,
+        quiz_num: integrate_to_quiz_num
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            integrate_to_quiz_num: data[0].quiz_num,
-            integrate_to_question: data[0].quiz_sentense,
-            integrate_to_answer: data[0].answer,
-            integrate_to_category: data[0].category,
-            integrate_to_image: data[0].img_file,
-            message: '　',
-            messageColor: 'initial'
-          })
+          setIntegrateToQuizNum(data[0].quiz_num)
+          setIntegrateToQuestion(data[0].quiz_sentense)
+          setIntegrateToAnswer(data[0].answer)
+          setIntegrateToCategory(data[0].category)
+          setIntegrateToImage(data[0].img_file)
+          setMessage('　')
+          setMessageColor('initial')
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')        
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')        
         }
       }
     )
   }
 
-  deleteQuiz = () => {
-    if (this.state.get_file_num == null || this.state.get_quiz_num == null) {
-      this.setState({
-        message: 'エラー:削除する問題を取得して下さい',
-        messageColor: 'error'
-      })
+  const deleteQuiz = () => {
+    if (get_file_num == null || get_quiz_num == null) {
+      setMessage('エラー:削除する問題を取得して下さい')
+      setMessageColor('error')        
       return
     }
 
     post(
       '/delete',
       {
-        file_num: this.state.get_file_num,
-        quiz_num: this.state.get_quiz_num
+        file_num: get_file_num,
+        quiz_num: get_quiz_num
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
           let quiz_num =
-            '[' + this.state.get_file_num + '-' + this.state.get_quiz_num + ']'
-          this.setState({
-            message: 'Success! 削除に成功しました' + quiz_num,
-            messageColor: 'initial',
-            get_file_num: null,
-            get_quiz_num: null,
-            question: '',
-            answer: '',
-            category: '',
-            image: ''
-          })
+            '[' + get_file_num + '-' + get_quiz_num + ']'
+          setMessage('Success! 削除に成功しました' + quiz_num)
+          setMessageColor('initial')
+          setGetFileNum(null)
+          setGetQuizNum(null)
+          setQuestion('')
+          setAnswer('')
+          setCategory('')
+          setImage('')
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')        
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')        
         }
       }
     )
   }
 
-  integrateQuiz = () => {
-    if (this.state.get_file_num == null || this.state.get_quiz_num == null) {
-      this.setState({
-        message: 'エラー:統合元(左)の問題を取得して下さい',
-        messageColor: 'error'
-      })
+  const integrateQuiz = () => {
+    if (get_file_num == null || get_quiz_num == null) {
+      setMessage('エラー:統合元(左)の問題を取得して下さい')
+      setMessageColor('error')        
       return
     } else if (
-      this.state.get_file_num == null ||
-      this.state.integrate_to_quiz_num == null
+      get_file_num == null ||
+      integrate_to_quiz_num == null
     ) {
-      this.setState({
-        message: 'エラー:統合先(右)の問題を取得して下さい',
-        messageColor: 'error'
-      })
+      setMessage('エラー:統合元(右)の問題を取得して下さい')
+      setMessageColor('error')        
       return
     }
 
     post(
       '/integrate',
       {
-        pre_file_num: this.state.get_file_num,
-        pre_quiz_num: this.state.get_quiz_num,
-        post_file_num: this.state.get_file_num,
-        post_quiz_num: this.state.integrate_to_quiz_num
+        pre_file_num: get_file_num,
+        pre_quiz_num: get_quiz_num,
+        post_file_num: get_file_num,
+        post_quiz_num: integrate_to_quiz_num
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
           let quiz_num =
             '[' +
-            this.state.get_file_num +
+            get_file_num +
             ':' +
-            this.state.get_quiz_num +
+            get_quiz_num +
             '->' +
-            this.state.integrate_to_quiz_num +
+            integrate_to_quiz_num +
             ']'
-          this.setState({
-            message: 'Success! 統合に成功しました' + quiz_num,
-            messageColor: 'initial',
-            get_file_num: null,
-            get_quiz_num: null,
-            question: '',
-            answer: '',
-            category: '',
-            image: '',
-            integrate_to_quiz_num: null,
-            integrate_to_question: '',
-            integrate_to_answer: '',
-            integrate_to_category: '',
-            integrate_to_image: ''
-          })
+          setMessage('Success! 統合に成功しました' + quiz_num)
+          setMessageColor('initial')
+          setGetFileNum(null)
+          setGetQuizNum(null)
+          setQuestion('')
+          setAnswer('')
+          setCategory('')
+          setImage('')
+          setIntegrateToQuizNum(null)
+          setIntegrateToQuestion('')
+          setIntegrateToAnswer('')
+          setIntegrateToCategory('')
+          setIntegrateToImage('')
+          setMessage('　')
+          setMessageColor('initial')
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')            
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')            
         }
       }
     )
   }
 
-  contents = () => {
+  const contents = () => {
     return (
       <Container>
         <h1>WAT Quizzer</h1>
@@ -315,9 +263,9 @@ export default class DeleteQuizPage extends React.Component<
             <Typography
               variant="h6"
               component="h6"
-              color={this.state.messageColor}
+              color={messageColor}
             >
-              {this.state.message}
+              {message}
             </Typography>
           </CardContent>
         </Card>
@@ -338,13 +286,13 @@ export default class DeleteQuizPage extends React.Component<
                     defaultValue={-1}
                     // value={age}
                     onChange={(e) => {
-                      this.setState({ file_num: Number(e.target.value) })
+                      setFileNum(Number(e.target.value))
                     }}
                   >
                     <MenuItem value={-1} key={-1}>
                       選択なし
                     </MenuItem>
-                    {this.state.filelistoption}
+                    {filelistoption}
                   </Select>
                 </FormControl>
 
@@ -352,7 +300,7 @@ export default class DeleteQuizPage extends React.Component<
                   <TextField
                     label="問題番号"
                     onChange={(e) => {
-                      this.setState({ quiz_num: Number(e.target.value) })
+                      setQuizNum(Number(e.target.value))
                     }}
                   />
                 </FormControl>
@@ -362,33 +310,33 @@ export default class DeleteQuizPage extends React.Component<
                 style={buttonStyle}
                 variant="contained"
                 color="primary"
-                onClick={(e) => this.getQuiz()}
+                onClick={(e) => getQuiz()}
               >
                 問題取得
               </Button>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                ファイル：{this.state.get_file_num}
+                ファイル：{get_file_num}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                問題番号：{this.state.get_quiz_num}
+                問題番号：{get_quiz_num}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                問題　　：{this.state.question}
+                問題　　：{question}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                答え　　：{this.state.answer}
+                答え　　：{answer}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                カテゴリ：{this.state.category}
+                カテゴリ：{category}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                画像　　：{this.state.image}
+                画像　　：{image}
               </Typography>
             </CardContent>
           </Card>
@@ -397,7 +345,7 @@ export default class DeleteQuizPage extends React.Component<
             style={buttonStyle}
             variant="contained"
             color="primary"
-            onClick={(e) => this.deleteQuiz()}
+            onClick={(e) => deleteQuiz()}
           >
             削除
           </Button>
@@ -416,14 +364,14 @@ export default class DeleteQuizPage extends React.Component<
                   <Select
                     labelId="quiz-file-name"
                     id="quiz-file-id"
-                    defaultValue={this.state.file_num || -1}
+                    defaultValue={file_num || -1}
                     // value={age}
                     //onChange={(e) => {this.setState({file_num: e.target.value});}}
                   >
                     <MenuItem value={-1} key={-1}>
                       同左
                     </MenuItem>
-                    {this.state.filelistoption}
+                    {filelistoption}
                   </Select>
                 </FormControl>
 
@@ -431,9 +379,7 @@ export default class DeleteQuizPage extends React.Component<
                   <TextField
                     label="問題番号"
                     onChange={(e) => {
-                      this.setState({
-                        integrate_to_quiz_num: Number(e.target.value)
-                      })
+                      setIntegrateToQuizNum(Number(e.target.value))
                     }}
                   />
                 </FormControl>
@@ -443,33 +389,33 @@ export default class DeleteQuizPage extends React.Component<
                 style={buttonStyle}
                 variant="contained"
                 color="primary"
-                onClick={(e) => this.getIntegrateToQuiz()}
+                onClick={(e) => getIntegrateToQuiz()}
               >
                 問題取得
               </Button>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                ファイル：{this.state.get_file_num}
+                ファイル：{get_file_num}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                問題番号：{this.state.integrate_to_quiz_num}
+                問題番号：{integrate_to_quiz_num}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                問題　　：{this.state.integrate_to_question}
+                問題　　：{integrate_to_question}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                答え　　：{this.state.integrate_to_answer}
+                答え　　：{integrate_to_answer}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                カテゴリ：{this.state.integrate_to_category}
+                カテゴリ：{integrate_to_category}
               </Typography>
 
               <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                画像　　：{this.state.integrate_to_image}
+                画像　　：{integrate_to_image}
               </Typography>
             </CardContent>
           </Card>
@@ -478,7 +424,7 @@ export default class DeleteQuizPage extends React.Component<
             style={buttonStyle}
             variant="contained"
             color="primary"
-            onClick={(e) => this.integrateQuiz()}
+            onClick={(e) => integrateQuiz()}
           >
             統合
           </Button>
@@ -487,11 +433,9 @@ export default class DeleteQuizPage extends React.Component<
     )
   }
 
-  render() {
-    return (
-      <>
-        <QuizzerLayout contents={this.contents()} />
-      </>
-    )
-  }
+  return (
+    <>
+      <QuizzerLayout contents={contents()} />
+    </>
+  )
 }
