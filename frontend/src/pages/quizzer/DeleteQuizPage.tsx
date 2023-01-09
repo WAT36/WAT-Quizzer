@@ -433,3 +433,6 @@ export default function DeleteQuizPage() {
     </>
   )
 }
+
+
+
