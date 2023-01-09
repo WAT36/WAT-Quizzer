@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -31,25 +31,26 @@ const typoStyles = {
   }
 }
 
-interface AddQuizPageState {
-  file_num: number
-  input_data: string
-  message: string
-  messageColor:
-    | 'error'
-    | 'initial'
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'textPrimary'
-    | 'textSecondary'
-    | undefined
-  addLog: any
-  filelistoption: JSX.Element[]
-}
+type messageColorType =
+  | 'error'
+  | 'initial'
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'textPrimary'
+  | 'textSecondary'
+  | undefined
 
-export default class AddQuizPage extends React.Component<{}, AddQuizPageState> {
-  componentDidMount() {
+export default function AddQuizPage (){
+  const [file_num, setFileNum] = useState<number>(-1)
+  const [input_data, setInputData] = useState<string>('')
+  const [message, setMessage] = useState<string>('　')
+  const [messageColor, setMessageColor] = useState<messageColorType>('initial')
+  const [addLog, setAddLog] = useState<any>()
+  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
+
+
+  useEffect(() => {
     get('/namelist', (data: any) => {
       if (data.status === 200) {
         data = data.body
@@ -61,63 +62,41 @@ export default class AddQuizPage extends React.Component<{}, AddQuizPageState> {
             </MenuItem>
           )
         }
-        this.setState({
-          filelistoption: filelist
-        })
+        setFilelistoption(filelist)
       } else {
-        this.setState({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        })
+        setMessage('エラー:外部APIとの連携に失敗しました')
+        setMessageColor('error')
       }
     })
+  })
+
+  const selectedFileChange = (e: any) => {
+    setFileNum(e.target.value)
   }
 
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      file_num: -1,
-      input_data: '',
-      message: '　',
-      messageColor: 'initial'
-    } as AddQuizPageState
-  }
-
-  selectedFileChange = (e: any) => {
-    this.setState({
-      file_num: e.target.value
-    })
-  }
-
-  addQuiz = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
+  const addQuiz = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
       return
-    } else if (!this.state.input_data || this.state.input_data === '') {
-      this.setState({
-        message: 'エラー:追加する問題を入力して下さい',
-        messageColor: 'error'
-      })
+    } else if (!input_data || input_data === '') {
+      setMessage('エラー:追加する問題を入力して下さい')
+      setMessageColor('error')
       return
     }
 
     post(
       '/add',
       {
-        file_num: this.state.file_num,
-        data: this.state.input_data
+        file_num: file_num,
+        data: input_data
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            message: '　',
-            messageColor: 'initial',
-            addLog: data
-          })
+          setMessage('　')
+          setMessageColor('initial')
+          setAddLog(data)
           //入力データをクリア
           const inputQuizField = document
             .getElementsByTagName('textarea')
@@ -126,16 +105,14 @@ export default class AddQuizPage extends React.Component<{}, AddQuizPageState> {
             inputQuizField.value = ''
           }
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  contents = () => {
+  const contents = () => {
     return (
       <Container>
         <h1>WAT Quizzer</h1>
@@ -145,9 +122,9 @@ export default class AddQuizPage extends React.Component<{}, AddQuizPageState> {
             <Typography
               variant="h6"
               component="h6"
-              color={this.state.messageColor}
+              color={messageColor}
             >
-              {this.state.message}
+              {message}
             </Typography>
           </CardContent>
         </Card>
@@ -160,12 +137,12 @@ export default class AddQuizPage extends React.Component<{}, AddQuizPageState> {
               id="quiz-file-id"
               defaultValue={-1}
               // value={age}
-              onChange={(e) => this.selectedFileChange(e)}
+              onChange={(e) => selectedFileChange(e)}
             >
               <MenuItem value={-1} key={-1}>
                 選択なし
               </MenuItem>
-              {this.state.filelistoption}
+              {filelistoption}
             </Select>
           </FormControl>
 
@@ -180,7 +157,7 @@ export default class AddQuizPage extends React.Component<{}, AddQuizPageState> {
             placeholder="追加する問題（形式：テスト問題,正解,カテゴリ,画像ファイル名）を何行でも"
             minRows={6}
             variant="outlined"
-            onChange={(e) => this.setState({ input_data: e.target.value })}
+            onChange={(e) => setInputData(e.target.value)}
           />
         </FormGroup>
 
@@ -188,7 +165,7 @@ export default class AddQuizPage extends React.Component<{}, AddQuizPageState> {
           style={buttonStyle}
           variant="contained"
           color="primary"
-          onClick={(e) => this.addQuiz()}
+          onClick={(e) => addQuiz()}
         >
           送信
         </Button>
@@ -203,7 +180,7 @@ export default class AddQuizPage extends React.Component<{}, AddQuizPageState> {
               --実行ログ--
             </Typography>
             <Typography variant="h6" component="h6">
-              {this.state.addLog}
+              {addLog}
             </Typography>
           </CardContent>
         </Card>
@@ -211,11 +188,9 @@ export default class AddQuizPage extends React.Component<{}, AddQuizPageState> {
     )
   }
 
-  render() {
-    return (
-      <>
-        <QuizzerLayout contents={this.contents()} />
-      </>
-    )
-  }
+  return (
+    <>
+      <QuizzerLayout contents={contents()} />
+    </>
+  )
 }
