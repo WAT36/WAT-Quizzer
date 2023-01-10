@@ -25,7 +25,8 @@ import {
   incorrectRegisterService,
   integrateQuizService,
   removeCategoryFromQuizService,
-  searchQuizService
+  searchQuizService,
+  uncheckToQuizService
 } from '../../services/quizzer/QuizService'
 import { upload } from '../../aws/S3Service'
 
@@ -343,6 +344,19 @@ router.post('/edit/check', function (req, res) {
     })
     .catch((error: any) => {
       logger.error('/edit/check')
+      logger.error(error)
+      res.status(500).send(error)
+    })
+})
+
+router.post('/edit/uncheck', function (req, res) {
+  uncheckToQuizService(req.body.file_num, req.body.quiz_num)
+    .then((result: any) => {
+      logger.debug('/edit/uncheck')
+      res.status(200).send(result)
+    })
+    .catch((error: any) => {
+      logger.error('/edit/uncheck')
       logger.error(error)
       res.status(500).send(error)
     })
