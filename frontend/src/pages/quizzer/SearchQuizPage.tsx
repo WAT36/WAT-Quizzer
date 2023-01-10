@@ -388,6 +388,115 @@ export default class SearchQuizPage extends React.Component<
     })
   }
 
+  // 選択した問題全てにチェックをつける
+  checkedToSelectedQuiz = async () => {
+    if (this.state.checkedIdList.length === 0) {
+      this.setState({
+        message: 'エラー:選択された問題がありません',
+        messageColor: 'error'
+      })
+      return
+    }
+
+    // 選択した問題にチェック
+    const checkToQuiz = async (idList: number[]) => {
+      const failureIdList: number[] = []
+      for (const checkedId of idList) {
+        const result = await post(
+          '/edit/check',
+          {
+            file_num: this.state.file_num,
+            quiz_num: checkedId
+          },
+          (data: any) => {
+            if (data.status !== 200) {
+              failureIdList.push(checkedId)
+            }
+          }
+        )
+      }
+      return { failureIdList }
+    }
+    const { failureIdList } = await checkToQuiz(
+      this.state.checkedIdList
+    )
+
+    let message: string
+    let messageColor: 'error' | 'initial'
+    if (failureIdList.length > 0) {
+      message = `エラー:問題ID[${failureIdList.join()}]へのチェック登録に失敗しました（${
+        this.state.checkedIdList.length - failureIdList.length
+      }/${this.state.checkedIdList.length}件登録成功）`
+      messageColor = 'error'
+    } else {
+      message = `選択した問題(${this.state.checkedIdList.length}件)へのチェック登録に成功しました`
+      messageColor = 'initial'
+    }
+
+    // 終わったらチェック全て外す、入力カテゴリも消す
+    this.setState({
+      checkedIdList: [],
+      changedCategory: '',
+      message,
+      messageColor
+    })
+  }
+
+  // 選択した問題全てにチェックを外す
+  uncheckedToSelectedQuiz = async () => {
+    if (this.state.checkedIdList.length === 0) {
+      this.setState({
+        message: 'エラー:選択された問題がありません',
+        messageColor: 'error'
+      })
+      return
+    }
+
+    // 選択した問題にチェック
+    const uncheckToQuiz = async (idList: number[]) => {
+      const failureIdList: number[] = []
+      for (const checkedId of idList) {
+        const result = await post(
+          '/edit/uncheck',
+          {
+            file_num: this.state.file_num,
+            quiz_num: checkedId
+          },
+          (data: any) => {
+            if (data.status !== 200) {
+              failureIdList.push(checkedId)
+            }
+          }
+        )
+      }
+      return { failureIdList }
+    }
+    const { failureIdList } = await uncheckToQuiz(
+      this.state.checkedIdList
+    )
+
+    let message: string
+    let messageColor: 'error' | 'initial'
+    if (failureIdList.length > 0) {
+      message = `エラー:問題ID[${failureIdList.join()}]へのチェック削除に失敗しました（${
+        this.state.checkedIdList.length - failureIdList.length
+      }/${this.state.checkedIdList.length}件削除成功）`
+      messageColor = 'error'
+    } else {
+      message = `選択した問題(${this.state.checkedIdList.length}件)へのチェック削除に成功しました`
+      messageColor = 'initial'
+    }
+
+    // 終わったらチェック全て外す、入力カテゴリも消す
+    this.setState({
+      checkedIdList: [],
+      changedCategory: '',
+      message,
+      messageColor
+    })
+  }
+
+
   contents = () => {
     return (
       <Container>
@@ -543,6 +652,31 @@ export default class SearchQuizPage extends React.Component<
               onClick={async (e) => await this.removeCategoryFromChecked()}
             >
               一括カテゴリ削除
+            </Button>
+          </FormControl>
+        </FormGroup>
+
+        <FormGroup style={groupStyle} row>
+          チェックした問題全てに
+          <FormControl>
+            <Button
+              style={buttonStyle}
+              variant="contained"
+              color="primary"
+              onClick={async (e) => await this.checkedToSelectedQuiz()}
+            >
+              ✅をつける
+            </Button>
+          </FormControl>
+          or
+          <FormControl>
+            <Button
+              style={buttonStyle}
+              variant="contained"
+              color="primary"
+              onClick={async (e) => await this.uncheckedToSelectedQuiz()}
+            >
+              ✅を外す
             </Button>
           </FormControl>
         </FormGroup>
