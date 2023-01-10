@@ -14,6 +14,7 @@ import {
 import {
   addCategoryToQuizService,
   addQuizService,
+  checkToQuizService,
   correctRegisterService,
   deleteQuizService,
   editQuizService,
@@ -329,6 +330,19 @@ router.post('/edit/category/remove', function (req, res) {
     })
     .catch((error: any) => {
       logger.error('/edit/category/remove')
+      logger.error(error)
+      res.status(500).send(error)
+    })
+})
+
+router.post('/edit/check', function (req, res) {
+  checkToQuizService(req.body.file_num, req.body.quiz_num)
+    .then((result: any) => {
+      logger.debug('/edit/check')
+      res.status(200).send(result)
+    })
+    .catch((error: any) => {
+      logger.error('/edit/check')
       logger.error(error)
       res.status(500).send(error)
     })
