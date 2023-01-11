@@ -12,6 +12,7 @@ import {
   incorrectRegister,
   integrateQuiz,
   removeCategoryFromQuiz,
+  reverseCheckToQuiz,
   searchQuiz,
   uncheckToQuiz
 } from './dao/QuizDao'
@@ -247,6 +248,22 @@ export const checkToQuizService = (file_num: number, quiz_num: number) => {
 export const uncheckToQuizService = (file_num: number, quiz_num: number) => {
   return new Promise((resolve, reject) => {
     uncheckToQuiz(file_num, quiz_num)
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+// 問題のチェック反転する
+export const reverseCheckOfQuizService = (
+  file_num: number,
+  quiz_num: number
+) => {
+  return new Promise((resolve, reject) => {
+    reverseCheckToQuiz(file_num, quiz_num)
       .then((result) => {
         resolve(result)
       })

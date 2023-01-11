@@ -25,6 +25,7 @@ import {
   incorrectRegisterService,
   integrateQuizService,
   removeCategoryFromQuizService,
+  reverseCheckOfQuizService,
   searchQuizService,
   uncheckToQuizService
 } from '../../services/quizzer/QuizService'
@@ -357,6 +358,19 @@ router.post('/edit/uncheck', function (req, res) {
     })
     .catch((error: any) => {
       logger.error('/edit/uncheck')
+      logger.error(error)
+      res.status(500).send(error)
+    })
+})
+
+router.post('/edit/check/reverse', function (req, res) {
+  reverseCheckOfQuizService(req.body.file_num, req.body.quiz_num)
+    .then((result: any) => {
+      logger.debug('/edit/check/reverse')
+      res.status(200).send(result)
+    })
+    .catch((error: any) => {
+      logger.error('/edit/check/reverse')
       logger.error(error)
       res.status(500).send(error)
     })
