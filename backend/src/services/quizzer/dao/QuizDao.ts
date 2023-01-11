@@ -722,16 +722,19 @@ const getCheckOfQuizSQL = `
 `
 
 // 問題のチェック反転する
-export const reverseCheckToQuiz = async (file_num: number, quiz_num: number) => {
+export const reverseCheckToQuiz = async (
+  file_num: number,
+  quiz_num: number
+) => {
   try {
     // チェック取得
     const result: any = await execQuery(getCheckOfQuizSQL, [file_num, quiz_num])
     const checked = result[0].checked
 
-    let response;
-    if(checked){
+    let response
+    if (!checked) {
       response = await execQuery(checkToQuizSQL, [file_num, quiz_num])
-    }else{
+    } else {
       response = await execQuery(uncheckToQuizSQL, [file_num, quiz_num])
     }
 
