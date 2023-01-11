@@ -314,6 +314,61 @@ export default class SelectQuizPage extends React.Component<
       )
     }
 
+    const checkReverseToQuiz = () => {
+      if (this.state.file_num === -1) {
+        this.setState({
+          message: 'エラー:問題ファイルを選択して下さい',
+          messageColor: 'error'
+        })
+        return
+      } else if (!this.state.quiz_num) {
+        this.setState({
+          message: 'エラー:問題番号を入力して下さい',
+          messageColor: 'error'
+        })
+        return
+      } else if (
+        this.state.quiz_sentense === undefined ||
+        this.state.quiz_sentense === null ||
+        this.state.quiz_sentense === '' ||
+        this.state.answer === undefined ||
+        this.state.answer === null ||
+        this.state.answer === ''
+      ) {
+        this.setState({
+          message: 'エラー:問題を出題してから登録して下さい',
+          messageColor: 'error'
+        })
+        return
+      }
+
+      post(
+        '/edit/check/reverse',
+        {
+          file_num: this.state.file_num,
+          quiz_num: this.state.quiz_num
+        },
+        (data: any) => {
+          if (data.status === 200) {
+            data = data.body
+            this.setState({
+              quiz_sentense: '',
+              answer: '',
+              message:
+                '問題[' + this.state.quiz_num + '] チェック反転しました',
+              messageColor: 'initial',
+              expanded: false
+            })
+          } else {
+            this.setState({
+              message: 'エラー:外部APIとの連携に失敗しました',
+              messageColor: 'error'
+            })
+          }
+        }
+      )
+    }
+
     return (
       <>
         <CardActions>
@@ -345,6 +400,14 @@ export default class SelectQuizPage extends React.Component<
               onClick={inputIncorrect}
             >
               不正解..
+            </Button>
+            <Button
+              style={buttonStyle}
+              variant="contained"
+              color="default"
+              onClick={checkReverseToQuiz}
+            >
+              チェックつける/外す
             </Button>
           </CardContent>
         </Collapse>
