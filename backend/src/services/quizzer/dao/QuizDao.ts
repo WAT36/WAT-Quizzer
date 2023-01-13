@@ -738,7 +738,8 @@ export const reverseCheckToQuiz = async (
       response = await execQuery(uncheckToQuizSQL, [file_num, quiz_num])
     }
 
-    return response
+    // チェックしたらtrue、チェック外したらfalseを返す
+    return !checked
   } catch (error) {
     throw error
   }
