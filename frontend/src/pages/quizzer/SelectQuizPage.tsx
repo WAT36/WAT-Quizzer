@@ -352,12 +352,9 @@ export default class SelectQuizPage extends React.Component<
           if (data.status === 200) {
             data = data.body
             this.setState({
-              quiz_sentense: '',
-              answer: '',
               message:
                 '問題[' + this.state.quiz_num + '] チェック反転しました',
               messageColor: 'initial',
-              expanded: false
             })
           } else {
             this.setState({
