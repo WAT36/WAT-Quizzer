@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  Button,
   Card,
   CardContent,
   CardActions,
@@ -20,6 +19,7 @@ import {
 
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
+import { Button } from '@mui/material'
 
 const buttonStyle = {
   margin: '10px'
@@ -404,7 +404,7 @@ export default class SelectQuizPage extends React.Component<
             <Button
               style={buttonStyle}
               variant="contained"
-              color="default"
+              color="warning"
               onClick={checkReverseToQuiz}
             >
               チェックつける/外す
@@ -664,7 +664,7 @@ export default class SelectQuizPage extends React.Component<
         <Button
           style={buttonStyle}
           variant="contained"
-          color="default"
+          color="info"
           disabled
         >
           画像表示
