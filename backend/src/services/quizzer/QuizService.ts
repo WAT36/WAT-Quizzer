@@ -1,6 +1,7 @@
 import {
   addCategoryToQuiz,
   addQuiz,
+  checkToQuiz,
   correctRegister,
   deleteQuiz,
   editQuiz,
@@ -11,7 +12,9 @@ import {
   incorrectRegister,
   integrateQuiz,
   removeCategoryFromQuiz,
-  searchQuiz
+  reverseCheckToQuiz,
+  searchQuiz,
+  uncheckToQuiz
 } from './dao/QuizDao'
 
 // ファイル番号、問題番号から問題取得
@@ -219,6 +222,48 @@ export const removeCategoryFromQuizService = (
 ) => {
   return new Promise((resolve, reject) => {
     removeCategoryFromQuiz(file_num, quiz_num, category)
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+// 問題にチェック登録
+export const checkToQuizService = (file_num: number, quiz_num: number) => {
+  return new Promise((resolve, reject) => {
+    checkToQuiz(file_num, quiz_num)
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+// 問題にチェック外す
+export const uncheckToQuizService = (file_num: number, quiz_num: number) => {
+  return new Promise((resolve, reject) => {
+    uncheckToQuiz(file_num, quiz_num)
+      .then((result) => {
+        resolve(result)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+// 問題のチェック反転する
+export const reverseCheckOfQuizService = (
+  file_num: number,
+  quiz_num: number
+) => {
+  return new Promise((resolve, reject) => {
+    reverseCheckToQuiz(file_num, quiz_num)
       .then((result) => {
         resolve(result)
       })

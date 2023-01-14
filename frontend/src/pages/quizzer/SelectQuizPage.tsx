@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import {
-  Button,
   Card,
   CardContent,
   CardActions,
@@ -20,6 +19,7 @@ import {
 
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
+import { Button } from '@mui/material'
 
 const buttonStyle = {
   margin: '10px'
@@ -47,6 +47,7 @@ export default function SelectQuizPage() {
   const [quiz_num, setQuizNum] = useState<number>()
   const [quiz_sentense, setQuizSentense] = useState<string>()
   const [answer, setAnswer] = useState<string>()
+  const [quiz_checked, setQuizChecked] = useState<boolean | null>()
   const [selected_category, setSelectedCategory] = useState<string>()
   const [expanded, setExpanded] = useState<boolean>(false)
   const [value, setValue] = useState<number[] | number>([0, 100])
@@ -146,6 +147,7 @@ export default function SelectQuizPage() {
           data = data.body
           setQuizSentense(data[0].quiz_sentense)
           setAnswer(data[0].answer)
+          setQuizChecked(data[0].checked)
           setExpanded(false)
           setMessage('　')
           setMessageColor('initial')
@@ -198,6 +200,7 @@ export default function SelectQuizPage() {
             data = data.body
             setQuizSentense('')
             setAnswer('')
+            setQuizChecked(null)
             setMessage('問題[' + quiz_num + '] 正解+1! 登録しました')
             setMessageColor('initial')
             setExpanded(false)
@@ -242,9 +245,52 @@ export default function SelectQuizPage() {
             data = data.body
             setQuizSentense('')
             setAnswer('')
+            setQuizChecked(null)
             setMessage('問題[' + quiz_num + '] 不正解+1.. 登録しました')
             setMessageColor('initial')
             setExpanded(false)
+          } else {
+            setMessage('エラー:外部APIとの連携に失敗しました')
+            setMessageColor('error')
+          }
+        }
+      )
+    }
+
+    const checkReverseToQuiz = () => {
+      if (file_num === -1) {
+        setMessage('エラー:問題ファイルを選択して下さい')
+        setMessageColor('error')
+        return
+      } else if (!quiz_num) {
+        setMessage('エラー:問題番号を入力して下さい')
+        setMessageColor('error')
+        return
+      } else if (
+        quiz_sentense === undefined ||
+        quiz_sentense === null ||
+        quiz_sentense === '' ||
+        answer === undefined ||
+        answer === null ||
+        answer === ''
+      ) {
+        setMessage('エラー:問題を出題してから登録して下さい')
+        setMessageColor('error')
+        return
+      }
+
+      post(
+        '/edit/check/reverse',
+        {
+          file_num: file_num,
+          quiz_num: quiz_num
+        },
+        (data: any) => {
+          if (data.status === 200) {
+            data = data.body
+            setQuizChecked(Boolean(data))
+            setMessage(`問題[${quiz_num}] にチェック${Boolean(data) ? "をつけ" : "を外し"}ました`)
+            setMessageColor('initial')
           } else {
             setMessage('エラー:外部APIとの連携に失敗しました')
             setMessageColor('error')
@@ -285,6 +331,14 @@ export default function SelectQuizPage() {
             >
               不正解..
             </Button>
+            <Button
+              style={buttonStyle}
+              variant="contained"
+              color="warning"
+              onClick={checkReverseToQuiz}
+            >
+              チェックつける/外す
+            </Button>
           </CardContent>
         </Collapse>
       </>
@@ -312,6 +366,7 @@ export default function SelectQuizPage() {
           setQuizNum(data[0].quiz_num)
           setQuizSentense(data[0].quiz_sentense)
           setAnswer(data[0].answer)
+          setQuizChecked(data[0].checked)
           setMessage('　')
           setMessageColor('initial')
           setExpanded(false)
@@ -345,6 +400,7 @@ export default function SelectQuizPage() {
           setQuizNum(data[0].quiz_num)
           setQuizSentense(data[0].quiz_sentense)
           setAnswer(data[0].answer)
+          setQuizChecked(data[0].checked)
           setMessage('　')
           setMessageColor('initial')
           setExpanded(false)
@@ -378,6 +434,7 @@ export default function SelectQuizPage() {
           setQuizNum(data[0].quiz_num)
           setQuizSentense(data[0].quiz_sentense)
           setAnswer(data[0].answer)
+          setQuizChecked(data[0].checked)
           setMessage('　')
           setMessageColor('initial')
           setExpanded(false)
@@ -499,7 +556,7 @@ export default function SelectQuizPage() {
         <Button
           style={buttonStyle}
           variant="contained"
-          color="default"
+          color="info"
           disabled
         >
           画像表示
@@ -511,7 +568,7 @@ export default function SelectQuizPage() {
               問題
             </Typography>
             <Typography variant="subtitle1" component="h2">
-              {quiz_sentense}
+              {quiz_checked ? "✅" : ""}{quiz_sentense}
             </Typography>
           </CardContent>
           {answerSection()}

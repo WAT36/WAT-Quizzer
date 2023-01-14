@@ -336,6 +336,106 @@ export default function SearchQuizPage() {
     setMessageColor(messageColor)
   }
 
+  // 選択した問題全てにチェックをつける
+  const checkedToSelectedQuiz = async () => {
+    if (checkedIdList.length === 0) {
+      setMessage('エラー:選択された問題がありません')
+      setMessageColor('error')
+      return
+    }
+
+    // 選択した問題にチェック
+    const checkToQuiz = async (idList: number[]) => {
+      const failureIdList: number[] = []
+      for (const checkedId of idList) {
+        const result = await post(
+          '/edit/check',
+          {
+            file_num: file_num,
+            quiz_num: checkedId
+          },
+          (data: any) => {
+            if (data.status !== 200) {
+              failureIdList.push(checkedId)
+            }
+          }
+        )
+      }
+      return { failureIdList }
+    }
+    const { failureIdList } = await checkToQuiz(
+      checkedIdList
+    )
+
+    let message: string
+    let messageColor: 'error' | 'initial'
+    if (failureIdList.length > 0) {
+      message = `エラー:問題ID[${failureIdList.join()}]へのチェック登録に失敗しました（${
+        checkedIdList.length - failureIdList.length
+      }/${checkedIdList.length}件登録成功）`
+      messageColor = 'error'
+    } else {
+      message = `選択した問題(${checkedIdList.length}件)へのチェック登録に成功しました`
+      messageColor = 'initial'
+    }
+
+    // 終わったらチェック全て外す、入力カテゴリも消す
+    setCheckedIdList([])
+    setChangedCategory('')
+    setMessage(message)
+    setMessageColor(messageColor)
+  }
+
+  // 選択した問題全てにチェックを外す
+  const uncheckedToSelectedQuiz = async () => {
+    if (checkedIdList.length === 0) {
+      setMessage('エラー:選択された問題がありません')
+      setMessageColor('error')
+      return
+    }
+
+    // 選択した問題にチェック
+    const uncheckToQuiz = async (idList: number[]) => {
+      const failureIdList: number[] = []
+      for (const checkedId of idList) {
+        const result = await post(
+          '/edit/uncheck',
+          {
+            file_num: file_num,
+            quiz_num: checkedId
+          },
+          (data: any) => {
+            if (data.status !== 200) {
+              failureIdList.push(checkedId)
+            }
+          }
+        )
+      }
+      return { failureIdList }
+    }
+    const { failureIdList } = await uncheckToQuiz(
+      checkedIdList
+    )
+
+    let message: string
+    let messageColor: 'error' | 'initial'
+    if (failureIdList.length > 0) {
+      message = `エラー:問題ID[${failureIdList.join()}]へのチェック削除に失敗しました（${
+        checkedIdList.length - failureIdList.length
+      }/${checkedIdList.length}件削除成功）`
+      messageColor = 'error'
+    } else {
+      message = `選択した問題(${checkedIdList.length}件)へのチェック削除に成功しました`
+      messageColor = 'initial'
+    }
+
+    // 終わったらチェック全て外す、入力カテゴリも消す
+    setCheckedIdList([])
+    setChangedCategory('')
+    setMessage(message)
+    setMessageColor(messageColor)
+  }
+
   const contents = () => {
     return (
       <Container>
@@ -487,6 +587,31 @@ export default function SearchQuizPage() {
               onClick={async (e) => await removeCategoryFromChecked()}
             >
               一括カテゴリ削除
+            </Button>
+          </FormControl>
+        </FormGroup>
+
+        <FormGroup style={groupStyle} row>
+          チェックした問題全てに
+          <FormControl>
+            <Button
+              style={buttonStyle}
+              variant="contained"
+              color="primary"
+              onClick={async (e) => await checkedToSelectedQuiz()}
+            >
+              ✅をつける
+            </Button>
+          </FormControl>
+          or
+          <FormControl>
+            <Button
+              style={buttonStyle}
+              variant="contained"
+              color="primary"
+              onClick={async (e) => await uncheckedToSelectedQuiz()}
+            >
+              ✅を外す
             </Button>
           </FormControl>
         </FormGroup>
