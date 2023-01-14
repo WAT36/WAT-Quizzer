@@ -36,6 +36,7 @@ interface SelectQuizPageState {
   file_num: number
   quiz_num: number
   quiz_sentense: string
+  quiz_checked: boolean | null
   answer: string
   selected_category: string
   expanded: boolean
@@ -181,6 +182,7 @@ export default class SelectQuizPage extends React.Component<
           this.setState({
             quiz_sentense: data[0].quiz_sentense,
             answer: data[0].answer,
+            quiz_checked: data[0].checked,
             expanded: false,
             message: '　',
             messageColor: 'initial'
@@ -245,6 +247,7 @@ export default class SelectQuizPage extends React.Component<
             this.setState({
               quiz_sentense: '',
               answer: '',
+              quiz_checked: null,
               message: '問題[' + this.state.quiz_num + '] 正解+1! 登録しました',
               messageColor: 'initial',
               expanded: false
@@ -299,6 +302,7 @@ export default class SelectQuizPage extends React.Component<
             this.setState({
               quiz_sentense: '',
               answer: '',
+              quiz_checked: null,
               message:
                 '問題[' + this.state.quiz_num + '] 不正解+1.. 登録しました',
               messageColor: 'initial',
@@ -353,6 +357,7 @@ export default class SelectQuizPage extends React.Component<
             data = data.body
             const message = `問題[${this.state.quiz_num}] にチェック${Boolean(data) ? "をつけ" : "を外し"}ました`
             this.setState({
+              quiz_checked: Boolean(data),
               message,
               messageColor: 'initial',
             })
@@ -443,6 +448,7 @@ export default class SelectQuizPage extends React.Component<
             quiz_num: data[0].quiz_num,
             quiz_sentense: data[0].quiz_sentense,
             answer: data[0].answer,
+            quiz_checked: data[0].checked,
             expanded: false,
             message: '　',
             messageColor: 'initial'
@@ -487,6 +493,7 @@ export default class SelectQuizPage extends React.Component<
             quiz_num: data[0].quiz_num,
             quiz_sentense: data[0].quiz_sentense,
             answer: data[0].answer,
+            quiz_checked: data[0].checked,
             expanded: false,
             message: '　',
             messageColor: 'initial'
@@ -531,6 +538,7 @@ export default class SelectQuizPage extends React.Component<
             quiz_num: data[0].quiz_num,
             quiz_sentense: data[0].quiz_sentense,
             answer: data[0].answer,
+            quiz_checked: data[0].checked,
             expanded: false,
             message: '　',
             messageColor: 'initial'
@@ -673,7 +681,7 @@ export default class SelectQuizPage extends React.Component<
               問題
             </Typography>
             <Typography variant="subtitle1" component="h2">
-              {this.state.quiz_sentense}
+              {this.state.quiz_checked ? "✅" : ""}{this.state.quiz_sentense}
             </Typography>
           </CardContent>
           {this.answerSection()}
