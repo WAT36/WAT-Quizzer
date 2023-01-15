@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -25,27 +25,25 @@ const buttonStyle = {
   margin: '10px'
 }
 
-interface AccuracyRateGraphPageState {
-  file_num: number
-  message: string
-  messageColor:
-    | 'error'
-    | 'initial'
-    | 'inherit'
-    | 'primary'
-    | 'secondary'
-    | 'textPrimary'
-    | 'textSecondary'
-    | undefined
-  accuracy_data: any
-  filelistoption: JSX.Element[]
-}
+type messageColorType =
+  | 'error'
+  | 'initial'
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'textPrimary'
+  | 'textSecondary'
+  | undefined
 
-export default class AccuracyRateGraphPage extends React.Component<
-  {},
-  AccuracyRateGraphPageState
-> {
-  componentDidMount() {
+export default function AccuracyRateGraphPage() {
+  const [file_num, setFileNum] = useState<number>(-1)
+  const [message, setMessage] = useState<string>('　')
+  const [messageColor, setMessageColor] = useState<messageColorType>('initial')
+  const [accuracy_data, setAccuracyData] = useState<any>()
+  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
+
+
+  useEffect(() => {
     get('/namelist', (data: any) => {
       if (data.status === 200) {
         data = data.body
@@ -57,103 +55,73 @@ export default class AccuracyRateGraphPage extends React.Component<
             </MenuItem>
           )
         }
-        this.setState({
-          filelistoption: filelist
-        })
+        setFilelistoption(filelistoption)
       } else {
-        this.setState({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        })
+        setMessage('エラー:外部APIとの連携に失敗しました')
+        setMessageColor('error')
       }
     })
-  }
+  })
 
-  constructor(props: any) {
-    super(props)
-    this.displayChart = this.displayChart.bind(this)
-    this.state = {
-      file_num: -1,
-      message: '　',
-      messageColor: 'initial'
-    } as AccuracyRateGraphPageState
-  }
-
-  getAccuracy = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
+  const getAccuracy = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
       return
     }
 
     post(
       '/category/accuracy_rate',
       {
-        file_num: this.state.file_num
+        file_num: file_num
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            accuracy_data: data,
-            message: '　',
-            messageColor: 'initial'
-          })
+          setAccuracyData(data)
+          setMessage('　')
+          setMessageColor('initial')
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  updateCategory = () => {
-    if (this.state.file_num === -1) {
-      this.setState({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      })
+  const updateCategory = () => {
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい')
+      setMessageColor('error')
       return
     }
 
     post(
       '/category/renewal',
       {
-        file_num: this.state.file_num
+        file_num: file_num
       },
       (data: any) => {
         if (data.status === 200) {
           data = data.body
-          this.setState({
-            message: '指定問題ファイルへのカテゴリ更新に成功しました',
-            messageColor: 'initial'
-          })
+          setMessage('指定問題ファイルへのカテゴリ更新に成功しました')
+          setMessageColor('error')
         } else if (data.status === 404) {
-          this.setState({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          })
+          setMessage('エラー:条件に合致するデータはありません')
+          setMessageColor('error')
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  displayChart = () => {
-    const display_data = this.state.accuracy_data
+  const displayChart = () => {
+    const display_data = accuracy_data
 
     // データがない場合は何もしない
     if (
@@ -241,7 +209,7 @@ export default class AccuracyRateGraphPage extends React.Component<
     )
   }
 
-  contents = () => {
+  const contents = () => {
     return (
       <Container>
         <h1>WAT Quizzer</h1>
@@ -251,9 +219,9 @@ export default class AccuracyRateGraphPage extends React.Component<
             <Typography
               variant="h6"
               component="h6"
-              color={this.state.messageColor}
+              color={messageColor}
             >
-              {this.state.message}
+              {message}
             </Typography>
           </CardContent>
         </Card>
@@ -267,13 +235,13 @@ export default class AccuracyRateGraphPage extends React.Component<
               defaultValue={-1}
               // value={age}
               onChange={(e) => {
-                this.setState({ file_num: Number(e.target.value) })
+                setFileNum(Number(e.target.value))
               }}
             >
               <MenuItem value={-1} key={-1}>
                 選択なし
               </MenuItem>
-              {this.state.filelistoption}
+              {filelistoption}
             </Select>
           </FormControl>
         </FormGroup>
@@ -282,7 +250,7 @@ export default class AccuracyRateGraphPage extends React.Component<
           style={buttonStyle}
           variant="contained"
           color="primary"
-          onClick={(e) => this.getAccuracy()}
+          onClick={(e) => getAccuracy()}
         >
           正解率表示
         </Button>
@@ -291,21 +259,19 @@ export default class AccuracyRateGraphPage extends React.Component<
           style={buttonStyle}
           variant="contained"
           color="primary"
-          onClick={(e) => this.updateCategory()}
+          onClick={(e) => updateCategory()}
         >
           カテゴリ更新
         </Button>
 
-        {this.displayChart()}
+        {displayChart()}
       </Container>
     )
   }
 
-  render() {
-    return (
-      <>
-        <QuizzerLayout contents={this.contents()} />
-      </>
-    )
-  }
+  return (
+    <>
+      <QuizzerLayout contents={contents()} />
+    </>
+  )
 }
