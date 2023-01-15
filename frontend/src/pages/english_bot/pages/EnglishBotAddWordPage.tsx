@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Container from '@mui/material/Container'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -23,89 +23,68 @@ import EnglishBotLayout from '../components/EnglishBotLayout'
 import { get, post } from '../../../common/API'
 import { messageBoxStyle, buttonStyle } from '../../../styles/Pages'
 
-interface AddWordPageState {
-  message: string
-  messageColor: string
-  posList: JSX.Element[]
-  rowList: JSX.Element[]
-  inputWord: string
-}
-
 interface SendToAddWordApiData {
   partOfSpeechId: number
   meaning: string
 }
 
-class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
-  posListOption: JSX.Element[] = []
-  tableRows: JSX.Element[] = []
-  inputMeans: [number, string][] = []
+type messageColorType =
+  | 'error'
+  | 'initial'
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'textPrimary'
+  | 'textSecondary'
+  | undefined
 
-  constructor(props: any) {
-    super(props)
-    this.getPartOfSpeechList = this.getPartOfSpeechList.bind(this)
-    this.getTableRow = this.getTableRow.bind(this)
-    this.setTableRow = this.setTableRow.bind(this)
-    this.addRow = this.addRow.bind(this)
-    this.displayRow = this.displayRow.bind(this)
-    this.changeSelect = this.changeSelect.bind(this)
-    this.inputWordName = this.inputWordName.bind(this)
-    this.addWord = this.addWord.bind(this)
+export default function EnglishBotAddWordPage() {
+  const [message, setMessage] = useState<string>('　')
+  const [messageColor, setMessageColor] = useState<messageColorType>('initial')
+  const [posList, setPosList] = useState<JSX.Element[]>([])
+  const [rowList, setRowList] = useState<JSX.Element[]>([])
+  const [inputWord, setInputWord] = useState<string>('')
+  const [inputMeans, setInputMeans] = useState<[number, string][]>([])
 
-    this.state = {
-      message: '　',
-      messageColor: 'initial',
-      posList: this.posListOption,
-      rowList: this.tableRows,
-      inputWord: ''
-    } as AddWordPageState
+  useEffect(() => {
+    getPartOfSpeechList()
+  })
+
+  const messeageClear = () => {
+    setMessage('　')
+    setMessageColor('initial')
   }
 
-  componentDidMount() {
-    this.getPartOfSpeechList()
-  }
-
-  messeageClear() {
-    this.setState({
-      message: '　',
-      messageColor: 'initial'
-    })
-  }
-
-  getPartOfSpeechList = () => {
+  // 品詞リスト取得
+  const getPartOfSpeechList = () => {
     get('/english/partsofspeech', (data: any) => {
       if (data.status === 200) {
         data = data.body
-        let posList = []
+        let gotPosList = []
         for (var i = 0; i < data.length; i++) {
-          posList.push(
+          gotPosList.push(
             <MenuItem value={data[i].id} key={data[i].id}>
               {data[i].name}
             </MenuItem>
           )
         }
-        this.posListOption = posList
-        this.setState({
-          posList: this.posListOption
-        })
+        setPosList(gotPosList)
       } else {
-        this.setState({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        })
+        setMessage('エラー:外部APIとの連携に失敗しました')
+        setMessageColor('error')
       }
     })
   }
 
-  setTableRow = () => {
-    this.tableRows.push(this.getTableRow(this.tableRows.length))
-    this.inputMeans.push([-1, ''])
-    this.setState({
-      rowList: this.tableRows
-    })
+  // 列をステートに追加
+  const setTableRow = () => {
+    const newRowList = rowList
+    newRowList.push(getTableRow(rowList.length))
+    setRowList(newRowList)
   }
 
-  getTableRow = (i: number) => {
+  // テーブルi列目のJSXを返す
+  const getTableRow = (i: number) => {
     return (
       <TableRow>
         <TableCell>
@@ -118,13 +97,13 @@ class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
             key={i}
             sx={{ width: 1 }}
             onChange={(e) => {
-              this.changeSelect(String(e.target.value), i, false)
+              changeSelect(String(e.target.value), i, false)
             }}
           >
             <MenuItem value={-1} key={-1}>
               選択なし
             </MenuItem>
-            {this.state.posList}
+            {posList}
           </Select>
         </TableCell>
         <TableCell>
@@ -135,7 +114,7 @@ class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
             key={i}
             sx={{ width: 1 }}
             onChange={(e) => {
-              this.changeSelect(e.target.value, i, true)
+              changeSelect(e.target.value, i, true)
             }}
           />
         </TableCell>
@@ -143,58 +122,53 @@ class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
     )
   }
 
-  addRow = () => {
-    this.messeageClear()
-    this.setTableRow()
+  // 列を追加
+  const addRow = () => {
+    messeageClear()
+    setTableRow()
   }
 
-  displayRow = () => {
-    return this.tableRows.map((value) => {
+  // 列を表示(JSXを取得)
+  const displayRow = () => {
+    return rowList.map((value) => {
       return value
     })
   }
 
-  changeSelect = (value: string, i: number, isMean: boolean) => {
-    if (i + 1 <= this.inputMeans.length) {
-      this.inputMeans[i] = isMean
-        ? [this.inputMeans[i][0], value]
-        : [Number(value), this.inputMeans[i][1]]
-    } else {
-      while (i >= this.inputMeans.length) {
-        this.inputMeans.push([-1, ''])
+  // 意味リスト([品詞,意味])への入力の更新
+  const changeSelect = (value: string, i: number, isMean: boolean) => {
+    if (i >= inputMeans.length) {
+      while (i >= inputMeans.length) {
+        inputMeans.push([-1, ''])
       }
-      this.inputMeans[i] = [-1, '']
     }
+    inputMeans[i] = isMean
+    ? [inputMeans[i][0], value]
+    : [Number(value), inputMeans[i][1]]
   }
 
-  inputWordName = (value: string) => {
-    this.messeageClear()
-    this.setState({
-      inputWord: value
-    })
+  // 入力した単語名の更新
+  const inputWordName = (value: string) => {
+    messeageClear()
+    setInputWord(value)
   }
 
-  addWord = () => {
-    if (this.state.inputWord === '') {
-      this.setState({
-        message: 'エラー:単語が入力されておりません',
-        messageColor: 'error'
-      })
+  // 登録ボタン押下後。単語と意味をDBに登録
+  const addWord = () => {
+    if (inputWord === '') {
+      setMessage('エラー:単語が入力されておりません')
+      setMessageColor('error')
       return
     }
 
-    for (let i = 0; i < this.inputMeans.length; i++) {
-      if (this.inputMeans[i][0] === -1) {
-        this.setState({
-          message: `エラー:${i + 1}行目の品詞を入力してください`,
-          messageColor: 'error'
-        })
+    for (let i = 0; i < inputMeans.length; i++) {
+      if (inputMeans[i][0] === -1) {
+        setMessage(`エラー:${i + 1}行目の品詞を入力してください`)
+        setMessageColor('error')
         return
-      } else if (this.inputMeans[i][1] === '') {
-        this.setState({
-          message: `エラー:${i + 1}行目の意味を入力してください`,
-          messageColor: 'error'
-        })
+      } else if (inputMeans[i][1] === '') {
+        setMessage(`エラー:${i + 1}行目の意味を入力してください`)
+        setMessageColor('error')
         return
       }
     }
@@ -202,9 +176,9 @@ class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
     post(
       '/english/word/add',
       {
-        wordName: this.state.inputWord,
+        wordName: inputWord,
         pronounce: '',
-        meanArrayData: this.inputMeans.reduce(
+        meanArrayData: inputMeans.reduce(
           (previousValue: SendToAddWordApiData[], currentValue) => {
             if (currentValue[0] >= 0) {
               previousValue.push({
@@ -218,26 +192,21 @@ class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
         )
       },
       (data: any) => {
-        console.log('data:', data)
         if (data.status === 200) {
-          this.setState({
-            message: `単語「${this.state.inputWord}」を登録しました`,
-            messageColor: 'initial',
-            inputWord: ''
-          })
-          this.tableRows = []
-          this.inputMeans = []
+          setMessage(`単語「${inputWord}」を登録しました`)
+          setMessageColor('initial')
+          setInputWord('')
+          setRowList([])
+          setInputMeans([])
         } else {
-          this.setState({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          })
+          setMessage('エラー:外部APIとの連携に失敗しました')
+          setMessageColor('error')
         }
       }
     )
   }
 
-  contents = () => {
+  const contents = () => {
     return (
       <Container>
         <h1>Add Word</h1>
@@ -247,14 +216,14 @@ class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
             <Typography
               variant="h6"
               component="h6"
-              color={this.state.messageColor}
+              color={messageColor}
             >
-              {this.state.message}
+              {message}
             </Typography>
           </CardContent>
         </Card>
 
-        <Button variant="contained" style={buttonStyle} onClick={this.addWord}>
+        <Button variant="contained" style={buttonStyle} onClick={addWord}>
           登録
         </Button>
         <FormGroup>
@@ -263,8 +232,8 @@ class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
               fullWidth
               label="New Word"
               id="newWord"
-              value={this.state.inputWord}
-              onChange={(e) => this.inputWordName(e.target.value)}
+              value={inputWord}
+              onChange={(e) => inputWordName(e.target.value)}
             />
           </FormControl>
 
@@ -276,13 +245,13 @@ class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
                   <TableCell>{'意味'}</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>{this.displayRow()}</TableBody>
+              <TableBody>{displayRow()}</TableBody>
             </Table>
           </TableContainer>
           <IconButton
             aria-label="delete"
             sx={{ margin: 'auto' }}
-            onClick={this.addRow}
+            onClick={addRow}
           >
             <AddCircleOutlineIcon />
           </IconButton>
@@ -291,13 +260,10 @@ class EnglishBotAddWordPage extends React.Component<{}, AddWordPageState> {
     )
   }
 
-  render() {
-    return (
-      <>
-        <EnglishBotLayout contents={this.contents()} />
-      </>
-    )
-  }
+  return (
+    <>
+      <EnglishBotLayout contents={contents()} />
+    </>
+  )
 }
 
-export default EnglishBotAddWordPage
