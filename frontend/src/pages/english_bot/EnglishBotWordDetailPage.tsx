@@ -1,9 +1,9 @@
 import { Container } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import EnglishBotLayout from '../components/EnglishBotLayout'
-import { messageBoxStyle } from '../../../styles/Pages'
-import { post } from '../../../common/API'
+import EnglishBotLayout from './components/EnglishBotLayout'
+import { messageBoxStyle } from '../../styles/Pages'
+import { post } from '../../common/API'
 
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'

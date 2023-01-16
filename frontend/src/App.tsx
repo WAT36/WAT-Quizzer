@@ -11,10 +11,10 @@ import DeleteQuizPage from './pages/quizzer/DeleteQuizPage'
 import AccuracyRateGraphPage from './pages/quizzer/AccuracyRateGraphPage'
 import ImageUploadPage from './pages/quizzer/ImageUploadPage'
 
-import EnglishBotTopPage from './pages/english_bot/pages/EnglishBotTopPage'
-import EnglishBotAddWordPage from './pages/english_bot/pages/EnglishBotAddWordPage'
-import EnglishBotDictionaryPage from './pages/english_bot/pages/EnglishBotDictinoaryPage'
-import EnglishBotWordDetailPage from './pages/english_bot/pages/EnglishBotWordDetailPage'
+import EnglishBotTopPage from './pages/english_bot/EnglishBotTopPage'
+import EnglishBotAddWordPage from './pages/english_bot/EnglishBotAddWordPage'
+import EnglishBotDictionaryPage from './pages/english_bot/EnglishBotDictinoaryPage'
+import EnglishBotWordDetailPage from './pages/english_bot/EnglishBotWordDetailPage'
 
 export default class App extends React.Component {
   render() {

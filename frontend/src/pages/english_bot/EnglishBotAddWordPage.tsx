@@ -19,9 +19,9 @@ import IconButton from '@mui/material/IconButton'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import Button from '@mui/material/Button'
 
-import EnglishBotLayout from '../components/EnglishBotLayout'
-import { get, post } from '../../../common/API'
-import { messageBoxStyle, buttonStyle } from '../../../styles/Pages'
+import EnglishBotLayout from './components/EnglishBotLayout'
+import { get, post } from '../../common/API'
+import { messageBoxStyle, buttonStyle } from '../../styles/Pages'
 
 interface SendToAddWordApiData {
   partOfSpeechId: number

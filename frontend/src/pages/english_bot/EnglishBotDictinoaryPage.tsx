@@ -11,9 +11,9 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 
-import { post } from '../../../common/API'
-import EnglishBotLayout from '../components/EnglishBotLayout'
-import { messageBoxStyle } from '../../../styles/Pages'
+import { post } from '../../common/API'
+import EnglishBotLayout from './components/EnglishBotLayout'
+import { messageBoxStyle } from '../../styles/Pages'
 import { Link } from 'react-router-dom'
 
 export default function EnglishBotDictionaryPage() {

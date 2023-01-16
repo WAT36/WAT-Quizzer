@@ -1,6 +1,6 @@
 import React from 'react'
 
-import EnglishBotLayout from '../components/EnglishBotLayout'
+import EnglishBotLayout from './components/EnglishBotLayout'
 
 export default function EnglishBotTopPage() {
   return (
