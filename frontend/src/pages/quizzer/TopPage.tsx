@@ -1,18 +1,13 @@
 import React from 'react'
 import { Button, Container } from '@material-ui/core'
-
-const buttonStyle = {
-  margin: '20px',
-  width: '100px',
-  height: '100px'
-}
+import { topButtonStyle } from '../../styles/Pages'
 
 export default function TopPage() {
   return (
     <Container>
       <h1>WAT Quizzer</h1>
       <Button
-        style={buttonStyle}
+        style={topButtonStyle}
         variant="contained"
         size="large"
         color="primary"
@@ -21,7 +16,7 @@ export default function TopPage() {
         Quizzer
       </Button>
       <Button
-        style={buttonStyle}
+        style={topButtonStyle}
         variant="contained"
         size="large"
         color="secondary"
