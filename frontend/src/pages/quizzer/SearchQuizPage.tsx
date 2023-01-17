@@ -206,6 +206,7 @@ export default function SearchQuizPage() {
         checked: checked
       },
       (data: any) => {
+        console.log(`file_num:${file_num}, query:${query}, selected_category:${selected_category}, value:${value}, cond_question:${cond_question}, cond_answer:${cond_answer}, checked:${checked}`)
         if (data.status === 200) {
           data = data.body
           setSearchResult(data)
@@ -528,7 +529,7 @@ export default function SearchQuizPage() {
                   onChange={(e) => setChecked(e.target.checked)}
                 />
               }
-              label="チェック済から出題"
+              label="チェック済のみ検索"
               labelPlacement="start"
             />
           </FormControl>
