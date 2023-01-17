@@ -239,6 +239,7 @@ export default class SearchQuizPage extends React.Component<
         }
       },
       (data: any) => {
+        console.log(`file_num:${file_num}, query:${query}, selected_category:${selected_category}, value:${value}, cond_question:${cond_question}, cond_answer:${cond_answer}, checked:${checked}`)
         if (data.status === 200) {
           data = data.body
           this.setState({
@@ -593,7 +594,7 @@ export default class SearchQuizPage extends React.Component<
                   onChange={(e) => this.setState({ checked: e.target.checked })}
                 />
               }
-              label="チェック済から出題"
+              label="チェック済のみ検索"
               labelPlacement="start"
             />
           </FormControl>
