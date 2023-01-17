@@ -4,7 +4,7 @@ export const messageBoxStyle = {
 }
 
 export const buttonStyle = {
-  margin: '10px 0px 20px'
+  margin: '10px'
 }
 
 export const topButtonStyle = {

@@ -20,25 +20,8 @@ import {
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
 import { Button } from '@mui/material'
-
-const buttonStyle = {
-  margin: '10px'
-}
-
-const messageBoxStyle = {
-  margin: '10px 0px 20px',
-  borderStyle: 'none'
-}
-
-type messageColorType =
-  | 'error'
-  | 'initial'
-  | 'inherit'
-  | 'primary'
-  | 'secondary'
-  | 'textPrimary'
-  | 'textSecondary'
-  | undefined
+import { messageColorType } from '../../types/MessageColorType'
+import { buttonStyle, messageBoxStyle } from '../../styles/Pages'
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
@@ -289,7 +272,11 @@ export default function SelectQuizPage() {
           if (data.status === 200) {
             data = data.body
             setQuizChecked(Boolean(data))
-            setMessage(`問題[${quiz_num}] にチェック${Boolean(data) ? "をつけ" : "を外し"}ました`)
+            setMessage(
+              `問題[${quiz_num}] にチェック${
+                Boolean(data) ? 'をつけ' : 'を外し'
+              }ました`
+            )
             setMessageColor('initial')
           } else {
             setMessage('エラー:外部APIとの連携に失敗しました')
@@ -553,12 +540,7 @@ export default function SelectQuizPage() {
         >
           最小正解数問出題
         </Button>
-        <Button
-          style={buttonStyle}
-          variant="contained"
-          color="info"
-          disabled
-        >
+        <Button style={buttonStyle} variant="contained" color="info" disabled>
           画像表示
         </Button>
 
@@ -568,7 +550,8 @@ export default function SelectQuizPage() {
               問題
             </Typography>
             <Typography variant="subtitle1" component="h2">
-              {quiz_checked ? "✅" : ""}{quiz_sentense}
+              {quiz_checked ? '✅' : ''}
+              {quiz_sentense}
             </Typography>
           </CardContent>
           {answerSection()}
