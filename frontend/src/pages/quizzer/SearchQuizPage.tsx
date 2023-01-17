@@ -23,78 +23,9 @@ import {
 
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
-
-const buttonStyle = {
-  margin: '10px'
-}
-
-const messageBoxStyle = {
-  margin: '10px 0px 20px',
-  borderStyle: 'none'
-}
-
-const searchedTableStyle = {
-  height: 600,
-  width: '100%'
-}
-
-const groupStyle = {
-  border: 'solid thin lightgray',
-  'border-radius': '5px',
-  margin: '10px 0px',
-  padding: '0px 5px',
-  'align-items': 'center'
-}
-
-const columns = [
-  {
-    field: 'id',
-    headerName: 'ID',
-    sortable: false,
-    width: 75
-  },
-  {
-    field: 'checked',
-    headerName: '✅',
-    sortable: false,
-    width: 75,
-    type: 'boolean'
-  },
-  {
-    field: 'quiz_sentense',
-    headerName: '問題',
-    sortable: false,
-    width: 300
-  },
-  {
-    field: 'answer',
-    headerName: '答え',
-    sortable: false,
-    width: 300
-  },
-  {
-    field: 'category',
-    headerName: 'カテゴリ',
-    sortable: false,
-    width: 250
-  },
-  {
-    field: 'accuracy_rate',
-    headerName: '正解率',
-    sortable: true,
-    width: 150
-  }
-]
-
-type messageColorType =
-  | 'error'
-  | 'initial'
-  | 'inherit'
-  | 'primary'
-  | 'secondary'
-  | 'textPrimary'
-  | 'textSecondary'
-  | undefined
+import { buttonStyle, groupStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages'
+import { messageColorType } from '../../types/MessageColorType'
+import { columns } from './utils/SearchTable'
 
 export default function SearchQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1)
@@ -348,7 +279,7 @@ export default function SearchQuizPage() {
     const checkToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = []
       for (const checkedId of idList) {
-        const result = await post(
+        await post(
           '/edit/check',
           {
             file_num: file_num,
@@ -398,7 +329,7 @@ export default function SearchQuizPage() {
     const uncheckToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = []
       for (const checkedId of idList) {
-        const result = await post(
+        await post(
           '/edit/uncheck',
           {
             file_num: file_num,
@@ -528,7 +459,7 @@ export default function SearchQuizPage() {
                   onChange={(e) => setChecked(e.target.checked)}
                 />
               }
-              label="チェック済から出題"
+              label="チェック済のみ検索"
               labelPlacement="start"
             />
           </FormControl>
