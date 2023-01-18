@@ -24,7 +24,7 @@ import {
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
 import { buttonStyle, groupStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages'
-import { messageColorType } from '../../types/MessageColorType'
+import { messageColorType } from '../../interfaces/MessageColorType'
 import { columns } from './utils/SearchTable'
 
 export default function SearchQuizPage() {

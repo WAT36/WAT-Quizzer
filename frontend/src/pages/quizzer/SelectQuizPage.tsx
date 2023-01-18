@@ -20,7 +20,7 @@ import {
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
 import { Button } from '@mui/material'
-import { messageColorType } from '../../types/MessageColorType'
+import { messageColorType } from '../../interfaces/MessageColorType'
 import { buttonStyle, messageBoxStyle } from '../../styles/Pages'
 
 export default function SelectQuizPage() {
