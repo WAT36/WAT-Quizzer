@@ -25,3 +25,12 @@ export const groupStyle = {
   padding: '0px 5px',
   alignItems: 'center'
 }
+
+export const dropzoneStyle = {
+  backgroundColor: '#f4f4f4',
+  margin: '10px',
+  padding: '10px',
+  border: '#ddd dashed 5px',
+  minHeight: '200px',
+  textAlign: 'center' as 'center'
+}

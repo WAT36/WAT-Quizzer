@@ -4,36 +4,9 @@ import Dropzone from 'react-dropzone'
 import axios from 'axios'
 
 import QuizzerLayout from './components/QuizzerLayout'
-
-const messageBoxStyle = {
-  margin: '10px 0px 20px',
-  borderStyle: 'none'
-}
-
-const dropzoneStyle = {
-  backgroundColor: '#f4f4f4',
-  margin: '10px',
-  padding: '10px',
-  border: '#ddd dashed 5px',
-  minHeight: '200px',
-  textAlign: 'center' as 'center'
-}
-
-interface ImageUploadReturnValue {
-  name: string
-  isUploading: boolean
-  url: string
-}
-
-type messageColorType =
-  | 'error'
-  | 'initial'
-  | 'inherit'
-  | 'primary'
-  | 'secondary'
-  | 'textPrimary'
-  | 'textSecondary'
-  | undefined
+import { messageColorType } from '../../interfaces/MessageColorType'
+import { messageBoxStyle, dropzoneStyle } from '../../styles/Pages'
+import { ImageUploadReturnValue } from '../../interfaces/API'
 
 export default function ImageUploadPage() {
   const [message, setMessage] = useState<string>('　')
