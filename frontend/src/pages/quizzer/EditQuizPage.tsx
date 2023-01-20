@@ -16,25 +16,8 @@ import {
 
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
-
-const messageBoxStyle = {
-  margin: '10px 0px 20px',
-  borderStyle: 'none'
-}
-
-const buttonStyle = {
-  margin: '10px'
-}
-
-type messageColorType =
-  | 'error'
-  | 'initial'
-  | 'inherit'
-  | 'primary'
-  | 'secondary'
-  | 'textPrimary'
-  | 'textSecondary'
-  | undefined
+import { messageColorType } from '../../interfaces/MessageColorType'
+import { buttonStyle, messageBoxStyle } from '../../styles/Pages'
 
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1)
