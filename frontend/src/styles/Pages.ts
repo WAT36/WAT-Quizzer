@@ -40,3 +40,7 @@ export const paperStyle = {
   float: 'left' as 'left',
   margin: '5px'
 }
+
+export const typoStyles = {
+  fontSize: 14
+}

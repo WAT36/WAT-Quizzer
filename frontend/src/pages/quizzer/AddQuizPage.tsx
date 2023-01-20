@@ -15,40 +15,16 @@ import {
 
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
+import { messageColorType } from '../../interfaces/MessageColorType'
+import { buttonStyle, messageBoxStyle, typoStyles } from '../../styles/Pages'
 
-const messageBoxStyle = {
-  margin: '10px 0px 20px',
-  borderStyle: 'none'
-}
-
-const buttonStyle = {
-  margin: '10px'
-}
-
-const typoStyles = {
-  title: {
-    fontSize: 14
-  }
-}
-
-type messageColorType =
-  | 'error'
-  | 'initial'
-  | 'inherit'
-  | 'primary'
-  | 'secondary'
-  | 'textPrimary'
-  | 'textSecondary'
-  | undefined
-
-export default function AddQuizPage (){
+export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1)
   const [input_data, setInputData] = useState<string>('')
   const [message, setMessage] = useState<string>('　')
   const [messageColor, setMessageColor] = useState<messageColorType>('initial')
   const [addLog, setAddLog] = useState<any>()
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
-
 
   useEffect(() => {
     get('/namelist', (data: any) => {
@@ -119,11 +95,7 @@ export default function AddQuizPage (){
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography
-              variant="h6"
-              component="h6"
-              color={messageColor}
-            >
+            <Typography variant="h6" component="h6" color={messageColor}>
               {message}
             </Typography>
           </CardContent>
@@ -172,11 +144,7 @@ export default function AddQuizPage (){
 
         <Card variant="outlined">
           <CardContent>
-            <Typography
-              style={typoStyles.title}
-              color="textSecondary"
-              gutterBottom
-            >
+            <Typography style={typoStyles} color="textSecondary" gutterBottom>
               --実行ログ--
             </Typography>
             <Typography variant="h6" component="h6">
