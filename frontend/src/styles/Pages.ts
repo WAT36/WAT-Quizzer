@@ -34,3 +34,9 @@ export const dropzoneStyle = {
   minHeight: '200px',
   textAlign: 'center' as 'center'
 }
+
+export const paperStyle = {
+  width: '40%',
+  float: 'left' as 'left',
+  margin: '5px'
+}
