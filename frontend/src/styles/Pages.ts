@@ -44,3 +44,7 @@ export const paperStyle = {
 export const typoStyles = {
   fontSize: 14
 }
+
+const adjustedSpaceStyle = {
+  height: '40px'
+}

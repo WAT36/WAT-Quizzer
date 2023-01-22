@@ -2,10 +2,7 @@ import React from 'react'
 import QuizzerHeader from './QuizzerHeader'
 import QuizzerFooter from './QuizzerFooter'
 import QuizzerSideBar from './QuizzerSideBar'
-
-const adjustedSpaceStyle = {
-  height: '40px'
-}
+import { adjustedSpaceStyle } from '../../../styles/Layout'
 
 type Props = {
   contents: JSX.Element
