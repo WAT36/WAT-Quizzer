@@ -15,25 +15,8 @@ import { Chart } from 'react-google-charts'
 
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
-
-const messageBoxStyle = {
-  margin: '10px 0px 20px',
-  borderStyle: 'none'
-}
-
-const buttonStyle = {
-  margin: '10px'
-}
-
-type messageColorType =
-  | 'error'
-  | 'initial'
-  | 'inherit'
-  | 'primary'
-  | 'secondary'
-  | 'textPrimary'
-  | 'textSecondary'
-  | undefined
+import { messageColorType } from '../../interfaces/MessageColorType'
+import { buttonStyle, messageBoxStyle } from '../../styles/Pages'
 
 export default function AccuracyRateGraphPage() {
   const [file_num, setFileNum] = useState<number>(-1)
@@ -41,7 +24,6 @@ export default function AccuracyRateGraphPage() {
   const [messageColor, setMessageColor] = useState<messageColorType>('initial')
   const [accuracy_data, setAccuracyData] = useState<any>()
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
-
 
   useEffect(() => {
     get('/namelist', (data: any) => {
@@ -216,11 +198,7 @@ export default function AccuracyRateGraphPage() {
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography
-              variant="h6"
-              component="h6"
-              color={messageColor}
-            >
+            <Typography variant="h6" component="h6" color={messageColor}>
               {message}
             </Typography>
           </CardContent>
