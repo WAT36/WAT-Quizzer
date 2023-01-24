@@ -1,9 +1,19 @@
-export const footerStyle: React.CSSProperties = {
+export const englishBotFooterStyle: React.CSSProperties = {
   position: 'fixed',
   bottom: 0,
   width: '100%',
   height: '30px',
   backgroundColor: 'midnightblue',
+  color: 'white',
+  marginTop: '5px'
+}
+
+export const quizzerFooterStyle = {
+  position: 'fixed' as 'fixed',
+  bottom: 0,
+  width: '100%',
+  height: '30px',
+  backgroundColor: '#0077B6',
   color: 'white',
   marginTop: '5px'
 }
