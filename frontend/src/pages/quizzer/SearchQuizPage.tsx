@@ -23,7 +23,12 @@ import {
 
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
-import { buttonStyle, groupStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages'
+import {
+  buttonStyle,
+  groupStyle,
+  messageBoxStyle,
+  searchedTableStyle
+} from '../../styles/Pages'
 import { messageColorType } from '../../interfaces/MessageColorType'
 import { columns } from './utils/SearchTable'
 
@@ -294,9 +299,7 @@ export default function SearchQuizPage() {
       }
       return { failureIdList }
     }
-    const { failureIdList } = await checkToQuiz(
-      checkedIdList
-    )
+    const { failureIdList } = await checkToQuiz(checkedIdList)
 
     let message: string
     let messageColor: 'error' | 'initial'
@@ -344,9 +347,7 @@ export default function SearchQuizPage() {
       }
       return { failureIdList }
     }
-    const { failureIdList } = await uncheckToQuiz(
-      checkedIdList
-    )
+    const { failureIdList } = await uncheckToQuiz(checkedIdList)
 
     let message: string
     let messageColor: 'error' | 'initial'
