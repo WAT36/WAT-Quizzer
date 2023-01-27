@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button, Container } from '@material-ui/core'
 import { topButtonStyle } from '../../styles/Pages'
+import { Button, Container } from '@mui/material'
 
 export default function TopPage() {
   return (
