@@ -1,27 +1,26 @@
 import React, { useEffect, useState } from 'react'
+import { get, post } from '../../common/API'
+import QuizzerLayout from './components/QuizzerLayout'
+import { messageColorType } from '../../interfaces/MessageColorType'
+import { buttonStyle, messageBoxStyle } from '../../styles/Pages'
 import {
+  Button,
   Card,
-  CardContent,
   CardActions,
+  CardContent,
   Checkbox,
-  Container,
   Collapse,
+  Container,
   FormControl,
   FormControlLabel,
+  FormGroup,
   InputLabel,
   MenuItem,
   Select,
-  FormGroup,
+  Slider,
   TextField,
-  Typography,
-  Slider
-} from '@material-ui/core'
-
-import { get, post } from '../../common/API'
-import QuizzerLayout from './components/QuizzerLayout'
-import { Button } from '@mui/material'
-import { messageColorType } from '../../interfaces/MessageColorType'
-import { buttonStyle, messageBoxStyle } from '../../styles/Pages'
+  Typography
+} from '@mui/material'
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>()
@@ -59,10 +58,7 @@ export default function SelectQuizPage() {
   }, [])
 
   const rangeSlider = () => {
-    const handleChange = (
-      event: React.ChangeEvent<{}>,
-      newValue: number[] | number
-    ) => {
+    const handleChange = (event: Event, newValue: number[] | number) => {
       setValue(newValue)
     }
 
