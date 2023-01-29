@@ -1,25 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import {
-  Button,
-  Card,
-  CardContent,
-  Checkbox,
-  Container,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Select,
-  FormGroup,
-  TextField,
-  Typography,
-  Slider
-} from '@material-ui/core'
-import {
-  DataGrid,
-  GridRowsProp,
-  GridSelectionModel
-} from '@material-ui/data-grid'
+
+import { DataGrid, GridRowsProp, GridSelectionModel } from '@mui/x-data-grid'
 
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
@@ -31,6 +12,22 @@ import {
 } from '../../styles/Pages'
 import { messageColorType } from '../../interfaces/MessageColorType'
 import { columns } from './utils/SearchTable'
+import {
+  Button,
+  Card,
+  CardContent,
+  Checkbox,
+  Container,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  InputLabel,
+  MenuItem,
+  Select,
+  Slider,
+  TextField,
+  Typography
+} from '@mui/material'
 
 export default function SearchQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1)
@@ -98,10 +95,7 @@ export default function SearchQuizPage() {
   }
 
   const rangeSlider = () => {
-    const handleChange = (
-      event: React.ChangeEvent<{}>,
-      newValue: number[] | number
-    ) => {
+    const handleChange = (event: Event, newValue: number[] | number) => {
       setValue(newValue)
     }
 

@@ -10,6 +10,7 @@
     "@material-ui/data-grid": "^4.0.0-alpha.37",
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.16",
+    "@mui/x-data-grid": "^5.17.21",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.16.4",
