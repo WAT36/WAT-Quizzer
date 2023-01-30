@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react'
+
+import { get, post } from '../../common/API'
+import QuizzerLayout from './components/QuizzerLayout'
+import { messageColorType } from '../../interfaces/MessageColorType'
+import { buttonStyle, messageBoxStyle } from '../../styles/Pages'
 import {
   Button,
   Card,
   CardContent,
   Container,
   FormControl,
+  FormGroup,
+  Input,
   InputLabel,
   MenuItem,
   Select,
-  FormGroup,
-  Typography,
   TextField,
-  Input
-} from '@material-ui/core'
-
-import { get, post } from '../../common/API'
-import QuizzerLayout from './components/QuizzerLayout'
-import { messageColorType } from '../../interfaces/MessageColorType'
-import { buttonStyle, messageBoxStyle } from '../../styles/Pages'
+  Typography
+} from '@mui/material'
 
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1)
