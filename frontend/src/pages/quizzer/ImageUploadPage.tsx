@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Card, CardContent, Container, Typography } from '@material-ui/core'
 import Dropzone from 'react-dropzone'
 import axios from 'axios'
 
@@ -7,6 +6,7 @@ import QuizzerLayout from './components/QuizzerLayout'
 import { messageColorType } from '../../interfaces/MessageColorType'
 import { messageBoxStyle, dropzoneStyle } from '../../styles/Pages'
 import { ImageUploadReturnValue } from '../../interfaces/API'
+import { Card, CardContent, Container, Typography } from '@mui/material'
 
 export default function ImageUploadPage() {
   const [message, setMessage] = useState<string>('　')
