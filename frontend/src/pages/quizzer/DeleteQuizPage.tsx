@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react'
+
+import { get, post } from '../../common/API'
+import QuizzerLayout from './components/QuizzerLayout'
+import { messageColorType } from '../../interfaces/MessageColorType'
+import { buttonStyle, messageBoxStyle, paperStyle } from '../../styles/Pages'
 import {
   Button,
   Card,
   CardContent,
   Container,
   FormControl,
+  FormGroup,
   InputLabel,
   MenuItem,
   Paper,
   Select,
-  FormGroup,
-  Typography,
-  TextField
-} from '@material-ui/core'
-
-import { get, post } from '../../common/API'
-import QuizzerLayout from './components/QuizzerLayout'
-import { messageColorType } from '../../interfaces/MessageColorType'
-import { buttonStyle, messageBoxStyle, paperStyle } from '../../styles/Pages'
+  TextField,
+  Typography
+} from '@mui/material'
 
 export default function DeleteQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1)
