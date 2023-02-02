@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import {
-  Button,
-  Card,
-  CardContent,
-  Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  FormGroup,
-  Typography
-} from '@material-ui/core'
 import { Chart } from 'react-google-charts'
 
 import { get, post } from '../../common/API'
 import QuizzerLayout from './components/QuizzerLayout'
 import { messageColorType } from '../../interfaces/MessageColorType'
 import { buttonStyle, messageBoxStyle } from '../../styles/Pages'
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  FormControl,
+  FormGroup,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography
+} from '@mui/material'
 
 export default function AccuracyRateGraphPage() {
   const [file_num, setFileNum] = useState<number>(-1)
