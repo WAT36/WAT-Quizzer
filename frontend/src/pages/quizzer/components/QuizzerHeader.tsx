@@ -1,5 +1,3 @@
-import { IconButton } from '@material-ui/core'
-import MenuIcon from '@mui/icons-material/Menu'
 import React from 'react'
 import { toggleDrawer } from '../utils/SideBar'
 import { useSetRecoilState } from 'recoil'
@@ -9,6 +7,8 @@ import {
   titleStyle,
   quizzerHeaderStyle
 } from '../../../styles/Header'
+import { IconButton } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu'
 
 export default function QuizzerHeader() {
   const setSidebarState = useSetRecoilState(isOpenState)
