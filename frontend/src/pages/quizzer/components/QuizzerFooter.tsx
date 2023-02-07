@@ -1,10 +1,10 @@
 import React from 'react'
-import { Button } from '@material-ui/core'
 import {
   leftStyle,
   quizzerFooterStyle,
   rightStyle
 } from '../../../styles/Footer'
+import { Button } from '@mui/material'
 
 export default function QuizzerFooter() {
   return (
