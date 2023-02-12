@@ -1,7 +1,5 @@
 import React from 'react'
 import { useSetRecoilState } from 'recoil'
-import { IconButton } from '@material-ui/core'
-import MenuIcon from '@mui/icons-material/Menu'
 
 import { isOpenState } from '../../../atoms/SideBar'
 import { toggleDrawer } from '../utils/SideBar'
@@ -10,6 +8,8 @@ import {
   titleStyle,
   rightStyle
 } from '../../../styles/Header'
+import { IconButton } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu'
 
 export default function EnglishBotHeader() {
   const setSidebarState = useSetRecoilState(isOpenState)
