@@ -16,7 +16,7 @@ export default function Top() {
       </Head>
       <Container>
         <h1>WAT Quizzer</h1>
-        <Button style={topButtonStyle} variant="contained" size="large" color="primary" href="/selectquiz">
+        <Button style={topButtonStyle} variant="contained" size="large" color="primary" href="/quizzer">
           Quizzer
         </Button>
         <Button style={topButtonStyle} variant="contained" size="large" color="secondary" href="/english/top">
