@@ -10,6 +10,8 @@
     "format": "prettier --write 'src/**/*.(ts|tsx)'"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.11.13",
     "@types/node": "18.15.3",
     "@types/react": "18.0.28",
