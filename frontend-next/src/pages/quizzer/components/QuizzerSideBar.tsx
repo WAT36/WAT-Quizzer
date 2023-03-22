@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 import { sideBarContents, toggleDrawer } from '../utils/SideBar';
 import { isOpenState } from '../../../atoms/SideBar';
@@ -15,7 +15,7 @@ export default function QuizzerSideBar() {
       <List>
         {sideBarContents.map((value) => (
           <ListItem key={value.name}>
-            <Link to={value.link} onClick={toggleDrawer(false, setSidebarState)}>
+            <Link href={value.link} onClick={toggleDrawer(false, setSidebarState)}>
               {value.name}
             </Link>
           </ListItem>
