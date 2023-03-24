@@ -4,7 +4,7 @@ export const sideBarContents = [
   { name: '問題出題', link: '/quizzer' },
   { name: '問題追加', link: '/quizzer/addQuiz' },
   { name: '問題編集', link: '/quizzer/editQuiz' },
-  { name: '問題検索', link: '/' },
+  { name: '問題検索', link: '/quizzer/serachQuiz' },
   { name: '問題削除', link: '/' },
   { name: 'カテゴリ別正解率表示', link: '/' },
   { name: '画像アップロード', link: '/' }
