@@ -6,7 +6,7 @@ export const sideBarContents = [
   { name: '問題編集', link: '/quizzer/editQuiz' },
   { name: '問題検索', link: '/quizzer/serachQuiz' },
   { name: '問題削除', link: '/quizzer/deleteQuiz' },
-  { name: 'カテゴリ別正解率表示', link: '/' },
+  { name: 'カテゴリ別正解率表示', link: '/quizzer/accuracyRateGraph' },
   { name: '画像アップロード', link: '/' }
 ];
 
