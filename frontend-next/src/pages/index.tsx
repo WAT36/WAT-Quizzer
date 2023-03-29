@@ -19,7 +19,7 @@ export default function Top() {
         <Button style={topButtonStyle} variant="contained" size="large" color="primary" href="/quizzer">
           Quizzer
         </Button>
-        <Button style={topButtonStyle} variant="contained" size="large" color="secondary" href="/english/top">
+        <Button style={topButtonStyle} variant="contained" size="large" color="secondary" href="/englishBot">
           English Quiz Bot
         </Button>
       </Container>

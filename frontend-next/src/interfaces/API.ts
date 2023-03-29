@@ -1,5 +1,5 @@
 export interface ImageUploadReturnValue {
-  name: string
-  isUploading: boolean
-  url: string
+  name: string;
+  isUploading: boolean;
+  url: string;
 }
