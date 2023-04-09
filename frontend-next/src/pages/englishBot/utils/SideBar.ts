@@ -2,7 +2,7 @@
 export const sideBarContents = [
   { name: 'Top', link: '/englishBot' },
   { name: 'Add Words', link: '/englishBot/addWord' },
-  { name: 'Dictionary', link: '' }
+  { name: 'Dictionary', link: '/englishBot/dictionary' }
 ];
 
 // サイドバー開閉
