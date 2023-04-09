@@ -1,7 +1,7 @@
 // サイドバーのコンテンツ
 export const sideBarContents = [
   { name: 'Top', link: '/englishBot' },
-  { name: 'Add Words', link: '' },
+  { name: 'Add Words', link: '/englishBot/addWord' },
   { name: 'Dictionary', link: '' }
 ];
 
