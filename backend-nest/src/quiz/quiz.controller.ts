@@ -9,4 +9,9 @@ export class QuizController {
   getHello(): string {
     return this.quizService.getHello();
   }
+
+  @Get('/file')
+  async getFileList() {
+    return await this.quizService.getFileList();
+  }
 }
