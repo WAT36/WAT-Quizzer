@@ -14,4 +14,9 @@ export class QuizController {
   async getFileList() {
     return await this.quizService.getFileList();
   }
+
+  @Get('/quiz')
+  async getQuiz(file_num: number, quiz_num: number) {
+    return await this.quizService.getQuiz(file_num, quiz_num);
+  }
 }
