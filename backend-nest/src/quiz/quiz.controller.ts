@@ -15,8 +15,25 @@ export class QuizController {
     return await this.quizService.getFileList();
   }
 
-  @Get('/quiz')
+  @Get('')
   async getQuiz(file_num: number, quiz_num: number) {
     return await this.quizService.getQuiz(file_num, quiz_num);
+  }
+
+  @Get('/random')
+  async getRandomQuiz(
+    file_num: number,
+    min_rate: number,
+    max_rate: number,
+    category: string,
+    checked: boolean,
+  ) {
+    return await this.quizService.getRandomQuiz(
+      file_num,
+      min_rate,
+      max_rate,
+      category,
+      checked,
+    );
   }
 }

@@ -22,4 +22,31 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 問題ランダム取得
+  async getRandomQuiz(
+    file_num: number,
+    min_rate: number,
+    max_rate: number,
+    category: string,
+    checked: boolean,
+  ) {
+    try {
+      const categorySQL =
+        category !== null && category !== undefined
+          ? ` AND category LIKE '%` + category + `%' `
+          : '';
+
+      const checkedSQL = checked ? ` AND checked = 1 ` : '';
+
+      const sql =
+        SQL.QUIZ.RANDOM +
+        categorySQL +
+        checkedSQL +
+        ' ORDER BY rand() LIMIT 1; ';
+      return await execQuery(sql, [file_num, min_rate, max_rate]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
