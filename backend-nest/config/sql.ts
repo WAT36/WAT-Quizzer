@@ -18,5 +18,12 @@ export const SQL = {
               AND accuracy_rate >= ? 
               AND accuracy_rate <= ? 
               AND deleted = 0 `,
+    WORST: ` SELECT
+                *
+              FROM
+                  quiz_view
+              WHERE
+                  file_num = ?
+              AND deleted = 0 `,
   },
 };

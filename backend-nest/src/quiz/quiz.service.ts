@@ -49,4 +49,30 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 最低正解率問題取得
+  async getWorstRateQuiz(file_num: number, category: string, checked: boolean) {
+    try {
+      let categorySQL = '';
+      if (category !== null && category !== undefined) {
+        categorySQL = ` AND category LIKE '%` + category + `%' `;
+      }
+
+      let checkedSQL = '';
+      if (checked) {
+        checkedSQL += ` AND checked = 1 `;
+      }
+
+      // 最低正解率問題取得SQL作成
+      const getWorstRateQuizSQL =
+        SQL.QUIZ.WORST +
+        categorySQL +
+        checkedSQL +
+        ' ORDER BY accuracy_rate LIMIT 1; ';
+
+      return await execQuery(getWorstRateQuizSQL, [file_num]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
