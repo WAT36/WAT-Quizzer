@@ -25,5 +25,12 @@ export const SQL = {
               WHERE
                   file_num = ?
               AND deleted = 0 `,
+    MINIMUM: ` SELECT
+                  *
+              FROM
+                  quiz_view
+              WHERE
+                  file_num = ?
+              AND deleted = 0 `,
   },
 };

@@ -75,4 +75,34 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 最小正解数問題取得
+  async getMinimumAnsweredQuiz(
+    file_num: number,
+    category: string,
+    checked: boolean,
+  ) {
+    try {
+      let categorySQL = '';
+      if (category !== null && category !== undefined) {
+        categorySQL = ` AND category LIKE '%` + category + `%' `;
+      }
+
+      let checkedSQL = '';
+      if (checked) {
+        checkedSQL += ` AND checked = 1 `;
+      }
+
+      // ランダム問題取得SQL作成
+      const getMinimumClearQuizSQL =
+        SQL.QUIZ.MINIMUM +
+        categorySQL +
+        checkedSQL +
+        ' ORDER BY clear_count LIMIT 1; ';
+
+      return await execQuery(getMinimumClearQuizSQL, [file_num]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

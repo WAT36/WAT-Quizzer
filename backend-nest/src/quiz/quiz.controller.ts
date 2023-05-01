@@ -41,4 +41,17 @@ export class QuizController {
   async getWorstRateQuiz(file_num: number, category: string, checked: boolean) {
     return await this.quizService.getWorstRateQuiz(file_num, category, checked);
   }
+
+  @Get('/minimum')
+  async getMinimumAnsweredQuiz(
+    file_num: number,
+    category: string,
+    checked: boolean,
+  ) {
+    return await this.quizService.getMinimumAnsweredQuiz(
+      file_num,
+      category,
+      checked,
+    );
+  }
 }
