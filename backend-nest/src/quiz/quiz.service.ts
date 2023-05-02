@@ -16,7 +16,7 @@ export class QuizService {
   // 問題取得
   async getQuiz(file_num: number, quiz_num: number) {
     try {
-      const data = await execQuery(SQL.QUIZ.GET, [file_num, quiz_num]);
+      const data = await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num]);
       return data;
     } catch (error) {
       throw error;

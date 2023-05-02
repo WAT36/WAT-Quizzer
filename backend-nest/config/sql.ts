@@ -3,7 +3,7 @@ export const SQL = {
     LIST: ` SELECT * FROM quiz_file ORDER BY file_num; `,
   },
   QUIZ: {
-    GET: `SELECT 
+    INFO: `SELECT 
             * 
           FROM 
             quiz 
