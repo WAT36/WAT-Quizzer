@@ -105,4 +105,22 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 正解登録
+  async cleared(file_num: number, quiz_num: number) {
+    try {
+      // 正解数取得
+      const data = await execQuery(SQL.QUIZ.CLEARED.GET, [file_num, quiz_num]);
+      const clear_count = data[0].clear_count;
+
+      // 正解登録
+      return await execQuery(SQL.QUIZ.CLEARED.INPUT, [
+        clear_count + 1,
+        file_num,
+        quiz_num,
+      ]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

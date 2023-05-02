@@ -32,5 +32,28 @@ export const SQL = {
               WHERE
                   file_num = ?
               AND deleted = 0 `,
+    CLEARED: {
+      GET: `
+        SELECT
+            clear_count
+        FROM
+            quiz
+        WHERE
+            file_num = ?
+            AND quiz_num = ?
+            AND deleted = 0 
+      `,
+      INPUT: `
+        UPDATE
+            quiz
+        SET
+            clear_count = ?
+        WHERE
+            file_num = ?
+            AND quiz_num = ?
+            AND deleted = 0 
+        ;
+      `,
+    },
   },
 };
