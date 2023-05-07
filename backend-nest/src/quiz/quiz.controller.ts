@@ -137,4 +137,17 @@ export class QuizController {
       category,
     );
   }
+
+  @Delete('/category')
+  async removeCategoryFromQuiz(
+    file_num: number,
+    quiz_num: number,
+    category: string,
+  ) {
+    return await this.quizService.removeCategoryFromQuiz(
+      file_num,
+      quiz_num,
+      category,
+    );
+  }
 }

@@ -399,4 +399,52 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 問題からカテゴリ削除
+  async removeCategoryFromQuiz(
+    file_num: number,
+    quiz_num: number,
+    category: string,
+  ) {
+    try {
+      // 現在のカテゴリ取得
+      let nowCategory: any = await execQuery(SQL.QUIZ.INFO, [
+        file_num,
+        quiz_num,
+      ]);
+      nowCategory = nowCategory[0]['category'];
+
+      // 指定カテゴリが含まれているか確認、含まれていなければ終了
+      if (!nowCategory.includes(category)) {
+        return {
+          result: null,
+        };
+      }
+
+      // カテゴリ削除
+      let newCategory: string = nowCategory.replace(category, '');
+      if (newCategory[0] === ':') {
+        newCategory = newCategory.slice(1);
+      }
+      if (newCategory.slice(-1) === ':') {
+        newCategory = newCategory.slice(0, -1);
+      }
+      while (newCategory.includes('::')) {
+        newCategory = newCategory.replace('::', ':');
+      }
+
+      // 更新
+      const result = await execQuery(SQL.QUIZ.CATEGORY.UPDATE, [
+        newCategory,
+        file_num,
+        quiz_num,
+      ]);
+
+      return {
+        result,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
