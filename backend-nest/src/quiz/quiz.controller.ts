@@ -160,4 +160,9 @@ export class QuizController {
   async uncheck(file_num: number, quiz_num: number) {
     return await this.quizService.uncheck(file_num, quiz_num);
   }
+
+  @Post('/check')
+  async reverseCheck(file_num: number, quiz_num: number) {
+    return await this.quizService.reverseCheck(file_num, quiz_num);
+  }
 }
