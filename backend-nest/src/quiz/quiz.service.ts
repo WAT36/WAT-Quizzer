@@ -123,4 +123,22 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 不正解登録
+  async failed(file_num: number, quiz_num: number) {
+    try {
+      // 不正解数取得
+      const data = await execQuery(SQL.QUIZ.FAILED.GET, [file_num, quiz_num]);
+      const fail_count = data[0].fail_count;
+
+      // 正解登録
+      return await execQuery(SQL.QUIZ.FAILED.INPUT, [
+        fail_count + 1,
+        file_num,
+        quiz_num,
+      ]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

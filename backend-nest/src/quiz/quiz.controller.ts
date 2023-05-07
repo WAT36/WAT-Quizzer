@@ -59,4 +59,9 @@ export class QuizController {
   async cleared(file_num: number, quiz_num: number) {
     return await this.quizService.cleared(file_num, quiz_num);
   }
+
+  @Post('/fail')
+  async failed(file_num: number, quiz_num: number) {
+    return await this.quizService.failed(file_num, quiz_num);
+  }
 }

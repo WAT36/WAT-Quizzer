@@ -55,5 +55,28 @@ export const SQL = {
         ;
       `,
     },
+    FAILED: {
+      GET: `
+        SELECT
+            fail_count
+        FROM
+            quiz
+        WHERE
+            file_num = ?
+            AND quiz_num = ?
+            AND deleted = 0 
+      `,
+      INPUT: `
+        UPDATE
+            quiz
+        SET
+            fail_count = ?
+        WHERE
+            file_num = ?
+            AND quiz_num = ?
+            AND deleted = 0 
+        ;
+      `,
+    },
   },
 };
