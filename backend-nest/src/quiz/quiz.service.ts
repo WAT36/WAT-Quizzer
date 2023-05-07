@@ -212,4 +212,27 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 問題編集
+  async edit(
+    file_num: number,
+    quiz_num: number,
+    question: string,
+    answer: string,
+    category: string,
+    img_file: string,
+  ) {
+    try {
+      return await execQuery(SQL.QUIZ.EDIT, [
+        question,
+        answer,
+        category,
+        img_file,
+        file_num,
+        quiz_num,
+      ]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

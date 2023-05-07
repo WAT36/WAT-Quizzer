@@ -69,4 +69,23 @@ export class QuizController {
   async add(file_num: number, input_data: string) {
     return await this.quizService.add(file_num, input_data);
   }
+
+  @Post('/edit')
+  async edit(
+    file_num: number,
+    quiz_num: number,
+    question: string,
+    answer: string,
+    category: string,
+    img_file: string,
+  ) {
+    return await this.quizService.edit(
+      file_num,
+      quiz_num,
+      question,
+      answer,
+      category,
+      img_file,
+    );
+  }
 }
