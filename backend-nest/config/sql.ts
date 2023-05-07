@@ -124,5 +124,16 @@ export const SQL = {
           file_num = ?
       AND deleted = 0
     `,
+    SEARCH: `
+      SELECT
+          file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, ROUND(accuracy_rate,1) AS accuracy_rate 
+      FROM
+          quiz_view
+      WHERE
+          file_num = ?
+      AND accuracy_rate >= ? 
+      AND accuracy_rate <= ? 
+      AND deleted = 0 
+    `,
   },
 };

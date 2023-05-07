@@ -235,4 +235,63 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 問題検索
+  async search(
+    file_num: number,
+    min_rate: number,
+    max_rate: number,
+    category: string,
+    checked: boolean,
+    query: string,
+    cond: any,
+  ) {
+    try {
+      let categorySQL = '';
+      if (category !== null && category !== undefined) {
+        categorySQL = ` AND category LIKE '%` + category + `%' `;
+      }
+
+      let checkedSQL = '';
+      if (checked) {
+        checkedSQL += ` AND checked = 1 `;
+      }
+
+      let querySQL = '';
+      const cond_question =
+        cond !== undefined &&
+        cond.question !== undefined &&
+        cond.question === true
+          ? true
+          : false;
+      const cond_answer =
+        cond !== undefined && cond.answer !== undefined && cond.answer === true
+          ? true
+          : false;
+      if (cond_question && !cond_answer) {
+        querySQL += ` AND quiz_sentense LIKE '%` + query + `%' `;
+      } else if (!cond_question && cond_answer) {
+        querySQL += ` AND answer LIKE '%` + query + `%' `;
+      } else {
+        querySQL +=
+          ` AND (quiz_sentense LIKE '%` +
+          query +
+          `%' OR answer LIKE '%` +
+          query +
+          `%') `;
+      }
+
+      // ランダム問題取得SQL作成
+      const searchQuizSQL =
+        SQL.QUIZ.SEARCH +
+        categorySQL +
+        checkedSQL +
+        querySQL +
+        ' ORDER BY quiz_num; ';
+
+      return await execQuery(searchQuizSQL, [file_num, min_rate, max_rate]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

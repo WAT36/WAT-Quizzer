@@ -88,4 +88,25 @@ export class QuizController {
       img_file,
     );
   }
+
+  @Get('/search')
+  async search(
+    file_num: number,
+    min_rate: number,
+    max_rate: number,
+    category: string,
+    checked: boolean,
+    query: string,
+    cond: any,
+  ) {
+    return await this.quizService.search(
+      file_num,
+      min_rate,
+      max_rate,
+      category,
+      checked,
+      query,
+      cond,
+    );
+  }
 }
