@@ -5,17 +5,12 @@ import { QuizService } from './quiz.service';
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 
-  @Get()
-  getHello(): string {
-    return this.quizService.getHello();
-  }
-
   @Get('/file')
   async getFileList() {
     return await this.quizService.getFileList();
   }
 
-  @Get('')
+  @Get()
   async getQuiz(file_num: number, quiz_num: number) {
     return await this.quizService.getQuiz(file_num, quiz_num);
   }
@@ -110,7 +105,7 @@ export class QuizController {
     );
   }
 
-  @Delete('')
+  @Delete()
   async delete(file_num: number, quiz_num: number) {
     return await this.quizService.delete(file_num, quiz_num);
   }
