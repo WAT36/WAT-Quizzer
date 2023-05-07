@@ -141,4 +141,75 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 問題追加
+  async add(file_num: number, input_data: string) {
+    try {
+      // 入力データを１行ずつに分割
+      const data = input_data.split('\n');
+
+      const result = [];
+
+      for (let i = 0; i < data.length; i++) {
+        // 入力データ作成
+        const data_i = data[i].split(',');
+        const question = data_i[0];
+        const answer = data_i[1];
+        const category = data_i[2];
+        const img_file = data_i[3];
+
+        // データのidを作成
+        let new_quiz_id = -1;
+        // 削除済問題がないかチェック、あればそこに入れる
+        const id: any = await execQuery(SQL.QUIZ.DELETED.GET, [file_num]);
+        if (id.length > 0) {
+          //削除済問題がある場合はそこに入れる
+          new_quiz_id = id[0]['quiz_num'];
+          await execQuery(SQL.QUIZ.EDIT, [
+            question,
+            answer,
+            category,
+            img_file,
+            file_num,
+            new_quiz_id,
+          ]);
+          result.push(
+            'Added!! [' +
+              file_num +
+              '-' +
+              new_quiz_id +
+              ']:' +
+              question +
+              ',' +
+              answer,
+          );
+        } else {
+          //削除済問題がない場合は普通にINSERT
+          const now_count: any = await execQuery(SQL.QUIZ.COUNT, [file_num]);
+          new_quiz_id = now_count[0]['count(*)'] + 1;
+          await execQuery(SQL.QUIZ.ADD, [
+            file_num,
+            new_quiz_id,
+            question,
+            answer,
+            category,
+            img_file,
+          ]);
+          result.push(
+            'Added!! [' +
+              file_num +
+              '-' +
+              new_quiz_id +
+              ']:' +
+              question +
+              ',' +
+              answer,
+          );
+        }
+      }
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -78,5 +78,51 @@ export const SQL = {
         ;
       `,
     },
+    DELETED: {
+      GET: `
+        SELECT
+            quiz_num
+        FROM
+            quiz
+        WHERE
+            file_num = ?
+            AND deleted = 1
+        ORDER BY
+            quiz_num
+        LIMIT 1
+      `,
+    },
+    ADD: `
+      INSERT INTO
+          quiz 
+      VALUES(?,?,?,?,0,0,?,?,0,0)
+      ;
+    `,
+    EDIT: `
+      UPDATE
+          quiz
+      SET
+          quiz_sentense = ? ,
+          answer = ? ,
+          clear_count = 0, 
+          fail_count = 0, 
+          category = ? ,
+          img_file = ? ,
+          checked = 0, 
+          deleted = 0 
+      WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+      ;
+    `,
+    COUNT: `
+      SELECT 
+          count(*) 
+      FROM 
+          quiz 
+      WHERE 
+          file_num = ?
+      AND deleted = 0
+    `,
   },
 };

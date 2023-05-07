@@ -64,4 +64,9 @@ export class QuizController {
   async failed(file_num: number, quiz_num: number) {
     return await this.quizService.failed(file_num, quiz_num);
   }
+
+  @Post('/add')
+  async add(file_num: number, input_data: string) {
+    return await this.quizService.add(file_num, input_data);
+  }
 }
