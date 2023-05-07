@@ -175,6 +175,15 @@ export const SQL = {
             file_num = ? 
             AND quiz_num = ? 
       `,
+      DISTINCT: `
+        SELECT DISTINCT
+            category
+        FROM
+            quiz
+        WHERE
+            file_num = ? 
+        ;
+      `,
     },
     CHECK: `
       UPDATE
@@ -205,6 +214,17 @@ export const SQL = {
           file_num = ? 
       ORDER BY
           category;
+    `,
+    DELETE: `
+      DELETE FROM 
+          category
+      WHERE
+          file_num = ?;
+    `,
+    ADD: `
+      INSERT INTO
+          category(file_num, category)
+      VALUES ? ;
     `,
   },
 };

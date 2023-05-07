@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { CategoryService } from './category.service';
 
 @Controller('category')
@@ -8,5 +8,10 @@ export class CategoryController {
   @Get()
   async getCategory(file_num: number) {
     return await this.categoryService.getCategoryList(file_num);
+  }
+
+  @Put()
+  async replaceAllCategory(file_num: number) {
+    return await this.categoryService.replaceAllCategory(file_num);
   }
 }
