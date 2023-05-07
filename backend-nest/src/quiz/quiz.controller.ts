@@ -114,4 +114,19 @@ export class QuizController {
   async delete(file_num: number, quiz_num: number) {
     return await this.quizService.delete(file_num, quiz_num);
   }
+
+  @Post('/integrate')
+  async integrate(
+    pre_file_num: number,
+    pre_quiz_num: number,
+    post_file_num: number,
+    post_quiz_num: number,
+  ) {
+    return await this.quizService.integrate(
+      pre_file_num,
+      pre_quiz_num,
+      post_file_num,
+      post_quiz_num,
+    );
+  }
 }

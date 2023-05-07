@@ -304,4 +304,66 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 問題統合
+  async integrate(
+    pre_file_num: number,
+    pre_quiz_num: number,
+    post_file_num: number,
+    post_quiz_num: number,
+  ) {
+    try {
+      if (pre_file_num !== post_file_num) {
+        throw (
+          '統合前後のファイル番号は同じにしてください (' +
+          pre_file_num +
+          ' != ' +
+          post_file_num +
+          ')'
+        );
+      }
+
+      // 統合前の問題取得
+      const pre_data: any = await execQuery(SQL.QUIZ.INFO, [
+        pre_file_num,
+        pre_quiz_num,
+      ]);
+
+      // 統合後の問題取得
+      const post_data: any = await execQuery(SQL.QUIZ.INFO, [
+        post_file_num,
+        post_quiz_num,
+      ]);
+
+      // 統合データ作成
+      const new_clear_count =
+        pre_data[0]['clear_count'] + post_data[0]['clear_count'];
+      const new_fail_count =
+        pre_data[0]['fail_count'] + post_data[0]['fail_count'];
+      const pre_category = new Set(pre_data[0]['category'].split(':'));
+      const post_category = new Set(post_data[0]['category'].split(':'));
+      const new_category = Array.from(
+        new Set([...pre_category, ...post_category]),
+      ).join(':');
+
+      // 問題統合
+      const result = [];
+      let result_i = await execQuery(SQL.QUIZ.INTEGRATE, [
+        new_clear_count,
+        new_fail_count,
+        new_category,
+        post_file_num,
+        post_quiz_num,
+      ]);
+      result.push(result_i);
+
+      // 統合元データは削除
+      result_i = await execQuery(SQL.QUIZ.DELETE, [pre_file_num, pre_quiz_num]);
+      result.push(result_i);
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

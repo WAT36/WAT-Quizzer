@@ -145,5 +145,16 @@ export const SQL = {
           AND quiz_num = ? 
       ;
     `,
+    INTEGRATE: `
+      UPDATE
+          quiz
+      SET
+          clear_count = ?,
+          fail_count = ?,
+          category = ?
+      WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+    `,
   },
 };
