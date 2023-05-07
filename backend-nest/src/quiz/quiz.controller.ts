@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 
 @Controller('quiz')
@@ -151,7 +151,7 @@ export class QuizController {
     );
   }
 
-  @Post('/check')
+  @Put('/check')
   async check(file_num: number, quiz_num: number) {
     return await this.quizService.check(file_num, quiz_num);
   }
