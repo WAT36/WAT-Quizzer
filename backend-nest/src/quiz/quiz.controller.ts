@@ -155,4 +155,9 @@ export class QuizController {
   async check(file_num: number, quiz_num: number) {
     return await this.quizService.check(file_num, quiz_num);
   }
+
+  @Delete('/check')
+  async uncheck(file_num: number, quiz_num: number) {
+    return await this.quizService.uncheck(file_num, quiz_num);
+  }
 }

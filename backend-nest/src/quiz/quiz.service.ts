@@ -457,4 +457,14 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 問題にチェック外す
+  async uncheck(file_num: number, quiz_num: number) {
+    try {
+      // 更新
+      return await execQuery(SQL.QUIZ.UNCHECK, [file_num, quiz_num]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

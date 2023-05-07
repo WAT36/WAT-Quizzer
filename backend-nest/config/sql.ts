@@ -185,5 +185,14 @@ export const SQL = {
           file_num = ? 
           AND quiz_num = ? 
     `,
+    UNCHECK: `
+      UPDATE
+          quiz
+      SET
+          checked = false
+      WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+    `,
   },
 };
