@@ -124,4 +124,17 @@ export class QuizController {
       post_quiz_num,
     );
   }
+
+  @Post('/category')
+  async addCategoryToQuiz(
+    file_num: number,
+    quiz_num: number,
+    category: string,
+  ) {
+    return await this.quizService.addCategoryToQuiz(
+      file_num,
+      quiz_num,
+      category,
+    );
+  }
 }

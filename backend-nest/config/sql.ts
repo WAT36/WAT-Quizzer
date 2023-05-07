@@ -156,5 +156,25 @@ export const SQL = {
           file_num = ? 
           AND quiz_num = ? 
     `,
+    CATEGORY: {
+      GET: `
+        SELECT
+          category
+        FROM
+          quiz
+        WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+      `,
+      UPDATE: `
+        UPDATE
+            quiz
+        SET
+            category = ?
+        WHERE 
+            file_num = ? 
+            AND quiz_num = ? 
+      `,
+    },
   },
 };

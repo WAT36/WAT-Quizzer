@@ -366,4 +366,37 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 問題にカテゴリ追加
+  async addCategoryToQuiz(
+    file_num: number,
+    quiz_num: number,
+    category: string,
+  ) {
+    try {
+      // 現在のカテゴリ取得
+      let nowCategory: any = await execQuery(SQL.QUIZ.INFO, [
+        file_num,
+        quiz_num,
+      ]);
+      nowCategory = nowCategory[0]['category'];
+
+      // カテゴリ追加
+      let newCategory = nowCategory + ':' + category;
+      while (newCategory.includes('::')) {
+        newCategory = newCategory.replace('::', ':');
+      }
+
+      // 更新
+      const result = await execQuery(SQL.QUIZ.CATEGORY.UPDATE, [
+        newCategory,
+        file_num,
+        quiz_num,
+      ]);
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
