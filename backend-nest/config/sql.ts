@@ -195,4 +195,16 @@ export const SQL = {
           AND quiz_num = ? 
     `,
   },
+  CATEGORY: {
+    INFO: `
+      SELECT
+          *
+      FROM
+          category
+      WHERE
+          file_num = ? 
+      ORDER BY
+          category;
+    `,
+  },
 };
