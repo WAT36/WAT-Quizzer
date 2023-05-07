@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Post } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 
 @Controller('quiz')
@@ -108,5 +108,10 @@ export class QuizController {
       query,
       cond,
     );
+  }
+
+  @Delete('')
+  async delete(file_num: number, quiz_num: number) {
+    return await this.quizService.delete(file_num, quiz_num);
   }
 }

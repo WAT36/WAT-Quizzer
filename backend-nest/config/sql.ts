@@ -135,5 +135,15 @@ export const SQL = {
       AND accuracy_rate <= ? 
       AND deleted = 0 
     `,
+    DELETE: `
+      UPDATE
+          quiz
+      SET
+          deleted = 1 
+      WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+      ;
+    `,
   },
 };
