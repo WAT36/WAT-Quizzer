@@ -203,6 +203,21 @@ export const SQL = {
           file_num = ? 
           AND quiz_num = ? 
     `,
+    ACCURACYRATE: `
+      SELECT 
+          checked, 
+          count(*) as count, 
+          SUM(clear_count) as sum_clear, 
+          SUM(fail_count) as sum_fail, 
+          ( 100 * SUM(clear_count) / ( SUM(clear_count) + SUM(fail_count) ) ) as accuracy_rate 
+      FROM 
+          quiz 
+      where 
+          file_num = ? 
+          and checked = 1 
+          and deleted != 1 
+      group by checked;
+    `,
   },
   CATEGORY: {
     INFO: `
@@ -225,6 +240,19 @@ export const SQL = {
       INSERT INTO
           category(file_num, category)
       VALUES ? ;
+    `,
+    ACCURRACYRATE: `
+      SELECT 
+          file_num, 
+          c_category,
+          count,
+          accuracy_rate 
+      FROM 
+          category_view 
+      WHERE 
+          file_num = ? 
+      ORDER BY 
+          accuracy_rate 
     `,
   },
 };

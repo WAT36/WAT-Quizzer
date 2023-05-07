@@ -50,4 +50,28 @@ export class CategoryService {
       throw error;
     }
   }
+
+  // カテゴリ正解率取得
+  async getAccuracyRateByCategory(file_num: number) {
+    try {
+      const result: any = {
+        result: [],
+        checked_result: [],
+      };
+
+      // カテゴリビューから指定ファイルのカテゴリ毎の正解率取得
+      result['result'] = await execQuery(SQL.CATEGORY.ACCURRACYRATE, [
+        file_num,
+      ]);
+
+      // チェック済問題の正解率取得
+      result['checked_result'] = await execQuery(SQL.QUIZ.ACCURACYRATE, [
+        file_num,
+      ]);
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

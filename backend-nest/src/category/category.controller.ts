@@ -14,4 +14,9 @@ export class CategoryController {
   async replaceAllCategory(file_num: number) {
     return await this.categoryService.replaceAllCategory(file_num);
   }
+
+  @Get('rate')
+  async getAccuracyRateByCategory(file_num: number) {
+    return await this.categoryService.getAccuracyRateByCategory(file_num);
+  }
 }
