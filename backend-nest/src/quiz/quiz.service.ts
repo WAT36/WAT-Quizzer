@@ -447,4 +447,14 @@ export class QuizService {
       throw error;
     }
   }
+
+  // 問題にチェック追加
+  async check(file_num: number, quiz_num: number) {
+    try {
+      // 更新
+      return await execQuery(SQL.QUIZ.CHECK, [file_num, quiz_num]);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

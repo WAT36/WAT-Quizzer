@@ -176,5 +176,14 @@ export const SQL = {
             AND quiz_num = ? 
       `,
     },
+    CHECK: `
+      UPDATE
+          quiz
+      SET
+          checked = true
+      WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+    `,
   },
 };

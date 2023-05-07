@@ -150,4 +150,9 @@ export class QuizController {
       category,
     );
   }
+
+  @Post('/check')
+  async check(file_num: number, quiz_num: number) {
+    return await this.quizService.check(file_num, quiz_num);
+  }
 }
