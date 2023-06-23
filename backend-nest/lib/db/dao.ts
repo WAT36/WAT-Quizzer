@@ -1,11 +1,13 @@
 import 'dotenv/config';
+import { getDbUrl } from 'lib/aws/secrets';
 import { createConnection } from 'mysql2';
 
 // SQLを実行する
 export const execQuery = async (query: string, value: (string | number)[]) => {
   try {
     // DB接続
-    const connection = createConnection(process.env.DATABASE_URL);
+    const dbUrl = await getDbUrl();
+    const connection = createConnection(dbUrl);
 
     // クエリ実行
     const result = await new Promise((resolve, reject) => {
