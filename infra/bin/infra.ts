@@ -5,6 +5,7 @@ import { InfraStack } from '../lib/infra-stack'
 import { BackendStack } from '../lib/stack/backend-stack'
 
 const app = new cdk.App()
+const env = app.node.tryGetContext('env')
 new InfraStack(app, 'InfraStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
@@ -18,4 +19,4 @@ new InfraStack(app, 'InfraStack', {
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 })
 
-new BackendStack(app, 'BackendStack', {})
+new BackendStack(app, 'BackendStack', { env })

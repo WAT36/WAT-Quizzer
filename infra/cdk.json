@@ -50,6 +50,7 @@
     "@aws-cdk/aws-ec2:restrictDefaultSecurityGroup": true,
     "@aws-cdk/aws-apigateway:requestValidatorUniqueId": true,
     "@aws-cdk/aws-kms:aliasNameRef": true,
-    "@aws-cdk/core:includePrefixInUniqueNameGeneration": true
+    "@aws-cdk/core:includePrefixInUniqueNameGeneration": true,
+    "env": "dev"
   }
 }
