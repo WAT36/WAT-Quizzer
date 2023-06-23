@@ -6,7 +6,6 @@ import { Secret } from 'aws-cdk-lib/aws-secretsmanager'
 import { Construct } from 'constructs'
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as path from 'path'
-import { params } from '../params'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
