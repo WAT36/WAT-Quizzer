@@ -4,7 +4,6 @@ import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as apigw from 'aws-cdk-lib/aws-apigateway'
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager'
 import { Construct } from 'constructs'
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as path from 'path'
 import * as dotenv from 'dotenv'
 
@@ -19,13 +18,6 @@ export class BackendStack extends cdk.Stack {
     super(scope, id)
 
     const { region, accountId } = new cdk.ScopedAws(this)
-
-    // The code that defines your stack goes here
-
-    // example resource
-    // const queue = new sqs.Queue(this, 'InfraQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
 
     // S3 Bucket for NestJS Lambda
     const bucket = new s3.Bucket(this, 'nestJSLambdaBucket', {
