@@ -78,9 +78,29 @@ export class BackendStack extends cdk.Stack {
       }
     })
 
+    // API gateway Usage plan
+    const usagePlan = restApi.addUsagePlan(`${props.env}apiUsagePlan`, {
+      name: `${props.env}apiUsagePlan`,
+      throttle: {
+        rateLimit: 10,
+        burstLimit: 2
+      }
+    })
+    usagePlan.addApiStage({
+      api: restApi,
+      stage: restApi.deploymentStage
+    })
+
+    // Api Key
+    const key = restApi.addApiKey('ApiKey')
+    usagePlan.addApiKey(key)
+
     restApi.root.addProxy({
       defaultIntegration: new apigw.LambdaIntegration(nestLambda),
-      anyMethod: true
+      anyMethod: true,
+      defaultMethodOptions: {
+        apiKeyRequired: true
+      }
     })
   }
 }
