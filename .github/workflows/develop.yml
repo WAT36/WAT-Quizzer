@@ -55,7 +55,7 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Setup dependencies
-      run: npm ci
+      run: cd ./backend-nest && npm ci
       
     - name: nest build
       id: build-api
