@@ -68,4 +68,4 @@ jobs:
 
     - name: Deploy backend stack
       id: cdk-deploy-backend
-      run: cd ./infra && npx cdk deploy BackendStack
+      run: cd ./infra && npx cdk deploy BackendStack --require-approval never
