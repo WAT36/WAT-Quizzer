@@ -6,7 +6,7 @@ import { get, post } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
 import { buttonStyle, groupStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
 import { messageColorType } from '../../interfaces/MessageColorType';
-import { columns } from './utils/SearchTable';
+import { columns } from '../../../utils/quizzer/SearchTable';
 import {
   Button,
   Card,
@@ -448,10 +448,10 @@ export default function SearchQuizPage() {
           <DataGrid
             rows={searchResult}
             columns={columns}
-            pageSize={15}
+            pageSizeOptions={[15]}
             checkboxSelection
-            disableSelectionOnClick
-            onSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel, details)}
+            disableRowSelectionOnClick
+            onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel, details)}
           />
         </div>
 

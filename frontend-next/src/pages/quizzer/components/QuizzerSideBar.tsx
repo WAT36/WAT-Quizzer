@@ -2,7 +2,7 @@ import React from 'react';
 import { useRecoilState } from 'recoil';
 import Link from 'next/link';
 
-import { sideBarContents, toggleDrawer } from '../utils/SideBar';
+import { sideBarContents, toggleDrawer } from '../../../../utils/quizzer/SideBar';
 import { isOpenState } from '../../../atoms/SideBar';
 import { drawerStyle } from '../../../styles/SideBar';
 import { Drawer, List, ListItem } from '@mui/material';

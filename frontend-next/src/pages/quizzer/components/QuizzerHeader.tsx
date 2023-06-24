@@ -1,5 +1,5 @@
 import React from 'react';
-import { toggleDrawer } from '../utils/SideBar';
+import { toggleDrawer } from '../../../../utils/quizzer/SideBar';
 import { useSetRecoilState } from 'recoil';
 import { isOpenState } from '../../../atoms/SideBar';
 import { rightStyle, titleStyle, quizzerHeaderStyle } from '../../../styles/Header';

@@ -2,7 +2,7 @@ import React from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { isOpenState } from '../../../atoms/SideBar';
-import { toggleDrawer } from '../utils/SideBar';
+import { toggleDrawer } from '../../../../utils/englishBot/SideBar';
 import { englishBotHeaderStyle, titleStyle, rightStyle } from '../../../styles/Header';
 import { IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
