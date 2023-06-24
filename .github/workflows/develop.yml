@@ -54,6 +54,9 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Setup dependencies
+      run: npm ci
+      
     - name: nest build
       id: build-api
       run: cd ./backend-nest && npm run build
