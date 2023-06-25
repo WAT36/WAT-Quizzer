@@ -27,7 +27,15 @@ jobs:
     - name: Setup dependencies(frontend)
       id: setup-dependencies-backend 
       run: cd ./frontend-next && npm ci
-      
+
+    - name: Setup dependencies(infra)
+      id: setup-dependencies-infra 
+      run: cd ./infra && npm ci
+
+    - name: Deploy frontend stack
+      id: cdk-deploy-frontend
+      run: cd ./infra && npx cdk deploy FrontendStack --require-approval never
+
     - name: Build and Export
       run: cd ./frontend-next && npm run export
 

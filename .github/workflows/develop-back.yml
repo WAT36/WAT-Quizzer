@@ -29,7 +29,7 @@ jobs:
       run: cd ./backend-nest && npm ci
 
     - name: Setup dependencies(infra)
-      id: setup-dependencies-infrra 
+      id: setup-dependencies-infra 
       run: cd ./infra && npm ci
       
     - name: nest build
