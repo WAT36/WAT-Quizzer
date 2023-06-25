@@ -17,7 +17,9 @@ export class FrontendStack extends cdk.Stack {
 
     // S3 Bucket
     const bucket = new s3.Bucket(this, `${props.env}QuizzerFrontBucket`, {
-      bucketName: `${props.env}-quizzer-front-bucket`
+      bucketName: `${props.env}-quizzer-front-bucket`,
+      websiteIndexDocument: 'index.html',
+      websiteErrorDocument: '404.html'
     })
   }
 }
