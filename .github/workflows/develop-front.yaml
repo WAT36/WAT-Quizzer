@@ -1,0 +1,45 @@
+name: Deploy Frontend to AWS (dev)
+
+on:
+  push:
+    branches: [ "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: develop
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Setup dependencies(frontend)
+      id: setup-dependencies-backend 
+      run: cd ./frontend-next && npm ci
+
+    - name: Setup dependencies(infra)
+      id: setup-dependencies-infra 
+      run: cd ./infra && npm ci
+
+    - name: Deploy frontend stack
+      id: cdk-deploy-frontend
+      run: cd ./infra && npx cdk deploy FrontendStack --require-approval never
+
+    - name: Build and Export
+      run: cd ./frontend-next && npm run export
+
+    - name: Deploy  # S3にデプロイ 
+      run: 
+        cd ./frontend-next && aws s3 sync --region ap-northeast-1 ./out s3://dev-quizzer-front-bucket --delete
+
