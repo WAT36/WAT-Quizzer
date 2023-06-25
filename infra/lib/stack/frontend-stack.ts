@@ -19,7 +19,9 @@ export class FrontendStack extends cdk.Stack {
     const bucket = new s3.Bucket(this, `${props.env}QuizzerFrontBucket`, {
       bucketName: `${props.env}-quizzer-front-bucket`,
       websiteIndexDocument: 'index.html',
-      websiteErrorDocument: '404.html'
+      websiteErrorDocument: '404.html',
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS,
+      publicReadAccess: true
     })
   }
 }
