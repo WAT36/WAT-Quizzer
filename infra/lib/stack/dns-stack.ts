@@ -10,14 +10,19 @@ type DnsStackProps = {
 }
 
 export class DnsStack extends cdk.Stack {
+  readonly hostedZone: route53.HostedZone
+
   constructor(scope: Construct, id: string, props: DnsStackProps) {
-    super(scope, id)
+    super(scope, id, {
+      env: { region: process.env.REGION || '' },
+      crossRegionReferences: true
+    })
 
     const { region, accountId } = new cdk.ScopedAws(this)
 
-    const hostedZone = new route53.HostedZone(this, 'HostedZone', {
+    this.hostedZone = new route53.HostedZone(this, 'HostedZone', {
       zoneName: process.env.HOSTZONE_NAME || ''
     })
-    hostedZone.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
+    this.hostedZone.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
   }
 }
