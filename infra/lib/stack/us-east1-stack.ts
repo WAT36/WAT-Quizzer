@@ -13,6 +13,8 @@ type UsEast1StackProps = {
 
 // us-east-1リージョンに作成するリソース
 export class UsEast1Stack extends cdk.Stack {
+  readonly certificate: acm.Certificate
+
   constructor(scope: Construct, id: string, props: UsEast1StackProps) {
     super(scope, id, {
       env: { region: 'us-east-1' },
@@ -22,13 +24,9 @@ export class UsEast1Stack extends cdk.Stack {
     const { region, accountId } = new cdk.ScopedAws(this)
 
     // ACM（quizzerフロント用）
-    const certificateManager = new acm.Certificate(
-      this,
-      `${props.env}-quizzer-front`,
-      {
-        domainName: process.env.FRONT_DOMAIN_NAME || '',
-        validation: acm.CertificateValidation.fromDns(props.hostedZone)
-      }
-    )
+    this.certificate = new acm.Certificate(this, `${props.env}-quizzer-front`, {
+      domainName: process.env.FRONT_DOMAIN_NAME || '',
+      validation: acm.CertificateValidation.fromDns(props.hostedZone)
+    })
   }
 }
