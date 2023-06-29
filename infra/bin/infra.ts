@@ -16,8 +16,12 @@ const usEast1Stack = new UsEast1Stack(app, 'UsEast1Stack', {
   hostedZone: dnsStack.hostedZone
 })
 
-new FrontendStack(app, 'FrontendStack', { env })
+const frontendStack = new FrontendStack(app, 'FrontendStack', {
+  env,
+  certificate: usEast1Stack.certificate
+})
 
 new BackendStack(app, 'BackendStack', { env })
 
 usEast1Stack.addDependency(dnsStack)
+frontendStack.addDependency(usEast1Stack)
