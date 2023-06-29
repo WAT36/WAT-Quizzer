@@ -25,7 +25,15 @@ export class FrontendStack extends cdk.Stack {
     // S3 Bucket
     const bucket = new s3.Bucket(this, `${props.env}QuizzerFrontBucket`, {
       bucketName: `${props.env}-quizzer-front-bucket`,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      cors: [
+        {
+          allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.HEAD],
+          allowedOrigins: ['*'],
+          allowedHeaders: ['*'],
+          exposedHeaders: []
+        }
+      ]
     })
     // OAC
     const cfnOriginAccessControl = new cloudfront.CfnOriginAccessControl(
