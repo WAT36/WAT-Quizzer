@@ -18,7 +18,8 @@ const usEast1Stack = new UsEast1Stack(app, 'UsEast1Stack', {
 
 const frontendStack = new FrontendStack(app, 'FrontendStack', {
   env,
-  certificate: usEast1Stack.certificate
+  certificate: usEast1Stack.certificate,
+  hostedZone: dnsStack.hostedZone
 })
 
 new BackendStack(app, 'BackendStack', { env })

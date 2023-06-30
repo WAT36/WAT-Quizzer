@@ -5,12 +5,15 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as acm from 'aws-cdk-lib/aws-certificatemanager'
 import { Construct } from 'constructs'
 import * as dotenv from 'dotenv'
+import * as route53 from 'aws-cdk-lib/aws-route53'
+import { makeRecordsToFrontDistribution } from '../service/route53'
 
 dotenv.config()
 
 type FrontendStackProps = {
   env: string
   certificate: acm.Certificate
+  hostedZone: route53.HostedZone
 }
 
 export class FrontendStack extends cdk.Stack {
@@ -106,6 +109,14 @@ export class FrontendStack extends cdk.Stack {
     )
     cfnDistribution.addPropertyDeletionOverride(
       'DistributionConfig.Origins.0.CustomOriginConfig'
+    )
+
+    // DNS Record
+    makeRecordsToFrontDistribution(
+      this,
+      process.env.FRONT_DOMAIN_NAME || '',
+      distribution,
+      props.hostedZone
     )
   }
 }
