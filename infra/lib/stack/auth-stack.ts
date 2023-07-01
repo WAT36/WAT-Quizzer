@@ -43,7 +43,12 @@ export class AuthStack extends cdk.Stack {
       generateSecret: false,
       oAuth: {
         callbackUrls: [process.env.FRONT_CALLBACK_URL || ''],
-        logoutUrls: [process.env.LOGOUT_URL || '']
+        logoutUrls: [process.env.LOGOUT_URL || ''],
+        scopes: [cognito.OAuthScope.OPENID],
+        flows: {
+          authorizationCodeGrant: true,
+          implicitCodeGrant: false
+        }
       }
     })
   }
