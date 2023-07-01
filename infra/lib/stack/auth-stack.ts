@@ -39,7 +39,7 @@ export class AuthStack extends cdk.Stack {
     })
 
     // cognito app client
-    userPool.addClient('userPoolAppClient', {
+    const appClient = userPool.addClient('userPoolAppClient', {
       generateSecret: false,
       oAuth: {
         callbackUrls: [process.env.FRONT_CALLBACK_URL || ''],
@@ -51,5 +51,20 @@ export class AuthStack extends cdk.Stack {
         }
       }
     })
+
+    // cognito Identity pool
+    const idPool = new cognito.CfnIdentityPool(
+      this,
+      `${props.env}QuizzerIdPool`,
+      {
+        allowUnauthenticatedIdentities: false,
+        cognitoIdentityProviders: [
+          {
+            providerName: userPool.userPoolProviderName,
+            clientId: appClient.userPoolClientId
+          }
+        ]
+      }
+    )
   }
 }
