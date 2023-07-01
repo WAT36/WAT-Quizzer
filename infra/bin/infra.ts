@@ -5,11 +5,14 @@ import { BackendStack } from '../lib/stack/backend-stack'
 import { FrontendStack } from '../lib/stack/frontend-stack'
 import { DnsStack } from '../lib/stack/dns-stack'
 import { UsEast1Stack } from '../lib/stack/us-east1-stack'
+import { AuthStack } from '../lib/stack/auth-stack'
 
 const app = new cdk.App()
 const env = app.node.tryGetContext('env')
 
 const dnsStack = new DnsStack(app, 'DnsStack', { env })
+
+const authStack = new AuthStack(app, 'AuthStack', { env })
 
 const usEast1Stack = new UsEast1Stack(app, 'UsEast1Stack', {
   env,
