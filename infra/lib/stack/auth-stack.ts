@@ -2,11 +2,13 @@ import * as cdk from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as dotenv from 'dotenv'
 import * as cognito from 'aws-cdk-lib/aws-cognito'
+import { makeReadbleQuizzerBucketIamRole } from '../service/iam'
 
 dotenv.config()
 
 type AuthStackProps = {
   env: string
+  s3BucketName: string
 }
 
 export class AuthStack extends cdk.Stack {
@@ -51,6 +53,13 @@ export class AuthStack extends cdk.Stack {
         }
       }
     })
+
+    // read s3 iam role
+    const iamRole = makeReadbleQuizzerBucketIamRole(
+      this,
+      props.env,
+      props.s3BucketName
+    )
 
     // cognito Identity pool
     const idPool = new cognito.CfnIdentityPool(

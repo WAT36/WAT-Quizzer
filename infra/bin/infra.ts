@@ -12,8 +12,6 @@ const env = app.node.tryGetContext('env')
 
 const dnsStack = new DnsStack(app, 'DnsStack', { env })
 
-const authStack = new AuthStack(app, 'AuthStack', { env })
-
 const usEast1Stack = new UsEast1Stack(app, 'UsEast1Stack', {
   env,
   hostedZone: dnsStack.hostedZone
@@ -25,7 +23,13 @@ const frontendStack = new FrontendStack(app, 'FrontendStack', {
   hostedZone: dnsStack.hostedZone
 })
 
+const authStack = new AuthStack(app, 'AuthStack', {
+  env,
+  s3BucketName: frontendStack.s3Bucket.bucketName
+})
+
 new BackendStack(app, 'BackendStack', { env })
 
 usEast1Stack.addDependency(dnsStack)
 frontendStack.addDependency(usEast1Stack)
+authStack.addDependency(frontendStack)

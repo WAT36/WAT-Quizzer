@@ -17,6 +17,8 @@ type FrontendStackProps = {
 }
 
 export class FrontendStack extends cdk.Stack {
+  readonly s3Bucket: s3.Bucket
+
   constructor(scope: Construct, id: string, props: FrontendStackProps) {
     super(scope, id, {
       env: { region: process.env.REGION || '' },
@@ -26,7 +28,7 @@ export class FrontendStack extends cdk.Stack {
     const { region, accountId } = new cdk.ScopedAws(this)
 
     // S3 Bucket
-    const bucket = new s3.Bucket(this, `${props.env}QuizzerFrontBucket`, {
+    this.s3Bucket = new s3.Bucket(this, `${props.env}QuizzerFrontBucket`, {
       bucketName: `${props.env}-quizzer-front-bucket`,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       cors: [
@@ -68,7 +70,7 @@ export class FrontendStack extends cdk.Stack {
           }
         ],
         defaultBehavior: {
-          origin: new origins.S3Origin(bucket),
+          origin: new origins.S3Origin(this.s3Bucket),
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           viewerProtocolPolicy:
@@ -85,7 +87,7 @@ export class FrontendStack extends cdk.Stack {
       principals: [
         new cdk.aws_iam.ServicePrincipal('cloudfront.amazonaws.com')
       ],
-      resources: [`${bucket.bucketArn}/*`]
+      resources: [`${this.s3Bucket.bucketArn}/*`]
     })
     bucketPolicyStatement.addCondition('StringEquals', {
       'AWS:SourceArn': `arn:aws:cloudfront::${
@@ -93,7 +95,7 @@ export class FrontendStack extends cdk.Stack {
       }:distribution/${distribution.distributionId}`
     })
 
-    bucket.addToResourcePolicy(bucketPolicyStatement)
+    this.s3Bucket.addToResourcePolicy(bucketPolicyStatement)
 
     const cfnDistribution = distribution.node
       .defaultChild as cloudfront.CfnDistribution
