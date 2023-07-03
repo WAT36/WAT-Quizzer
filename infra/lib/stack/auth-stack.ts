@@ -94,5 +94,12 @@ export class AuthStack extends cdk.Stack {
         unauthenticated: unauthenticatedRole.iamRole.roleArn
       }
     })
+
+    // make admin user
+    new cognito.CfnUserPoolUser(this, `${props.env}QuizzerAdminUser`, {
+      userPoolId: userPool.userPoolId,
+      username: process.env.ADMIN_USER_NAME || '',
+      messageAction: 'SUPPRESS'
+    })
   }
 }
