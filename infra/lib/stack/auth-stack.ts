@@ -2,7 +2,10 @@ import * as cdk from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as dotenv from 'dotenv'
 import * as cognito from 'aws-cdk-lib/aws-cognito'
-import { makeReadbleQuizzerBucketIamRole } from '../service/iam'
+import {
+  makeReadbleQuizzerBucketIamRole,
+  makeUnauthenticatedQuizzerBucketIamRole
+} from '../service/iam'
 
 dotenv.config()
 
@@ -56,6 +59,13 @@ export class AuthStack extends cdk.Stack {
 
     // read s3 iam role
     const authenticatedRole = makeReadbleQuizzerBucketIamRole(
+      this,
+      props.env,
+      props.s3BucketName
+    )
+
+    // read s3 iam role
+    const unauthenticatedRole = makeUnauthenticatedQuizzerBucketIamRole(
       this,
       props.env,
       props.s3BucketName
