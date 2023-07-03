@@ -55,7 +55,7 @@ export class AuthStack extends cdk.Stack {
     })
 
     // read s3 iam role
-    const iamRole = makeReadbleQuizzerBucketIamRole(
+    const authenticatedRole = makeReadbleQuizzerBucketIamRole(
       this,
       props.env,
       props.s3BucketName
@@ -75,5 +75,13 @@ export class AuthStack extends cdk.Stack {
         ]
       }
     )
+
+    // cognito Identity pool attaching role
+    new cognito.CfnIdentityPoolRoleAttachment(this, 'roleAttachment', {
+      identityPoolId: idPool.ref,
+      roles: {
+        authenticated: authenticatedRole.iamRole.roleArn
+      }
+    })
   }
 }
