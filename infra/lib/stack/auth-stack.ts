@@ -90,7 +90,8 @@ export class AuthStack extends cdk.Stack {
     new cognito.CfnIdentityPoolRoleAttachment(this, 'roleAttachment', {
       identityPoolId: idPool.ref,
       roles: {
-        authenticated: authenticatedRole.iamRole.roleArn
+        authenticated: authenticatedRole.iamRole.roleArn,
+        unauthenticated: unauthenticatedRole.iamRole.roleArn
       }
     })
   }
