@@ -2,10 +2,12 @@ import * as cdk from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as dotenv from 'dotenv'
 import * as cognito from 'aws-cdk-lib/aws-cognito'
+import * as lambda from 'aws-cdk-lib/aws-lambda'
 import {
   makeReadbleQuizzerBucketIamRole,
   makeUnauthenticatedQuizzerBucketIamRole
 } from '../service/iam'
+import * as path from 'path'
 
 dotenv.config()
 
@@ -39,7 +41,7 @@ export class AuthStack extends cdk.Stack {
     })
 
     // cognito domain
-    userPool.addDomain('userPoolDomain', {
+    const domain = userPool.addDomain('userPoolDomain', {
       cognitoDomain: { domainPrefix: process.env.COGNITO_DOMAIN || '' }
     })
 
@@ -101,5 +103,26 @@ export class AuthStack extends cdk.Stack {
       username: process.env.ADMIN_USER_NAME || '',
       messageAction: 'SUPPRESS'
     })
+
+    // Cognito at edge Lambda
+    const edgeLambda = new lambda.Function(
+      this,
+      `${props.env}CognitoLambdaAtEdge`,
+      {
+        runtime: lambda.Runtime.NODEJS_16_X,
+        handler: 'handler',
+        environment: {
+          NODE_PATH: '$NODE_PATH:/opt',
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+          REGION: region,
+          USERPOOL_ID: userPool.userPoolId,
+          USERPOOL_APPCLIENT_ID: appClient.userPoolClientId,
+          USERPOOL_COGNITO_DOMAIN: `${domain.domainName}.auth.${region}.amazoncognito.com`
+        },
+        code: lambda.Code.fromAsset(
+          path.join(__dirname, '../service/lambda-edge/cognito-at-edge')
+        )
+      }
+    )
   }
 }
