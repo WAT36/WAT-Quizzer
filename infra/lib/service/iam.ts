@@ -66,3 +66,32 @@ export const makeUnauthenticatedQuizzerBucketIamRole = (
     iamRole
   }
 }
+
+export const makeQuizzerLambdaEdgeIamRole = (scope: Construct, env: string) => {
+  const iamPolicy = new iam.PolicyDocument({
+    statements: [
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'logs:CreateLogGroup',
+          'logs:CreateLogStream',
+          'logs:PutLogEvents',
+          'ssm:GetParameters'
+        ],
+        resources: [`*`]
+      })
+    ]
+  })
+
+  const iamRole = new iam.Role(scope, `${env}QuizzerLambdaEdgeRole`, {
+    assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+    inlinePolicies: {
+      [`${env}QuizzerLambdaEdgePolicy`]: iamPolicy
+    },
+    roleName: `${env}QuizzerLambdaEdgeRole`
+  })
+
+  return {
+    iamRole
+  }
+}
