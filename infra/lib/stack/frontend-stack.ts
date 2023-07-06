@@ -13,6 +13,7 @@ import {
   makeUnauthenticatedQuizzerBucketIamRole
 } from '../service/iam'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
+import * as ssm from 'aws-cdk-lib/aws-ssm'
 
 dotenv.config()
 
@@ -213,5 +214,19 @@ export class FrontendStack extends cdk.Stack {
       this.distribution,
       props.hostedZone
     )
+
+    // SSM Parameter
+    const jsonValue = {
+      NODE_PATH: '$NODE_PATH:/opt',
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      REGION: region,
+      USERPOOL_ID: userPool.userPoolId,
+      USERPOOL_APPCLIENT_ID: appClient.userPoolClientId,
+      USERPOOL_COGNITO_DOMAIN: `${domain.domainName}.auth.${region}.amazoncognito.com`
+    }
+    new ssm.StringParameter(this, process.env.PARAMETER_STORE || '', {
+      parameterName: process.env.PARAMETER_STORE || '',
+      stringValue: JSON.stringify(jsonValue)
+    })
   }
 }
