@@ -7,6 +7,12 @@ import { Construct } from 'constructs'
 import * as dotenv from 'dotenv'
 import * as route53 from 'aws-cdk-lib/aws-route53'
 import { makeRecordsToFrontDistribution } from '../service/route53'
+import * as cognito from 'aws-cdk-lib/aws-cognito'
+import {
+  makeReadbleQuizzerBucketIamRole,
+  makeUnauthenticatedQuizzerBucketIamRole
+} from '../service/iam'
+import * as lambda from 'aws-cdk-lib/aws-lambda'
 
 dotenv.config()
 
@@ -14,10 +20,12 @@ type FrontendStackProps = {
   env: string
   certificate: acm.Certificate
   hostedZone: route53.HostedZone
+  edgeLambda: lambda.Function
 }
 
 export class FrontendStack extends cdk.Stack {
   readonly s3Bucket: s3.Bucket
+  readonly distribution: cloudfront.Distribution
 
   constructor(scope: Construct, id: string, props: FrontendStackProps) {
     super(scope, id, {
@@ -55,8 +63,87 @@ export class FrontendStack extends cdk.Stack {
       }
     )
 
+    // cognito userpool
+    const userPool = new cognito.UserPool(this, `${props.env}QuizzerUserPool`, {
+      signInAliases: {
+        username: true,
+        phone: false,
+        email: false,
+        preferredUsername: true
+      },
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      signInCaseSensitive: true,
+      accountRecovery: cognito.AccountRecovery.NONE,
+      selfSignUpEnabled: false,
+      email: cognito.UserPoolEmail.withCognito()
+    })
+
+    // cognito domain
+    const domain = userPool.addDomain('userPoolDomain', {
+      cognitoDomain: { domainPrefix: process.env.COGNITO_DOMAIN || '' }
+    })
+
+    // cognito app client
+    const appClient = userPool.addClient('userPoolAppClient', {
+      generateSecret: false,
+      oAuth: {
+        callbackUrls: [process.env.FRONT_CALLBACK_URL || ''],
+        logoutUrls: [process.env.LOGOUT_URL || ''],
+        scopes: [cognito.OAuthScope.OPENID],
+        flows: {
+          authorizationCodeGrant: true,
+          implicitCodeGrant: false
+        }
+      }
+    })
+
+    // read s3 iam role
+    const authenticatedRole = makeReadbleQuizzerBucketIamRole(
+      this,
+      props.env,
+      this.s3Bucket.bucketName
+    )
+
+    // read s3 iam role
+    const unauthenticatedRole = makeUnauthenticatedQuizzerBucketIamRole(
+      this,
+      props.env,
+      this.s3Bucket.bucketName
+    )
+
+    // cognito Identity pool
+    const idPool = new cognito.CfnIdentityPool(
+      this,
+      `${props.env}QuizzerIdPool`,
+      {
+        allowUnauthenticatedIdentities: false,
+        cognitoIdentityProviders: [
+          {
+            providerName: userPool.userPoolProviderName,
+            clientId: appClient.userPoolClientId
+          }
+        ]
+      }
+    )
+
+    // cognito Identity pool attaching role
+    new cognito.CfnIdentityPoolRoleAttachment(this, 'roleAttachment', {
+      identityPoolId: idPool.ref,
+      roles: {
+        authenticated: authenticatedRole.iamRole.roleArn,
+        unauthenticated: unauthenticatedRole.iamRole.roleArn
+      }
+    })
+
+    // make admin user
+    new cognito.CfnUserPoolUser(this, `${props.env}QuizzerAdminUser`, {
+      userPoolId: userPool.userPoolId,
+      username: process.env.ADMIN_USER_NAME || '',
+      messageAction: 'SUPPRESS'
+    })
+
     // cloudfront
-    const distribution = new cloudfront.Distribution(
+    this.distribution = new cloudfront.Distribution(
       this,
       `${props.env}QuizzerFrontDistribution`,
       {
@@ -74,7 +161,13 @@ export class FrontendStack extends cdk.Stack {
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          edgeLambdas: [
+            {
+              functionVersion: props.edgeLambda.currentVersion,
+              eventType: cloudfront.LambdaEdgeEventType.VIEWER_REQUEST
+            }
+          ]
         },
         domainNames: [process.env.FRONT_DOMAIN_NAME || ''],
         certificate: props.certificate
@@ -92,12 +185,12 @@ export class FrontendStack extends cdk.Stack {
     bucketPolicyStatement.addCondition('StringEquals', {
       'AWS:SourceArn': `arn:aws:cloudfront::${
         cdk.Stack.of(this).account
-      }:distribution/${distribution.distributionId}`
+      }:distribution/${this.distribution.distributionId}`
     })
 
     this.s3Bucket.addToResourcePolicy(bucketPolicyStatement)
 
-    const cfnDistribution = distribution.node
+    const cfnDistribution = this.distribution.node
       .defaultChild as cloudfront.CfnDistribution
     // OAI削除（勝手に設定されるため）
     cfnDistribution.addPropertyOverride(
@@ -117,7 +210,7 @@ export class FrontendStack extends cdk.Stack {
     makeRecordsToFrontDistribution(
       this,
       process.env.FRONT_DOMAIN_NAME || '',
-      distribution,
+      this.distribution,
       props.hostedZone
     )
   }

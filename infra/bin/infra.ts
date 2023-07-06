@@ -5,7 +5,6 @@ import { BackendStack } from '../lib/stack/backend-stack'
 import { FrontendStack } from '../lib/stack/frontend-stack'
 import { DnsStack } from '../lib/stack/dns-stack'
 import { UsEast1Stack } from '../lib/stack/us-east1-stack'
-import { AuthStack } from '../lib/stack/auth-stack'
 
 const app = new cdk.App()
 const env = app.node.tryGetContext('env')
@@ -20,16 +19,11 @@ const usEast1Stack = new UsEast1Stack(app, 'UsEast1Stack', {
 const frontendStack = new FrontendStack(app, 'FrontendStack', {
   env,
   certificate: usEast1Stack.certificate,
-  hostedZone: dnsStack.hostedZone
-})
-
-const authStack = new AuthStack(app, 'AuthStack', {
-  env,
-  s3BucketName: frontendStack.s3Bucket.bucketName
+  hostedZone: dnsStack.hostedZone,
+  edgeLambda: usEast1Stack.edgeLambda
 })
 
 new BackendStack(app, 'BackendStack', { env })
 
 usEast1Stack.addDependency(dnsStack)
 frontendStack.addDependency(usEast1Stack)
-authStack.addDependency(frontendStack)
