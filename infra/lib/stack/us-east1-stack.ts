@@ -33,6 +33,21 @@ export class UsEast1Stack extends cdk.Stack {
       validation: acm.CertificateValidation.fromDns(props.hostedZone)
     })
 
+    // Lambda layer
+    const layer = new lambda.LayerVersion(
+      this,
+      `${props.env}CognitoLambdaAtEdgeLayer`,
+      {
+        code: lambda.Code.fromAsset(
+          path.join(
+            __dirname,
+            '../service/lambda-edge/cognito-at-edge/node_modules'
+          )
+        ),
+        compatibleRuntimes: [lambda.Runtime.NODEJS_16_X]
+      }
+    )
+
     // Cognito at edge Lambda
     const edgeLambdaRole = makeQuizzerLambdaEdgeIamRole(this, props.env)
     this.edgeLambda = new lambda.Function(
@@ -43,7 +58,7 @@ export class UsEast1Stack extends cdk.Stack {
         handler: 'handler',
         role: edgeLambdaRole.iamRole,
         code: lambda.Code.fromAsset(
-          path.join(__dirname, '../service/lambda-edge/cognito-at-edge')
+          path.join(__dirname, '../service/lambda-edge/cognito-at-edge/src')
         )
       }
     )

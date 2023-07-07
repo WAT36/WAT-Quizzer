@@ -11,7 +11,7 @@ const env = app.node.tryGetContext('env')
 
 const dnsStack = new DnsStack(app, 'DnsStack', { env })
 
-const usEast1Stack = new UsEast1Stack(app, 'UsEast1Stack', {
+const usEast1Stack = new UsEast1Stack(app, `UsEast1Stack`, {
   env,
   hostedZone: dnsStack.hostedZone
 })
