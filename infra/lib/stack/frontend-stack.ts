@@ -1,32 +1,22 @@
 import * as cdk from 'aws-cdk-lib'
 import * as s3 from 'aws-cdk-lib/aws-s3'
-import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
-import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
-import * as acm from 'aws-cdk-lib/aws-certificatemanager'
 import { Construct } from 'constructs'
 import * as dotenv from 'dotenv'
-import * as route53 from 'aws-cdk-lib/aws-route53'
-import { makeRecordsToFrontDistribution } from '../service/route53'
 import * as cognito from 'aws-cdk-lib/aws-cognito'
 import {
   makeReadbleQuizzerBucketIamRole,
   makeUnauthenticatedQuizzerBucketIamRole
 } from '../service/iam'
-import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 
 dotenv.config()
 
 type FrontendStackProps = {
   env: string
-  certificate: acm.Certificate
-  hostedZone: route53.HostedZone
-  edgeLambda: lambda.Function
 }
 
 export class FrontendStack extends cdk.Stack {
   readonly s3Bucket: s3.Bucket
-  readonly distribution: cloudfront.Distribution
 
   constructor(scope: Construct, id: string, props: FrontendStackProps) {
     super(scope, id, {
@@ -49,20 +39,6 @@ export class FrontendStack extends cdk.Stack {
         }
       ]
     })
-    // OAC
-    const cfnOriginAccessControl = new cloudfront.CfnOriginAccessControl(
-      this,
-      `${props.env}OriginAccessControl`,
-      {
-        originAccessControlConfig: {
-          name: 'OriginAccessControlForContentsBucket',
-          originAccessControlOriginType: 's3',
-          signingBehavior: 'always',
-          signingProtocol: 'sigv4',
-          description: 'Access Control'
-        }
-      }
-    )
 
     // cognito userpool
     const userPool = new cognito.UserPool(this, `${props.env}QuizzerUserPool`, {
@@ -143,38 +119,6 @@ export class FrontendStack extends cdk.Stack {
       messageAction: 'SUPPRESS'
     })
 
-    // cloudfront
-    this.distribution = new cloudfront.Distribution(
-      this,
-      `${props.env}QuizzerFrontDistribution`,
-      {
-        defaultRootObject: 'index.html',
-        errorResponses: [
-          {
-            ttl: cdk.Duration.seconds(300),
-            httpStatus: 404,
-            responseHttpStatus: 404,
-            responsePagePath: '/404.html'
-          }
-        ],
-        defaultBehavior: {
-          origin: new origins.S3Origin(this.s3Bucket),
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          edgeLambdas: [
-            {
-              functionVersion: props.edgeLambda.currentVersion,
-              eventType: cloudfront.LambdaEdgeEventType.VIEWER_REQUEST
-            }
-          ]
-        },
-        domainNames: [process.env.FRONT_DOMAIN_NAME || ''],
-        certificate: props.certificate
-      }
-    )
-
     const bucketPolicyStatement = new cdk.aws_iam.PolicyStatement({
       actions: ['s3:GetObject'],
       effect: cdk.aws_iam.Effect.ALLOW,
@@ -186,34 +130,10 @@ export class FrontendStack extends cdk.Stack {
     bucketPolicyStatement.addCondition('StringEquals', {
       'AWS:SourceArn': `arn:aws:cloudfront::${
         cdk.Stack.of(this).account
-      }:distribution/${this.distribution.distributionId}`
+      }:distribution/*`
     })
 
     this.s3Bucket.addToResourcePolicy(bucketPolicyStatement)
-
-    const cfnDistribution = this.distribution.node
-      .defaultChild as cloudfront.CfnDistribution
-    // OAI削除（勝手に設定されるため）
-    cfnDistribution.addPropertyOverride(
-      'DistributionConfig.Origins.0.S3OriginConfig.OriginAccessIdentity',
-      ''
-    )
-    // OAC設定
-    cfnDistribution.addPropertyOverride(
-      'DistributionConfig.Origins.0.OriginAccessControlId',
-      cfnOriginAccessControl.attrId
-    )
-    cfnDistribution.addPropertyDeletionOverride(
-      'DistributionConfig.Origins.0.CustomOriginConfig'
-    )
-
-    // DNS Record
-    makeRecordsToFrontDistribution(
-      this,
-      process.env.FRONT_DOMAIN_NAME || '',
-      this.distribution,
-      props.hostedZone
-    )
 
     // SSM Parameter
     const jsonValue = {
