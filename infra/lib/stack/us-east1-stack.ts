@@ -44,33 +44,17 @@ export class UsEast1Stack extends cdk.Stack {
       }
     )
 
-    // Lambda layer
-    const layer = new lambda.LayerVersion(
-      this,
-      `${props.env}CognitoLambdaAtEdgeLayer`,
-      {
-        code: lambda.Code.fromAsset(
-          path.join(
-            __dirname,
-            '../service/lambda-edge/cognito-at-edge/node_modules'
-          )
-        ),
-        compatibleRuntimes: [lambda.Runtime.NODEJS_16_X]
-      }
-    )
-
     // Cognito at edge Lambda
     const edgeLambdaRole = makeQuizzerLambdaEdgeIamRole(this, props.env)
     const edgeLambda = new lambda.Function(
       this,
       `${props.env}CognitoLambdaAtEdge`,
       {
-        //layers: [layer],
         runtime: lambda.Runtime.NODEJS_16_X,
-        handler: 'handler',
+        handler: 'index.handler',
         role: edgeLambdaRole.iamRole,
         code: lambda.Code.fromAsset(
-          path.join(__dirname, '../service/lambda-edge/cognito-at-edge/src')
+          path.join(__dirname, '../service/lambda-edge/cognito-at-edge')
         )
       }
     )
