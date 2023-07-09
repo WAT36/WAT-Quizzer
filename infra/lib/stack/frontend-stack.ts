@@ -7,7 +7,6 @@ import {
   makeReadbleQuizzerBucketIamRole,
   makeUnauthenticatedQuizzerBucketIamRole
 } from '../service/iam'
-import * as ssm from 'aws-cdk-lib/aws-ssm'
 
 dotenv.config()
 
@@ -74,20 +73,6 @@ export class FrontendStack extends cdk.Stack {
       }
     })
 
-    // read s3 iam role
-    const authenticatedRole = makeReadbleQuizzerBucketIamRole(
-      this,
-      props.env,
-      this.s3Bucket.bucketName
-    )
-
-    // read s3 iam role
-    const unauthenticatedRole = makeUnauthenticatedQuizzerBucketIamRole(
-      this,
-      props.env,
-      this.s3Bucket.bucketName
-    )
-
     // cognito Identity pool
     const idPool = new cognito.CfnIdentityPool(
       this,
@@ -101,6 +86,22 @@ export class FrontendStack extends cdk.Stack {
           }
         ]
       }
+    )
+
+    // read s3 iam role
+    const authenticatedRole = makeReadbleQuizzerBucketIamRole(
+      this,
+      props.env,
+      this.s3Bucket.bucketName,
+      idPool.ref
+    )
+
+    // read s3 iam role
+    const unauthenticatedRole = makeUnauthenticatedQuizzerBucketIamRole(
+      this,
+      props.env,
+      this.s3Bucket.bucketName,
+      idPool.ref
     )
 
     // cognito Identity pool attaching role
@@ -127,26 +128,12 @@ export class FrontendStack extends cdk.Stack {
       ],
       resources: [`${this.s3Bucket.bucketArn}/*`]
     })
-    bucketPolicyStatement.addCondition('StringEquals', {
+    bucketPolicyStatement.addCondition('StringLike', {
       'AWS:SourceArn': `arn:aws:cloudfront::${
         cdk.Stack.of(this).account
       }:distribution/*`
     })
 
     this.s3Bucket.addToResourcePolicy(bucketPolicyStatement)
-
-    // SSM Parameter
-    const jsonValue = {
-      NODE_PATH: '$NODE_PATH:/opt',
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      REGION: region,
-      USERPOOL_ID: userPool.userPoolId,
-      USERPOOL_APPCLIENT_ID: appClient.userPoolClientId,
-      USERPOOL_COGNITO_DOMAIN: `${domain.domainName}.auth.${region}.amazoncognito.com`
-    }
-    new ssm.StringParameter(this, process.env.PARAMETER_STORE || '', {
-      parameterName: process.env.PARAMETER_STORE || '',
-      stringValue: JSON.stringify(jsonValue)
-    })
   }
 }
