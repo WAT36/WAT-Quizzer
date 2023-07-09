@@ -4,7 +4,8 @@ import * as iam from 'aws-cdk-lib/aws-iam'
 export const makeReadbleQuizzerBucketIamRole = (
   scope: Construct,
   env: string,
-  bucketName: string
+  bucketName: string,
+  idPoolId: string
 ) => {
   const iamPolicy = new iam.PolicyDocument({
     statements: [
@@ -22,7 +23,18 @@ export const makeReadbleQuizzerBucketIamRole = (
   })
 
   const iamRole = new iam.Role(scope, 'authenticatedQuizzerRole', {
-    assumedBy: new iam.FederatedPrincipal('cognito-identity.amazonaws.com'),
+    assumedBy: new iam.FederatedPrincipal(
+      'cognito-identity.amazonaws.com',
+      {
+        StringEquals: {
+          'cognito-identity.amazonaws.com:aud': idPoolId
+        },
+        'ForAnyValue:StringLike': {
+          'cognito-identity.amazonaws.com:amr': 'authenticated'
+        }
+      },
+      'sts:AssumeRoleWithWebIdentity'
+    ),
     inlinePolicies: {
       [`authenticated${env}QuizzerS3`]: iamPolicy
     },
@@ -37,7 +49,8 @@ export const makeReadbleQuizzerBucketIamRole = (
 export const makeUnauthenticatedQuizzerBucketIamRole = (
   scope: Construct,
   env: string,
-  bucketName: string
+  bucketName: string,
+  idPoolId: string
 ) => {
   const iamPolicy = new iam.PolicyDocument({
     statements: [
@@ -55,7 +68,18 @@ export const makeUnauthenticatedQuizzerBucketIamRole = (
   })
 
   const iamRole = new iam.Role(scope, 'unauthenticatedQuizzerRole', {
-    assumedBy: new iam.FederatedPrincipal('cognito-identity.amazonaws.com'),
+    assumedBy: new iam.FederatedPrincipal(
+      'cognito-identity.amazonaws.com',
+      {
+        StringEquals: {
+          'cognito-identity.amazonaws.com:aud': idPoolId
+        },
+        'ForAnyValue:StringLike': {
+          'cognito-identity.amazonaws.com:amr': 'unauthenticated'
+        }
+      },
+      'sts:AssumeRoleWithWebIdentity'
+    ),
     inlinePolicies: {
       [`unauthenticated${env}QuizzerS3`]: iamPolicy
     },
@@ -75,8 +99,18 @@ export const makeQuizzerLambdaEdgeIamRole = (scope: Construct, env: string) => {
         actions: [
           'logs:CreateLogGroup',
           'logs:CreateLogStream',
-          'logs:PutLogEvents',
-          'ssm:GetParameters'
+          'logs:PutLogEvents'
+        ],
+        resources: ['arn:aws:logs:*:*:*']
+      }),
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'lambda:GetFunction',
+          'lambda:EnableReplication*',
+          'iam:CreateServiceLinkedRole',
+          'cloudfront:CreateDistribution',
+          'cloudfront:UpdateDistribution'
         ],
         resources: [`*`]
       })
