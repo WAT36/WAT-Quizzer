@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.363.0",
     "cognito-at-edge": "^1.4.0"
   }
 }
