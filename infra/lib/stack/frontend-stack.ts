@@ -7,6 +7,8 @@ import {
   makeReadbleQuizzerBucketIamRole,
   makeUnauthenticatedQuizzerBucketIamRole
 } from '../service/iam'
+import * as fs from 'fs'
+import * as path from 'path'
 
 dotenv.config()
 
