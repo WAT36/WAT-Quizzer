@@ -113,13 +113,6 @@ export class FrontendStack extends cdk.Stack {
       }
     })
 
-    // make admin user
-    new cognito.CfnUserPoolUser(this, `${props.env}QuizzerAdminUser`, {
-      userPoolId: userPool.userPoolId,
-      username: process.env.ADMIN_USER_NAME || '',
-      messageAction: 'SUPPRESS'
-    })
-
     const bucketPolicyStatement = new cdk.aws_iam.PolicyStatement({
       actions: ['s3:GetObject'],
       effect: cdk.aws_iam.Effect.ALLOW,
