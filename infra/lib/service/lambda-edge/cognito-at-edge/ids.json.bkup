@@ -1,0 +1,7 @@
+// ファイル名ids.jsonに変更し 以下の値を書き換えて利用する
+{
+    "REGION": "region",
+    "USERPOOL_ID": "userPool.userPoolId",
+    "USERPOOL_APPCLIENT_ID": "appClient.userPoolClientId",
+    "USERPOOL_COGNITO_DOMAIN": "${domain.domainName}.auth.${region}.amazoncognito.com"
+}

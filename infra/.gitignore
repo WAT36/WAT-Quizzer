@@ -1,4 +1,5 @@
 *.js
+!index.js
 !jest.config.js
 *.d.ts
 node_modules
@@ -8,3 +9,4 @@ node_modules
 cdk.out
 yaml
 .env
+ids.json
