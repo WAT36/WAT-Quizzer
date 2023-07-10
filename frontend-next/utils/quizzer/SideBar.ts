@@ -1,13 +1,13 @@
 // サイドバーのコンテンツ
 export const sideBarContents = [
-  { name: 'トップ', link: '/' },
-  { name: '問題出題', link: '/quizzer' },
-  { name: '問題追加', link: '/quizzer/addQuiz' },
-  { name: '問題編集', link: '/quizzer/editQuiz' },
-  { name: '問題検索', link: '/quizzer/serachQuiz' },
-  { name: '問題削除', link: '/quizzer/deleteQuiz' },
-  { name: 'カテゴリ別正解率表示', link: '/quizzer/accuracyRateGraph' },
-  { name: '画像アップロード', link: '/quizzer/imageUpload' }
+  { name: 'トップ', link: '/index.html' },
+  { name: '問題出題', link: '/quizzer/index.html' },
+  { name: '問題追加', link: '/quizzer/addQuiz/index.html' },
+  { name: '問題編集', link: '/quizzer/editQuiz/index.html' },
+  { name: '問題検索', link: '/quizzer/serachQuiz/index.html' },
+  { name: '問題削除', link: '/quizzer/deleteQuiz/index.html' },
+  { name: 'カテゴリ別正解率表示', link: '/quizzer/accuracyRateGraph/index.html' },
+  { name: '画像アップロード', link: '/quizzer/imageUpload/index.html' }
 ];
 
 // サイドバー開閉

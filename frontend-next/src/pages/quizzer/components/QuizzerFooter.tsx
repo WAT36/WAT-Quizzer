@@ -6,7 +6,7 @@ export default function QuizzerFooter() {
   return (
     <footer style={quizzerFooterStyle}>
       <span className="left" style={leftStyle}>
-        <Button size="small" color="inherit" href="/top">
+        <Button size="small" color="inherit" href="/top/index.html">
           トップ
         </Button>
       </span>
