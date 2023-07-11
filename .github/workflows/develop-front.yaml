@@ -26,7 +26,8 @@ jobs:
 
     - name: Prepare .env file
       run: |
-        aws ssm get-parameter --name /github/quizzer-secret/dev --output json | jq -r .Parameter.Value > .env
+        aws ssm get-parameter --name /github/quizzer/dev --output json | jq -r .Parameter.Value > .env
+        cut -d= -f2 .env  | xargs -I arg echo ::add-mask::arg
         cat .env >> "$GITHUB_ENV"
 
     - name: Setup dependencies(frontend)
