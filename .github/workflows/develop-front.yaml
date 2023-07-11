@@ -24,6 +24,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Prepare .env file
+      run: |
+        aws ssm get-parameter --name /github/quizzer/dev --output json | jq -r .Parameter.Value > .env
+        cat .env >> "$GITHUB_ENV"
+
     - name: Setup dependencies(frontend)
       id: setup-dependencies-backend 
       run: cd ./frontend-next && npm ci
