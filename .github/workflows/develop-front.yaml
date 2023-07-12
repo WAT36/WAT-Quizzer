@@ -31,7 +31,7 @@ jobs:
         cat .env >> "$GITHUB_ENV"
 
     - name: Setup dependencies(frontend)
-      id: setup-dependencies-backend 
+      id: setup-dependencies-frontend 
       run: cd ./frontend-next && npm ci
 
     - name: Setup dependencies(backend)
