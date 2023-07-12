@@ -34,6 +34,10 @@ jobs:
       id: setup-dependencies-backend 
       run: cd ./frontend-next && npm ci
 
+    - name: Setup dependencies(backend)
+      id: setup-dependencies-backend 
+      run: cd ./backend-nest && npm ci
+
     - name: Setup dependencies(infra)
       id: setup-dependencies-infra 
       run: cd ./infra && npm ci
