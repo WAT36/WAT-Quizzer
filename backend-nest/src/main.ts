@@ -37,3 +37,12 @@ export const handler = async (event: any, context) => {
   cachedServer = await bootstrapServer();
   return proxy(cachedServer, event, context, 'PROMISE').promise;
 };
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  await app.listen(4000);
+}
+
+if (process.env.APP_ENV == 'local') {
+  bootstrap();
+}
