@@ -1,6 +1,6 @@
 import { getApiKey } from '../../lib/aws/secrets';
 
-export const baseURL: string = process.env.REACT_APP_API_SERVER || '';
+export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || '';
 
 export const get = async (path: string, func: any) => {
   const key = await getApiKey();

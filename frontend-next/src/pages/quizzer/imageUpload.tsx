@@ -36,7 +36,7 @@ export default function ImageUploadPage() {
 
   const uploadImage = (file: File) => {
     return axios
-      .post(process.env.REACT_APP_API_SERVER + '/upload', {
+      .post(process.env.NEXT_PUBLIC_API_SERVER + '/upload', {
         params: {
           filename: file.name,
           filetype: file.type
