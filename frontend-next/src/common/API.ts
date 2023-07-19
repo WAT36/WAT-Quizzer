@@ -7,8 +7,7 @@ export const get = async (path: string, func: any) => {
   await fetch(baseURL + path, {
     method: 'GET',
     headers: {
-      'x-api-key': key,
-      'header-test': 'header-test'
+      'x-api-key': key
     }
   })
     .then((response) =>
@@ -30,8 +29,7 @@ export const post = async (path: string, jsondata: object, func: any) => {
     body: JSON.stringify(jsondata),
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': key,
-      'header-test': 'header-test'
+      'x-api-key': key
     }
   })
     .then((response) =>
