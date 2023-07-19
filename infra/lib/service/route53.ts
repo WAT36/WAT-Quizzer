@@ -3,7 +3,7 @@ import * as targets from 'aws-cdk-lib/aws-route53-targets'
 import { Construct } from 'constructs'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 
-export const makeRecordsToFrontDistribution = (
+export const makeRecordsToDistribution = (
   scope: Construct,
   recordName: string,
   distribution: cloudfront.Distribution,

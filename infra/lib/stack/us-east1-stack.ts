@@ -9,7 +9,7 @@ import * as path from 'path'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as s3 from 'aws-cdk-lib/aws-s3'
-import { makeRecordsToFrontDistribution } from '../service/route53'
+import { makeRecordsToDistribution } from '../service/route53'
 import * as apigw from 'aws-cdk-lib/aws-apigateway'
 
 dotenv.config()
@@ -150,10 +150,16 @@ export class UsEast1Stack extends cdk.Stack {
     )
 
     // DNS Record
-    makeRecordsToFrontDistribution(
+    makeRecordsToDistribution(
       this,
       process.env.FRONT_DOMAIN_NAME || '',
       distribution,
+      hostedZone
+    )
+    makeRecordsToDistribution(
+      this,
+      process.env.API_DOMAIN_NAME || '',
+      apiDistribution,
       hostedZone
     )
   }
