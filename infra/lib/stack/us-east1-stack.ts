@@ -10,12 +10,14 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import { makeRecordsToFrontDistribution } from '../service/route53'
+import * as apigw from 'aws-cdk-lib/aws-apigateway'
 
 dotenv.config()
 
 type UsEast1StackProps = {
   env: string
   s3Bucket: s3.Bucket
+  restApi: apigw.RestApi
 }
 
 // us-east-1(その他、グローバル)リージョンに作成するリソース
@@ -98,6 +100,22 @@ export class UsEast1Stack extends cdk.Stack {
         },
         domainNames: [process.env.FRONT_DOMAIN_NAME || ''],
         certificate: frontCertificate
+      }
+    )
+
+    const apiDistribution = new cloudfront.Distribution(
+      this,
+      `${props.env}QuizzerApiDistribution`,
+      {
+        defaultBehavior: {
+          origin: new origins.RestApiOrigin(props.restApi),
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
+        },
+        domainNames: [process.env.API_DOMAIN_NAME || ''],
+        certificate: apiCertificate
       }
     )
 

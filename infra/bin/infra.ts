@@ -16,7 +16,8 @@ const backendStack = new BackendStack(app, 'BackendStack', { env })
 
 const usEast1Stack = new UsEast1Stack(app, `UsEast1Stack`, {
   env,
-  s3Bucket: frontendStack.s3Bucket
+  s3Bucket: frontendStack.s3Bucket,
+  restApi: backendStack.restApi
 })
 
 usEast1Stack.addDependency(frontendStack)

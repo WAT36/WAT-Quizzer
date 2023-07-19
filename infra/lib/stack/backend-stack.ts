@@ -14,8 +14,13 @@ type BackendStackProps = {
 }
 
 export class BackendStack extends cdk.Stack {
+  readonly restApi: apigw.RestApi
+
   constructor(scope: Construct, id: string, props: BackendStackProps) {
-    super(scope, id)
+    super(scope, id, {
+      env: { region: process.env.REGION || '' },
+      crossRegionReferences: true
+    })
 
     const { region, accountId } = new cdk.ScopedAws(this)
 
@@ -64,7 +69,7 @@ export class BackendStack extends cdk.Stack {
     smResource.grantRead(nestLambda)
 
     // API Gateway
-    const restApi = new apigw.RestApi(this, `NestAppApiGateway`, {
+    this.restApi = new apigw.RestApi(this, `NestAppApiGateway`, {
       restApiName: `NestAppApiGw`,
       deployOptions: {
         stageName: 'v1'
@@ -79,7 +84,7 @@ export class BackendStack extends cdk.Stack {
     })
 
     // API gateway Usage plan
-    const usagePlan = restApi.addUsagePlan(`${props.env}apiUsagePlan`, {
+    const usagePlan = this.restApi.addUsagePlan(`${props.env}apiUsagePlan`, {
       name: `${props.env}apiUsagePlan`,
       throttle: {
         rateLimit: 10,
@@ -87,15 +92,15 @@ export class BackendStack extends cdk.Stack {
       }
     })
     usagePlan.addApiStage({
-      api: restApi,
-      stage: restApi.deploymentStage
+      api: this.restApi,
+      stage: this.restApi.deploymentStage
     })
 
     // Api Key
-    const key = restApi.addApiKey('ApiKey')
+    const key = this.restApi.addApiKey('ApiKey')
     usagePlan.addApiKey(key)
 
-    restApi.root.addProxy({
+    this.restApi.root.addProxy({
       defaultIntegration: new apigw.LambdaIntegration(nestLambda),
       anyMethod: true,
       defaultMethodOptions: {
