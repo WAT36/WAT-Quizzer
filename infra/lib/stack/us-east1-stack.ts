@@ -103,6 +103,14 @@ export class UsEast1Stack extends cdk.Stack {
       }
     )
 
+    const apiOriginRequestPolicy = new cloudfront.OriginRequestPolicy(
+      this,
+      `${props.env}ApiOriginRequestPolicy`,
+      {
+        headerBehavior:
+          cloudfront.OriginRequestHeaderBehavior.allowList('x-api-key')
+      }
+    )
     const apiDistribution = new cloudfront.Distribution(
       this,
       `${props.env}QuizzerApiDistribution`,
@@ -112,7 +120,8 @@ export class UsEast1Stack extends cdk.Stack {
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          originRequestPolicy: apiOriginRequestPolicy
         },
         domainNames: [process.env.API_DOMAIN_NAME || ''],
         certificate: apiCertificate
