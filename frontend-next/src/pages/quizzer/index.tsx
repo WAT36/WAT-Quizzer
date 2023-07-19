@@ -38,7 +38,7 @@ export default function SelectQuizPage() {
   const [messageColor, setMessageColor] = useState<messageColorType>('initial');
 
   useEffect(() => {
-    get('/namelist', (data: any) => {
+    get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
         let filelist = [];
