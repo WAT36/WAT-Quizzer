@@ -35,11 +35,21 @@ export class UsEast1Stack extends cdk.Stack {
     hostedZone.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
 
     // ACM（quizzerフロント用）
-    const certificate = new acm.Certificate(
+    const frontCertificate = new acm.Certificate(
       this,
       `${props.env}-quizzer-front`,
       {
         domainName: process.env.FRONT_DOMAIN_NAME || '',
+        validation: acm.CertificateValidation.fromDns(hostedZone)
+      }
+    )
+
+    // ACM（quizzer API用）
+    const apiCertificate = new acm.Certificate(
+      this,
+      `${props.env}-quizzer-api`,
+      {
+        domainName: process.env.API_DOMAIN_NAME || '',
         validation: acm.CertificateValidation.fromDns(hostedZone)
       }
     )
@@ -87,7 +97,7 @@ export class UsEast1Stack extends cdk.Stack {
           ]
         },
         domainNames: [process.env.FRONT_DOMAIN_NAME || ''],
-        certificate: certificate
+        certificate: frontCertificate
       }
     )
 
