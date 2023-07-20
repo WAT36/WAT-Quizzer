@@ -74,7 +74,7 @@ export default function SelectQuizPage() {
 
   const selectedFileChange = (e: any) => {
     post(
-      '/get_category',
+      '/category',
       {
         file_num: e.target.value
       },
@@ -111,7 +111,7 @@ export default function SelectQuizPage() {
     }
 
     post(
-      '/get_quiz',
+      '/quiz',
       {
         file_num: file_num,
         quiz_num: quiz_num
@@ -164,7 +164,7 @@ export default function SelectQuizPage() {
       }
 
       post(
-        '/correct',
+        '/quiz/clear',
         {
           file_num: file_num,
           quiz_num: quiz_num
@@ -209,7 +209,7 @@ export default function SelectQuizPage() {
       }
 
       post(
-        '/incorrect',
+        '/quiz/fail',
         {
           file_num: file_num,
           quiz_num: quiz_num
@@ -254,7 +254,7 @@ export default function SelectQuizPage() {
       }
 
       post(
-        '/edit/check/reverse',
+        '/quiz/check',
         {
           file_num: file_num,
           quiz_num: quiz_num
