@@ -306,15 +306,8 @@ export default function SelectQuizPage() {
       setMessageColor('error');
       return;
     }
-    post(
+    get(
       '/random',
-      {
-        file_num: file_num,
-        min_rate: Array.isArray(value) ? value[0] : value,
-        max_rate: Array.isArray(value) ? value[1] : value,
-        category: selected_category === '' ? null : selected_category,
-        checked: checked
-      },
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -332,6 +325,13 @@ export default function SelectQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: String(file_num),
+        min_rate: String(Array.isArray(value) ? value[0] : value),
+        max_rate: String(Array.isArray(value) ? value[1] : value),
+        category: selected_category || '',
+        checked: String(checked)
       }
     );
   };

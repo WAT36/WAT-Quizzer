@@ -20,11 +20,11 @@ export class QuizController {
 
   @Get('/random')
   async getRandomQuiz(
-    file_num: number,
-    min_rate: number,
-    max_rate: number,
-    category: string,
-    checked: boolean,
+    @Query('file_num') file_num: number,
+    @Query('min_rate') min_rate: number,
+    @Query('max_rate') max_rate: number,
+    @Query('category') category: string,
+    @Query('checked') checked: string,
   ) {
     return await this.quizService.getRandomQuiz(
       file_num,

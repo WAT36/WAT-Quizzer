@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
+import { parseStrToBool } from 'lib/str';
 
 @Injectable()
 export class QuizService {
@@ -29,22 +30,22 @@ export class QuizService {
     min_rate: number,
     max_rate: number,
     category: string,
-    checked: boolean,
+    checked: string,
   ) {
     try {
       const categorySQL =
-        category !== null && category !== undefined
+        category && category !== ''
           ? ` AND category LIKE '%` + category + `%' `
           : '';
 
-      const checkedSQL = checked ? ` AND checked = 1 ` : '';
+      const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
       const sql =
         SQL.QUIZ.RANDOM +
         categorySQL +
         checkedSQL +
         ' ORDER BY rand() LIMIT 1; ';
-      return await execQuery(sql, [file_num, min_rate, max_rate]);
+      return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
     } catch (error) {
       throw error;
     }
