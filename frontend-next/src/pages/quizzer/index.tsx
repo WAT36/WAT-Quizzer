@@ -73,11 +73,8 @@ export default function SelectQuizPage() {
   };
 
   const selectedFileChange = (e: any) => {
-    post(
+    get(
       '/category',
-      {
-        file_num: e.target.value
-      },
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -95,6 +92,9 @@ export default function SelectQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: e.target.value
       }
     );
   };
