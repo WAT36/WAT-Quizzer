@@ -110,12 +110,8 @@ export default function SelectQuizPage() {
       return;
     }
 
-    post(
+    get(
       '/quiz',
-      {
-        file_num: file_num,
-        quiz_num: quiz_num
-      },
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -132,6 +128,10 @@ export default function SelectQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: String(file_num),
+        quiz_num: String(quiz_num)
       }
     );
   };
