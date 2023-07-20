@@ -93,13 +93,14 @@ export class QuizController {
 
   @Get('/search')
   async search(
-    file_num: number,
-    min_rate: number,
-    max_rate: number,
-    category: string,
-    checked: boolean,
-    query: string,
-    cond: any,
+    @Query('file_num') file_num: number,
+    @Query('min_rate') min_rate: number,
+    @Query('max_rate') max_rate: number,
+    @Query('category') category: string,
+    @Query('checked') checked: string,
+    @Query('query') query: string,
+    @Query('searchInOnlySentense') searchInOnlySentense: string,
+    @Query('searchInOnlyAnswer') searchInOnlyAnswer: string,
   ) {
     return await this.quizService.search(
       file_num,
@@ -108,7 +109,8 @@ export class QuizController {
       category,
       checked,
       query,
-      cond,
+      searchInOnlySentense,
+      searchInOnlyAnswer,
     );
   }
 

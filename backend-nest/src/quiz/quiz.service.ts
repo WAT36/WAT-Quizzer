@@ -237,43 +237,32 @@ export class QuizService {
     min_rate: number,
     max_rate: number,
     category: string,
-    checked: boolean,
+    checked: string,
     query: string,
-    cond: any,
+    queryOnlyInSentense: string,
+    queryOnlyInAnswer: string,
   ) {
     try {
-      let categorySQL = '';
-      if (category !== null && category !== undefined) {
-        categorySQL = ` AND category LIKE '%` + category + `%' `;
-      }
+      const categorySQL =
+        category && category !== ''
+          ? ` AND category LIKE '%` + category + `%' `
+          : '';
 
-      let checkedSQL = '';
-      if (checked) {
-        checkedSQL += ` AND checked = 1 `;
-      }
+      const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
       let querySQL = '';
-      const cond_question =
-        cond !== undefined &&
-        cond.question !== undefined &&
-        cond.question === true
-          ? true
-          : false;
-      const cond_answer =
-        cond !== undefined && cond.answer !== undefined && cond.answer === true
-          ? true
-          : false;
-      if (cond_question && !cond_answer) {
-        querySQL += ` AND quiz_sentense LIKE '%` + query + `%' `;
-      } else if (!cond_question && cond_answer) {
-        querySQL += ` AND answer LIKE '%` + query + `%' `;
-      } else {
-        querySQL +=
-          ` AND (quiz_sentense LIKE '%` +
-          query +
-          `%' OR answer LIKE '%` +
-          query +
-          `%') `;
+      if (query && query !== '') {
+        const searchInOnlySentense = parseStrToBool(queryOnlyInSentense);
+        const searchInOnlyAnswer = parseStrToBool(queryOnlyInAnswer);
+        if (searchInOnlySentense && !searchInOnlyAnswer) {
+          querySQL += ` AND quiz_sentense LIKE '%${query || ''}%' `;
+        } else if (!searchInOnlySentense && searchInOnlyAnswer) {
+          querySQL += ` AND answer LIKE '%${query || ''}%' `;
+        } else {
+          querySQL += ` AND (quiz_sentense LIKE '%${
+            query || ''
+          }%' OR answer LIKE '%${query || ''}%') `;
+        }
       }
 
       // ランダム問題取得SQL作成
@@ -283,8 +272,11 @@ export class QuizService {
         checkedSQL +
         querySQL +
         ' ORDER BY quiz_num; ';
-
-      return await execQuery(searchQuizSQL, [file_num, min_rate, max_rate]);
+      return await execQuery(searchQuizSQL, [
+        file_num,
+        min_rate || 0,
+        max_rate || 100,
+      ]);
     } catch (error) {
       throw error;
     }

@@ -41,7 +41,7 @@ export default function SearchQuizPage() {
   const [changedCategory, setChangedCategory] = useState<string>('');
 
   useEffect(() => {
-    get('/namelist', (data: any) => {
+    get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
         let filelist = [];
@@ -61,11 +61,8 @@ export default function SearchQuizPage() {
   });
 
   const selectedFileChange = (e: any) => {
-    post(
-      '/get_category',
-      {
-        file_num: e.target.value
-      },
+    get(
+      '/category',
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -83,6 +80,9 @@ export default function SearchQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: e.target.value
       }
     );
   };
@@ -109,20 +109,8 @@ export default function SearchQuizPage() {
       return;
     }
 
-    post(
-      '/search',
-      {
-        file_num: file_num,
-        query: query || '',
-        category: selected_category === '' ? null : selected_category,
-        min_rate: Array.isArray(value) ? value[0] : value,
-        max_rate: Array.isArray(value) ? value[1] : value,
-        cond: {
-          question: cond_question,
-          answer: cond_answer
-        },
-        checked: checked
-      },
+    get(
+      '/quiz/search',
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -136,6 +124,16 @@ export default function SearchQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: String(file_num),
+        query: query || '',
+        category: selected_category || '',
+        min_rate: String(Array.isArray(value) ? value[0] : value),
+        max_rate: String(Array.isArray(value) ? value[1] : value),
+        searchInOnlySentense: String(cond_question || ''),
+        searchInOnlyAnswer: String(cond_answer || ''),
+        checked: String(checked)
       }
     );
   };
