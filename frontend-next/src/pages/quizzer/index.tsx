@@ -342,13 +342,8 @@ export default function SelectQuizPage() {
       setMessageColor('error');
       return;
     }
-    post(
-      '/worst_rate',
-      {
-        file_num: file_num,
-        category: selected_category === '' ? null : selected_category,
-        checked: checked
-      },
+    get(
+      '/quiz/worst',
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -366,6 +361,11 @@ export default function SelectQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: String(file_num),
+        category: selected_category || '',
+        checked: String(checked)
       }
     );
   };

@@ -52,17 +52,14 @@ export class QuizService {
   }
 
   // 最低正解率問題取得
-  async getWorstRateQuiz(file_num: number, category: string, checked: boolean) {
+  async getWorstRateQuiz(file_num: number, category: string, checked: string) {
     try {
-      let categorySQL = '';
-      if (category !== null && category !== undefined) {
-        categorySQL = ` AND category LIKE '%` + category + `%' `;
-      }
+      const categorySQL =
+        category && category !== ''
+          ? ` AND category LIKE '%` + category + `%' `
+          : '';
 
-      let checkedSQL = '';
-      if (checked) {
-        checkedSQL += ` AND checked = 1 `;
-      }
+      const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
       // 最低正解率問題取得SQL作成
       const getWorstRateQuizSQL =

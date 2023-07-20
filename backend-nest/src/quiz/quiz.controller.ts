@@ -36,7 +36,11 @@ export class QuizController {
   }
 
   @Get('/worst')
-  async getWorstRateQuiz(file_num: number, category: string, checked: boolean) {
+  async getWorstRateQuiz(
+    @Query('file_num') file_num: number,
+    @Query('category') category: string,
+    @Query('checked') checked: string,
+  ) {
     return await this.quizService.getWorstRateQuiz(file_num, category, checked);
   }
 
