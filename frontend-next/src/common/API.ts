@@ -2,9 +2,11 @@ import { getApiKey } from '../../lib/aws/secrets';
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || '';
 
-export const get = async (path: string, func: any) => {
+export const get = async (path: string, func: any, queryParam?: { [key: string]: string }) => {
   const key = await getApiKey();
-  await fetch(baseURL + path, {
+  const query = queryParam ? `?${new URLSearchParams(queryParam)}` : '';
+
+  await fetch(baseURL + path + query, {
     method: 'GET',
     headers: {
       'x-api-key': key
