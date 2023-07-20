@@ -46,9 +46,9 @@ export class QuizController {
 
   @Get('/minimum')
   async getMinimumAnsweredQuiz(
-    file_num: number,
-    category: string,
-    checked: boolean,
+    @Query('file_num') file_num: number,
+    @Query('category') category: string,
+    @Query('checked') checked: string,
   ) {
     return await this.quizService.getMinimumAnsweredQuiz(
       file_num,

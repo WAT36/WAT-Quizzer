@@ -376,13 +376,8 @@ export default function SelectQuizPage() {
       setMessageColor('error');
       return;
     }
-    post(
-      '/minimum_clear',
-      {
-        file_num: file_num,
-        category: selected_category === '' ? null : selected_category,
-        checked: checked
-      },
+    get(
+      '/quiz/minimum',
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -400,6 +395,11 @@ export default function SelectQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: String(file_num),
+        category: selected_category || '',
+        checked: String(checked)
       }
     );
   };

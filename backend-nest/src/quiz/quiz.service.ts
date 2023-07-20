@@ -78,18 +78,15 @@ export class QuizService {
   async getMinimumAnsweredQuiz(
     file_num: number,
     category: string,
-    checked: boolean,
+    checked: string,
   ) {
     try {
-      let categorySQL = '';
-      if (category !== null && category !== undefined) {
-        categorySQL = ` AND category LIKE '%` + category + `%' `;
-      }
+      const categorySQL =
+        category && category !== ''
+          ? ` AND category LIKE '%` + category + `%' `
+          : '';
 
-      let checkedSQL = '';
-      if (checked) {
-        checkedSQL += ` AND checked = 1 `;
-      }
+      const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
       // ランダム問題取得SQL作成
       const getMinimumClearQuizSQL =
