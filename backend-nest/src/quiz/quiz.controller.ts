@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
-import { UpdateCategoryOfQuizDto, SelectQuizDto } from './quiz.dto';
+import { UpdateCategoryOfQuizDto, SelectQuizDto, AddQuizDto } from './quiz.dto';
 
 @Controller('quiz')
 export class QuizController {
@@ -77,8 +77,8 @@ export class QuizController {
   }
 
   @Post('/add')
-  async add(file_num: number, input_data: string) {
-    return await this.quizService.add(file_num, input_data);
+  async add(@Body() req: AddQuizDto) {
+    return await this.quizService.add(req);
   }
 
   @Post('/edit')

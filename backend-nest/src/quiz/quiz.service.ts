@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
 import { parseStrToBool } from 'lib/str';
-import { UpdateCategoryOfQuizDto, SelectQuizDto } from './quiz.dto';
+import { UpdateCategoryOfQuizDto, SelectQuizDto, AddQuizDto } from './quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -141,8 +141,9 @@ export class QuizService {
   }
 
   // 問題追加
-  async add(file_num: number, input_data: string) {
+  async add(req: AddQuizDto) {
     try {
+      const { file_num, input_data } = req;
       // 入力データを１行ずつに分割
       const data = input_data.split('\n');
 
@@ -156,54 +157,27 @@ export class QuizService {
         const category = data_i[2];
         const img_file = data_i[3];
 
-        // データのidを作成
-        let new_quiz_id = -1;
-        // 削除済問題がないかチェック、あればそこに入れる
-        const id: any = await execQuery(SQL.QUIZ.DELETED.GET, [file_num]);
-        if (id.length > 0) {
-          //削除済問題がある場合はそこに入れる
-          new_quiz_id = id[0]['quiz_num'];
-          await execQuery(SQL.QUIZ.EDIT, [
-            question,
+        // 新問題番号を取得しINSERT
+        const res = await execQuery(SQL.QUIZ.MAX_QUIZ_NUM, [file_num]);
+        const new_quiz_id: number = res ? res[0]['quiz_num'] + 1 : 1;
+        await execQuery(SQL.QUIZ.ADD, [
+          file_num,
+          new_quiz_id,
+          question,
+          answer,
+          category,
+          img_file,
+        ]);
+        result.push(
+          'Added!! [' +
+            file_num +
+            '-' +
+            new_quiz_id +
+            ']:' +
+            question +
+            ',' +
             answer,
-            category,
-            img_file,
-            file_num,
-            new_quiz_id,
-          ]);
-          result.push(
-            'Added!! [' +
-              file_num +
-              '-' +
-              new_quiz_id +
-              ']:' +
-              question +
-              ',' +
-              answer,
-          );
-        } else {
-          //削除済問題がない場合は普通にINSERT
-          const now_count: any = await execQuery(SQL.QUIZ.COUNT, [file_num]);
-          new_quiz_id = now_count[0]['count(*)'] + 1;
-          await execQuery(SQL.QUIZ.ADD, [
-            file_num,
-            new_quiz_id,
-            question,
-            answer,
-            category,
-            img_file,
-          ]);
-          result.push(
-            'Added!! [' +
-              file_num +
-              '-' +
-              new_quiz_id +
-              ']:' +
-              question +
-              ',' +
-              answer,
-          );
-        }
+        );
       }
       return result;
     } catch (error) {

@@ -8,3 +8,8 @@ export interface UpdateCategoryOfQuizDto {
   quiz_num: number;
   category: string;
 }
+
+export interface AddQuizDto {
+  file_num: number;
+  input_data: string;
+}

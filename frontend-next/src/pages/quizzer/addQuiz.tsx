@@ -27,7 +27,7 @@ export default function AddQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
   useEffect(() => {
-    get('/namelist', (data: any) => {
+    get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
         let filelist = [];
@@ -62,7 +62,7 @@ export default function AddQuizPage() {
     }
 
     post(
-      '/add',
+      '/quiz/add',
       {
         file_num: file_num,
         data: input_data

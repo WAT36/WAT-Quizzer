@@ -124,6 +124,16 @@ export const SQL = {
           file_num = ?
       AND deleted = 0
     `,
+    MAX_QUIZ_NUM: `
+      SELECT 
+          quiz_num
+      FROM 
+          quiz 
+      WHERE 
+          file_num = ?
+      ORDER BY quiz_num DESC
+      LIMIT 1
+    `,
     SEARCH: `
       SELECT
           file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, ROUND(accuracy_rate,1) AS accuracy_rate 
