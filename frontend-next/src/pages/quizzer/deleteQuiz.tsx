@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { get, post } from '../../common/API';
+import { del, get, post } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
 import { messageColorType } from '../../interfaces/MessageColorType';
 import { buttonStyle, messageBoxStyle, paperStyle } from '../../styles/Pages';
@@ -38,7 +38,7 @@ export default function DeleteQuizPage() {
   const [integrate_to_image, setIntegrateToImage] = useState<string>();
 
   useEffect(() => {
-    get('/namelist', (data: any) => {
+    get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
         let filelist = [];
@@ -68,12 +68,8 @@ export default function DeleteQuizPage() {
       return;
     }
 
-    post(
-      '/get_quiz',
-      {
-        file_num: file_num,
-        quiz_num: quiz_num
-      },
+    get(
+      '/quiz',
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -92,6 +88,10 @@ export default function DeleteQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: String(file_num),
+        quiz_num: String(quiz_num)
       }
     );
   };
@@ -107,12 +107,8 @@ export default function DeleteQuizPage() {
       return;
     }
 
-    post(
-      '/get_quiz',
-      {
-        file_num: get_file_num,
-        quiz_num: integrate_to_quiz_num
-      },
+    get(
+      '/quiz',
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -130,6 +126,10 @@ export default function DeleteQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: String(get_file_num),
+        quiz_num: String(integrate_to_quiz_num)
       }
     );
   };
@@ -141,8 +141,8 @@ export default function DeleteQuizPage() {
       return;
     }
 
-    post(
-      '/delete',
+    del(
+      '/quiz',
       {
         file_num: get_file_num,
         quiz_num: get_quiz_num

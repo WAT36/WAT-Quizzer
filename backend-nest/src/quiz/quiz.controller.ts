@@ -124,8 +124,8 @@ export class QuizController {
   }
 
   @Delete()
-  async delete(file_num: number, quiz_num: number) {
-    return await this.quizService.delete(file_num, quiz_num);
+  async delete(@Body() req: SelectQuizDto) {
+    return await this.quizService.delete(req);
   }
 
   @Post('/integrate')

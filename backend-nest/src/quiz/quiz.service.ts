@@ -260,8 +260,9 @@ export class QuizService {
   }
 
   // 問題削除
-  async delete(file_num: number, quiz_num: number) {
+  async delete(req: SelectQuizDto) {
     try {
+      const { file_num, quiz_num } = req;
       // 削除済にアップデート
       return await execQuery(SQL.QUIZ.DELETE, [file_num, quiz_num]);
     } catch (error) {
