@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
-import { RemoveCategoryOfQuizDto, SelectQuizDto } from './quiz.dto';
+import { UpdateCategoryOfQuizDto, SelectQuizDto } from './quiz.dto';
 
 @Controller('quiz')
 export class QuizController {
@@ -157,7 +157,7 @@ export class QuizController {
   }
 
   @Put('/category')
-  async removeCategoryFromQuiz(@Body() body: RemoveCategoryOfQuizDto) {
+  async removeCategoryFromQuiz(@Body() body: UpdateCategoryOfQuizDto) {
     return await this.quizService.removeCategoryFromQuiz(body);
   }
 

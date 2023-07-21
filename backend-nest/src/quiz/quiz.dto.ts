@@ -3,7 +3,7 @@ export interface SelectQuizDto {
   quiz_num: number;
 }
 
-export interface RemoveCategoryOfQuizDto {
+export interface UpdateCategoryOfQuizDto {
   file_num: number;
   quiz_num: number;
   category: string;

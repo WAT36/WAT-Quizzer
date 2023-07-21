@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
 import { parseStrToBool } from 'lib/str';
-import { RemoveCategoryOfQuizDto, SelectQuizDto } from './quiz.dto';
+import { UpdateCategoryOfQuizDto, SelectQuizDto } from './quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -391,7 +391,7 @@ export class QuizService {
   }
 
   // 問題からカテゴリ削除
-  async removeCategoryFromQuiz(body: RemoveCategoryOfQuizDto) {
+  async removeCategoryFromQuiz(body: UpdateCategoryOfQuizDto) {
     try {
       const { file_num, quiz_num, category } = body;
       // 現在のカテゴリ取得
