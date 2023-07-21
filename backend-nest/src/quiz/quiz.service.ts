@@ -437,8 +437,9 @@ export class QuizService {
   }
 
   // 問題にチェック追加
-  async check(file_num: number, quiz_num: number) {
+  async check(req: SelectQuizDto) {
     try {
+      const { file_num, quiz_num } = req;
       // 更新
       return await execQuery(SQL.QUIZ.CHECK, [file_num, quiz_num]);
     } catch (error) {
@@ -447,8 +448,9 @@ export class QuizService {
   }
 
   // 問題にチェック外す
-  async uncheck(file_num: number, quiz_num: number) {
+  async uncheck(req: SelectQuizDto) {
     try {
+      const { file_num, quiz_num } = req;
       // 更新
       return await execQuery(SQL.QUIZ.UNCHECK, [file_num, quiz_num]);
     } catch (error) {

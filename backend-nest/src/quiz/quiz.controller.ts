@@ -154,13 +154,13 @@ export class QuizController {
   }
 
   @Put('/check')
-  async check(file_num: number, quiz_num: number) {
-    return await this.quizService.check(file_num, quiz_num);
+  async check(@Body() req: SelectQuizDto) {
+    return await this.quizService.check(req);
   }
 
-  @Delete('/check')
-  async uncheck(file_num: number, quiz_num: number) {
-    return await this.quizService.uncheck(file_num, quiz_num);
+  @Put('/uncheck')
+  async uncheck(@Body() req: SelectQuizDto) {
+    return await this.quizService.uncheck(req);
   }
 
   @Post('/check')

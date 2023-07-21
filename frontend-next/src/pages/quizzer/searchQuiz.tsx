@@ -261,8 +261,8 @@ export default function SearchQuizPage() {
     const checkToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
-        await post(
-          '/edit/check',
+        await put(
+          '/quiz/check',
           {
             file_num: file_num,
             quiz_num: checkedId
@@ -309,8 +309,8 @@ export default function SearchQuizPage() {
     const uncheckToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
-        await post(
-          '/edit/uncheck',
+        await put(
+          '/quiz/uncheck',
           {
             file_num: file_num,
             quiz_num: checkedId
