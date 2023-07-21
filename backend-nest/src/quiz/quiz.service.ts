@@ -456,18 +456,17 @@ export class QuizService {
   }
 
   // 問題のチェック反転
-  async reverseCheck(file_num: number, quiz_num: number) {
+  async reverseCheck(req: SelectQuizDto) {
     try {
+      const { file_num, quiz_num } = req;
       // チェック取得
       const result: any = await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num]);
       const checked = result[0].checked;
 
-      let response;
-      if (!checked) {
-        response = await execQuery(SQL.QUIZ.CHECK, [file_num, quiz_num]);
-      } else {
-        response = await execQuery(SQL.QUIZ.UNCHECK, [file_num, quiz_num]);
-      }
+      const response = await execQuery(
+        checked ? SQL.QUIZ.UNCHECK : SQL.QUIZ.CHECK,
+        [file_num, quiz_num],
+      );
 
       // チェックしたらtrue、チェック外したらfalseを返す
       return !checked;

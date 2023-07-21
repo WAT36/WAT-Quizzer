@@ -172,7 +172,7 @@ export class QuizController {
   }
 
   @Post('/check')
-  async reverseCheck(file_num: number, quiz_num: number) {
-    return await this.quizService.reverseCheck(file_num, quiz_num);
+  async reverseCheck(@Body() req: SelectQuizDto) {
+    return await this.quizService.reverseCheck(req);
   }
 }
