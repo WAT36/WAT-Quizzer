@@ -122,8 +122,9 @@ export class QuizService {
   }
 
   // 不正解登録
-  async failed(file_num: number, quiz_num: number) {
+  async failed(req: SelectQuizDto) {
     try {
+      const { file_num, quiz_num } = req;
       // 不正解数取得
       const data = await execQuery(SQL.QUIZ.FAILED.GET, [file_num, quiz_num]);
       const fail_count = data[0].fail_count;

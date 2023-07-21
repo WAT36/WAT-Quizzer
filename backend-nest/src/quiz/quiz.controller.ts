@@ -72,8 +72,8 @@ export class QuizController {
   }
 
   @Post('/fail')
-  async failed(file_num: number, quiz_num: number) {
-    return await this.quizService.failed(file_num, quiz_num);
+  async failed(@Body() req: SelectQuizDto) {
+    return await this.quizService.failed(req);
   }
 
   @Post('/add')
