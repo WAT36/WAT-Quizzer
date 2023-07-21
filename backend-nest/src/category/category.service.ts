@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
+import { SelectFileDto } from './category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -18,8 +19,9 @@ export class CategoryService {
   }
 
   // カテゴリ総入れ替え
-  async replaceAllCategory(file_num: number) {
+  async replaceAllCategory(req: SelectFileDto) {
     try {
+      const { file_num } = req;
       //まずカテゴリを全削除
       let data: any = await execQuery(SQL.CATEGORY.DELETE, [file_num]);
 

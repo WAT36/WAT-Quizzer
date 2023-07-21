@@ -1,5 +1,6 @@
-import { Controller, Get, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
+import { SelectFileDto } from './category.dto';
 
 @Controller('category')
 export class CategoryController {
@@ -10,9 +11,9 @@ export class CategoryController {
     return await this.categoryService.getCategoryList(file_num);
   }
 
-  @Put()
-  async replaceAllCategory(file_num: number) {
-    return await this.categoryService.replaceAllCategory(file_num);
+  @Post()
+  async replaceAllCategory(@Body() req: SelectFileDto) {
+    return await this.categoryService.replaceAllCategory(req);
   }
 
   @Get('rate')

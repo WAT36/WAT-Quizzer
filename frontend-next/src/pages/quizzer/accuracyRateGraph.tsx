@@ -82,7 +82,7 @@ export default function AccuracyRateGraphPage() {
     }
 
     post(
-      '/category/renewal',
+      '/category',
       {
         file_num: file_num
       },
