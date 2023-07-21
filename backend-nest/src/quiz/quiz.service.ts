@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
 import { parseStrToBool } from 'lib/str';
-import { RemoveCategoryOfQuizDto } from './quiz.dto';
+import { RemoveCategoryOfQuizDto, SelectQuizDto } from './quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -103,8 +103,9 @@ export class QuizService {
   }
 
   // 正解登録
-  async cleared(file_num: number, quiz_num: number) {
+  async cleared(req: SelectQuizDto) {
     try {
+      const { file_num, quiz_num } = req;
       // 正解数取得
       const data = await execQuery(SQL.QUIZ.CLEARED.GET, [file_num, quiz_num]);
       const clear_count = data[0].clear_count;

@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
-import { RemoveCategoryOfQuizDto } from './quiz.dto';
+import { RemoveCategoryOfQuizDto, SelectQuizDto } from './quiz.dto';
 
 @Controller('quiz')
 export class QuizController {
@@ -67,8 +67,8 @@ export class QuizController {
   }
 
   @Post('/clear')
-  async cleared(file_num: number, quiz_num: number) {
-    return await this.quizService.cleared(file_num, quiz_num);
+  async cleared(@Body() req: SelectQuizDto) {
+    return await this.quizService.cleared(req);
   }
 
   @Post('/fail')
