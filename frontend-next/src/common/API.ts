@@ -67,3 +67,25 @@ export const put = async (path: string, jsondata: object, func: any) => {
       console.error('componentDidMount:', error);
     });
 };
+
+export const del = async (path: string, jsondata: object, func: any) => {
+  const key = await getApiKey();
+  await fetch(baseURL + path, {
+    method: 'DELETE',
+    body: JSON.stringify(jsondata),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key
+    }
+  })
+    .then((response) =>
+      response.json().then((data) => ({
+        status: response.status,
+        body: data
+      }))
+    )
+    .then(func)
+    .catch((error) => {
+      console.error('componentDidMount:', error);
+    });
+};
