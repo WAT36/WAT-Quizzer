@@ -7,6 +7,7 @@ import {
   SelectQuizDto,
   AddQuizDto,
   IntegrateQuizDto,
+  EditQuizDto,
 } from './quiz.dto';
 
 @Injectable()
@@ -191,15 +192,9 @@ export class QuizService {
   }
 
   // 問題編集
-  async edit(
-    file_num: number,
-    quiz_num: number,
-    question: string,
-    answer: string,
-    category: string,
-    img_file: string,
-  ) {
+  async edit(req: EditQuizDto) {
     try {
+      const { file_num, quiz_num, question, answer, category, img_file } = req;
       return await execQuery(SQL.QUIZ.EDIT, [
         question,
         answer,

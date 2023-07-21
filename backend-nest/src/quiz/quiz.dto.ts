@@ -20,3 +20,12 @@ export interface IntegrateQuizDto {
   post_file_num: number;
   post_quiz_num: number;
 }
+
+export interface EditQuizDto {
+  file_num: number;
+  quiz_num: number;
+  question: string;
+  answer: string;
+  category: string;
+  img_file: string;
+}

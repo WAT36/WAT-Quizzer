@@ -33,7 +33,7 @@ export default function EditQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
   useEffect(() => {
-    get('/namelist', (data: any) => {
+    get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
         let filelist = [];
@@ -63,12 +63,8 @@ export default function EditQuizPage() {
       return;
     }
 
-    post(
-      '/get_quiz',
-      {
-        file_num: file_num,
-        quiz_num: quiz_num
-      },
+    get(
+      '/quiz',
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -87,6 +83,10 @@ export default function EditQuizPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: String(file_num),
+        quiz_num: String(quiz_num)
       }
     );
   };

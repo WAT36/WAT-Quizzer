@@ -13,6 +13,7 @@ import {
   SelectQuizDto,
   AddQuizDto,
   IntegrateQuizDto,
+  EditQuizDto,
 } from './quiz.dto';
 
 @Controller('quiz')
@@ -87,22 +88,8 @@ export class QuizController {
   }
 
   @Post('/edit')
-  async edit(
-    file_num: number,
-    quiz_num: number,
-    question: string,
-    answer: string,
-    category: string,
-    img_file: string,
-  ) {
-    return await this.quizService.edit(
-      file_num,
-      quiz_num,
-      question,
-      answer,
-      category,
-      img_file,
-    );
+  async edit(@Body() req: EditQuizDto) {
+    return await this.quizService.edit(req);
   }
 
   @Get('/search')
