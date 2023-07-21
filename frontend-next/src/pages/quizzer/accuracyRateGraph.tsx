@@ -26,7 +26,7 @@ export default function AccuracyRateGraphPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
   useEffect(() => {
-    get('/namelist', (data: any) => {
+    get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
         let filelist = [];
@@ -52,11 +52,8 @@ export default function AccuracyRateGraphPage() {
       return;
     }
 
-    post(
-      '/category/accuracy_rate',
-      {
-        file_num: file_num
-      },
+    get(
+      '/category/rate',
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
@@ -70,6 +67,9 @@ export default function AccuracyRateGraphPage() {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
+      },
+      {
+        file_num: String(file_num)
       }
     );
   };
