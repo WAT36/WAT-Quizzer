@@ -182,7 +182,7 @@ export default function DeleteQuizPage() {
     }
 
     post(
-      '/integrate',
+      '/quiz/integrate',
       {
         pre_file_num: get_file_num,
         pre_quiz_num: get_quiz_num,

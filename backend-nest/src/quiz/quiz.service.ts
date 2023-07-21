@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
 import { parseStrToBool } from 'lib/str';
-import { UpdateCategoryOfQuizDto, SelectQuizDto, AddQuizDto } from './quiz.dto';
+import {
+  UpdateCategoryOfQuizDto,
+  SelectQuizDto,
+  AddQuizDto,
+  IntegrateQuizDto,
+} from './quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -271,13 +276,9 @@ export class QuizService {
   }
 
   // 問題統合
-  async integrate(
-    pre_file_num: number,
-    pre_quiz_num: number,
-    post_file_num: number,
-    post_quiz_num: number,
-  ) {
+  async integrate(req: IntegrateQuizDto) {
     try {
+      const { pre_file_num, pre_quiz_num, post_file_num, post_quiz_num } = req;
       if (pre_file_num !== post_file_num) {
         throw (
           '統合前後のファイル番号は同じにしてください (' +

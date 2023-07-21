@@ -8,7 +8,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
-import { UpdateCategoryOfQuizDto, SelectQuizDto, AddQuizDto } from './quiz.dto';
+import {
+  UpdateCategoryOfQuizDto,
+  SelectQuizDto,
+  AddQuizDto,
+  IntegrateQuizDto,
+} from './quiz.dto';
 
 @Controller('quiz')
 export class QuizController {
@@ -129,18 +134,8 @@ export class QuizController {
   }
 
   @Post('/integrate')
-  async integrate(
-    pre_file_num: number,
-    pre_quiz_num: number,
-    post_file_num: number,
-    post_quiz_num: number,
-  ) {
-    return await this.quizService.integrate(
-      pre_file_num,
-      pre_quiz_num,
-      post_file_num,
-      post_quiz_num,
-    );
+  async integrate(@Body() req: IntegrateQuizDto) {
+    return await this.quizService.integrate(req);
   }
 
   @Post('/category')
