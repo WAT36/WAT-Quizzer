@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { DataGrid, GridRowsProp, GridRowSelectionModel } from '@mui/x-data-grid';
 
-import { get, post } from '../../common/API';
+import { get, post, put } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
 import { buttonStyle, groupStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
 import { messageColorType } from '../../interfaces/MessageColorType';
@@ -160,7 +160,7 @@ export default function SearchQuizPage() {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
         await post(
-          '/edit/category/add',
+          '/quiz/category',
           {
             file_num: file_num,
             quiz_num: checkedId,
@@ -212,8 +212,8 @@ export default function SearchQuizPage() {
     const removeCategories = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
-        await post(
-          '/edit/category/remove',
+        await put(
+          '/quiz/category',
           {
             file_num: file_num,
             quiz_num: checkedId,

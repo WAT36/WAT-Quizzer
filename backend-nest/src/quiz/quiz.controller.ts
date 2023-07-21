@@ -1,5 +1,14 @@
-import { Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { QuizService } from './quiz.service';
+import { RemoveCategoryOfQuizDto } from './dto/quiz.category.dto';
 
 @Controller('quiz')
 export class QuizController {
@@ -147,17 +156,9 @@ export class QuizController {
     );
   }
 
-  @Delete('/category')
-  async removeCategoryFromQuiz(
-    file_num: number,
-    quiz_num: number,
-    category: string,
-  ) {
-    return await this.quizService.removeCategoryFromQuiz(
-      file_num,
-      quiz_num,
-      category,
-    );
+  @Put('/category')
+  async removeCategoryFromQuiz(@Body() body: RemoveCategoryOfQuizDto) {
+    return await this.quizService.removeCategoryFromQuiz(body);
   }
 
   @Put('/check')
