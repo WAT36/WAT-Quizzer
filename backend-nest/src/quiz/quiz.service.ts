@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
 import { parseStrToBool } from 'lib/str';
-import { RemoveCategoryOfQuizDto } from './dto/quiz.category.dto';
+import { RemoveCategoryOfQuizDto } from './quiz.dto';
 
 @Injectable()
 export class QuizService {

@@ -8,7 +8,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
-import { RemoveCategoryOfQuizDto } from './dto/quiz.category.dto';
+import { RemoveCategoryOfQuizDto } from './quiz.dto';
 
 @Controller('quiz')
 export class QuizController {
