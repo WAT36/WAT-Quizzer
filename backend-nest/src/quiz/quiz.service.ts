@@ -358,18 +358,19 @@ export class QuizService {
   }
 
   // 問題にカテゴリ追加
-  async addCategoryToQuiz(
-    file_num: number,
-    quiz_num: number,
-    category: string,
-  ) {
+  async addCategoryToQuiz(req: UpdateCategoryOfQuizDto) {
     try {
+      const { file_num, quiz_num, category } = req;
       // 現在のカテゴリ取得
-      let nowCategory: any = await execQuery(SQL.QUIZ.INFO, [
-        file_num,
-        quiz_num,
-      ]);
-      nowCategory = nowCategory[0]['category'];
+      const nowCategory: string = (
+        await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num])
+      )[0]['category'];
+
+      if (nowCategory.includes(category)) {
+        return {
+          message: ` カテゴリ'${category}'は既に[${file_num}-${quiz_num}]に含まれています `,
+        };
+      }
 
       // カテゴリ追加
       let newCategory = nowCategory + ':' + category;

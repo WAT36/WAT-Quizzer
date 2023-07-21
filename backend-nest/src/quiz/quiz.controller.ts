@@ -144,16 +144,8 @@ export class QuizController {
   }
 
   @Post('/category')
-  async addCategoryToQuiz(
-    file_num: number,
-    quiz_num: number,
-    category: string,
-  ) {
-    return await this.quizService.addCategoryToQuiz(
-      file_num,
-      quiz_num,
-      category,
-    );
+  async addCategoryToQuiz(@Body() body: UpdateCategoryOfQuizDto) {
+    return await this.quizService.addCategoryToQuiz(body);
   }
 
   @Put('/category')
