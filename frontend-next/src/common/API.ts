@@ -20,7 +20,7 @@ export const get = async (path: string, func: any, queryParam?: { [key: string]:
     )
     .then(func)
     .catch((error) => {
-      console.error('componentDidMount:', error);
+      console.error(`GET(${path}): ${error}`);
     });
 };
 
@@ -42,7 +42,7 @@ export const post = async (path: string, jsondata: object, func: any) => {
     )
     .then(func)
     .catch((error) => {
-      console.error('componentDidMount:', error);
+      console.error(`GET(${path}): ${error}`);
     });
 };
 
@@ -64,7 +64,7 @@ export const put = async (path: string, jsondata: object, func: any) => {
     )
     .then(func)
     .catch((error) => {
-      console.error('componentDidMount:', error);
+      console.error(`GET(${path}): ${error}`);
     });
 };
 
@@ -86,6 +86,6 @@ export const del = async (path: string, jsondata: object, func: any) => {
     )
     .then(func)
     .catch((error) => {
-      console.error('componentDidMount:', error);
+      console.error(`GET(${path}): ${error}`);
     });
 };
