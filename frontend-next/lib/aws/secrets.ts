@@ -17,7 +17,8 @@ export const getApiKey = async () => {
     const response = await client.send(command);
     return response.SecretString ? (JSON.parse(response.SecretString).API_KEY as string) : '';
   } catch (err) {
-    console.log(`getApiKey:${err}`);
+    console.log(`NEXT_PUBLIC_REGION:${process.env.NEXT_PUBLIC_REGION}`);
+    console.error(`getApiKey:${err}`);
     return JSON.stringify({ err }, null, 2);
   }
 };
