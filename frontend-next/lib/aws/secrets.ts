@@ -6,15 +6,18 @@ export const getApiKey = async () => {
   }
 
   try {
+    console.log('start');
     const client = new SecretsManagerClient({
       region: process.env.NEXT_PUBLIC_REGION || ''
     });
-
+    console.log(`client:${JSON.stringify(client)}`);
     const params = {
       SecretId: process.env.NEXT_PUBLIC_API_KEY || ''
     };
     const command = new GetSecretValueCommand(params);
+    console.log(`command:${JSON.stringify(command)}`);
     const response = await client.send(command);
+    console.log(`response:${JSON.stringify(response)}`);
     return response.SecretString ? (JSON.parse(response.SecretString).API_KEY as string) : '';
   } catch (err) {
     console.log(`NEXT_PUBLIC_REGION:${process.env.NEXT_PUBLIC_REGION}`);
