@@ -121,7 +121,20 @@ export class UsEast1Stack extends cdk.Stack {
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          originRequestPolicy: apiOriginRequestPolicy
+          originRequestPolicy: apiOriginRequestPolicy,
+          responseHeadersPolicy: new cdk.aws_cloudfront.ResponseHeadersPolicy(
+            this,
+            'responseHeadersPolicy',
+            {
+              corsBehavior: {
+                accessControlAllowOrigins: [process.env.API_DOMAIN_NAME || ''],
+                accessControlAllowHeaders: ['*'],
+                accessControlAllowMethods: ['ALL'],
+                accessControlAllowCredentials: false,
+                originOverride: true
+              }
+            }
+          )
         },
         domainNames: [process.env.API_DOMAIN_NAME || ''],
         certificate: apiCertificate
