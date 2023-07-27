@@ -6,7 +6,7 @@ export const getApiKey = async () => {
   }
 
   try {
-    console.log('start');
+    console.log('start teset');
     const client = new SecretsManagerClient({
       region: process.env.NEXT_PUBLIC_REGION || ''
     });
