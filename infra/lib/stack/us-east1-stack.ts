@@ -117,7 +117,7 @@ export class UsEast1Stack extends cdk.Stack {
       {
         defaultBehavior: {
           origin: new origins.RestApiOrigin(props.restApi),
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -127,7 +127,7 @@ export class UsEast1Stack extends cdk.Stack {
             'responseHeadersPolicy',
             {
               corsBehavior: {
-                accessControlAllowOrigins: [process.env.API_DOMAIN_NAME || ''],
+                accessControlAllowOrigins: ['*'],
                 accessControlAllowHeaders: ['*'],
                 accessControlAllowMethods: ['ALL'],
                 accessControlAllowCredentials: false,
