@@ -6,7 +6,7 @@ export default function QuizzerFooter() {
   return (
     <footer style={quizzerFooterStyle}>
       <span className="left" style={leftStyle}>
-        <Button size="small" color="inherit" href="/top/index.html">
+        <Button size="small" color="inherit" href={'/top' + process.env.NEXT_PUBLIC_URL_END}>
           トップ
         </Button>
       </span>

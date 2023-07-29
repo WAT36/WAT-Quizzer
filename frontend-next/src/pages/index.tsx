@@ -16,10 +16,22 @@ export default function Top() {
       </Head>
       <Container>
         <h1>WAT Quizzer</h1>
-        <Button style={topButtonStyle} variant="contained" size="large" color="primary" href="/quizzer/index.html">
+        <Button
+          style={topButtonStyle}
+          variant="contained"
+          size="large"
+          color="primary"
+          href={'/quizzer' + process.env.NEXT_PUBLIC_URL_END}
+        >
           Quizzer
         </Button>
-        <Button style={topButtonStyle} variant="contained" size="large" color="secondary" href="/englishBot/index.html">
+        <Button
+          style={topButtonStyle}
+          variant="contained"
+          size="large"
+          color="secondary"
+          href={'/englishBot' + process.env.NEXT_PUBLIC_URL_END}
+        >
           English Quiz Bot
         </Button>
       </Container>

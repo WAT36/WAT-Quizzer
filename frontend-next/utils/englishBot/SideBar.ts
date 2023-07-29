@@ -1,8 +1,8 @@
 // サイドバーのコンテンツ
 export const sideBarContents = [
-  { name: 'Top', link: '/englishBot/index.html' },
-  { name: 'Add Words', link: '/englishBot/addWord/index.html' },
-  { name: 'Dictionary', link: '/englishBot/dictionary/index.html' }
+  { name: 'Top', link: '/englishBot' + process.env.NEXT_PUBLIC_URL_END },
+  { name: 'Add Words', link: '/englishBot/addWord' + process.env.NEXT_PUBLIC_URL_END },
+  { name: 'Dictionary', link: '/englishBot/dictionary' + process.env.NEXT_PUBLIC_URL_END }
 ];
 
 // サイドバー開閉
