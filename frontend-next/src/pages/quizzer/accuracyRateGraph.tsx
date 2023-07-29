@@ -87,10 +87,10 @@ export default function AccuracyRateGraphPage() {
         file_num: file_num
       },
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 200 || data.status === 201) {
           data = data.body;
           setMessage('指定問題ファイルへのカテゴリ更新に成功しました');
-          setMessageColor('error');
+          setMessageColor('success');
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
