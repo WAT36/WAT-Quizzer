@@ -307,7 +307,7 @@ export default function SelectQuizPage() {
       return;
     }
     get(
-      '/random',
+      '/quiz/random',
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
