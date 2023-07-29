@@ -64,11 +64,11 @@ export default function AddQuizPage() {
     post(
       '/quiz/add',
       {
-        file_num: file_num,
-        data: input_data
+        file_num,
+        input_data
       },
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 200 || data.status === 201) {
           data = data.body;
           setMessage('　');
           setMessageColor('initial');
