@@ -58,7 +58,7 @@ export default function SearchQuizPage() {
         setMessageColor('error');
       }
     });
-  });
+  }, []);
 
   const selectedFileChange = (e: any) => {
     get(
@@ -167,7 +167,7 @@ export default function SearchQuizPage() {
             category: changedCategory
           },
           (data: any) => {
-            if (data.status !== 200) {
+            if (data.status !== 200 && data.status !== 201) {
               failureIdList.push(checkedId);
             }
           }
