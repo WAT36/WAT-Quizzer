@@ -37,13 +37,13 @@ export default function AccuracyRateGraphPage() {
             </MenuItem>
           );
         }
-        setFilelistoption(filelistoption);
+        setFilelistoption(filelist);
       } else {
         setMessage('エラー:外部APIとの連携に失敗しました');
         setMessageColor('error');
       }
     });
-  });
+  }, []);
 
   const getAccuracy = () => {
     if (file_num === -1) {
