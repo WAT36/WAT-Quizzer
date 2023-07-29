@@ -115,7 +115,7 @@ export default function SelectQuizPage() {
       (data: any) => {
         if (data.status === 200) {
           data = data.body;
-          setQuizSentense(data[0].quiz_sentense);
+          setQuizSentense('[' + data[0].file_num + '-' + data[0].quiz_num + ']' + data[0].quiz_sentense);
           setAnswer(data[0].answer);
           setQuizChecked(data[0].checked);
           setExpanded(false);
