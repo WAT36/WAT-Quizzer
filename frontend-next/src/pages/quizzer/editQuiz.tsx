@@ -22,7 +22,7 @@ import {
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('initial');
+  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
   const [quiz_num, setQuizNum] = useState<number>();
   const [edit_file_num, setEditFileNum] = useState<number>();
   const [edit_quiz_num, setEditQuizNum] = useState<number>();
@@ -78,7 +78,7 @@ export default function EditQuizPage() {
           setEditCategory(data[0].category);
           setEditImage(data[0].img_file);
           setMessage('　');
-          setMessageColor('initial');
+          setMessageColor('success.light');
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
@@ -112,7 +112,7 @@ export default function EditQuizPage() {
           setEditCategory('');
           setEditImage('');
           setMessage('Success!! 編集に成功しました');
-          setMessageColor('initial');
+          setMessageColor('success.light');
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');

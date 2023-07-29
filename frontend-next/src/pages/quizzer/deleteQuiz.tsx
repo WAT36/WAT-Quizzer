@@ -22,7 +22,7 @@ import {
 export default function DeleteQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('initial');
+  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
   const [quiz_num, setQuizNum] = useState<number>();
   const [get_file_num, setGetFileNum] = useState<number | null>();
@@ -80,7 +80,7 @@ export default function DeleteQuizPage() {
           setCategory(data[0].category);
           setImage(data[0].img_file);
           setMessage('　');
-          setMessageColor('initial');
+          setMessageColor('success.light');
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
@@ -118,7 +118,7 @@ export default function DeleteQuizPage() {
           setIntegrateToCategory(data[0].category);
           setIntegrateToImage(data[0].img_file);
           setMessage('　');
-          setMessageColor('initial');
+          setMessageColor('success.light');
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
@@ -152,7 +152,7 @@ export default function DeleteQuizPage() {
           data = data.body;
           let quiz_num = '[' + get_file_num + '-' + get_quiz_num + ']';
           setMessage('Success! 削除に成功しました' + quiz_num);
-          setMessageColor('initial');
+          setMessageColor('success.light');
           setGetFileNum(null);
           setGetQuizNum(null);
           setQuestion('');
@@ -194,7 +194,7 @@ export default function DeleteQuizPage() {
           data = data.body;
           let quiz_num = '[' + get_file_num + ':' + get_quiz_num + '->' + integrate_to_quiz_num + ']';
           setMessage('Success! 統合に成功しました' + quiz_num);
-          setMessageColor('initial');
+          setMessageColor('success.light');
           setGetFileNum(null);
           setGetQuizNum(null);
           setQuestion('');
@@ -206,8 +206,6 @@ export default function DeleteQuizPage() {
           setIntegrateToAnswer('');
           setIntegrateToCategory('');
           setIntegrateToImage('');
-          setMessage('　');
-          setMessageColor('initial');
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');

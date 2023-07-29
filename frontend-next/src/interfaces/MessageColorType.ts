@@ -1,9 +1,9 @@
 export type messageColorType =
   | 'error'
-  | 'initial'
-  | 'inherit'
   | 'primary'
   | 'secondary'
-  | 'textPrimary'
-  | 'textSecondary'
+  | 'info.light'
+  | 'success.light'
+  | 'warning.light'
+  | 'common.black'
   | undefined;

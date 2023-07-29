@@ -24,25 +24,16 @@ import {
   Typography
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { messageColorType } from '../../interfaces/MessageColorType';
 
 interface SendToAddWordApiData {
   partOfSpeechId: number;
   meaning: string;
 }
 
-type messageColorType =
-  | 'error'
-  | 'initial'
-  | 'inherit'
-  | 'primary'
-  | 'secondary'
-  | 'textPrimary'
-  | 'textSecondary'
-  | undefined;
-
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('initial');
+  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
   const [posList, setPosList] = useState<JSX.Element[]>([]);
   const [rowList, setRowList] = useState<JSX.Element[]>([]);
   const [inputWord, setInputWord] = useState<string>('');
@@ -54,7 +45,7 @@ export default function EnglishBotAddWordPage() {
 
   const messeageClear = () => {
     setMessage('　');
-    setMessageColor('initial');
+    setMessageColor('common.black');
   };
 
   // 品詞リスト取得
@@ -191,7 +182,7 @@ export default function EnglishBotAddWordPage() {
       (data: any) => {
         if (data.status === 200) {
           setMessage(`単語「${inputWord}」を登録しました`);
-          setMessageColor('initial');
+          setMessageColor('success.light');
           setInputWord('');
           setRowList([]);
           setInputMeans([]);

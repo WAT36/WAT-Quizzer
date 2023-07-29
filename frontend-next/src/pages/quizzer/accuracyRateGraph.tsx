@@ -21,7 +21,7 @@ import {
 export default function AccuracyRateGraphPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('initial');
+  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
   const [accuracy_data, setAccuracyData] = useState<any>();
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
@@ -59,7 +59,7 @@ export default function AccuracyRateGraphPage() {
           data = data.body;
           setAccuracyData(data);
           setMessage('　');
-          setMessageColor('initial');
+          setMessageColor('success.light');
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
@@ -90,7 +90,7 @@ export default function AccuracyRateGraphPage() {
         if (data.status === 200 || data.status === 201) {
           data = data.body;
           setMessage('指定問題ファイルへのカテゴリ更新に成功しました');
-          setMessageColor('success');
+          setMessageColor('success.light');
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');

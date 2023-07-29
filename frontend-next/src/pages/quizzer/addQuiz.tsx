@@ -22,7 +22,7 @@ export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [input_data, setInputData] = useState<string>('');
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('initial');
+  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
   const [addLog, setAddLog] = useState<any>();
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
@@ -71,7 +71,7 @@ export default function AddQuizPage() {
         if (data.status === 200 || data.status === 201) {
           data = data.body;
           setMessage('　');
-          setMessageColor('initial');
+          setMessageColor('success.light');
           setAddLog(data);
           //入力データをクリア
           const inputQuizField = document.getElementsByTagName('textarea').item(0) as HTMLTextAreaElement;

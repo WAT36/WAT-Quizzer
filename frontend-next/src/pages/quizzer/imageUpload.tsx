@@ -10,21 +10,21 @@ import { Card, CardContent, Container, Typography } from '@mui/material';
 
 export default function ImageUploadPage() {
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('initial');
+  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [images, setImages] = useState<ImageUploadReturnValue[]>([]);
 
   const handleOnDrop = (files: File[]) => {
     setIsUploading(true);
     setMessage('　');
-    setMessageColor('initial');
+    setMessageColor('common.black');
 
     Promise.all(files.map((file) => uploadImage(file)))
       .then((image) => {
         setIsUploading(false);
         setImages(images.concat(image));
         setMessage('アップロードが完了しました:' + image[0].name);
-        setMessageColor('initial');
+        setMessageColor('success.light');
       })
       .catch((e) => {
         console.error(e);

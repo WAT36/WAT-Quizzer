@@ -29,7 +29,7 @@ export default function SearchQuizPage() {
   const [value, setValue] = useState<number[] | number>([0, 100]);
   const [checked, setChecked] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('initial');
+  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
   const [query, setQuery] = useState<string>();
   const [selected_category, setSelectedCategory] = useState<string>();
@@ -116,7 +116,7 @@ export default function SearchQuizPage() {
           data = data.body;
           setSearchResult(data);
           setMessage('　');
-          setMessageColor('initial');
+          setMessageColor('success.light');
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
@@ -178,7 +178,7 @@ export default function SearchQuizPage() {
     const { failureIdList } = await addCategoriesToQuiz(checkedIdList);
 
     let message: string;
-    let messageColor: 'error' | 'initial';
+    let messageColor: 'error' | 'success.light';
     if (failureIdList.length > 0) {
       message = `エラー:問題ID[${failureIdList.join()}]へのカテゴリ登録に失敗しました（${
         checkedIdList.length - failureIdList.length
@@ -186,7 +186,7 @@ export default function SearchQuizPage() {
       messageColor = 'error';
     } else {
       message = `チェック問題(${checkedIdList.length}件)へのカテゴリ登録に成功しました`;
-      messageColor = 'initial';
+      messageColor = 'success.light';
     }
 
     // 終わったらチェック全て外す、入力カテゴリも消す
@@ -231,7 +231,7 @@ export default function SearchQuizPage() {
     const { failureIdList } = await removeCategories(checkedIdList);
 
     let message: string;
-    let messageColor: 'error' | 'initial';
+    let messageColor: 'error' | 'success.light';
     if (failureIdList.length > 0) {
       message = `エラー:問題ID[${failureIdList.join()}]のカテゴリ削除に失敗しました（${
         checkedIdList.length - failureIdList.length
@@ -239,7 +239,7 @@ export default function SearchQuizPage() {
       messageColor = 'error';
     } else {
       message = `チェック問題(${checkedIdList.length}件)のカテゴリ削除に成功しました`;
-      messageColor = 'initial';
+      messageColor = 'success.light';
     }
 
     // 終わったらチェック全て外す、入力カテゴリも消す
@@ -279,7 +279,7 @@ export default function SearchQuizPage() {
     const { failureIdList } = await checkToQuiz(checkedIdList);
 
     let message: string;
-    let messageColor: 'error' | 'initial';
+    let messageColor: 'error' | 'success.light';
     if (failureIdList.length > 0) {
       message = `エラー:問題ID[${failureIdList.join()}]へのチェック登録に失敗しました（${
         checkedIdList.length - failureIdList.length
@@ -287,7 +287,7 @@ export default function SearchQuizPage() {
       messageColor = 'error';
     } else {
       message = `選択した問題(${checkedIdList.length}件)へのチェック登録に成功しました`;
-      messageColor = 'initial';
+      messageColor = 'success.light';
     }
 
     // 終わったらチェック全て外す、入力カテゴリも消す
@@ -327,7 +327,7 @@ export default function SearchQuizPage() {
     const { failureIdList } = await uncheckToQuiz(checkedIdList);
 
     let message: string;
-    let messageColor: 'error' | 'initial';
+    let messageColor: 'error' | 'success.light';
     if (failureIdList.length > 0) {
       message = `エラー:問題ID[${failureIdList.join()}]へのチェック削除に失敗しました（${
         checkedIdList.length - failureIdList.length
@@ -335,7 +335,7 @@ export default function SearchQuizPage() {
       messageColor = 'error';
     } else {
       message = `選択した問題(${checkedIdList.length}件)へのチェック削除に成功しました`;
-      messageColor = 'initial';
+      messageColor = 'success.light';
     }
 
     // 終わったらチェック全て外す、入力カテゴリも消す
