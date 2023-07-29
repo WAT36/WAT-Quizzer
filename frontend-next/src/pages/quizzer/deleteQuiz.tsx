@@ -190,7 +190,7 @@ export default function DeleteQuizPage() {
         post_quiz_num: integrate_to_quiz_num
       },
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 200 || data.status === 201) {
           data = data.body;
           let quiz_num = '[' + get_file_num + ':' + get_quiz_num + '->' + integrate_to_quiz_num + ']';
           setMessage('Success! 統合に成功しました' + quiz_num);
