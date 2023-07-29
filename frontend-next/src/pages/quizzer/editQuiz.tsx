@@ -50,7 +50,7 @@ export default function EditQuizPage() {
         setMessageColor('error');
       }
     });
-  });
+  }, []);
 
   const getQuiz = () => {
     if (file_num === -1) {
