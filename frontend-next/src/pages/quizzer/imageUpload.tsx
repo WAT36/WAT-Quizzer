@@ -55,7 +55,7 @@ export default function ImageUploadPage() {
         return {
           name,
           isUploading: true,
-          url: 'https://' + process.env.REACT_APP_S3_BUCKET_NAME + `.s3.amazonaws.com/${file.name}`
+          url: 'https://' + process.env.NEXT_PUBLIC_S3_BUCKET_NAME + `.s3.amazonaws.com/${file.name}`
         } as ImageUploadReturnValue;
       })
       .catch((e) => {
