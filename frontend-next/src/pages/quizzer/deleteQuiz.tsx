@@ -55,7 +55,7 @@ export default function DeleteQuizPage() {
         setMessageColor('error');
       }
     });
-  });
+  }, []);
 
   const getQuiz = () => {
     if (file_num === -1) {
