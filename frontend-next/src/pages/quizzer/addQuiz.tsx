@@ -44,7 +44,7 @@ export default function AddQuizPage() {
         setMessageColor('error');
       }
     });
-  });
+  }, []);
 
   const selectedFileChange = (e: any) => {
     setFileNum(e.target.value);
