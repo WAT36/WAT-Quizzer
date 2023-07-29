@@ -170,7 +170,7 @@ export default function SelectQuizPage() {
           quiz_num: quiz_num
         },
         (data: any) => {
-          if (data.status === 200) {
+          if (data.status === 200 || data.status === 201) {
             data = data.body;
             setQuizSentense('');
             setAnswer('');
@@ -215,7 +215,7 @@ export default function SelectQuizPage() {
           quiz_num: quiz_num
         },
         (data: any) => {
-          if (data.status === 200) {
+          if (data.status === 200 || data.status === 201) {
             data = data.body;
             setQuizSentense('');
             setAnswer('');
@@ -260,7 +260,7 @@ export default function SelectQuizPage() {
           quiz_num: quiz_num
         },
         (data: any) => {
-          if (data.status === 200) {
+          if (data.status === 200 || data.status === 201) {
             data = data.body;
             setQuizChecked(Boolean(data));
             setMessage(`問題[${quiz_num}] にチェック${Boolean(data) ? 'をつけ' : 'を外し'}ました`);
