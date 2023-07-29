@@ -66,7 +66,10 @@ export default function EditQuizPage() {
     get(
       '/quiz',
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 404 || data.body.length === 0) {
+          setMessage('エラー:条件に合致するデータはありません');
+          setMessageColor('error');
+        } else if (data.status === 200) {
           data = data.body;
           setEditFileNum(data[0].file_num);
           setEditQuizNum(data[0].quiz_num);
@@ -76,9 +79,6 @@ export default function EditQuizPage() {
           setEditImage(data[0].img_file);
           setMessage('　');
           setMessageColor('initial');
-        } else if (data.status === 404) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
@@ -93,7 +93,7 @@ export default function EditQuizPage() {
 
   const editQuiz = () => {
     post(
-      '/edit',
+      '/quiz/edit',
       {
         file_num: edit_file_num,
         quiz_num: edit_quiz_num,
@@ -103,7 +103,7 @@ export default function EditQuizPage() {
         img_file: edit_image
       },
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 200 || data.status === 201) {
           data = data.body;
           setEditFileNum(-1);
           setEditQuizNum(-1);

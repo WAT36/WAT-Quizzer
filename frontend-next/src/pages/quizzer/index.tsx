@@ -113,7 +113,10 @@ export default function SelectQuizPage() {
     get(
       '/quiz',
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 404 || data.body.length === 0) {
+          setMessage('エラー:条件に合致するデータはありません');
+          setMessageColor('error');
+        } else if (data.status === 200) {
           data = data.body;
           setQuizSentense('[' + data[0].file_num + '-' + data[0].quiz_num + ']' + data[0].quiz_sentense);
           setAnswer(data[0].answer);
@@ -121,9 +124,6 @@ export default function SelectQuizPage() {
           setExpanded(false);
           setMessage('　');
           setMessageColor('initial');
-        } else if (data.status === 404) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
