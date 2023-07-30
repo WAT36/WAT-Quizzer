@@ -65,7 +65,8 @@ export default function EnglishBotDictionaryPage() {
                   {data.id}
                 </TableCell>
                 <TableCell align="left">
-                  <Link to={`/english/word/${data.name}`}>{data.name}</Link>
+                  {/* <Link to={`/english/word/${data.name}`}>{data.name}</Link> */}
+                  {data.name}
                 </TableCell>
               </TableRow>
             ))}
