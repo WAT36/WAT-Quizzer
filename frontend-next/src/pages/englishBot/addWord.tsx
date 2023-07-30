@@ -41,7 +41,7 @@ export default function EnglishBotAddWordPage() {
 
   useEffect(() => {
     getPartOfSpeechList();
-  });
+  }, []);
 
   const messeageClear = () => {
     setMessage('　');
