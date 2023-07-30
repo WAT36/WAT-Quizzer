@@ -112,7 +112,7 @@ export default function SearchQuizPage() {
     get(
       '/quiz/search',
       (data: any) => {
-        if (data.status === 200) {
+        if (String(data.status)[0] === '2' || String(data.status)[0] === '3') {
           data = data.body;
           setSearchResult(data);
           setMessage('Success!! ' + data.length + '問の問題を取得しました');
