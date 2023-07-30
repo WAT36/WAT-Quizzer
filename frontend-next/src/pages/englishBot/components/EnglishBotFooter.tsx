@@ -6,7 +6,7 @@ export default function EnglishBotFooter() {
   return (
     <footer style={englishBotFooterStyle}>
       <span className="left" style={leftStyle}>
-        <Button size="small" color="inherit" href={'/top' + process.env.NEXT_PUBLIC_URL_END}>
+        <Button size="small" color="inherit" href={process.env.NEXT_PUBLIC_URL_END}>
           トップ
         </Button>
       </span>
