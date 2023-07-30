@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
+import { AddEnglishWordDto } from './english.dto';
 
 @Injectable()
 export class EnglishService {
@@ -13,6 +14,29 @@ export class EnglishService {
     try {
       const data = await execQuery(SQL.ENGLISH.PARTOFSPEECH, []);
       return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 単語と意味追加
+  async addWordAndMeanService(req: AddEnglishWordDto) {
+    const { wordName, pronounce, meanArrayData } = req;
+    try {
+      const wordData: any = await execQuery(SQL.ENGLISH.WORD.ADD, [
+        wordName,
+        pronounce,
+      ]);
+
+      for (let i = 0; i < meanArrayData.length; i++) {
+        await execQuery(SQL.ENGLISH.MEAN.ADD, [
+          wordData.insertId,
+          i + 1,
+          meanArrayData[i].partOfSpeechId,
+          meanArrayData[i].meaning,
+        ]);
+      }
+      return { wordData };
     } catch (error) {
       throw error;
     }

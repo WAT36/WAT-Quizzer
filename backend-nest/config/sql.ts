@@ -275,5 +275,21 @@ export const SQL = {
           id
       ;
     `,
+    WORD: {
+      ADD: `
+        INSERT INTO
+          word (name,pronounce)
+        VALUES(?,?)
+        ;
+      `,
+    },
+    MEAN: {
+      ADD: `
+        INSERT INTO
+          mean (word_id,wordmean_id,partsofspeech_id,meaning)
+        VALUES(?,?,?,?)
+        ;
+      `,
+    },
   },
 };
