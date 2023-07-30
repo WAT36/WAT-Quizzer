@@ -115,7 +115,7 @@ export default function SearchQuizPage() {
         if (data.status === 200) {
           data = data.body;
           setSearchResult(data);
-          setMessage('　');
+          setMessage('Success!! ' + data.length + '問の問題を取得しました');
           setMessageColor('success.light');
         } else if (data.status === 404) {
           setMessage('エラー:条件に合致するデータはありません');
