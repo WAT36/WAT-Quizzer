@@ -1,11 +1,10 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import Link from 'next/link';
 
 import { sideBarContents, toggleDrawer } from '../../../../utils/englishBot/SideBar';
 import { isOpenState } from '../../../atoms/SideBar';
 import { drawerStyle } from '../../../styles/SideBar';
-import { Drawer, List, ListItem } from '@mui/material';
+import { Button, Drawer, List, ListItem } from '@mui/material';
 
 export default function EnglishBotSideBar() {
   const [sidebarState, setSidebarState] = useRecoilState(isOpenState);
@@ -15,9 +14,9 @@ export default function EnglishBotSideBar() {
       <List>
         {sideBarContents.map((value) => (
           <ListItem key={value.name}>
-            <Link href={value.link} onClick={toggleDrawer(false, setSidebarState)}>
+            <Button variant="text" href={value.link} onClick={toggleDrawer(false, setSidebarState)}>
               {value.name}
-            </Link>
+            </Button>
           </ListItem>
         ))}
       </List>

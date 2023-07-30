@@ -1,6 +1,5 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import Link from 'next/link';
 
 import { sideBarContents, toggleDrawer } from '../../../../utils/quizzer/SideBar';
 import { isOpenState } from '../../../atoms/SideBar';
