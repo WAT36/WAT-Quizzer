@@ -282,6 +282,17 @@ export const SQL = {
         VALUES(?,?)
         ;
       `,
+      SEARCH: `
+        SELECT 
+          * 
+        FROM 
+          word
+        WHERE
+          name LIKE ?
+        ORDER BY
+          name, id
+        ;
+      `,
     },
     MEAN: {
       ADD: `

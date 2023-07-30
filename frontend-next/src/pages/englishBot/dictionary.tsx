@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { post } from '../../common/API';
+import { get } from '../../common/API';
 import EnglishBotLayout from './components/EnglishBotLayout';
 import { messageBoxStyle } from '../../styles/Pages';
 import { Link } from 'react-router-dom';
@@ -22,7 +22,7 @@ export default function EnglishBotDictionaryPage() {
   const [tableData, setTableData] = useState([]);
   const [message, setMessage] = useState({
     message: '',
-    messageColor: 'initial'
+    messageColor: 'common.black'
   });
 
   useEffect(() => {
@@ -30,11 +30,8 @@ export default function EnglishBotDictionaryPage() {
   }, []);
 
   const comingDisplay = () => {
-    post(
+    get(
       '/english/word/search',
-      {
-        wordName: ''
-      },
       (data: any) => {
         if (data.status === 200) {
           setTableData(data.body.wordData || []);
@@ -44,6 +41,9 @@ export default function EnglishBotDictionaryPage() {
             messageColor: 'error'
           });
         }
+      },
+      {
+        wordName: ''
       }
     );
   };
