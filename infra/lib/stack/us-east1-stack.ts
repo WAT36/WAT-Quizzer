@@ -11,6 +11,7 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import { makeRecordsToDistribution } from '../service/route53'
 import * as apigw from 'aws-cdk-lib/aws-apigateway'
+import { CachePolicy } from 'aws-cdk-lib/aws-cloudfront'
 
 dotenv.config()
 
@@ -118,7 +119,11 @@ export class UsEast1Stack extends cdk.Stack {
         defaultBehavior: {
           origin: new origins.RestApiOrigin(props.restApi),
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          cachePolicy: new CachePolicy(
+            this,
+            `${props.env}CloudFrontCachePolicy`,
+            { queryStringBehavior: cloudfront.CacheQueryStringBehavior.all() }
+          ),
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           originRequestPolicy: apiOriginRequestPolicy,
