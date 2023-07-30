@@ -265,4 +265,15 @@ export const SQL = {
           accuracy_rate 
     `,
   },
+  ENGLISH: {
+    PARTOFSPEECH: `
+      SELECT
+          *
+      FROM
+          partsofspeech
+      ORDER BY
+          id
+      ;
+    `,
+  },
 };
