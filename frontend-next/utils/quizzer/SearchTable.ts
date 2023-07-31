@@ -2,7 +2,7 @@ export const columns = [
   {
     field: 'id',
     headerName: 'ID',
-    sortable: false,
+    sortable: true,
     width: 75
   },
   {
