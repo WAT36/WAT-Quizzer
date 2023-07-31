@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { get, post } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
-import { messageColorType } from '../../interfaces/MessageColorType';
 import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
 import {
   Button,
@@ -35,9 +34,11 @@ export default function SelectQuizPage() {
   const [value, setValue] = useState<number[] | number>([0, 100]);
   const [checked, setChecked] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
+  const [messageColor, setMessageColor] = useState<string>('common.black');
 
   useEffect(() => {
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
@@ -50,6 +51,8 @@ export default function SelectQuizPage() {
           );
         }
         setFilelistoption(filelist);
+        setMessage('　');
+        setMessageColor('common.black');
       } else {
         setMessage('エラー:外部APIとの連携に失敗しました');
         setMessageColor('error');
@@ -73,6 +76,8 @@ export default function SelectQuizPage() {
   };
 
   const selectedFileChange = (e: any) => {
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get(
       '/category',
       (data: any) => {
@@ -88,6 +93,8 @@ export default function SelectQuizPage() {
           }
           setFileNum(e.target.value);
           setCategorylistoption(categorylist);
+          setMessage('　');
+          setMessageColor('common.black');
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
@@ -110,6 +117,8 @@ export default function SelectQuizPage() {
       return;
     }
 
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get(
       '/quiz',
       (data: any) => {
@@ -163,6 +172,8 @@ export default function SelectQuizPage() {
         return;
       }
 
+      setMessage('通信中...');
+      setMessageColor('#d3d3d3');
       post(
         '/quiz/clear',
         {
@@ -208,6 +219,8 @@ export default function SelectQuizPage() {
         return;
       }
 
+      setMessage('通信中...');
+      setMessageColor('#d3d3d3');
       post(
         '/quiz/fail',
         {
@@ -253,6 +266,8 @@ export default function SelectQuizPage() {
         return;
       }
 
+      setMessage('通信中...');
+      setMessageColor('#d3d3d3');
       post(
         '/quiz/check',
         {
@@ -306,6 +321,9 @@ export default function SelectQuizPage() {
       setMessageColor('error');
       return;
     }
+
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get(
       '/quiz/random',
       (data: any) => {
@@ -342,6 +360,9 @@ export default function SelectQuizPage() {
       setMessageColor('error');
       return;
     }
+
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get(
       '/quiz/worst',
       (data: any) => {
@@ -376,6 +397,9 @@ export default function SelectQuizPage() {
       setMessageColor('error');
       return;
     }
+
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get(
       '/quiz/minimum',
       (data: any) => {

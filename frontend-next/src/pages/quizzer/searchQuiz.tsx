@@ -5,7 +5,6 @@ import { DataGrid, GridRowsProp, GridRowSelectionModel } from '@mui/x-data-grid'
 import { get, post, put } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
 import { buttonStyle, groupStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
-import { messageColorType } from '../../interfaces/MessageColorType';
 import { columns } from '../../../utils/quizzer/SearchTable';
 import {
   Button,
@@ -29,7 +28,7 @@ export default function SearchQuizPage() {
   const [value, setValue] = useState<number[] | number>([0, 100]);
   const [checked, setChecked] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
+  const [messageColor, setMessageColor] = useState<string>('common.black');
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
   const [query, setQuery] = useState<string>();
   const [selected_category, setSelectedCategory] = useState<string>();
@@ -41,6 +40,8 @@ export default function SearchQuizPage() {
   const [changedCategory, setChangedCategory] = useState<string>('');
 
   useEffect(() => {
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
@@ -53,6 +54,8 @@ export default function SearchQuizPage() {
           );
         }
         setFilelistoption(filelist);
+        setMessage('　');
+        setMessageColor('commmon.black');
       } else {
         setMessage('エラー:外部APIとの連携に失敗しました');
         setMessageColor('error');
@@ -61,6 +64,8 @@ export default function SearchQuizPage() {
   }, []);
 
   const selectedFileChange = (e: any) => {
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get(
       '/category',
       (data: any) => {
@@ -76,6 +81,8 @@ export default function SearchQuizPage() {
           }
           setFileNum(e.target.value);
           setCategorylistoption(categorylist);
+          setMessage('　');
+          setMessageColor('common.black');
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
@@ -109,6 +116,8 @@ export default function SearchQuizPage() {
       return;
     }
 
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get(
       '/quiz/search',
       (data: any) => {
@@ -156,6 +165,8 @@ export default function SearchQuizPage() {
     }
 
     // チェックした問題にカテゴリを登録
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     const addCategoriesToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
@@ -209,6 +220,8 @@ export default function SearchQuizPage() {
     }
 
     // チェックした問題からカテゴリを削除
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     const removeCategories = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
@@ -258,6 +271,8 @@ export default function SearchQuizPage() {
     }
 
     // 選択した問題にチェック
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     const checkToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
@@ -306,6 +321,8 @@ export default function SearchQuizPage() {
     }
 
     // 選択した問題にチェック
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     const uncheckToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {

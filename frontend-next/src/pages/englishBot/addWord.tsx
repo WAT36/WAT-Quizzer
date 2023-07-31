@@ -24,7 +24,6 @@ import {
   Typography
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { messageColorType } from '../../interfaces/MessageColorType';
 
 interface SendToAddWordApiData {
   partOfSpeechId: number;
@@ -33,7 +32,7 @@ interface SendToAddWordApiData {
 
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
+  const [messageColor, setMessageColor] = useState<string>('common.black');
   const [posList, setPosList] = useState<JSX.Element[]>([]);
   const [rowList, setRowList] = useState<JSX.Element[]>([]);
   const [inputWord, setInputWord] = useState<string>('');
@@ -50,6 +49,8 @@ export default function EnglishBotAddWordPage() {
 
   // 品詞リスト取得
   const getPartOfSpeechList = () => {
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get('/english/partsofspeech', (data: any) => {
       if (data.status === 200) {
         data = data.body;
@@ -62,6 +63,8 @@ export default function EnglishBotAddWordPage() {
           );
         }
         setPosList(gotPosList);
+        setMessage('　');
+        setMessageColor('common.black');
       } else {
         setMessage('エラー:外部APIとの連携に失敗しました');
         setMessageColor('error');
@@ -164,6 +167,8 @@ export default function EnglishBotAddWordPage() {
       }
     }
 
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     post(
       '/english/word/add',
       {

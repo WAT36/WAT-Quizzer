@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import { get, post } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
-import { messageColorType } from '../../interfaces/MessageColorType';
 import { buttonStyle, messageBoxStyle, typoStyles } from '../../styles/Pages';
 import {
   Button,
@@ -22,11 +21,13 @@ export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [input_data, setInputData] = useState<string>('');
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
+  const [messageColor, setMessageColor] = useState<string>('common.black');
   const [addLog, setAddLog] = useState<any>();
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
   useEffect(() => {
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
@@ -39,6 +40,8 @@ export default function AddQuizPage() {
           );
         }
         setFilelistoption(filelist);
+        setMessage('　');
+        setMessageColor('common.black');
       } else {
         setMessage('エラー:外部APIとの連携に失敗しました');
         setMessageColor('error');
@@ -61,6 +64,8 @@ export default function AddQuizPage() {
       return;
     }
 
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     post(
       '/quiz/add',
       {

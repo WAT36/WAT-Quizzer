@@ -3,7 +3,6 @@ import { Chart } from 'react-google-charts';
 
 import { get, post } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
-import { messageColorType } from '../../interfaces/MessageColorType';
 import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
 import {
   Button,
@@ -21,11 +20,13 @@ import {
 export default function AccuracyRateGraphPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<messageColorType>('common.black');
+  const [messageColor, setMessageColor] = useState<string>('common.black');
   const [accuracy_data, setAccuracyData] = useState<any>();
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
   useEffect(() => {
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get('/quiz/file', (data: any) => {
       if (data.status === 200) {
         data = data.body;
@@ -38,6 +39,8 @@ export default function AccuracyRateGraphPage() {
           );
         }
         setFilelistoption(filelist);
+        setMessage('　');
+        setMessageColor('common.black');
       } else {
         setMessage('エラー:外部APIとの連携に失敗しました');
         setMessageColor('error');
@@ -52,6 +55,8 @@ export default function AccuracyRateGraphPage() {
       return;
     }
 
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     get(
       '/category/rate',
       (data: any) => {
@@ -81,6 +86,8 @@ export default function AccuracyRateGraphPage() {
       return;
     }
 
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
     post(
       '/category',
       {

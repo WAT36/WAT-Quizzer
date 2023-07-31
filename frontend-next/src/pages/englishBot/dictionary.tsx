@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { get } from '../../common/API';
 import EnglishBotLayout from './components/EnglishBotLayout';
 import { messageBoxStyle } from '../../styles/Pages';
-import { Link } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -30,6 +29,7 @@ export default function EnglishBotDictionaryPage() {
   }, []);
 
   const comingDisplay = () => {
+    setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
     get(
       '/english/word/search',
       (data: any) => {
