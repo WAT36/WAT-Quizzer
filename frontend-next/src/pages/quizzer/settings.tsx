@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { get } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
-import { Container, MenuItem } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, Container, MenuItem, TextField, Typography } from '@mui/material';
+import { messageBoxStyle } from '../../styles/Pages';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
@@ -32,10 +33,47 @@ export default function SelectQuizPage() {
     });
   }, []);
 
+  const cardContentStyle = {
+    display: 'flex',
+    width: '100%'
+  };
+
+  const inputTextBeforeButtonStyle = {
+    flex: 'auto'
+  };
+
+  const buttonAfterInputTextStyle = {
+    flex: 'none',
+    margin: '10px'
+  };
+
   const contents = () => {
     return (
       <Container>
         <h1>WAT Quizzer - 諸々設定</h1>
+
+        <Card variant="outlined" style={messageBoxStyle}>
+          <CardContent>
+            <Typography variant="h6" component="h6" color={messageColor}>
+              {message}
+            </Typography>
+          </CardContent>
+        </Card>
+
+        <Card variant="outlined">
+          <CardHeader title="問題ファイル" />
+          <CardContent>
+            <Card variant="outlined">
+              <CardHeader subheader="ファイル新規追加" />
+              <CardContent style={cardContentStyle}>
+                <TextField label="新規ファイル名" variant="outlined" style={inputTextBeforeButtonStyle} />
+                <Button variant="contained" style={buttonAfterInputTextStyle}>
+                  追加
+                </Button>
+              </CardContent>
+            </Card>
+          </CardContent>
+        </Card>
       </Container>
     );
   };
