@@ -8,7 +8,8 @@ export const sideBarContents = [
   { name: '問題検索', link: '/quizzer/searchQuiz' + urlEnd },
   { name: '問題削除', link: '/quizzer/deleteQuiz' + urlEnd },
   { name: 'カテゴリ別正解率表示', link: '/quizzer/accuracyRateGraph' + urlEnd },
-  { name: '画像アップロード', link: '/quizzer/imageUpload' + urlEnd }
+  { name: '画像アップロード', link: '/quizzer/imageUpload' + urlEnd },
+  { name: '設定', link: '/quizzer/settings' + urlEnd }
 ];
 
 // サイドバー開閉
