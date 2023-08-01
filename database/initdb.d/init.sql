@@ -20,8 +20,8 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS quiz_file (
         file_num INT NOT NULL PRIMARY KEY,
-        file_name VARCHAR(256) NOT NULL,
-        file_nickname VARCHAR(256) NOT NULL
+        file_name VARCHAR(256) NOT NULL UNIQUE,
+        file_nickname VARCHAR(256) NOT NULL UNIQUE
     ) DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE
@@ -75,6 +75,8 @@ CREATE VIEW CATEGORY_VIEW AS
 	    c.file_num = a.file_num
 	    AND a.category LIKE concat('%', c.category, '%')
 	    AND a.deleted != 1
-	GROUP BY file_num, c_category
+	GROUP BY
+	    file_num,
+	    c_category
 	ORDER BY file_num, c
 C_CATEGORY; 
