@@ -3,6 +3,7 @@ export const SQL = {
     LIST: ` SELECT * FROM quiz_file ORDER BY file_num; `,
     ADD: ` INSERT INTO quiz_file (file_num, file_name, file_nickname) VALUES (?,?,?);`,
     COUNT: `SELECT MAX(file_num) as file_num FROM quiz_file;`,
+    DELETE: `DELETE FROM quiz_file WHERE file_num = ?  `, // deleted_at追加したら変える
   },
   QUIZ: {
     INFO: `SELECT 
@@ -155,6 +156,14 @@ export const SQL = {
       WHERE 
           file_num = ? 
           AND quiz_num = ? 
+      ;
+    `,
+    //deleted_at追加したら変える
+    DELETE_FILE: ` 
+      DELETE FROM
+        quiz
+      WHERE
+        file_num = ?
       ;
     `,
     INTEGRATE: `

@@ -9,6 +9,7 @@ import {
   IntegrateQuizDto,
   EditQuizDto,
   AddFileDto,
+  DeleteFileDto,
 } from './quiz.dto';
 
 @Injectable()
@@ -464,6 +465,24 @@ export class QuizService {
         file_name,
         file_nickname,
       ]);
+
+      return {
+        result,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // ファイル削除
+  async deleteFile(req: DeleteFileDto) {
+    try {
+      const { file_id } = req;
+      // 指定ファイルの問題全削除
+      await execQuery(SQL.QUIZ.DELETE_FILE, [file_id]);
+
+      // 指定ファイル削除
+      const result: any = await execQuery(SQL.QUIZ_FILE.DELETE, [file_id]);
 
       return {
         result,

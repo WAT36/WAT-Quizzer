@@ -15,6 +15,7 @@ import {
   IntegrateQuizDto,
   EditQuizDto,
   AddFileDto,
+  DeleteFileDto,
 } from './quiz.dto';
 
 @Controller('quiz')
@@ -29,6 +30,11 @@ export class QuizController {
   @Post('/file')
   async addFile(@Body() req: AddFileDto) {
     return await this.quizService.addFile(req);
+  }
+
+  @Delete('/file')
+  async deleteFile(@Body() req: DeleteFileDto) {
+    return await this.quizService.deleteFile(req);
   }
 
   @Get()
