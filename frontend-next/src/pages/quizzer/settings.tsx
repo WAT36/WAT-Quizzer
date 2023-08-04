@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { get, post } from '../../common/API';
+import { del, get, post } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
 import {
   Button,
@@ -29,6 +29,10 @@ export default function SelectQuizPage() {
   const [alertOpen, setAlertOpen] = React.useState(false);
 
   useEffect(() => {
+    getFile();
+  }, []);
+
+  const getFile = () => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
     get('/quiz/file', (data: any) => {
@@ -50,7 +54,7 @@ export default function SelectQuizPage() {
         setMessageColor('error');
       }
     });
-  }, []);
+  };
 
   const addFile = () => {
     setMessage('通信中...');
@@ -72,6 +76,7 @@ export default function SelectQuizPage() {
         }
       }
     );
+    getFile();
   };
 
   const cardContentStyle = {
@@ -98,6 +103,30 @@ export default function SelectQuizPage() {
 
   const handleClose = () => {
     setAlertOpen(false);
+  };
+
+  // ファイルと問題削除
+  const deleteFile = () => {
+    handleClose();
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
+    del(
+      '/quiz/file',
+      {
+        file_id: file_num
+      },
+      (data: any) => {
+        if (data.status === 200 || data.status === 201) {
+          data = data.body;
+          setMessage(`ファイルを削除しました(id:${file_num})`);
+          setMessageColor('success.light');
+        } else {
+          setMessage('エラー:外部APIとの連携に失敗しました');
+          setMessageColor('error');
+        }
+      }
+    );
+    setFileNum(-1);
   };
 
   const contents = () => {
@@ -137,7 +166,6 @@ export default function SelectQuizPage() {
                   labelId="quiz-file-name"
                   id="quiz-file-id"
                   defaultValue={-1}
-                  // value={age}
                   onChange={(e) => selectedFileChange(e)}
                   style={inputTextBeforeButtonStyle}
                 >
@@ -165,7 +193,13 @@ export default function SelectQuizPage() {
                     <Button onClick={handleClose} variant="outlined">
                       キャンセル
                     </Button>
-                    <Button onClick={handleClose} variant="contained" autoFocus>
+                    <Button
+                      onClick={(e) => {
+                        deleteFile();
+                      }}
+                      variant="contained"
+                      autoFocus
+                    >
                       削除
                     </Button>
                   </DialogActions>
