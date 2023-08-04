@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { get } from '../../common/API';
+import { get, post } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
 import { Button, Card, CardContent, CardHeader, Container, MenuItem, TextField, Typography } from '@mui/material';
 import { messageBoxStyle } from '../../styles/Pages';
+import { getRandomStr } from '../../../lib/str';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
   const [message, setMessage] = useState<string>('　');
   const [messageColor, setMessageColor] = useState<string>('common.black');
+  const [fileName, setFileName] = useState<string>();
 
   useEffect(() => {
     setMessage('通信中...');
@@ -32,6 +34,28 @@ export default function SelectQuizPage() {
       }
     });
   }, []);
+
+  const addFile = () => {
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
+    post(
+      '/quiz/file',
+      {
+        file_name: getRandomStr(),
+        file_nickname: fileName
+      },
+      (data: any) => {
+        if (data.status === 200 || data.status === 201) {
+          data = data.body;
+          setMessage(`新規ファイル「${fileName}」を追加しました`);
+          setMessageColor('success.light');
+        } else {
+          setMessage('エラー:外部APIとの連携に失敗しました');
+          setMessageColor('error');
+        }
+      }
+    );
+  };
 
   const cardContentStyle = {
     display: 'flex',
@@ -66,8 +90,15 @@ export default function SelectQuizPage() {
             <Card variant="outlined">
               <CardHeader subheader="ファイル新規追加" />
               <CardContent style={cardContentStyle}>
-                <TextField label="新規ファイル名" variant="outlined" style={inputTextBeforeButtonStyle} />
-                <Button variant="contained" style={buttonAfterInputTextStyle}>
+                <TextField
+                  label="新規ファイル名"
+                  variant="outlined"
+                  onChange={(e) => {
+                    setFileName(e.target.value);
+                  }}
+                  style={inputTextBeforeButtonStyle}
+                />
+                <Button variant="contained" style={buttonAfterInputTextStyle} onClick={(e) => addFile()}>
                   追加
                 </Button>
               </CardContent>
