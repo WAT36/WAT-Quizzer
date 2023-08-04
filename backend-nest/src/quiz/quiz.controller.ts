@@ -14,6 +14,7 @@ import {
   AddQuizDto,
   IntegrateQuizDto,
   EditQuizDto,
+  AddFileDto,
 } from './quiz.dto';
 
 @Controller('quiz')
@@ -23,6 +24,11 @@ export class QuizController {
   @Get('/file')
   async getFileList() {
     return await this.quizService.getFileList();
+  }
+
+  @Post('/file')
+  async addFile(@Body() req: AddFileDto) {
+    return await this.quizService.addFile(req);
   }
 
   @Get()

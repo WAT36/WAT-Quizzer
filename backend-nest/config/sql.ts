@@ -1,6 +1,8 @@
 export const SQL = {
   QUIZ_FILE: {
     LIST: ` SELECT * FROM quiz_file ORDER BY file_num; `,
+    ADD: ` INSERT INTO quiz_file (file_num, file_name, file_nickname) VALUES (?,?,?);`,
+    COUNT: `SELECT MAX(file_num) as file_num FROM quiz_file;`,
   },
   QUIZ: {
     INFO: `SELECT 

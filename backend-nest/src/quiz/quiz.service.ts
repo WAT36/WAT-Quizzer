@@ -8,6 +8,7 @@ import {
   AddQuizDto,
   IntegrateQuizDto,
   EditQuizDto,
+  AddFileDto,
 } from './quiz.dto';
 
 @Injectable()
@@ -444,6 +445,29 @@ export class QuizService {
 
       // チェックしたらtrue、チェック外したらfalseを返す
       return !checked;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // ファイル追加
+  async addFile(req: AddFileDto) {
+    try {
+      const { file_name, file_nickname } = req;
+      // ファイル番号取得
+      const max_file_num: number = (await execQuery(SQL.QUIZ_FILE.COUNT, []))[0]
+        .file_num;
+
+      // ファイル追加
+      const result: any = await execQuery(SQL.QUIZ_FILE.ADD, [
+        max_file_num + 1,
+        file_name,
+        file_nickname,
+      ]);
+
+      return {
+        result,
+      };
     } catch (error) {
       throw error;
     }
