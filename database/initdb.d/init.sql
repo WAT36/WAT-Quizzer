@@ -13,7 +13,9 @@ CREATE TABLE
         category VARCHAR(256),
         img_file VARCHAR(128),
         checked BOOLEAN DEFAULT 0,
-        deleted BOOLEAN DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
         PRIMARY KEY(file_num, quiz_num)
     ) DEFAULT CHARACTER SET = utf8;
 
@@ -21,13 +23,19 @@ CREATE TABLE
     IF NOT EXISTS quiz_file (
         file_num INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         file_name VARCHAR(256) NOT NULL UNIQUE,
-        file_nickname VARCHAR(256) NOT NULL UNIQUE
+        file_nickname VARCHAR(256) NOT NULL UNIQUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
     ) DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE
     IF NOT EXISTS category (
         file_num INT NOT NULL,
         category VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
         PRIMARY KEY(file_num, category)
     ) DEFAULT CHARACTER SET = utf8;
 
