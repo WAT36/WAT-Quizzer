@@ -122,7 +122,7 @@ export default function SelectQuizPage() {
     get(
       '/quiz',
       (data: any) => {
-        if (data.status === 404 || data.body.length === 0) {
+        if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
         } else if (data.status === 200) {
@@ -327,7 +327,7 @@ export default function SelectQuizPage() {
     get(
       '/quiz/random',
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 200 && data.body.length > 0) {
           data = data.body;
           setQuizNum(data[0].quiz_num);
           setQuizSentense(data[0].quiz_sentense);
@@ -336,7 +336,7 @@ export default function SelectQuizPage() {
           setMessage('　');
           setMessageColor('success.light');
           setExpanded(false);
-        } else if (data.status === 404) {
+        } else if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
         } else {
@@ -366,7 +366,7 @@ export default function SelectQuizPage() {
     get(
       '/quiz/worst',
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 200 && data.body?.length > 0) {
           data = data.body;
           setQuizNum(data[0].quiz_num);
           setQuizSentense(data[0].quiz_sentense);
@@ -375,7 +375,7 @@ export default function SelectQuizPage() {
           setMessage('　');
           setMessageColor('success.light');
           setExpanded(false);
-        } else if (data.status === 404) {
+        } else if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
         } else {
@@ -403,7 +403,7 @@ export default function SelectQuizPage() {
     get(
       '/quiz/minimum',
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 200 && data.body?.length > 0) {
           data = data.body;
           setQuizNum(data[0].quiz_num);
           setQuizSentense(data[0].quiz_sentense);
@@ -412,7 +412,7 @@ export default function SelectQuizPage() {
           setMessage('　');
           setMessageColor('success.light');
           setExpanded(false);
-        } else if (data.status === 404) {
+        } else if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
         } else {

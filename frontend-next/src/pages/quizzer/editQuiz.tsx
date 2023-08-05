@@ -71,10 +71,10 @@ export default function EditQuizPage() {
     get(
       '/quiz',
       (data: any) => {
-        if (data.status === 404 || data.body.length === 0) {
+        if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
-        } else if (data.status === 200) {
+        } else if (data.status === 200 && data.body?.length > 0) {
           data = data.body;
           setEditFileNum(data[0].file_num);
           setEditQuizNum(data[0].quiz_num);

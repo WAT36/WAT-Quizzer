@@ -76,7 +76,7 @@ export default function DeleteQuizPage() {
     get(
       '/quiz',
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 200 && data.body?.length > 0) {
           data = data.body;
           setGetFileNum(data[0].file_num);
           setGetQuizNum(data[0].quiz_num);
@@ -86,7 +86,7 @@ export default function DeleteQuizPage() {
           setImage(data[0].img_file);
           setMessage('　');
           setMessageColor('success.light');
-        } else if (data.status === 404) {
+        } else if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
         } else {
@@ -117,7 +117,7 @@ export default function DeleteQuizPage() {
     get(
       '/quiz',
       (data: any) => {
-        if (data.status === 200) {
+        if (data.status === 200 && data.body?.length > 0) {
           data = data.body;
           setIntegrateToQuizNum(data[0].quiz_num);
           setIntegrateToQuestion(data[0].quiz_sentense);
@@ -126,7 +126,7 @@ export default function DeleteQuizPage() {
           setIntegrateToImage(data[0].img_file);
           setMessage('　');
           setMessageColor('success.light');
-        } else if (data.status === 404) {
+        } else if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
         } else {

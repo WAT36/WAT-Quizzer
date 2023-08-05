@@ -121,12 +121,12 @@ export default function SearchQuizPage() {
     get(
       '/quiz/search',
       (data: any) => {
-        if (String(data.status)[0] === '2' || String(data.status)[0] === '3') {
+        if ((String(data.status)[0] === '2' || String(data.status)[0] === '3') && data.body?.length > 0) {
           data = data.body;
           setSearchResult(data);
           setMessage('Success!! ' + data.length + '問の問題を取得しました');
           setMessageColor('success.light');
-        } else if (data.status === 404) {
+        } else if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
         } else {
