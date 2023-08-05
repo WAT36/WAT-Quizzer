@@ -39,6 +39,18 @@ CREATE TABLE
         PRIMARY KEY(file_num, category)
     ) DEFAULT CHARACTER SET = utf8;
 
+CREATE TABLE
+    IF NOT EXISTS answer_log (
+        id INT NOT NULL AUTO_INCREMENT,
+        file_num INT NOT NULL,
+        quiz_num INT NOT NULL,
+        is_corrected BOOLEAN,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET = utf8;
+
 DROP VIEW IF EXISTS quiz_view;
 
 CREATE VIEW QUIZ_VIEW AS 
