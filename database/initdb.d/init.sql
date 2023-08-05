@@ -52,7 +52,9 @@ CREATE VIEW QUIZ_VIEW AS
 	    category,
 	    img_file,
 	    checked,
-	    deleted,
+	    created_at,
+	    updated_at,
+	    deleted_at,
 	    CASE
 	        WHEN (clear_count + fail_count = 0) THEN 0
 	        ELSE 100 * clear_count / (clear_count + fail_count)
@@ -82,9 +84,9 @@ CREATE VIEW CATEGORY_VIEW AS
 	WHERE
 	    c.file_num = a.file_num
 	    AND a.category LIKE concat('%', c.category, '%')
-	    AND a.deleted != 1
+	    AND a.deleted_at IS NULL
 	GROUP BY
 	    file_num,
 	    c_category
-	ORDER BY file_num, c
+	ORDER BY file_num,
 C_CATEGORY; 
