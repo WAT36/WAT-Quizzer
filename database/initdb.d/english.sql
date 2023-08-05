@@ -24,6 +24,7 @@ CREATE TABLE
         wordmean_id INT NOT NULL,
         partsofspeech_id INT NOT NULL,
         meaning VARCHAR(256) NOT NULL,
+        source_id INT NOT NULL,
         PRIMARY KEY(id),
         UNIQUE wordmean_index (word_id, wordmean_id),
         FOREIGN KEY word_id_foreign_key (word_id) REFERENCES word(id),
@@ -74,14 +75,4 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT,
         name VARCHAR(256) NOT NULL,
         PRIMARY KEY(id)
-    ) DEFAULT CHARACTER SET = utf8;
-
-CREATE TABLE
-    IF NOT EXISTS mean_source (
-        source_id INT NOT NULL,
-        word_id INT NOT NULL,
-        mean_id INT NOT NULL,
-        PRIMARY KEY(source_id, word_id, mean_id),
-        FOREIGN KEY source_id_foreign_key (source_id) REFERENCES source(id),
-        FOREIGN KEY word_mean_id_foreign_key (word_id, mean_id) REFERENCES mean(word_id, wordmean_id)
     ) DEFAULT CHARACTER SET = utf8;
