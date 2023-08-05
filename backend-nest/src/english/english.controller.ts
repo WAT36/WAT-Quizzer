@@ -20,4 +20,9 @@ export class EnglishController {
   async searchWord(@Query('wordName') wordName: string) {
     return await this.englishService.searchWordService(wordName);
   }
+
+  @Get('/source')
+  async getSourceList() {
+    return await this.englishService.getSourceService();
+  }
 }

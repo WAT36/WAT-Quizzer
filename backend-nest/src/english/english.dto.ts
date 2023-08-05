@@ -1,7 +1,9 @@
 export interface EnglishWordDataDto {
   partOfSpeechId: number;
+  sourceId: number;
   meaning: string;
   partOfSpeechName?: string;
+  sourceName?: string;
 }
 
 export interface AddEnglishWordDto {

@@ -305,6 +305,34 @@ export const SQL = {
         ;
       `,
     },
+    SOURCE: {
+      GET: {
+        ALL: `
+            SELECT
+                *
+            FROM
+                source
+            ORDER BY
+                id
+            ;
+        `,
+        BYNAME: `
+            SELECT
+                *
+            FROM
+                source
+            WHERE
+                name = ?
+            ;
+        `,
+      },
+      ADD: `
+        INSERT INTO
+          source (name)
+        VALUES(?)
+        ;
+      `,
+    },
     WORD: {
       ADD: `
         INSERT INTO
@@ -327,8 +355,8 @@ export const SQL = {
     MEAN: {
       ADD: `
         INSERT INTO
-          mean (word_id,wordmean_id,partsofspeech_id,meaning)
-        VALUES(?,?,?,?)
+          mean (word_id,wordmean_id,partsofspeech_id,meaning,source_id)
+        VALUES(?,?,?,?,?)
         ;
       `,
     },

@@ -19,6 +19,16 @@ export class EnglishService {
     }
   }
 
+  // 出典取得
+  async getSourceService() {
+    try {
+      const data = await execQuery(SQL.ENGLISH.SOURCE.GET.ALL, []);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // 単語と意味追加
   async addWordAndMeanService(req: AddEnglishWordDto) {
     const { wordName, pronounce, meanArrayData } = req;
@@ -29,8 +39,8 @@ export class EnglishService {
       ]);
 
       for (let i = 0; i < meanArrayData.length; i++) {
-        let partofspeechId: number = meanArrayData[i].partOfSpeechId;
         // その他　の場合は入力した品詞をチェック
+        let partofspeechId: number = meanArrayData[i].partOfSpeechId;
         if (meanArrayData[i].partOfSpeechId === -2) {
           if (!meanArrayData[i].partOfSpeechName) {
             throw new Error(`[${i + 1}]品詞が入力されていません`);
@@ -53,11 +63,36 @@ export class EnglishService {
           }
         }
 
+        // その他　の場合は入力した出典をチェック
+        let sourceId: number = meanArrayData[i].sourceId;
+        if (meanArrayData[i].sourceId === -2) {
+          if (!meanArrayData[i].sourceName) {
+            throw new Error(`[${i + 1}]出典が入力されていません`);
+          }
+
+          // 出典名で既に登録されているか検索
+          const sourceData = await execQuery(SQL.ENGLISH.SOURCE.GET.BYNAME, [
+            meanArrayData[i].sourceName,
+          ]);
+
+          if (sourceData[0]) {
+            // 既にある -> そのIDを出典IDとして使用
+            sourceId = sourceData[0].id;
+          } else {
+            // 登録されていない -> 新規登録してそのIDを使用
+            const result = await execQuery(SQL.ENGLISH.SOURCE.ADD, [
+              meanArrayData[i].sourceName,
+            ]);
+            sourceId = result['insertId'];
+          }
+        }
+
         await execQuery(SQL.ENGLISH.MEAN.ADD, [
           wordData.insertId,
           i + 1,
           partofspeechId,
           meanArrayData[i].meaning,
+          sourceId,
         ]);
       }
       return { wordData };
