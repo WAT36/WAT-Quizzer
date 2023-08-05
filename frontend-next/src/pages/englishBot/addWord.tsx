@@ -24,19 +24,14 @@ import {
   Typography
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-
-interface SendToAddWordApiData {
-  partOfSpeechId: number;
-  meaning: string;
-}
+import { SendToAddWordApiData, meanOfAddWordDto } from './dto/addWordDto';
 
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<string>('　');
   const [messageColor, setMessageColor] = useState<string>('common.black');
   const [posList, setPosList] = useState<JSX.Element[]>([]);
-  const [rowList, setRowList] = useState<JSX.Element[]>([]);
+  const [meanRowList, setMeanRowList] = useState<meanOfAddWordDto[]>([]);
   const [inputWord, setInputWord] = useState<string>('');
-  const [inputMeans, setInputMeans] = useState<[number, string][]>([]);
 
   useEffect(() => {
     getPartOfSpeechList();
@@ -62,6 +57,11 @@ export default function EnglishBotAddWordPage() {
             </MenuItem>
           );
         }
+        gotPosList.push(
+          <MenuItem value={-2} key={-2}>
+            {'その他'}
+          </MenuItem>
+        );
         setPosList(gotPosList);
         setMessage('　');
         setMessageColor('common.black');
@@ -74,47 +74,57 @@ export default function EnglishBotAddWordPage() {
 
   // 列をステートに追加
   const setTableRow = () => {
-    const newRowList = rowList;
-    newRowList.push(getTableRow(rowList.length));
-    setRowList(newRowList);
+    const copyMeanRowList = [...meanRowList];
+    copyMeanRowList.push({
+      pos: {
+        id: -1,
+        name: undefined
+      },
+      mean: undefined
+    });
+    setMeanRowList(copyMeanRowList);
   };
 
-  // テーブルi列目のJSXを返す
-  const getTableRow = (i: number) => {
-    return (
-      <TableRow>
-        <TableCell>
-          <InputLabel id="demo-simple-select-label"></InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            defaultValue={-1}
-            label="partOfSpeech"
-            key={i}
-            sx={{ width: 1 }}
-            onChange={(e) => {
-              changeSelect(String(e.target.value), i, false);
-            }}
-          >
-            <MenuItem value={-1} key={-1}>
-              選択なし
-            </MenuItem>
-            {posList}
-          </Select>
-        </TableCell>
-        <TableCell>
+  // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
+  const displayPosInput = (i: number) => {
+    const posInput =
+      meanRowList[i] && meanRowList[i].pos.id === -2 ? (
+        <>
           <TextField
-            id="input-mean-01"
-            label="意味"
+            id="input-pos-01"
+            label="品詞"
             variant="outlined"
             key={i}
             sx={{ width: 1 }}
             onChange={(e) => {
-              changeSelect(e.target.value, i, true);
+              inputPos(e.target.value, i);
             }}
           />
-        </TableCell>
-      </TableRow>
+        </>
+      ) : (
+        <></>
+      );
+
+    return (
+      <>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          defaultValue={-1}
+          label="partOfSpeech"
+          key={i}
+          sx={{ width: 1 }}
+          onChange={(e) => {
+            changePosSelect(String(e.target.value), i);
+          }}
+        >
+          <MenuItem value={-1} key={-1}>
+            選択なし
+          </MenuItem>
+          {posList}
+        </Select>
+        {posInput}
+      </>
     );
   };
 
@@ -124,21 +134,86 @@ export default function EnglishBotAddWordPage() {
     setTableRow();
   };
 
-  // 列を表示(JSXを取得)
+  // テーブルの行を表示(JSXを返す)
   const displayRow = () => {
-    return rowList.map((value) => {
-      return value;
+    return meanRowList.map((meanDto, index) => {
+      return (
+        <TableRow key={index}>
+          <TableCell>
+            <InputLabel id="demo-simple-select-label"></InputLabel>
+            {displayPosInput(index)}
+          </TableCell>
+          <TableCell>
+            <TextField
+              id="input-mean-01"
+              label="意味"
+              variant="outlined"
+              key={index}
+              sx={{ width: 1 }}
+              onChange={(e) => {
+                inputMean(e.target.value, index);
+              }}
+            />
+          </TableCell>
+        </TableRow>
+      );
     });
   };
 
-  // 意味リスト([品詞,意味])への入力の更新
-  const changeSelect = (value: string, i: number, isMean: boolean) => {
-    if (i >= inputMeans.length) {
-      while (i >= inputMeans.length) {
-        inputMeans.push([-1, '']);
+  // 品詞プルダウン変更時の入力の更新
+  const changePosSelect = (value: string, i: number) => {
+    const copyMeanRowList = [...meanRowList];
+    if (i >= copyMeanRowList.length) {
+      while (i >= copyMeanRowList.length) {
+        copyMeanRowList.push({
+          pos: {
+            id: -1
+          },
+          mean: undefined
+        });
       }
     }
-    inputMeans[i] = isMean ? [inputMeans[i][0], value] : [Number(value), inputMeans[i][1]];
+    copyMeanRowList[i] = {
+      pos: {
+        id: Number(value),
+        name: Number(value) === -2 ? copyMeanRowList[i].pos.name : undefined
+      },
+      mean: copyMeanRowList[i].mean
+    };
+    setMeanRowList(copyMeanRowList);
+  };
+
+  // 品詞入力時の処理
+  const inputPos = (value: string, i: number) => {
+    const copyMeanRowList = [...meanRowList];
+    copyMeanRowList[i] = {
+      pos: {
+        id: copyMeanRowList[i].pos.id,
+        name: value
+      },
+      mean: copyMeanRowList[i].mean
+    };
+    setMeanRowList(copyMeanRowList);
+  };
+
+  // 単語の意味入力時の更新
+  const inputMean = (value: string, i: number) => {
+    const copyMeanRowList = [...meanRowList];
+    if (i >= copyMeanRowList.length) {
+      while (i >= copyMeanRowList.length) {
+        copyMeanRowList.push({
+          pos: {
+            id: -1
+          },
+          mean: undefined
+        });
+      }
+    }
+    copyMeanRowList[i] = {
+      pos: copyMeanRowList[i].pos,
+      mean: value
+    };
+    setMeanRowList(copyMeanRowList);
   };
 
   // 入力した単語名の更新
@@ -155,12 +230,12 @@ export default function EnglishBotAddWordPage() {
       return;
     }
 
-    for (let i = 0; i < inputMeans.length; i++) {
-      if (inputMeans[i][0] === -1) {
+    for (let i = 0; i < meanRowList.length; i++) {
+      if (meanRowList[i].pos.id === -1 || (meanRowList[i].pos.id === -2 && !meanRowList[i].pos.name)) {
         setMessage(`エラー:${i + 1}行目の品詞を入力してください`);
         setMessageColor('error');
         return;
-      } else if (inputMeans[i][1] === '') {
+      } else if (!meanRowList[i].mean || meanRowList[i].mean === '') {
         setMessage(`エラー:${i + 1}行目の意味を入力してください`);
         setMessageColor('error');
         return;
@@ -174,11 +249,12 @@ export default function EnglishBotAddWordPage() {
       {
         wordName: inputWord,
         pronounce: '',
-        meanArrayData: inputMeans.reduce((previousValue: SendToAddWordApiData[], currentValue) => {
-          if (currentValue[0] >= 0) {
+        meanArrayData: meanRowList.reduce((previousValue: SendToAddWordApiData[], currentValue) => {
+          if (currentValue.pos.id !== -1) {
             previousValue.push({
-              partOfSpeechId: currentValue[0],
-              meaning: currentValue[1]
+              partOfSpeechId: currentValue.pos.id,
+              meaning: currentValue.mean || '',
+              partOfSpeechName: currentValue.pos.name
             });
           }
           return previousValue;
@@ -189,13 +265,29 @@ export default function EnglishBotAddWordPage() {
           setMessage(`単語「${inputWord}」を登録しました`);
           setMessageColor('success.light');
           setInputWord('');
-          setRowList([]);
-          setInputMeans([]);
+          setMeanRowList([]);
         } else {
           setMessage('エラー:外部APIとの連携に失敗しました');
           setMessageColor('error');
         }
       }
+    );
+  };
+
+  // （単語の意味入力）テーブル描画
+  const displayTable = () => {
+    return (
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ width: 200 }}>{'品詞'}</TableCell>
+              <TableCell>{'意味'}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{displayRow()}</TableBody>
+        </Table>
+      </TableContainer>
     );
   };
 
@@ -226,17 +318,7 @@ export default function EnglishBotAddWordPage() {
             />
           </FormControl>
 
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ width: 200 }}>{'品詞'}</TableCell>
-                  <TableCell>{'意味'}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>{displayRow()}</TableBody>
-            </Table>
-          </TableContainer>
+          {displayTable()}
           <IconButton aria-label="delete" sx={{ margin: 'auto' }} onClick={addRow}>
             <AddCircleOutlineIcon />
           </IconButton>
