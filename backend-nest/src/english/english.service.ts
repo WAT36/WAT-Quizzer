@@ -12,7 +12,7 @@ export class EnglishService {
   // 品詞取得
   async getPartsofSpeechService() {
     try {
-      const data = await execQuery(SQL.ENGLISH.PARTOFSPEECH, []);
+      const data = await execQuery(SQL.ENGLISH.PARTOFSPEECH.GET.ALL, []);
       return data;
     } catch (error) {
       throw error;
@@ -29,10 +29,34 @@ export class EnglishService {
       ]);
 
       for (let i = 0; i < meanArrayData.length; i++) {
+        let partofspeechId: number = meanArrayData[i].partOfSpeechId;
+        // その他　の場合は入力した品詞をチェック
+        if (meanArrayData[i].partOfSpeechId === -2) {
+          if (!meanArrayData[i].partOfSpeechName) {
+            throw new Error(`[${i + 1}]品詞が入力されていません`);
+          }
+
+          // 品詞名で既に登録されているか検索
+          const posData = await execQuery(SQL.ENGLISH.PARTOFSPEECH.GET.BYNAME, [
+            meanArrayData[i].partOfSpeechName,
+          ]);
+
+          if (posData[0]) {
+            // 既にある -> そのIDを品詞IDとして使用
+            partofspeechId = posData[0].id;
+          } else {
+            // 登録されていない -> 新規登録してそのIDを使用
+            const result = await execQuery(SQL.ENGLISH.PARTOFSPEECH.ADD, [
+              meanArrayData[i].partOfSpeechName,
+            ]);
+            partofspeechId = result['insertId'];
+          }
+        }
+
         await execQuery(SQL.ENGLISH.MEAN.ADD, [
           wordData.insertId,
           i + 1,
-          meanArrayData[i].partOfSpeechId,
+          partofspeechId,
           meanArrayData[i].meaning,
         ]);
       }

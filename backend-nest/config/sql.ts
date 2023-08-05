@@ -277,15 +277,34 @@ export const SQL = {
     `,
   },
   ENGLISH: {
-    PARTOFSPEECH: `
-      SELECT
-          *
-      FROM
-          partsofspeech
-      ORDER BY
-          id
-      ;
-    `,
+    PARTOFSPEECH: {
+      GET: {
+        ALL: `
+              SELECT
+                  *
+              FROM
+                  partsofspeech
+              ORDER BY
+                  id
+              ;
+            `,
+        BYNAME: `
+            SELECT
+                *
+            FROM
+                partsofspeech
+            WHERE
+                name = ?
+            ;
+        `,
+      },
+      ADD: `
+        INSERT INTO
+          partsofspeech (name)
+        VALUES(?)
+        ;
+      `,
+    },
     WORD: {
       ADD: `
         INSERT INTO
