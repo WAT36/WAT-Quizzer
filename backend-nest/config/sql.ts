@@ -3,7 +3,7 @@ export const SQL = {
     LIST: ` SELECT * FROM quiz_file ORDER BY file_num; `,
     ADD: ` INSERT INTO quiz_file (file_num, file_name, file_nickname) VALUES (?,?,?);`,
     COUNT: `SELECT MAX(file_num) as file_num FROM quiz_file;`,
-    DELETE: `DELETE FROM quiz_file WHERE file_num = ?  `, // deleted_at追加したら変える
+    DELETE: `UPDATE quiz_file SET updated_at = NOW(), deleted_at = NOW() WHERE file_num = ?  `,
   },
   QUIZ: {
     INFO: `SELECT 
@@ -12,7 +12,7 @@ export const SQL = {
             quiz 
           WHERE file_num = ? 
           AND quiz_num = ? 
-          AND deleted = 0; `,
+          AND deleted_at IS NULL; `,
     RANDOM: ` SELECT 
                 * 
               FROM 
@@ -20,21 +20,21 @@ export const SQL = {
               WHERE file_num = ? 
               AND accuracy_rate >= ? 
               AND accuracy_rate <= ? 
-              AND deleted = 0 `,
+              AND deleted_at IS NULL `,
     WORST: ` SELECT
                 *
               FROM
                   quiz_view
               WHERE
                   file_num = ?
-              AND deleted = 0 `,
+              AND deleted_at IS NULL `,
     MINIMUM: ` SELECT
                   *
               FROM
                   quiz_view
               WHERE
                   file_num = ?
-              AND deleted = 0 `,
+              AND deleted_at IS NULL `,
     CLEARED: {
       GET: `
         SELECT
@@ -44,17 +44,18 @@ export const SQL = {
         WHERE
             file_num = ?
             AND quiz_num = ?
-            AND deleted = 0 
+            AND deleted_at IS NULL 
       `,
       INPUT: `
         UPDATE
             quiz
         SET
-            clear_count = ?
+            clear_count = ?,
+            updated_at = NOW()
         WHERE
             file_num = ?
             AND quiz_num = ?
-            AND deleted = 0 
+            AND deleted_at IS NULL 
         ;
       `,
     },
@@ -67,17 +68,18 @@ export const SQL = {
         WHERE
             file_num = ?
             AND quiz_num = ?
-            AND deleted = 0 
+            AND deleted_at IS NULL
       `,
       INPUT: `
         UPDATE
             quiz
         SET
-            fail_count = ?
+            fail_count = ? ,
+            updated_at = NOW()
         WHERE
             file_num = ?
             AND quiz_num = ?
-            AND deleted = 0 
+            AND deleted_at IS NULL
         ;
       `,
     },
@@ -89,7 +91,7 @@ export const SQL = {
             quiz
         WHERE
             file_num = ?
-            AND deleted = 1
+            AND deleted_at IS NULL
         ORDER BY
             quiz_num
         LIMIT 1
@@ -112,7 +114,8 @@ export const SQL = {
           category = ? ,
           img_file = ? ,
           checked = 0, 
-          deleted = 0 
+          updated_at = NOW(),
+          deleted_at = NOW() 
       WHERE 
           file_num = ? 
           AND quiz_num = ? 
@@ -125,7 +128,7 @@ export const SQL = {
           quiz 
       WHERE 
           file_num = ?
-      AND deleted = 0
+      AND deleted_at IS NULL
     `,
     MAX_QUIZ_NUM: `
       SELECT 
@@ -139,29 +142,32 @@ export const SQL = {
     `,
     SEARCH: `
       SELECT
-          file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, ROUND(accuracy_rate,1) AS accuracy_rate 
+          file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, ROUND(accuracy_rate,1) AS accuracy_rate 
       FROM
           quiz_view
       WHERE
           file_num = ?
       AND accuracy_rate >= ? 
       AND accuracy_rate <= ? 
-      AND deleted = 0 
+      AND deleted_at IS NULL 
     `,
     DELETE: `
       UPDATE
           quiz
       SET
-          deleted = 1 
+          updated_at = NOW(), 
+          deleted_at = NOW()
       WHERE 
           file_num = ? 
           AND quiz_num = ? 
       ;
     `,
-    //deleted_at追加したら変える
     DELETE_FILE: ` 
-      DELETE FROM
+      UPDATE 
         quiz
+      SET
+        updated_at = NOW(),
+        deleted_at = NOW()
       WHERE
         file_num = ?
       ;
@@ -172,7 +178,8 @@ export const SQL = {
       SET
           clear_count = ?,
           fail_count = ?,
-          category = ?
+          category = ?,
+          updated_at = NOW()
       WHERE 
           file_num = ? 
           AND quiz_num = ? 
@@ -191,7 +198,8 @@ export const SQL = {
         UPDATE
             quiz
         SET
-            category = ?
+            category = ?,
+            updated_at = NOW()
         WHERE 
             file_num = ? 
             AND quiz_num = ? 
@@ -210,7 +218,8 @@ export const SQL = {
       UPDATE
           quiz
       SET
-          checked = true
+          checked = true,
+          updated_at = NOW()
       WHERE 
           file_num = ? 
           AND quiz_num = ? 
@@ -219,7 +228,8 @@ export const SQL = {
       UPDATE
           quiz
       SET
-          checked = false
+          checked = false,
+          updated_at = NOW()
       WHERE 
           file_num = ? 
           AND quiz_num = ? 
@@ -236,7 +246,7 @@ export const SQL = {
       where 
           file_num = ? 
           and checked = 1 
-          and deleted != 1 
+          and deleted_at IS NULL
       group by checked;
     `,
   },
