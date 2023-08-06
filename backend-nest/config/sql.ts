@@ -350,8 +350,14 @@ export const SQL = {
     MEAN: {
       ADD: `
         INSERT INTO
-          mean (word_id,wordmean_id,partsofspeech_id,meaning,source_id)
-        VALUES(?,?,?,?,?)
+          mean (word_id,wordmean_id,partsofspeech_id,meaning)
+        VALUES(?,?,?,?)
+        ;
+      `,
+      SOURCE: `
+        INSERT INTO
+          mean_source (mean_id,source_id)
+        VALUES(?,?)
         ;
       `,
     },

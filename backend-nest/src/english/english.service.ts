@@ -87,11 +87,14 @@ export class EnglishService {
           }
         }
 
-        await execQuery(SQL.ENGLISH.MEAN.ADD, [
+        const meanResult: any = await execQuery(SQL.ENGLISH.MEAN.ADD, [
           wordData.insertId,
           i + 1,
           partofspeechId,
           meanArrayData[i].meaning,
+        ]);
+        await execQuery(SQL.ENGLISH.MEAN.SOURCE, [
+          meanResult.insertId,
           sourceId,
         ]);
       }
