@@ -8,8 +8,6 @@ CREATE TABLE
         quiz_num INT NOT NULL,
         quiz_sentense VARCHAR(256) NOT NULL,
         answer VARCHAR(256) NOT NULL,
-        clear_count INT DEFAULT 0,
-        fail_count INT DEFAULT 0,
         category VARCHAR(256),
         img_file VARCHAR(128),
         checked BOOLEAN DEFAULT 0,
@@ -55,24 +53,52 @@ DROP VIEW IF EXISTS quiz_view;
 
 CREATE VIEW QUIZ_VIEW AS 
 	SELECT
-	    file_num,
-	    quiz_num,
+	    quiz.file_num,
+	    quiz.quiz_num,
 	    quiz_sentense,
 	    answer,
-	    clear_count,
-	    fail_count,
 	    category,
 	    img_file,
 	    checked,
+	    COALESCE(clear_count, 0) as clear_count,
+	    COALESCE(fail_count, 0) as fail_count,
 	    created_at,
 	    updated_at,
 	    deleted_at,
 	    CASE
-	        WHEN (clear_count + fail_count = 0) THEN 0
+	        WHEN (
+	            COALESCE(clear_count, 0) + COALESCE(fail_count, 0) = 0
+	        ) THEN 0
 	        ELSE 100 * clear_count / (clear_count + fail_count)
 	    END AS accuracy_rate
-	FROM
-QUIZ; 
+	FROM quiz
+	    LEFT OUTER JOIN (
+	        SELECT
+	            file_num,
+	            quiz_num,
+	            COUNT(*) as clear_count
+	        FROM answer_log
+	        WHERE
+	            is_corrected = true
+	        GROUP BY
+	            file_num,
+	            quiz_num
+	    ) as corrected_data ON quiz.file_num = corrected_data.file_num
+	    AND quiz.quiz_num = corrected_data.quiz_num
+	    LEFT OUTER JOIN (
+	        SELECT
+	            file_num,
+	            quiz_num,
+	            COUNT(*) as fail_count
+	        FROM answer_log
+	        WHERE
+	            is_corrected = false
+	        GROUP BY
+	            file_num,
+	            quiz_num
+	    ) as incorrected_data ON quiz.file_num = incorrected_data.file_num
+	    AND quiz.quiz_num = incorrected_data.quiz_num
+; 
 
 DROP VIEW IF EXISTS category_view;
 
