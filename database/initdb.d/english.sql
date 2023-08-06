@@ -30,7 +30,6 @@ CREATE TABLE
         wordmean_id INT NOT NULL,
         partsofspeech_id INT NOT NULL,
         meaning VARCHAR(256) NOT NULL,
-        source_id INT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
