@@ -24,7 +24,7 @@ import {
   Typography
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { SendToAddWordApiData, meanOfAddWordDto } from './dto/addWordDto';
+import { SendToAddWordApiData, meanOfAddWordDto } from '../../interfaces/englishBot/addWordDto';
 
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<string>('　');
