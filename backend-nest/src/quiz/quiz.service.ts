@@ -114,16 +114,7 @@ export class QuizService {
   async cleared(req: SelectQuizDto) {
     try {
       const { file_num, quiz_num } = req;
-      // 正解数取得
-      const data = await execQuery(SQL.QUIZ.CLEARED.GET, [file_num, quiz_num]);
-      const clear_count = data[0].clear_count;
-
-      // 正解登録
-      return await execQuery(SQL.QUIZ.CLEARED.INPUT, [
-        clear_count + 1,
-        file_num,
-        quiz_num,
-      ]);
+      return await execQuery(SQL.QUIZ.CLEARED.INPUT, [file_num, quiz_num]);
     } catch (error) {
       throw error;
     }
@@ -133,16 +124,7 @@ export class QuizService {
   async failed(req: SelectQuizDto) {
     try {
       const { file_num, quiz_num } = req;
-      // 不正解数取得
-      const data = await execQuery(SQL.QUIZ.FAILED.GET, [file_num, quiz_num]);
-      const fail_count = data[0].fail_count;
-
-      // 正解登録
-      return await execQuery(SQL.QUIZ.FAILED.INPUT, [
-        fail_count + 1,
-        file_num,
-        quiz_num,
-      ]);
+      return await execQuery(SQL.QUIZ.FAILED.INPUT, [file_num, quiz_num]);
     } catch (error) {
       throw error;
     }
@@ -197,7 +179,7 @@ export class QuizService {
   async edit(req: EditQuizDto) {
     try {
       const { file_num, quiz_num, question, answer, category, img_file } = req;
-      return await execQuery(SQL.QUIZ.EDIT, [
+      await execQuery(SQL.QUIZ.EDIT, [
         question,
         answer,
         category,
@@ -205,6 +187,8 @@ export class QuizService {
         file_num,
         quiz_num,
       ]);
+      // 編集した問題の解答ログ削除
+      await execQuery(SQL.ANSWER_LOG.RESET, [file_num, quiz_num]);
     } catch (error) {
       throw error;
     }
@@ -299,10 +283,6 @@ export class QuizService {
       ]);
 
       // 統合データ作成
-      const new_clear_count =
-        pre_data[0]['clear_count'] + post_data[0]['clear_count'];
-      const new_fail_count =
-        pre_data[0]['fail_count'] + post_data[0]['fail_count'];
       const pre_category = new Set(pre_data[0]['category'].split(':'));
       const post_category = new Set(post_data[0]['category'].split(':'));
       const new_category = Array.from(
@@ -311,18 +291,21 @@ export class QuizService {
 
       // 問題統合
       const result = [];
-      let result_i = await execQuery(SQL.QUIZ.INTEGRATE, [
-        new_clear_count,
-        new_fail_count,
-        new_category,
-        post_file_num,
-        post_quiz_num,
-      ]);
-      result.push(result_i);
+      result.push(
+        await execQuery(SQL.QUIZ.INTEGRATE, [
+          new_category,
+          post_file_num,
+          post_quiz_num,
+        ]),
+      );
 
-      // 統合元データは削除
-      result_i = await execQuery(SQL.QUIZ.DELETE, [pre_file_num, pre_quiz_num]);
-      result.push(result_i);
+      // 統合元データは削除、それまでの解答ログデータも削除
+      result.push(
+        await execQuery(SQL.QUIZ.DELETE, [pre_file_num, pre_quiz_num]),
+      );
+      result.push(
+        await execQuery(SQL.ANSWER_LOG.RESET, [pre_file_num, pre_quiz_num]),
+      );
 
       return result;
     } catch (error) {

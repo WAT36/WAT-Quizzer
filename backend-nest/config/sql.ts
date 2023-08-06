@@ -1,4 +1,7 @@
 export const SQL = {
+  ANSWER_LOG: {
+    RESET: `UPDATE answer_log SET deleted_at = NOW() WHERE file_num = ? AND quiz_num = ?; `,
+  },
   QUIZ_FILE: {
     LIST: ` SELECT * FROM quiz_file ORDER BY file_num; `,
     ADD: ` INSERT INTO quiz_file (file_num, file_name, file_nickname) VALUES (?,?,?);`,
@@ -40,23 +43,16 @@ export const SQL = {
         SELECT
             clear_count
         FROM
-            quiz
+            quiz_view
         WHERE
             file_num = ?
             AND quiz_num = ?
             AND deleted_at IS NULL 
       `,
       INPUT: `
-        UPDATE
-            quiz
-        SET
-            clear_count = ?,
-            updated_at = NOW()
-        WHERE
-            file_num = ?
-            AND quiz_num = ?
-            AND deleted_at IS NULL 
-        ;
+        INSERT INTO 
+          answer_log 
+        (file_num, quiz_num, is_corrected) VALUES (?,?,true);
       `,
     },
     FAILED: {
@@ -64,23 +60,16 @@ export const SQL = {
         SELECT
             fail_count
         FROM
-            quiz
+            quiz_view
         WHERE
             file_num = ?
             AND quiz_num = ?
             AND deleted_at IS NULL
       `,
       INPUT: `
-        UPDATE
-            quiz
-        SET
-            fail_count = ? ,
-            updated_at = NOW()
-        WHERE
-            file_num = ?
-            AND quiz_num = ?
-            AND deleted_at IS NULL
-        ;
+        INSERT INTO 
+          answer_log 
+        (file_num, quiz_num, is_corrected) VALUES (?,?,false);
       `,
     },
     DELETED: {
@@ -109,8 +98,6 @@ export const SQL = {
       SET
           quiz_sentense = ? ,
           answer = ? ,
-          clear_count = 0, 
-          fail_count = 0, 
           category = ? ,
           img_file = ? ,
           checked = 0, 
@@ -176,8 +163,6 @@ export const SQL = {
       UPDATE
           quiz
       SET
-          clear_count = ?,
-          fail_count = ?,
           category = ?,
           updated_at = NOW()
       WHERE 
@@ -242,7 +227,7 @@ export const SQL = {
           SUM(fail_count) as sum_fail, 
           ( 100 * SUM(clear_count) / ( SUM(clear_count) + SUM(fail_count) ) ) as accuracy_rate 
       FROM 
-          quiz 
+          quiz_view 
       where 
           file_num = ? 
           and checked = 1 
