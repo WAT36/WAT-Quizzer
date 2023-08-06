@@ -88,8 +88,8 @@ export const SQL = {
     },
     ADD: `
       INSERT INTO
-          quiz 
-      VALUES(?,?,?,?,0,0,?,?,0,0)
+          quiz (file_num,quiz_num,quiz_sentense,answer,category,img_file,checked)
+      VALUES(?,?,?,?,?,?,false)
       ;
     `,
     EDIT: `

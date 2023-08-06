@@ -75,7 +75,7 @@ export default function AddQuizPage() {
       (data: any) => {
         if (data.status === 200 || data.status === 201) {
           data = data.body;
-          setMessage('　');
+          setMessage('Success!! 問題を追加できました!');
           setMessageColor('success.light');
           setAddLog(data);
           //入力データをクリア

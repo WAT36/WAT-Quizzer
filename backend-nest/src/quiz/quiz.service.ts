@@ -148,8 +148,9 @@ export class QuizService {
         const img_file = data_i[3];
 
         // 新問題番号を取得しINSERT
-        const res = await execQuery(SQL.QUIZ.MAX_QUIZ_NUM, [file_num]);
-        const new_quiz_id: number = res ? res[0]['quiz_num'] + 1 : 1;
+        const res: any = await execQuery(SQL.QUIZ.MAX_QUIZ_NUM, [file_num]);
+        const new_quiz_id: number =
+          res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
         await execQuery(SQL.QUIZ.ADD, [
           file_num,
           new_quiz_id,
