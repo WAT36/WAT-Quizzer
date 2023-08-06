@@ -64,6 +64,16 @@ CREATE TABLE
     ) DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE
+    IF NOT EXISTS mean_source (
+        mean_id INT NOT NULL,
+        source_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(mean_id, source_id)
+    ) DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE
     IF NOT EXISTS idiom (
         id INT NOT NULL AUTO_INCREMENT,
         word_id INT NOT NULL,
