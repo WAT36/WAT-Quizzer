@@ -69,7 +69,7 @@ CREATE VIEW QUIZ_VIEW AS
 	        WHEN (
 	            COALESCE(clear_count, 0) + COALESCE(fail_count, 0) = 0
 	        ) THEN 0
-	        ELSE 100 * clear_count / (
+	        ELSE 100 * COALESCE(clear_count, 0) / (
 	            COALESCE(clear_count, 0) + COALESCE(fail_count, 0)
 	        )
 	    END AS accuracy_rate
