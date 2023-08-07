@@ -6,16 +6,19 @@ import { Secret } from 'aws-cdk-lib/aws-secretsmanager'
 import { Construct } from 'constructs'
 import * as path from 'path'
 import * as dotenv from 'dotenv'
+import * as acm from 'aws-cdk-lib/aws-certificatemanager'
+import * as route53 from 'aws-cdk-lib/aws-route53'
+import { makeRecordsToApigw } from '../service/route53'
 
 dotenv.config()
 
 type BackendStackProps = {
   env: string
+  apiCertificate: acm.Certificate
+  hostedZone: route53.HostedZone
 }
 
 export class BackendStack extends cdk.Stack {
-  readonly restApi: apigw.RestApi
-
   constructor(scope: Construct, id: string, props: BackendStackProps) {
     super(scope, id, {
       env: { region: process.env.REGION || '' },
@@ -69,7 +72,7 @@ export class BackendStack extends cdk.Stack {
     smResource.grantRead(nestLambda)
 
     // API Gateway
-    this.restApi = new apigw.RestApi(this, `NestAppApiGateway`, {
+    const restApi = new apigw.RestApi(this, `NestAppApiGateway`, {
       restApiName: `NestAppApiGw`,
       deployOptions: {
         stageName: 'v1'
@@ -84,7 +87,7 @@ export class BackendStack extends cdk.Stack {
     })
 
     // API gateway Usage plan
-    const usagePlan = this.restApi.addUsagePlan(`${props.env}apiUsagePlan`, {
+    const usagePlan = restApi.addUsagePlan(`${props.env}apiUsagePlan`, {
       name: `${props.env}apiUsagePlan`,
       throttle: {
         rateLimit: 10,
@@ -92,20 +95,35 @@ export class BackendStack extends cdk.Stack {
       }
     })
     usagePlan.addApiStage({
-      api: this.restApi,
-      stage: this.restApi.deploymentStage
+      api: restApi,
+      stage: restApi.deploymentStage
     })
 
     // Api Key
-    const key = this.restApi.addApiKey('ApiKey')
+    const key = restApi.addApiKey('ApiKey')
     usagePlan.addApiKey(key)
 
-    this.restApi.root.addProxy({
+    restApi.root.addProxy({
       defaultIntegration: new apigw.LambdaIntegration(nestLambda),
       anyMethod: true,
       defaultMethodOptions: {
         apiKeyRequired: true
       }
     })
+
+    // api Domain name
+    const apiDomainName = restApi.addDomainName(`${props.env}ApiDomainName`, {
+      domainName: process.env.API_DOMAIN_NAME || '',
+      certificate: props.apiCertificate,
+      endpointType: apigw.EndpointType.EDGE
+    })
+
+    // make route53 record to this api domain
+    makeRecordsToApigw(
+      this,
+      process.env.API_DOMAIN_NAME || '',
+      apiDomainName,
+      props.hostedZone
+    )
   }
 }

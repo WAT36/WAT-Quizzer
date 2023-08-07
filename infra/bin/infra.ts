@@ -12,13 +12,16 @@ const frontendStack = new FrontendStack(app, 'FrontendStack', {
   env
 })
 
-const backendStack = new BackendStack(app, 'BackendStack', { env })
-
 const usEast1Stack = new UsEast1Stack(app, `UsEast1Stack`, {
   env,
-  s3Bucket: frontendStack.s3Bucket,
-  restApi: backendStack.restApi
+  s3Bucket: frontendStack.s3Bucket
+})
+
+const backendStack = new BackendStack(app, 'BackendStack', {
+  env,
+  apiCertificate: usEast1Stack.apiCertificate,
+  hostedZone: usEast1Stack.hostedZone
 })
 
 usEast1Stack.addDependency(frontendStack)
-usEast1Stack.addDependency(backendStack)
+backendStack.addDependency(usEast1Stack)
