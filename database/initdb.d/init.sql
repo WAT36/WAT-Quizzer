@@ -6,7 +6,7 @@ CREATE TABLE
     IF NOT EXISTS quiz (
         file_num INT NOT NULL,
         quiz_num INT NOT NULL,
-        quiz_sentense VARCHAR(256) NOT NULL,
+        quiz_sentense VARCHAR(256) NOT NULL UNIQUE,
         answer VARCHAR(256) NOT NULL,
         category VARCHAR(256),
         img_file VARCHAR(128),
