@@ -10,52 +10,25 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import { makeRecordsToDistribution } from '../service/route53'
+import * as apigw from 'aws-cdk-lib/aws-apigateway'
 
 dotenv.config()
 
 type UsEast1StackProps = {
   env: string
   s3Bucket: s3.Bucket
+  restApi: apigw.RestApi
+  frontCertificate: acm.Certificate
+  hostedZone: route53.HostedZone
 }
 
 // us-east-1(その他、グローバル)リージョンに作成するリソース
 export class UsEast1Stack extends cdk.Stack {
-  readonly apiCertificate: acm.Certificate
-  readonly hostedZone: route53.HostedZone
-
   constructor(scope: Construct, id: string, props: UsEast1StackProps) {
     super(scope, id, {
       env: { region: 'us-east-1' },
       crossRegionReferences: true
     })
-
-    const { region, accountId } = new cdk.ScopedAws(this)
-
-    // DNS hostzone
-    this.hostedZone = new route53.HostedZone(this, 'HostedZone', {
-      zoneName: process.env.HOSTZONE_NAME || ''
-    })
-    this.hostedZone.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
-
-    // ACM（quizzerフロント用）
-    const frontCertificate = new acm.Certificate(
-      this,
-      `${props.env}-quizzer-front`,
-      {
-        domainName: process.env.FRONT_DOMAIN_NAME || '',
-        validation: acm.CertificateValidation.fromDns(this.hostedZone)
-      }
-    )
-
-    // ACM（quizzer API用）
-    this.apiCertificate = new acm.Certificate(
-      this,
-      `${props.env}-quizzer-api`,
-      {
-        domainName: process.env.API_DOMAIN_NAME || '',
-        validation: acm.CertificateValidation.fromDns(this.hostedZone)
-      }
-    )
 
     // Cognito at edge Lambda
     const edgeLambdaRole = makeQuizzerLambdaEdgeIamRole(this, props.env)
@@ -100,7 +73,7 @@ export class UsEast1Stack extends cdk.Stack {
           ]
         },
         domainNames: [process.env.FRONT_DOMAIN_NAME || ''],
-        certificate: frontCertificate
+        certificate: props.frontCertificate
       }
     )
 
@@ -148,7 +121,7 @@ export class UsEast1Stack extends cdk.Stack {
       this,
       process.env.FRONT_DOMAIN_NAME || '',
       distribution,
-      this.hostedZone
+      props.hostedZone
     )
   }
 }

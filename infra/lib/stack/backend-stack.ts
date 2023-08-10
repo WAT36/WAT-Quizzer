@@ -19,6 +19,8 @@ type BackendStackProps = {
 }
 
 export class BackendStack extends cdk.Stack {
+  readonly restApi: apigw.RestApi
+
   constructor(scope: Construct, id: string, props: BackendStackProps) {
     super(scope, id, {
       env: { region: process.env.REGION || '' },
@@ -72,7 +74,7 @@ export class BackendStack extends cdk.Stack {
     smResource.grantRead(nestLambda)
 
     // API Gateway
-    const restApi = new apigw.RestApi(this, `NestAppApiGateway`, {
+    this.restApi = new apigw.RestApi(this, `NestAppApiGateway`, {
       restApiName: `NestAppApiGw`,
       deployOptions: {
         stageName: 'v1'
@@ -87,7 +89,7 @@ export class BackendStack extends cdk.Stack {
     })
 
     // API gateway Usage plan
-    const usagePlan = restApi.addUsagePlan(`${props.env}apiUsagePlan`, {
+    const usagePlan = this.restApi.addUsagePlan(`${props.env}apiUsagePlan`, {
       name: `${props.env}apiUsagePlan`,
       throttle: {
         rateLimit: 10,
@@ -95,15 +97,15 @@ export class BackendStack extends cdk.Stack {
       }
     })
     usagePlan.addApiStage({
-      api: restApi,
-      stage: restApi.deploymentStage
+      api: this.restApi,
+      stage: this.restApi.deploymentStage
     })
 
     // Api Key
-    const key = restApi.addApiKey('ApiKey')
+    const key = this.restApi.addApiKey('ApiKey')
     usagePlan.addApiKey(key)
 
-    restApi.root.addProxy({
+    this.restApi.root.addProxy({
       defaultIntegration: new apigw.LambdaIntegration(nestLambda),
       anyMethod: true,
       defaultMethodOptions: {
@@ -112,11 +114,14 @@ export class BackendStack extends cdk.Stack {
     })
 
     // api Domain name
-    const apiDomainName = restApi.addDomainName(`${props.env}ApiDomainName`, {
-      domainName: process.env.API_DOMAIN_NAME || '',
-      certificate: props.apiCertificate,
-      endpointType: apigw.EndpointType.EDGE
-    })
+    const apiDomainName = this.restApi.addDomainName(
+      `${props.env}ApiDomainName`,
+      {
+        domainName: process.env.API_DOMAIN_NAME || '',
+        certificate: props.apiCertificate,
+        endpointType: apigw.EndpointType.EDGE
+      }
+    )
 
     // make route53 record to this api domain
     makeRecordsToApigw(
