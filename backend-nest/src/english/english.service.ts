@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
 import { AddEnglishWordDto } from './english.dto';
@@ -14,8 +14,13 @@ export class EnglishService {
     try {
       const data = await execQuery(SQL.ENGLISH.PARTOFSPEECH.GET.ALL, []);
       return data;
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 
@@ -24,8 +29,13 @@ export class EnglishService {
     try {
       const data = await execQuery(SQL.ENGLISH.SOURCE.GET.ALL, []);
       return data;
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 
@@ -99,8 +109,13 @@ export class EnglishService {
         ]);
       }
       return { wordData };
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 
@@ -111,8 +126,13 @@ export class EnglishService {
         '%' + (wordName || '') + '%',
       ]);
       return { wordData };
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 }
