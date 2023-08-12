@@ -37,6 +37,7 @@ export default function SelectQuizPage() {
   const [messageColor, setMessageColor] = useState<string>('common.black');
 
   useEffect(() => {
+    console.log('redirect check.');
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
     get('/quiz/file', (data: any) => {
