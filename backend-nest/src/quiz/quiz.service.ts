@@ -25,6 +25,13 @@ export class QuizService {
 
   // 問題取得
   async getQuiz(file_num: number, quiz_num: number) {
+    if (!file_num && !quiz_num) {
+      throw new HttpException(
+        `ファイル番号または問題番号が入力されていません`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     try {
       const data = await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num]);
       return data;
