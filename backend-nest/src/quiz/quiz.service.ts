@@ -211,8 +211,7 @@ export class QuizService {
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
-          // error.message,
-          JSON.stringify(req.input_data.split('\n')),
+          error.message + JSON.stringify(req.input_data.split('\n')),
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
