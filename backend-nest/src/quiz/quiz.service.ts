@@ -179,7 +179,7 @@ export class QuizService {
       for (let i = 0; i < data.length; i++) {
         // 入力データ作成
         const data_i = data[i].split(',');
-        const question = data_i[0] + String(1) || data_i + '(no-split)';
+        const question = data_i[0] + String(2) || data_i + '(no-split)';
         const answer = data_i[1] || data_i + '(no-split)';
         const category = data_i[2] || data_i + '(no-split)';
         const img_file = data_i[3];
@@ -209,12 +209,16 @@ export class QuizService {
       }
       return result;
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+      return {
+        error: 'error',
+        message: 'エラーメッセージテスト',
+      };
+      // if (error instanceof Error) {
+      //   throw new HttpException(
+      //     error.message,
+      //     HttpStatus.INTERNAL_SERVER_ERROR,
+      //   );
+      // }
     }
   }
 
