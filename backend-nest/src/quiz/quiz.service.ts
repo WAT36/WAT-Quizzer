@@ -179,9 +179,9 @@ export class QuizService {
       for (let i = 0; i < data.length; i++) {
         // 入力データ作成
         const data_i = data[i].split(',');
-        const question = data_i[0];
-        const answer = data_i[1];
-        const category = data_i[2];
+        const question = data_i[0] || data_i + '(no-split)';
+        const answer = data_i[1] || data_i + '(no-split)';
+        const category = data_i[2] || data_i + '(no-split)';
         const img_file = data_i[3];
 
         // 新問題番号を取得しINSERT
