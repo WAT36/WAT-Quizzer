@@ -197,14 +197,11 @@ export class QuizService {
           img_file,
         ]);
         result.push(
-          'Added!! [' +
-            file_num +
-            '-' +
-            new_quiz_id +
-            ']:' +
-            question +
-            ',' +
-            answer,
+          'Added!! [' + file_num + '-' + new_quiz_id + ']:',
+          // +
+          // question +
+          // ',' +
+          // answer,
         );
       }
       return result;
