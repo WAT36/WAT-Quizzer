@@ -173,7 +173,7 @@ export class QuizService {
       const { file_num, input_data } = req;
       // 入力データを１行ずつに分割
       const data = input_data.split('\n');
-      console.log(`splited data:${JSON.stringify(data)}`);
+
       const result = [];
 
       for (let i = 0; i < data.length; i++) {
@@ -211,7 +211,7 @@ export class QuizService {
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
-          error.message,
+          { message: error.message, data: req.input_data.split('\n') },
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
