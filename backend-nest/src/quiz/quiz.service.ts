@@ -171,6 +171,13 @@ export class QuizService {
   async add(req: AddQuizDto) {
     try {
       const { file_num, input_data } = req;
+      if (!file_num && !input_data) {
+        throw new HttpException(
+          `ファイル番号または問題文が入力されていません。(file_num:${file_num},input_data:${input_data})`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       // 入力データを１行ずつに分割
       const data = input_data.split('\n');
 
