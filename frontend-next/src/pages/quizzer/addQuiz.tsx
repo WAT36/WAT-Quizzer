@@ -10,16 +10,17 @@ import {
   Container,
   FormControl,
   FormGroup,
+  Input,
   InputLabel,
   MenuItem,
   Select,
-  TextField,
   Typography
 } from '@mui/material';
+import { addQuizDto } from '../../interfaces/quizzer/addQuizDto';
 
 export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
-  const [input_data, setInputData] = useState<string>('');
+  const [input_data, setInputData] = useState<addQuizDto>({});
   const [message, setMessage] = useState<string>('　');
   const [messageColor, setMessageColor] = useState<string>('common.black');
   const [addLog, setAddLog] = useState<any>();
@@ -58,8 +59,8 @@ export default function AddQuizPage() {
       setMessage('エラー:問題ファイルを選択して下さい');
       setMessageColor('error');
       return;
-    } else if (!input_data || input_data === '') {
-      setMessage('エラー:追加する問題を入力して下さい');
+    } else if (!input_data.question || !input_data.answer) {
+      setMessage('エラー:追加する問題文・正解を入力して下さい');
       setMessageColor('error');
       return;
     }
@@ -78,6 +79,7 @@ export default function AddQuizPage() {
           setMessage('Success!! 問題を追加できました!');
           setMessageColor('success.light');
           setAddLog(data);
+          setInputData({});
           //入力データをクリア
           const inputQuizField = document.getElementsByTagName('textarea').item(0) as HTMLTextAreaElement;
           if (inputQuizField) {
@@ -89,6 +91,14 @@ export default function AddQuizPage() {
         }
       }
     );
+  };
+
+  // 入力データを登録
+  const updateInputData = (attrName: string, value: string) => {
+    setInputData((prev) => ({
+      ...prev,
+      [attrName]: value
+    }));
   };
 
   const contents = () => {
@@ -121,19 +131,53 @@ export default function AddQuizPage() {
             </Select>
           </FormControl>
 
-          <Typography variant="h6" component="h6" style={messageBoxStyle}>
-            追加する問題（形式：テスト問題,正解,カテゴリ,画像ファイル名）
-          </Typography>
+          <Card variant="outlined">
+            <CardContent>
+              <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                追加する問題（問題文,正解,カテゴリ,画像ファイル名）
+              </Typography>
 
-          <TextField
-            label="追加問題入力"
-            className="input-quiz-fields"
-            multiline
-            placeholder="追加する問題（形式：テスト問題,正解,カテゴリ,画像ファイル名）を何行でも"
-            minRows={6}
-            variant="outlined"
-            onChange={(e) => setInputData(e.target.value)}
-          />
+              <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                問題文　：
+                <Input
+                  fullWidth
+                  maxRows={1}
+                  value={input_data.question || ''}
+                  onChange={(e) => updateInputData('question', e.target.value)}
+                />
+              </Typography>
+
+              <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                答え　　：
+                <Input
+                  fullWidth
+                  maxRows={1}
+                  value={input_data.answer || ''}
+                  onChange={(e) => updateInputData('answer', e.target.value)}
+                />
+              </Typography>
+
+              <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                カテゴリ：
+                <Input
+                  fullWidth
+                  maxRows={1}
+                  value={input_data.category || ''}
+                  onChange={(e) => updateInputData('category', e.target.value)}
+                />
+              </Typography>
+
+              <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                画像ファイル名：
+                <Input
+                  fullWidth
+                  maxRows={1}
+                  value={input_data.img_file || ''}
+                  onChange={(e) => updateInputData('img_data', e.target.value)}
+                />
+              </Typography>
+            </CardContent>
+          </Card>
         </FormGroup>
 
         <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => addQuiz()}>

@@ -167,58 +167,47 @@ export class QuizService {
     }
   }
 
-  // 問題追加
+  // 問題を１問追加
   async add(req: AddQuizDto) {
     try {
       const { file_num, input_data } = req;
       if (!file_num && !input_data) {
         throw new HttpException(
-          `ファイル番号または問題文が入力されていません。(file_num:${file_num},input_data:${input_data})`,
+          `ファイル番号または問題文が入力されていません。(file_num:${file_num},input_data:${JSON.stringify(
+            input_data,
+          )})`,
           HttpStatus.BAD_REQUEST,
         );
       }
 
-      // 入力データを１行ずつに分割
-      const data = input_data.split('\n');
+      const { question, answer, category, img_file } = input_data;
 
-      const result = [];
-
-      for (let i = 0; i < data.length; i++) {
-        // 入力データ作成
-        const data_i = data[i].split(',');
-        const question = data_i[0];
-        const answer = data_i[1];
-        const category = data_i[2];
-        const img_file = data_i[3];
-
-        // 新問題番号を取得しINSERT
-        const res: any = await execQuery(SQL.QUIZ.MAX_QUIZ_NUM, [file_num]);
-        const new_quiz_id: number =
-          res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
-        await execQuery(SQL.QUIZ.ADD, [
-          file_num,
-          new_quiz_id,
-          question,
+      // 新問題番号を取得しINSERT
+      const res: any = await execQuery(SQL.QUIZ.MAX_QUIZ_NUM, [file_num]);
+      const new_quiz_id: number =
+        res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
+      await execQuery(SQL.QUIZ.ADD, [
+        file_num,
+        new_quiz_id,
+        question,
+        answer,
+        category,
+        img_file,
+      ]);
+      return [
+        'Added!! [' +
+          file_num +
+          '-' +
+          new_quiz_id +
+          ']:' +
+          question +
+          ',' +
           answer,
-          category,
-          img_file,
-        ]);
-        result.push(
-          'Added!! [' +
-            file_num +
-            '-' +
-            new_quiz_id +
-            ']:' +
-            question +
-            ',' +
-            answer,
-        );
-      }
-      return result;
+      ];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
-          error.message + req.input_data,
+          error.message,
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
