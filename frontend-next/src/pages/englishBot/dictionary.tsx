@@ -2,39 +2,36 @@ import React, { useEffect, useState } from 'react';
 
 import { get } from '../../common/API';
 import EnglishBotLayout from './components/EnglishBotLayout';
-import { messageBoxStyle } from '../../styles/Pages';
-import {
-  Card,
-  CardContent,
-  Container,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography
-} from '@mui/material';
+import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
+import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField, Typography } from '@mui/material';
+import { columns } from '../../../utils/englishBot/SearchWordTable';
+import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
 
 export default function EnglishBotDictionaryPage() {
-  const [tableData, setTableData] = useState([]);
+  const [query, setQuery] = useState('');
+  const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
   const [message, setMessage] = useState({
-    message: '',
+    message: '　',
     messageColor: 'common.black'
   });
 
-  useEffect(() => {
-    comingDisplay();
-  }, []);
+  const searchWord = () => {
+    if (!query || query === '') {
+      setMessage({ message: 'エラー:検索語句を入力して下さい', messageColor: 'error' });
+      return;
+    }
 
-  const comingDisplay = () => {
     setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
     get(
       '/english/word/search',
       (data: any) => {
         if (data.status === 200) {
-          setTableData(data.body.wordData || []);
+          const result = data.body?.wordData || [];
+          setSearchResult(result);
+          setMessage({
+            message: 'Success!!' + result.length + '問の問題を取得しました',
+            messageColor: 'success.light'
+          });
         } else {
           setMessage({
             message: 'エラー:外部APIとの連携に失敗しました',
@@ -43,36 +40,8 @@ export default function EnglishBotDictionaryPage() {
         }
       },
       {
-        wordName: ''
+        wordName: query
       }
-    );
-  };
-
-  const makeTableData = () => {
-    return (
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell align="left">Name</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tableData.map((data: any) => (
-              <TableRow key={data.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  {data.id}
-                </TableCell>
-                <TableCell align="left">
-                  {/* <Link to={`/english/word/${data.name}`}>{data.name}</Link> */}
-                  {data.name}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
     );
   };
 
@@ -87,7 +56,32 @@ export default function EnglishBotDictionaryPage() {
             </Typography>
           </CardContent>
         </Card>
-        {makeTableData()}
+
+        <FormGroup>
+          <FormControl>
+            <TextField
+              label="単語名検索"
+              onChange={(e) => {
+                setQuery(e.target.value);
+              }}
+            />
+          </FormControl>
+        </FormGroup>
+
+        <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => searchWord()}>
+          検索
+        </Button>
+
+        <div style={searchedTableStyle}>
+          <DataGrid
+            rows={searchResult}
+            columns={columns}
+            pageSizeOptions={[15]}
+            //checkboxSelection
+            disableRowSelectionOnClick
+            //onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel, details)}
+          />
+        </div>
       </Container>
     );
   };

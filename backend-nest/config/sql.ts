@@ -344,6 +344,7 @@ export const SQL = {
           name LIKE ?
         ORDER BY
           name, id
+        LIMIT 200
         ;
       `,
     },
