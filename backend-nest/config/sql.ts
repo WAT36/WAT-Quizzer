@@ -347,6 +347,15 @@ export const SQL = {
         LIMIT 200
         ;
       `,
+      GET: {
+        ALL: `
+          SELECT 
+            * 
+          FROM 
+            word
+          ;
+        `,
+      },
     },
     MEAN: {
       ADD: `

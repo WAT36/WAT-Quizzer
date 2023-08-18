@@ -135,4 +135,19 @@ export class EnglishService {
       }
     }
   }
+
+  // 単語全取得
+  async getAllWordService() {
+    try {
+      const wordData = await execQuery(SQL.ENGLISH.WORD.GET.ALL, []);
+      return { wordData };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }

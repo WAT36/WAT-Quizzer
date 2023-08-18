@@ -21,6 +21,11 @@ export class EnglishController {
     return await this.englishService.searchWordService(wordName);
   }
 
+  @Get('/word')
+  async getAllWord() {
+    return await this.englishService.getAllWordService();
+  }
+
   @Get('/source')
   async getSourceList() {
     return await this.englishService.getSourceService();
