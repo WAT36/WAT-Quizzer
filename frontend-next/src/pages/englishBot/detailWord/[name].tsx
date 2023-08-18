@@ -2,6 +2,7 @@ import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField
 import EnglishBotLayout from '../components/EnglishBotLayout';
 import { buttonStyle, messageBoxStyle } from '../../../styles/Pages';
 import { useState } from 'react';
+import { get, getApiAndGetValue } from '@/common/API';
 
 type EachWordPageProps = {
   name: string;
@@ -39,16 +40,16 @@ export default function EnglishBotEachWordPage({ name }: EachWordPageProps) {
   );
 }
 
+export async function getAllWords() {
+  const words = await getApiAndGetValue('/english/word');
+  return await words.json();
+}
+
 export async function getStaticPaths() {
-  // const notes = getAllNotes(["slug"]);
-  const words = [
-    {
-      name: 'test'
-    }
-  ];
+  const words = await getAllWords();
 
   return {
-    paths: words.map((word) => {
+    paths: words.wordData.map((word: any) => {
       return {
         params: {
           name: word.name

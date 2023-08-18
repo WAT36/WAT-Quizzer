@@ -24,6 +24,18 @@ export const get = async (path: string, func: any, queryParam?: { [key: string]:
     });
 };
 
+export const getApiAndGetValue = async (path: string, queryParam?: { [key: string]: string }) => {
+  const key = await getApiKey();
+  const query = queryParam ? `?${new URLSearchParams(queryParam)}` : '';
+
+  return await fetch(baseURL + path + query, {
+    method: 'GET',
+    headers: {
+      'x-api-key': key
+    }
+  });
+};
+
 export const post = async (path: string, jsondata: object, func: any) => {
   const key = await getApiKey();
   await fetch(baseURL + path, {
