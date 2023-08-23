@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 
 import { get } from '../../../common/API';
 import EnglishBotLayout from '../components/EnglishBotLayout';
-import { buttonStyle, messageBoxStyle } from '../../../styles/Pages';
+import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../../styles/Pages';
 import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField, Typography } from '@mui/material';
 import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
+import { columns } from '../../../../utils/englishBot/SearchWordTable';
 
 export default function EnglishBotDetailWordPage() {
   const [query, setQuery] = useState('');
@@ -70,6 +71,17 @@ export default function EnglishBotDetailWordPage() {
         <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => searchWord()}>
           検索
         </Button>
+
+        <div style={searchedTableStyle}>
+          <DataGrid
+            rows={searchResult}
+            columns={columns}
+            pageSizeOptions={[15]}
+            //checkboxSelection
+            disableRowSelectionOnClick
+            //onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel, details)}
+          />
+        </div>
       </Container>
     );
   };
