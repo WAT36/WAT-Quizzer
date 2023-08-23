@@ -3,9 +3,38 @@ import React, { useState } from 'react';
 import { get } from '../../../common/API';
 import EnglishBotLayout from '../components/EnglishBotLayout';
 import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../../styles/Pages';
-import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  FormControl,
+  FormGroup,
+  Link,
+  TextField,
+  Typography
+} from '@mui/material';
 import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
-import { columns } from '../../../../utils/englishBot/SearchWordTable';
+
+export const searchedDetailColumns = [
+  {
+    field: 'id',
+    headerName: 'ID',
+    sortable: true,
+    width: 100
+  },
+  {
+    field: 'name',
+    headerName: '単語',
+    sortable: true,
+    width: 300,
+    renderCell: (params: any) => (
+      <Link tabIndex={params.id} href={'/englishBot/detailWord/' + params.value}>
+        {params.value}
+      </Link>
+    )
+  }
+];
 
 export default function EnglishBotDetailWordPage() {
   const [query, setQuery] = useState('');
@@ -75,7 +104,7 @@ export default function EnglishBotDetailWordPage() {
         <div style={searchedTableStyle}>
           <DataGrid
             rows={searchResult}
-            columns={columns}
+            columns={searchedDetailColumns}
             pageSizeOptions={[15]}
             //checkboxSelection
             disableRowSelectionOnClick
