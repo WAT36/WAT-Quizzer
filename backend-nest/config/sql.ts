@@ -355,6 +355,28 @@ export const SQL = {
             word
           ;
         `,
+        ID: `
+          SELECT
+            word.id as word_id,
+            word.name,
+            word.pronounce,
+            mean.wordmean_id,
+            mean.meaning,
+            partsofspeech.name as partsofspeech
+          FROM
+            word
+          INNER JOIN
+            mean
+          ON
+            word.id = mean.word_id
+          INNER JOIN
+            partsofspeech
+          ON
+            mean.partsofspeech_id = partsofspeech.id
+          WHERE
+            word.id = ?
+          ;
+        `,
       },
     },
     MEAN: {

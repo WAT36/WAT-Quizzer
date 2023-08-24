@@ -150,4 +150,19 @@ export class EnglishService {
       }
     }
   }
+
+  // IDから単語情報取得
+  async getWordByIdService(id: number) {
+    try {
+      const wordData = await execQuery(SQL.ENGLISH.WORD.GET.ID, [id]);
+      return { wordData };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }

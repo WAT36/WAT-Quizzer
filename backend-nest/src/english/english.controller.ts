@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { EnglishService } from './english.service';
 import { AddEnglishWordDto } from './english.dto';
 
@@ -24,6 +24,11 @@ export class EnglishController {
   @Get('/word')
   async getAllWord() {
     return await this.englishService.getAllWordService();
+  }
+
+  @Get('/word/:id')
+  async getWordById(@Param('id') id: string) {
+    return await this.englishService.getWordByIdService(+id);
   }
 
   @Get('/source')
