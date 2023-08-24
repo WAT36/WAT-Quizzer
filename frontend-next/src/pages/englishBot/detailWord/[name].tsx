@@ -26,8 +26,8 @@ export default function EnglishBotEachWordPage({ name }: EachWordPageProps) {
           </CardContent>
         </Card>
 
-        <Typography variant="h6" component="h6" color={message.messageColor}>
-          {'名前：' + name}
+        <Typography variant="h1" component="h1" color="common.black">
+          {name}
         </Typography>
       </Container>
     );
