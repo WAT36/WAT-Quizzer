@@ -1,18 +1,51 @@
-import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  FormControl,
+  FormGroup,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 import EnglishBotLayout from '../components/EnglishBotLayout';
 import { buttonStyle, messageBoxStyle } from '../../../styles/Pages';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { get, getApiAndGetValue } from '@/common/API';
 
 type EachWordPageProps = {
-  name: string;
+  id: string;
 };
 
-export default function EnglishBotEachWordPage({ name }: EachWordPageProps) {
+export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
+  const [wordName, setWordName] = useState();
   const [message, setMessage] = useState({
     message: '　',
     messageColor: 'common.black'
   });
+
+  useEffect(() => {
+    get(
+      '/english/word/' + id,
+      (data: any) => {
+        if (data.status === 200) {
+          const result = data.body?.wordData || [];
+          setWordName(result[0].name || '(null)');
+        } else {
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
+        }
+      },
+      {}
+    );
+  }, []);
+
+  const makeMeaningStack = () => {
+    return <Stack></Stack>;
+  };
 
   const contents = () => {
     return (
@@ -27,7 +60,7 @@ export default function EnglishBotEachWordPage({ name }: EachWordPageProps) {
         </Card>
 
         <Typography variant="h1" component="h1" color="common.black">
-          {name}
+          {wordName}
         </Typography>
       </Container>
     );
@@ -52,7 +85,7 @@ export async function getStaticPaths() {
     paths: words.wordData.map((word: any) => {
       return {
         params: {
-          name: word.name
+          id: String(word.id)
         }
       };
     }),
@@ -61,10 +94,10 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(context: any) {
-  const name = context.params['name'];
+  const id = context.params['id'];
   return {
     props: {
-      name
+      id
     }
   };
 }
