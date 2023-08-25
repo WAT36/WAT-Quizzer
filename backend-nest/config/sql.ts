@@ -358,11 +358,12 @@ export const SQL = {
         ID: `
           SELECT
             word.id as word_id,
-            word.name,
+            word.name as name,
             word.pronounce,
             mean.wordmean_id,
             mean.meaning,
-            partsofspeech.name as partsofspeech
+            partsofspeech.name as partsofspeech,
+            source.name as source_name
           FROM
             word
           INNER JOIN
@@ -373,6 +374,14 @@ export const SQL = {
             partsofspeech
           ON
             mean.partsofspeech_id = partsofspeech.id
+          LEFT OUTER JOIN
+            mean_source
+          ON
+            mean.id = mean_source.mean_id
+          LEFT OUTER JOIN
+            source
+          ON
+            mean_source.source_id = source.id
           WHERE
             word.id = ?
           ;

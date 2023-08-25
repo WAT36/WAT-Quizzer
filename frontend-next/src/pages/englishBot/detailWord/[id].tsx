@@ -11,6 +11,7 @@ type EachWordPageProps = {
 type wordMeanData = {
   partofspeechName: string;
   mean: string;
+  sourceName: string;
 };
 
 const mordalStyle = {
@@ -53,7 +54,8 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
           const wordmeans: wordMeanData[] = result.map((x: any) => {
             return {
               partofspeechName: x.partsofspeech,
-              mean: x.meaning
+              mean: x.meaning,
+              sourceName: x.source_name
             };
           });
           setWordName(result[0].name || '(null)');
@@ -95,6 +97,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
                     </Typography>
                     <Typography sx={{ mt: 2 }}>品詞：{x.partofspeechName}</Typography>
                     <Typography sx={{ mt: 2 }}>意味：{x.mean}</Typography>
+                    <Typography sx={{ mt: 2 }}>出典：{x.sourceName}</Typography>
                   </Box>
                 </Modal>
               </Item>
