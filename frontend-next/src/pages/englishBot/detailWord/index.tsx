@@ -29,7 +29,7 @@ export const searchedDetailColumns = [
     sortable: true,
     width: 300,
     renderCell: (params: any) => (
-      <Link tabIndex={params.id} href={'/englishBot/detailWord/' + params.value}>
+      <Link tabIndex={params.id} href={'/englishBot/detailWord/' + params.id}>
         {params.value}
       </Link>
     )
