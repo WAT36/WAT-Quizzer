@@ -1,4 +1,4 @@
-import { Card, CardContent, Container, Paper, Stack, Typography, styled } from '@mui/material';
+import { Box, Button, Card, CardContent, Container, Modal, Paper, Stack, Typography, styled } from '@mui/material';
 import EnglishBotLayout from '../components/EnglishBotLayout';
 import { messageBoxStyle } from '../../../styles/Pages';
 import { useEffect, useState } from 'react';
@@ -13,6 +13,18 @@ type wordMeanData = {
   mean: string;
 };
 
+const mordalStyle = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4
+};
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -24,6 +36,9 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [wordName, setWordName] = useState();
   const [meanData, setMeanData] = useState<wordMeanData[]>([]);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [message, setMessage] = useState({
     message: '　',
     messageColor: 'common.black'
@@ -56,17 +71,38 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
 
   const makeMeaningStack = () => {
     return (
-      <Stack spacing={2}>
-        {meanData.map((x) => {
-          return (
-            // eslint-disable-next-line react/jsx-key
-            <Item>
-              {`[${x.partofspeechName}]`}
-              {x.mean}
-            </Item>
-          );
-        })}
-      </Stack>
+      <Box sx={{ width: '100%' }}>
+        <Stack spacing={2}>
+          {meanData.map((x) => {
+            return (
+              // eslint-disable-next-line react/jsx-key
+              <Item>
+                {`[${x.partofspeechName}]`}
+                {x.mean}
+                {'  '}
+                <Button variant="outlined" onClick={handleOpen}>
+                  編集
+                </Button>
+                <Modal
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box sx={mordalStyle}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                      Text in a modal
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                      モーダルテスト
+                    </Typography>
+                  </Box>
+                </Modal>
+              </Item>
+            );
+          })}
+        </Stack>
+      </Box>
     );
   };
 
