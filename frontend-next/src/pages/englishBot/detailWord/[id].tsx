@@ -90,12 +90,11 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
                   aria-describedby="modal-modal-description"
                 >
                   <Box sx={mordalStyle}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                      Text in a modal
+                    <Typography id="modal-modal-title" variant="h4" component="h4">
+                      意味編集
                     </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                      モーダルテスト
-                    </Typography>
+                    <Typography sx={{ mt: 2 }}>品詞：{x.partofspeechName}</Typography>
+                    <Typography sx={{ mt: 2 }}>意味：{x.mean}</Typography>
                   </Box>
                 </Modal>
               </Item>
