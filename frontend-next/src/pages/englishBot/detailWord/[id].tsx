@@ -118,7 +118,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
         {}
       )
     ]);
-  }, []);
+  }, [id]);
 
   // 品詞リスト取得
   const getPartOfSpeechList = async () => {
