@@ -14,6 +14,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -24,6 +25,7 @@ import {
   Typography
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { SendToAddWordApiData, meanOfAddWordDto } from '../../interfaces/englishBot/addWordDto';
 
 export default function EnglishBotAddWordPage() {
@@ -120,6 +122,13 @@ export default function EnglishBotAddWordPage() {
     setMeanRowList(copyMeanRowList);
   };
 
+  // 最終列を削除
+  const decrementTableRow = () => {
+    const copyMeanRowList = [...meanRowList];
+    copyMeanRowList.pop();
+    setMeanRowList(copyMeanRowList);
+  };
+
   // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
   const displayPosInput = (i: number) => {
     const posInput =
@@ -210,6 +219,12 @@ export default function EnglishBotAddWordPage() {
   const addRow = () => {
     messeageClear();
     setTableRow();
+  };
+
+  // 列を削除
+  const decrementRow = () => {
+    messeageClear();
+    decrementTableRow();
   };
 
   // テーブルの行を表示(JSXを返す)
@@ -454,9 +469,14 @@ export default function EnglishBotAddWordPage() {
           </FormControl>
 
           {displayTable()}
-          <IconButton aria-label="delete" sx={{ margin: 'auto' }} onClick={addRow}>
-            <AddCircleOutlineIcon />
-          </IconButton>
+          <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+            <IconButton onClick={addRow}>
+              <AddCircleOutlineIcon />
+            </IconButton>
+            <IconButton onClick={decrementRow}>
+              <RemoveCircleOutlineIcon />
+            </IconButton>
+          </Stack>
         </FormGroup>
       </Container>
     );
