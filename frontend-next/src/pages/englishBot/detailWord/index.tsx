@@ -117,7 +117,7 @@ export default function EnglishBotDetailWordPage() {
 
   return (
     <>
-      <EnglishBotLayout contents={contents()} />
+      <EnglishBotLayout contents={contents()} title={'単語詳細Top'} />
     </>
   );
 }

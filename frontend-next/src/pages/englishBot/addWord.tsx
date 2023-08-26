@@ -464,7 +464,7 @@ export default function EnglishBotAddWordPage() {
 
   return (
     <>
-      <EnglishBotLayout contents={contents()} />
+      <EnglishBotLayout contents={contents()} title={'単語追加'} />
     </>
   );
 }

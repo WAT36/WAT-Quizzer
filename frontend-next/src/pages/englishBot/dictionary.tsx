@@ -88,7 +88,7 @@ export default function EnglishBotDictionaryPage() {
 
   return (
     <>
-      <EnglishBotLayout contents={contents()} />
+      <EnglishBotLayout contents={contents()} title={'辞書'} />
     </>
   );
 }

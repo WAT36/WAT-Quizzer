@@ -352,7 +352,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
 
   return (
     <>
-      <EnglishBotLayout contents={contents()} />
+      <EnglishBotLayout contents={contents()} title={'各単語詳細'} />
     </>
   );
 }

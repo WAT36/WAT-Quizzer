@@ -3,10 +3,20 @@ import EnglishBotHeader from './EnglishBotHeader';
 import EnglishBotFooter from './EnglishBotFooter';
 import EnglishBotSideBar from './EnglishBotSideBar';
 import { adjustedSpaceStyle } from '../../../styles/Layout';
+import Head from 'next/head';
 
-export default function EnglishBotLayout(props: any) {
+type Props = {
+  contents: JSX.Element;
+  title?: string;
+};
+
+export default function EnglishBotLayout(props: Props) {
   return (
     <>
+      {/*Head タイトルなど*/}
+      <Head>
+        <title>{'WAT Quizzer(EnglishBot) ' + props.title}</title>
+      </Head>
       {/*ヘッダ*/}
       <EnglishBotHeader />
 
