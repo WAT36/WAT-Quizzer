@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
-import { AddEnglishWordDto } from './english.dto';
+import { AddEnglishWordDto, EditWordMeanDto } from './english.dto';
 
 @Injectable()
 export class EnglishService {
@@ -103,7 +103,7 @@ export class EnglishService {
           partofspeechId,
           meanArrayData[i].meaning,
         ]);
-        await execQuery(SQL.ENGLISH.MEAN.SOURCE, [
+        await execQuery(SQL.ENGLISH.MEAN.SOURCE.ADD, [
           meanResult.insertId,
           sourceId,
         ]);
@@ -156,6 +156,32 @@ export class EnglishService {
     try {
       const wordData = await execQuery(SQL.ENGLISH.WORD.GET.ID, [id]);
       return { wordData };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語の意味などを更新
+  async editWordMeanService(req: EditWordMeanDto) {
+    try {
+      const { wordId, wordMeanId, meanId, partofspeechId, meaning, sourceId } =
+        req;
+      const meanEditResult = await execQuery(SQL.ENGLISH.MEAN.EDIT, [
+        partofspeechId,
+        meaning,
+        wordId,
+        wordMeanId,
+      ]);
+      const meanSourceEditResult = await execQuery(
+        SQL.ENGLISH.MEAN.SOURCE.EDIT,
+        [sourceId, meanId],
+      );
+      return { meanEditResult, meanSourceEditResult };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

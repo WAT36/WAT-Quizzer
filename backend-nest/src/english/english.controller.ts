@@ -1,6 +1,14 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { EnglishService } from './english.service';
-import { AddEnglishWordDto } from './english.dto';
+import { AddEnglishWordDto, EditWordMeanDto } from './english.dto';
 
 @Controller('english')
 export class EnglishController {
@@ -34,5 +42,10 @@ export class EnglishController {
   @Get('/source')
   async getSourceList() {
     return await this.englishService.getSourceService();
+  }
+
+  @Patch('/word/:id')
+  async editWordMean(@Body() req: EditWordMeanDto) {
+    return await this.englishService.editWordMeanService(req);
   }
 }

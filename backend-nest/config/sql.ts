@@ -360,6 +360,7 @@ export const SQL = {
             word.id as word_id,
             word.name as name,
             word.pronounce,
+            mean.id as mean_id, 
             mean.wordmean_id,
             mean.meaning,
             partsofspeech.id as partsofspeech_id,
@@ -397,12 +398,35 @@ export const SQL = {
         VALUES(?,?,?,?)
         ;
       `,
-      SOURCE: `
-        INSERT INTO
-          mean_source (mean_id,source_id)
-        VALUES(?,?)
-        ;
+      EDIT: `
+        UPDATE
+            mean
+        SET
+            partsofspeech_id = ?,
+            meaning = ?,
+            updated_at = NOW()
+        WHERE 
+            word_id = ? 
+            AND wordmean_id = ?  
       `,
+      SOURCE: {
+        ADD: `
+          INSERT INTO
+            mean_source (mean_id,source_id)
+          VALUES(?,?)
+          ;
+        `,
+        EDIT: `
+          UPDATE
+            mean_source
+          SET
+            source_id = ?,
+            updated_at = NOW()
+          WHERE
+            mean_id = ?
+          ;
+        `,
+      },
     },
   },
 };
