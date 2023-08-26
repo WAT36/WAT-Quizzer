@@ -217,7 +217,7 @@ export default function EditQuizPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} />
+      <QuizzerLayout contents={contents()} title={'問題編集'} />
     </>
   );
 }

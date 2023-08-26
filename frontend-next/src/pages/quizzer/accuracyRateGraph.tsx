@@ -231,7 +231,7 @@ export default function AccuracyRateGraphPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} />
+      <QuizzerLayout contents={contents()} title={'カテゴリ別正解率表示'} />
     </>
   );
 }

@@ -93,7 +93,7 @@ export default function ImageUploadPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} />
+      <QuizzerLayout contents={contents()} title={'画像アップロード'} />
     </>
   );
 }

@@ -200,7 +200,7 @@ export default function AddQuizPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} />
+      <QuizzerLayout contents={contents()} title={'問題追加'} />
     </>
   );
 }

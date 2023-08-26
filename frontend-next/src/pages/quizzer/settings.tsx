@@ -214,7 +214,7 @@ export default function SelectQuizPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} />
+      <QuizzerLayout contents={contents()} title={'設定'} />
     </>
   );
 }

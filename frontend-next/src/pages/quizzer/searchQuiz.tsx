@@ -535,7 +535,7 @@ export default function SearchQuizPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} />
+      <QuizzerLayout contents={contents()} title={'問題検索'} />
     </>
   );
 }

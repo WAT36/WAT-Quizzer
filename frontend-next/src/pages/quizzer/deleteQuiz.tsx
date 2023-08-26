@@ -386,7 +386,7 @@ export default function DeleteQuizPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} />
+      <QuizzerLayout contents={contents()} title={'問題削除'} />
     </>
   );
 }
