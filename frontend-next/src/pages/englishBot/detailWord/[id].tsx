@@ -16,7 +16,7 @@ import {
 import EnglishBotLayout from '../components/EnglishBotLayout';
 import { messageBoxStyle } from '../../../styles/Pages';
 import { useEffect, useState } from 'react';
-import { get, getApiAndGetValue } from '@/common/API';
+import { get, getApiAndGetValue, patch } from '@/common/API';
 
 type EachWordPageProps = {
   id: string;
@@ -26,12 +26,14 @@ type wordMeanData = {
   partofspeechId: number;
   partofspeechName: string;
   wordmeanId: number;
+  meanId: number;
   mean: string;
   sourceId: number;
   sourceName: string;
 };
 
 type editWordMeanData = {
+  wordId: number;
   wordmeanId: number;
   partofspeechId: number;
   mean: string;
@@ -72,6 +74,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const handleOpen = (x: wordMeanData) => {
     setOpen(true);
     setInputEditData({
+      wordId: +id,
       wordmeanId: x.wordmeanId,
       partofspeechId: x.partofspeechId,
       mean: x.mean,
@@ -97,6 +100,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
                 partofspeechId: x.partsofspeech_id,
                 partofspeechName: x.partsofspeech,
                 wordmeanId: x.wordmean_id,
+                meanId: x.mean_id,
                 mean: x.meaning,
                 sourceId: x.source_id,
                 sourceName: x.source_name
@@ -240,8 +244,32 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
     );
   };
 
-  const editSubmit = () => {
-    console.log(`now editInput state:${JSON.stringify(inputEditData)}`);
+  const editSubmit = (meanId: number) => {
+    patch(
+      '/english/word/' + String(inputEditData?.wordId),
+      {
+        wordId: inputEditData?.wordId,
+        wordMeanId: inputEditData?.wordmeanId,
+        meanId,
+        partofspeechId: inputEditData?.partofspeechId,
+        meaning: inputEditData?.mean,
+        sourceId: inputEditData?.sourceId
+      },
+      (data: any) => {
+        if (data.status === 200 || data.status === 201) {
+          setMessage({
+            message: 'Success!! 編集に成功しました',
+            messageColor: 'success.light'
+          });
+        } else {
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
+        }
+      }
+    );
+    handleClose();
   };
 
   const makeMeaningStack = () => {
@@ -288,7 +316,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
                       出典：
                       {displaySourceInput(3)}
                     </Typography>
-                    <Button variant="contained" onClick={editSubmit}>
+                    <Button variant="contained" onClick={(e) => editSubmit(x.meanId)}>
                       更新
                     </Button>
                   </Box>
