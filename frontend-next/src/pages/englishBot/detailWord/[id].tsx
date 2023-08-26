@@ -1,4 +1,18 @@
-import { Box, Button, Card, CardContent, Container, Modal, Paper, Stack, Typography, styled } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  MenuItem,
+  Modal,
+  Paper,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+  styled
+} from '@mui/material';
 import EnglishBotLayout from '../components/EnglishBotLayout';
 import { messageBoxStyle } from '../../../styles/Pages';
 import { useEffect, useState } from 'react';
@@ -9,9 +23,19 @@ type EachWordPageProps = {
 };
 
 type wordMeanData = {
+  partofspeechId: number;
   partofspeechName: string;
+  wordmeanId: number;
   mean: string;
+  sourceId: number;
   sourceName: string;
+};
+
+type editWordMeanData = {
+  wordmeanId: number;
+  partofspeechId: number;
+  mean: string;
+  sourceId: number;
 };
 
 const mordalStyle = {
@@ -38,38 +62,187 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [wordName, setWordName] = useState();
   const [meanData, setMeanData] = useState<wordMeanData[]>([]);
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [posList, setPosList] = useState<JSX.Element[]>([]);
+  const [sourceList, setSourceList] = useState<JSX.Element[]>([]);
+  const [inputEditData, setInputEditData] = useState<editWordMeanData | undefined>();
   const [message, setMessage] = useState({
     message: '　',
     messageColor: 'common.black'
   });
+  const handleOpen = (x: wordMeanData) => {
+    setOpen(true);
+    setInputEditData({
+      wordmeanId: x.wordmeanId,
+      partofspeechId: x.partofspeechId,
+      mean: x.mean,
+      sourceId: x.sourceId
+    });
+  };
+  const handleClose = () => {
+    setOpen(false);
+    setInputEditData(undefined);
+  };
 
   useEffect(() => {
-    get(
-      '/english/word/' + id,
-      (data: any) => {
-        if (data.status === 200) {
-          const result = data.body?.wordData || [];
-          const wordmeans: wordMeanData[] = result.map((x: any) => {
-            return {
-              partofspeechName: x.partsofspeech,
-              mean: x.meaning,
-              sourceName: x.source_name
-            };
-          });
-          setWordName(result[0].name || '(null)');
-          setMeanData(wordmeans);
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      },
-      {}
-    );
+    Promise.all([
+      getPartOfSpeechList(),
+      getSourceList(),
+      get(
+        '/english/word/' + id,
+        (data: any) => {
+          if (data.status === 200) {
+            const result = data.body?.wordData || [];
+            const wordmeans: wordMeanData[] = result.map((x: any) => {
+              return {
+                partofspeechId: x.partsofspeech_id,
+                partofspeechName: x.partsofspeech,
+                wordmeanId: x.wordmean_id,
+                mean: x.meaning,
+                sourceId: x.source_id,
+                sourceName: x.source_name
+              };
+            });
+            setWordName(result[0].name || '(null)');
+            setMeanData(wordmeans);
+          } else {
+            setMessage({
+              message: 'エラー:外部APIとの連携に失敗しました',
+              messageColor: 'error'
+            });
+          }
+        },
+        {}
+      )
+    ]);
   }, []);
+
+  // 品詞リスト取得
+  const getPartOfSpeechList = async () => {
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
+    get('/english/partsofspeech', (data: any) => {
+      if (data.status === 200) {
+        data = data.body;
+        let gotPosList = [];
+        for (var i = 0; i < data.length; i++) {
+          gotPosList.push(
+            <MenuItem value={data[i].id} key={data[i].id}>
+              {data[i].name}
+            </MenuItem>
+          );
+        }
+        gotPosList.push(
+          <MenuItem value={-2} key={-2}>
+            {'その他'}
+          </MenuItem>
+        );
+        setPosList(gotPosList);
+        setMessage({
+          message: '　',
+          messageColor: 'common.black'
+        });
+      } else {
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
+      }
+    });
+  };
+
+  // 出典リスト取得
+  const getSourceList = async () => {
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
+    get('/english/source', (data: any) => {
+      if (data.status === 200) {
+        data = data.body;
+        let gotSourceList = [];
+        for (var i = 0; i < data.length; i++) {
+          gotSourceList.push(
+            <MenuItem value={data[i].id} key={data[i].id}>
+              {data[i].name}
+            </MenuItem>
+          );
+        }
+        gotSourceList.push(
+          <MenuItem value={-2} key={-2}>
+            {'その他'}
+          </MenuItem>
+        );
+        setSourceList(gotSourceList);
+        setMessage({
+          message: '　',
+          messageColor: 'common.black'
+        });
+      } else {
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
+      }
+    });
+  };
+
+  // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
+  const displayPosInput = (i: number) => {
+    return (
+      <>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          defaultValue={inputEditData?.partofspeechId || -1}
+          label="partOfSpeech"
+          key={i}
+          sx={{ width: 1 }}
+          onChange={(e) => {
+            const inputtedData = Object.assign({}, inputEditData);
+            inputtedData.partofspeechId = Number(e.target.value);
+            setInputEditData(inputtedData);
+          }}
+        >
+          <MenuItem value={-1} key={-1}>
+            選択なし
+          </MenuItem>
+          {posList}
+        </Select>
+      </>
+    );
+  };
+
+  // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
+  const displaySourceInput = (i: number) => {
+    return (
+      <>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          defaultValue={inputEditData?.sourceId || -1}
+          label="source"
+          key={i}
+          sx={{ width: 1 }}
+          onChange={(e) => {
+            const inputtedData = Object.assign({}, inputEditData);
+            inputtedData.sourceId = Number(e.target.value);
+            setInputEditData(inputtedData);
+          }}
+        >
+          <MenuItem value={-1} key={-1}>
+            選択なし
+          </MenuItem>
+          {sourceList}
+        </Select>
+      </>
+    );
+  };
+
+  const editSubmit = () => {
+    console.log(`now editInput state:${JSON.stringify(inputEditData)}`);
+  };
 
   const makeMeaningStack = () => {
     return (
@@ -78,11 +251,11 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
           {meanData.map((x) => {
             return (
               // eslint-disable-next-line react/jsx-key
-              <Item>
+              <Item key={x.wordmeanId}>
                 {`[${x.partofspeechName}]`}
                 {x.mean}
                 {'  '}
-                <Button variant="outlined" onClick={handleOpen}>
+                <Button variant="outlined" onClick={(e) => handleOpen(x)}>
                   編集
                 </Button>
                 <Modal
@@ -95,9 +268,29 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
                     <Typography id="modal-modal-title" variant="h4" component="h4">
                       意味編集
                     </Typography>
-                    <Typography sx={{ mt: 2 }}>品詞：{x.partofspeechName}</Typography>
-                    <Typography sx={{ mt: 2 }}>意味：{x.mean}</Typography>
-                    <Typography sx={{ mt: 2 }}>出典：{x.sourceName}</Typography>
+                    <Typography sx={{ mt: 2 }}>
+                      品詞：
+                      {displayPosInput(1)}
+                    </Typography>
+                    <Typography sx={{ mt: 2 }}>
+                      意味：
+                      <TextField
+                        variant="outlined"
+                        defaultValue={x.mean}
+                        onChange={(e) => {
+                          const inputtedData = Object.assign({}, inputEditData);
+                          inputtedData.mean = e.target.value;
+                          setInputEditData(inputtedData);
+                        }}
+                      />
+                    </Typography>
+                    <Typography sx={{ mt: 2 }}>
+                      出典：
+                      {displaySourceInput(3)}
+                    </Typography>
+                    <Button variant="contained" onClick={editSubmit}>
+                      更新
+                    </Button>
                   </Box>
                 </Modal>
               </Item>

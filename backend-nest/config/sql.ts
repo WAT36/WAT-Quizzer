@@ -362,7 +362,9 @@ export const SQL = {
             word.pronounce,
             mean.wordmean_id,
             mean.meaning,
+            partsofspeech.id as partsofspeech_id,
             partsofspeech.name as partsofspeech,
+            source.id as source_id,
             source.name as source_name
           FROM
             word
