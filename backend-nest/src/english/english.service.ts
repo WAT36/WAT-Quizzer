@@ -166,6 +166,21 @@ export class EnglishService {
     }
   }
 
+  // 単語名から単語情報取得
+  async getWordByNameService(name: string) {
+    try {
+      const wordData = await execQuery(SQL.ENGLISH.WORD.GET.NAME, [name]);
+      return { wordData };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
   // 単語の意味などを更新
   async editWordMeanService(req: EditWordMeanDto) {
     try {

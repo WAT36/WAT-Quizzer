@@ -34,14 +34,19 @@ export class EnglishController {
     return await this.englishService.getAllWordService();
   }
 
-  @Get('/word/:id')
-  async getWordById(@Param('id') id: string) {
-    return await this.englishService.getWordByIdService(+id);
+  @Get('/word/byname')
+  async getWordByName(@Query('name') name: string) {
+    return await this.englishService.getWordByNameService(name);
   }
 
   @Get('/source')
   async getSourceList() {
     return await this.englishService.getSourceService();
+  }
+
+  @Get('/word/:id')
+  async getWordById(@Param('id') id: string) {
+    return await this.englishService.getWordByIdService(+id);
   }
 
   @Patch('/word/:id')

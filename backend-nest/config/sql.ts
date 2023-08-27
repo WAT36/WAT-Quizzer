@@ -389,6 +389,40 @@ export const SQL = {
             word.id = ?
           ;
         `,
+        NAME: `
+          SELECT
+            word.id as word_id,
+            word.name as name,
+            word.pronounce,
+            mean.id as mean_id, 
+            mean.wordmean_id as id,
+            mean.meaning,
+            partsofspeech.id as partsofspeech_id,
+            partsofspeech.name as partsofspeech,
+            source.id as source_id,
+            source.name as source_name
+          FROM
+            word
+          INNER JOIN
+            mean
+          ON
+            word.id = mean.word_id
+          INNER JOIN
+            partsofspeech
+          ON
+            mean.partsofspeech_id = partsofspeech.id
+          LEFT OUTER JOIN
+            mean_source
+          ON
+            mean.id = mean_source.mean_id
+          LEFT OUTER JOIN
+            source
+          ON
+            mean_source.source_id = source.id
+          WHERE
+            word.name = ?
+          ;
+        `,
       },
     },
     MEAN: {
