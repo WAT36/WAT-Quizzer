@@ -71,6 +71,29 @@ export default function EnglishBotAddExamplePage() {
               </CardContent>
             </Card>
           </CardContent>
+
+          <CardContent>
+            <Card variant="outlined">
+              <CardHeader subheader="関連付け単語検索" />
+              <CardContent style={cardContentStyle}>
+                <TextField
+                  label="単語検索(完全一致)"
+                  variant="outlined"
+                  // onChange={(e) => {
+                  //   setFileName(e.target.value);
+                  // }}
+                  style={inputTextBeforeButtonStyle}
+                />
+                <Button
+                  variant="contained"
+                  style={buttonAfterInputTextStyle}
+                  // onClick={(e) => addFile()}
+                >
+                  検索
+                </Button>
+              </CardContent>
+            </Card>
+          </CardContent>
         </Card>
       </Container>
     );
