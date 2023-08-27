@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 
 import EnglishBotLayout from './components/EnglishBotLayout';
-import { messageBoxStyle } from '../../styles/Pages';
+import { messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
 import { Button, Card, CardContent, CardHeader, Container, TextField, Typography } from '@mui/material';
+import { get } from '@/common/API';
+import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
+import { meanColumns } from '../../../utils/englishBot/SearchWordTable';
 
 const cardContentStyle = {
   display: 'flex',
@@ -19,10 +22,42 @@ const buttonAfterInputTextStyle = {
 };
 
 export default function EnglishBotAddExamplePage() {
+  const [query, setQuery] = useState('');
+  const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
   const [message, setMessage] = useState({
     message: '　',
     messageColor: 'common.black'
   });
+
+  const searchWord = () => {
+    if (!query || query === '') {
+      setMessage({ message: 'エラー:検索語句を入力して下さい', messageColor: 'error' });
+      return;
+    }
+
+    setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
+    get(
+      '/english/word/byname',
+      (data: any) => {
+        if (data.status === 200) {
+          const result = data.body?.wordData || [];
+          setSearchResult(result);
+          setMessage({
+            message: 'Success!!取得しました',
+            messageColor: 'success.light'
+          });
+        } else {
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
+        }
+      },
+      {
+        name: query
+      }
+    );
+  };
 
   const contents = () => {
     return (
@@ -79,18 +114,27 @@ export default function EnglishBotAddExamplePage() {
                 <TextField
                   label="単語検索(完全一致)"
                   variant="outlined"
-                  // onChange={(e) => {
-                  //   setFileName(e.target.value);
-                  // }}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                  }}
                   style={inputTextBeforeButtonStyle}
                 />
-                <Button
-                  variant="contained"
-                  style={buttonAfterInputTextStyle}
-                  // onClick={(e) => addFile()}
-                >
+                <Button variant="contained" style={buttonAfterInputTextStyle} onClick={(e) => searchWord()}>
                   検索
                 </Button>
+              </CardContent>
+
+              <CardContent style={cardContentStyle}>
+                <div style={searchedTableStyle}>
+                  <DataGrid
+                    rows={searchResult}
+                    columns={meanColumns}
+                    pageSizeOptions={[15]}
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                    //onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel, details)}
+                  />
+                </div>
               </CardContent>
             </Card>
           </CardContent>
