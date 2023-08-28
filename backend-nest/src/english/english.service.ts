@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
-import { AddEnglishWordDto, EditWordMeanDto } from './english.dto';
+import {
+  AddEnglishWordDto,
+  AddExampleDto,
+  EditWordMeanDto,
+} from './english.dto';
 
 @Injectable()
 export class EnglishService {
@@ -197,6 +201,30 @@ export class EnglishService {
         [sourceId, meanId],
       );
       return { meanEditResult, meanSourceEditResult };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 例文追加
+  async addExampleService(req: AddExampleDto) {
+    const { exampleEn, exampleJa, meanId } = req;
+    try {
+      const exampleData: any = await execQuery(SQL.ENGLISH.EXAMPLE.ADD, [
+        exampleEn,
+        exampleJa,
+      ]);
+      const exampleId = +exampleData.insertId;
+
+      for (let i = 0; i < meanId.length; i++) {
+        await execQuery(SQL.ENGLISH.MEAN.EXAMPLE.ADD, [exampleId, meanId[i]]);
+      }
+      return { exampleData };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

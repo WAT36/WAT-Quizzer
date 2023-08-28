@@ -8,7 +8,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { EnglishService } from './english.service';
-import { AddEnglishWordDto, EditWordMeanDto } from './english.dto';
+import {
+  AddEnglishWordDto,
+  AddExampleDto,
+  EditWordMeanDto,
+} from './english.dto';
 
 @Controller('english')
 export class EnglishController {
@@ -52,5 +56,10 @@ export class EnglishController {
   @Patch('/word/:id')
   async editWordMean(@Body() req: EditWordMeanDto) {
     return await this.englishService.editWordMeanService(req);
+  }
+
+  @Post('/example')
+  async addExample(@Body() req: AddExampleDto) {
+    return await this.englishService.addExampleService(req);
   }
 }

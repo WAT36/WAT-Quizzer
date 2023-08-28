@@ -394,8 +394,8 @@ export const SQL = {
             word.id as word_id,
             word.name as name,
             word.pronounce,
-            mean.id as mean_id, 
-            mean.wordmean_id as id,
+            mean.id as id, 
+            mean.wordmean_id as wordmean_id,
             mean.meaning,
             partsofspeech.id as partsofspeech_id,
             partsofspeech.name as partsofspeech,
@@ -461,6 +461,22 @@ export const SQL = {
           ;
         `,
       },
+      EXAMPLE: {
+        ADD: `
+          INSERT INTO
+            mean_example (example_sentense_id, mean_id)
+          VALUES(?,?)
+          ;
+        `,
+      },
+    },
+    EXAMPLE: {
+      ADD: `
+        INSERT INTO
+          example (en_example_sentense,ja_example_sentense)
+        VALUES(?,?)
+        ;
+      `,
     },
   },
 };
