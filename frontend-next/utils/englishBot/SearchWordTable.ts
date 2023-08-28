@@ -21,6 +21,12 @@ export const meanColumns = [
     width: 100
   },
   {
+    field: 'wordmean_id',
+    headerName: '単語内意味ID',
+    sortable: true,
+    width: 100
+  },
+  {
     field: 'partsofspeech',
     headerName: '品詞',
     sortable: false,

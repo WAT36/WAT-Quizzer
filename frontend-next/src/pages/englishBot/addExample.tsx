@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import EnglishBotLayout from './components/EnglishBotLayout';
 import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
 import { Button, Card, CardContent, CardHeader, Container, TextField, Typography } from '@mui/material';
-import { get } from '@/common/API';
+import { get, post } from '@/common/API';
 import { DataGrid, GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid';
 import { meanColumns } from '../../../utils/englishBot/SearchWordTable';
 
@@ -24,8 +24,7 @@ const buttonAfterInputTextStyle = {
 type InputExampleData = {
   exampleJa?: string;
   exampleEn?: string;
-  wordId?: number;
-  wordMeanId?: number[];
+  meanId?: number[];
 };
 
 export default function EnglishBotAddExamplePage() {
@@ -50,13 +49,6 @@ export default function EnglishBotAddExamplePage() {
         if (data.status === 200) {
           const result = data.body?.wordData || [];
           setSearchResult(result);
-
-          if (result.length > 0) {
-            const copyInputData = Object.assign({}, inputExampleData);
-            copyInputData.wordId = Number(result[0].word_id);
-            setInputExampleData(copyInputData);
-          }
-
           setMessage({
             message: 'Success!!取得しました',
             messageColor: 'success.light'
@@ -77,13 +69,58 @@ export default function EnglishBotAddExamplePage() {
   // チェックした問題のIDをステートに登録
   const registerCheckedIdList = (selectionModel: GridRowSelectionModel, details?: any) => {
     const copyInputData = Object.assign({}, inputExampleData);
-    copyInputData.wordMeanId = selectionModel as number[];
+    copyInputData.meanId = selectionModel as number[];
     setInputExampleData(copyInputData);
   };
 
   // 例文データ登録
   const submitExampleData = () => {
     console.log(`now state: ${JSON.stringify(inputExampleData)}`);
+
+    if (!inputExampleData || !inputExampleData.exampleEn || inputExampleData.exampleEn === '') {
+      setMessage({
+        message: 'エラー:例文(英文)が入力されていません',
+        messageColor: 'error'
+      });
+      return;
+    } else if (!inputExampleData.exampleJa || inputExampleData.exampleJa === '') {
+      setMessage({
+        message: 'エラー:例文(和文)が入力されていません',
+        messageColor: 'error'
+      });
+      return;
+    } else if (!inputExampleData.meanId || inputExampleData.meanId.length === 0) {
+      setMessage({
+        message: 'エラー:単語または意味へのチェック指定がありません',
+        messageColor: 'error'
+      });
+      return;
+    }
+
+    setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
+    post(
+      '/english/example',
+      {
+        exampleEn: inputExampleData.exampleEn,
+        exampleJa: inputExampleData.exampleJa,
+        meanId: inputExampleData.meanId
+      },
+      (data: any) => {
+        if (data.status === 200 || data.status === 201) {
+          setMessage({
+            message: '例文を登録しました',
+            messageColor: 'success.light'
+          });
+          setInputExampleData({});
+          setQuery('');
+        } else {
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
+        }
+      }
+    );
   };
 
   const contents = () => {
