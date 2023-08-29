@@ -142,6 +142,7 @@ export const SQL = {
       UPDATE
           quiz
       SET
+          quiz_sentense = concat(quiz_sentense,'(削除済-',DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),')'),
           updated_at = NOW(), 
           deleted_at = NOW()
       WHERE 
