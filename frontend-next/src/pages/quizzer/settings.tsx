@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { del, get, post } from '../../common/API';
+import { del, get, patch, post } from '../../common/API';
 import QuizzerLayout from './components/QuizzerLayout';
 import {
   Button,
@@ -26,7 +26,9 @@ export default function SelectQuizPage() {
   const [messageColor, setMessageColor] = useState<string>('common.black');
   const [fileName, setFileName] = useState<string>();
   const [file_num, setFileNum] = useState<number>(-1);
+  const [deleteQuizFileNum, setDeleteQuizFileNum] = useState<number>(-1);
   const [alertOpen, setAlertOpen] = React.useState(false);
+  const [deleteQuizFileAlertOpen, setDeleteQuizFileAlertOpen] = React.useState(false);
 
   useEffect(() => {
     getFile();
@@ -79,6 +81,10 @@ export default function SelectQuizPage() {
     getFile();
   };
 
+  const cardStyle = {
+    margin: '10px 0'
+  };
+
   const cardContentStyle = {
     display: 'flex',
     width: '100%'
@@ -108,6 +114,13 @@ export default function SelectQuizPage() {
   // ファイルと問題削除
   const deleteFile = () => {
     handleClose();
+
+    if (file_num === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい');
+      setMessageColor('error');
+      return;
+    }
+
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
     del(
@@ -129,6 +142,38 @@ export default function SelectQuizPage() {
     setFileNum(-1);
   };
 
+  // 指定ファイルのこれまでの回答データ削除
+  const deleteAnswerData = () => {
+    setDeleteQuizFileAlertOpen(false);
+
+    if (deleteQuizFileNum === -1) {
+      setMessage('エラー:問題ファイルを選択して下さい');
+      setMessageColor('error');
+      return;
+    }
+
+    setMessage('通信中...');
+    setMessageColor('#d3d3d3');
+    patch(
+      '/quiz/answer_log/file',
+      {
+        file_id: deleteQuizFileNum
+      },
+      (data: any) => {
+        if (data.status === 200 || data.status === 201) {
+          data = data.body;
+          setMessage(`回答ログを削除しました(id:${deleteQuizFileNum})`);
+          setMessageColor('success.light');
+        } else {
+          setMessage('エラー:外部APIとの連携に失敗しました');
+          setMessageColor('error');
+        }
+      }
+    );
+
+    setDeleteQuizFileNum(-1);
+  };
+
   const contents = () => {
     return (
       <Container>
@@ -142,7 +187,7 @@ export default function SelectQuizPage() {
           </CardContent>
         </Card>
 
-        <Card variant="outlined">
+        <Card variant="outlined" style={cardStyle}>
           <CardHeader title="問題ファイル" />
           <CardContent>
             <Card variant="outlined">
@@ -196,6 +241,66 @@ export default function SelectQuizPage() {
                     <Button
                       onClick={(e) => {
                         deleteFile();
+                      }}
+                      variant="contained"
+                      autoFocus
+                    >
+                      削除
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </CardContent>
+            </Card>
+          </CardContent>
+        </Card>
+
+        <Card variant="outlined" style={cardStyle}>
+          <CardHeader title="解答データ削除" />
+          <CardContent>
+            <Card variant="outlined">
+              <CardHeader subheader="ファイル新規追加" />
+              <CardContent style={cardContentStyle}>
+                <Select
+                  labelId="quiz-file-name"
+                  id="quiz-file-id"
+                  defaultValue={-1}
+                  // value={age}
+                  onChange={(e) => {
+                    setDeleteQuizFileNum(Number(e.target.value));
+                  }}
+                  style={inputTextBeforeButtonStyle}
+                >
+                  <MenuItem value={-1} key={-1}>
+                    選択なし
+                  </MenuItem>
+                  {filelistoption}
+                </Select>
+                <Button
+                  variant="contained"
+                  style={buttonAfterInputTextStyle}
+                  onClick={(e) => setDeleteQuizFileAlertOpen(true)}
+                >
+                  削除
+                </Button>
+                <Dialog
+                  open={deleteQuizFileAlertOpen}
+                  onClose={(e) => setDeleteQuizFileAlertOpen(false)}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">本当に削除しますか？</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                      指定ファイルのこれまでの回答データが削除されます。
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={(e) => setDeleteQuizFileAlertOpen(false)} variant="outlined">
+                      キャンセル
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        deleteAnswerData();
                       }}
                       variant="contained"
                       autoFocus
