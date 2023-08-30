@@ -1,6 +1,17 @@
 export const SQL = {
   ANSWER_LOG: {
     RESET: `UPDATE answer_log SET deleted_at = NOW() WHERE file_num = ? AND quiz_num = ?; `,
+    FILE: {
+      RESET: `
+        UPDATE
+          answer_log
+        SET
+          deleted_at = NOW()
+        WHERE
+          file_num = ?
+          AND deleted_at IS NULL;
+      `,
+    },
   },
   QUIZ_FILE: {
     LIST: ` SELECT * FROM quiz_file ORDER BY file_num; `,

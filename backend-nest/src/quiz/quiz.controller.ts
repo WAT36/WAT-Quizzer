@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Patch,
   Post,
   Put,
   Query,
@@ -160,5 +161,10 @@ export class QuizController {
   @Post('/check')
   async reverseCheck(@Body() req: SelectQuizDto) {
     return await this.quizService.reverseCheck(req);
+  }
+
+  @Patch('/answer_log/file')
+  async deleteAnswerLogByFile(@Body() req: DeleteFileDto) {
+    return await this.quizService.deleteAnswerLogByFile(req);
   }
 }

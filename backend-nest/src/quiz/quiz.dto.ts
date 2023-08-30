@@ -43,3 +43,7 @@ export interface AddFileDto {
 export interface DeleteFileDto {
   file_id: number;
 }
+
+export interface DeleteAnswerLogByFile {
+  file_id: number;
+}

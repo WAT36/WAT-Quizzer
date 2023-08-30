@@ -10,6 +10,7 @@ import {
   EditQuizDto,
   AddFileDto,
   DeleteFileDto,
+  DeleteAnswerLogByFile,
 } from './quiz.dto';
 
 @Injectable()
@@ -549,6 +550,29 @@ export class QuizService {
       await execQuery(SQL.QUIZ.DELETE_FILE, [file_id]);
 
       // 指定ファイル削除
+      const result: any = await execQuery(SQL.QUIZ_FILE.DELETE, [file_id]);
+
+      return {
+        result,
+      };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 回答ログ削除(ファイル指定)
+  async deleteAnswerLogByFile(req: DeleteAnswerLogByFile) {
+    try {
+      const { file_id } = req;
+      // 指定ファイルの回答ログ削除
+      await execQuery(SQL.ANSWER_LOG.FILE.RESET, [file_id]);
+
+      // 回答ログ削除
       const result: any = await execQuery(SQL.QUIZ_FILE.DELETE, [file_id]);
 
       return {
