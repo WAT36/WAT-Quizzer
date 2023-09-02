@@ -367,6 +367,13 @@ export const SQL = {
             word
           ;
         `,
+        MAX_ID: `
+          SELECT
+            MAX(id) as id
+          FROM
+            word
+          ;
+        `,
         ID: `
           SELECT
             word.id as word_id,
@@ -438,6 +445,15 @@ export const SQL = {
       },
     },
     MEAN: {
+      GET: {
+        MAX_ID: `
+          SELECT
+            MAX(id) as id
+          FROM
+            mean
+          ;
+        `,
+      },
       ADD: `
         INSERT INTO
           mean (word_id,wordmean_id,partsofspeech_id,meaning)
@@ -483,6 +499,15 @@ export const SQL = {
       },
     },
     EXAMPLE: {
+      GET: {
+        MAX_ID: `
+          SELECT
+            MAX(id) as id
+          FROM
+            example
+          ;
+        `,
+      },
       ADD: `
         INSERT INTO
           example (en_example_sentense,ja_example_sentense)

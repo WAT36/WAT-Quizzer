@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
-import { execQuery } from 'lib/db/dao';
+import { TransactionQuery, execQuery, execTransaction } from 'lib/db/dao';
 import { SelectFileDto } from './category.dto';
 
 @Injectable()
@@ -27,8 +27,6 @@ export class CategoryService {
   async replaceAllCategory(req: SelectFileDto) {
     try {
       const { file_num } = req;
-      //まずカテゴリを全削除
-      let data: any = await execQuery(SQL.CATEGORY.DELETE, [file_num]);
 
       //指定ファイルのカテゴリ取得
       const results: any = await execQuery(SQL.QUIZ.CATEGORY.DISTINCT, [
@@ -36,21 +34,38 @@ export class CategoryService {
       ]);
 
       //カテゴリデータ作成
-      let categories: any = new Set([]);
+      let categories: Set<string> = new Set([]);
       // eslint-disable-next-line no-var
       for (var i = 0; i < results.length; i++) {
-        const result_i = new Set(results[i]['category'].split(':'));
+        const result_i: Set<string> = new Set(
+          results[i]['category'].split(':'),
+        );
         categories = new Set([...result_i, ...categories]);
       }
-      categories = Array.from(categories);
-      data = [];
+      const categoriesArray: string[] = Array.from(categories);
+      const data: [number, string][] = [];
       // eslint-disable-next-line no-var
-      for (var i = 0; i < categories.length; i++) {
-        data.push([file_num, categories[i]]);
+      for (var i = 0; i < categoriesArray.length; i++) {
+        data.push([file_num, categoriesArray[i]]);
       }
 
+      // トランザクション実行準備
+      const transactionQuery: TransactionQuery[] = [];
+      //まず指定ファイルのカテゴリを全削除
+      transactionQuery.push({
+        query: SQL.CATEGORY.DELETE,
+        value: [file_num],
+      });
+
       //カテゴリデータ全挿入
-      const result = await execQuery(SQL.CATEGORY.ADD, [data]);
+      for (let i = 0; i < data.length; i++) {
+        transactionQuery.push({
+          query: SQL.CATEGORY.ADD,
+          value: data[i],
+        });
+      }
+      //トランザクション実行
+      const result = await execTransaction(transactionQuery);
 
       return result;
     } catch (error: unknown) {

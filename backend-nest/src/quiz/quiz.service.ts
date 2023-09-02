@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
-import { execQuery } from 'lib/db/dao';
+import { TransactionQuery, execQuery, execTransaction } from 'lib/db/dao';
 import { parseStrToBool } from 'lib/str';
 import {
   UpdateCategoryOfQuizDto,
@@ -219,16 +219,23 @@ export class QuizService {
   async edit(req: EditQuizDto) {
     try {
       const { file_num, quiz_num, question, answer, category, img_file } = req;
-      await execQuery(SQL.QUIZ.EDIT, [
-        question,
-        answer,
-        category,
-        img_file,
-        file_num,
-        quiz_num,
-      ]);
+
+      //トランザクション実行準備
+      const transactionQuery: TransactionQuery[] = [];
+
+      transactionQuery.push({
+        query: SQL.QUIZ.EDIT,
+        value: [question, answer, category, img_file, file_num, quiz_num],
+      });
       // 編集した問題の解答ログ削除
-      await execQuery(SQL.ANSWER_LOG.RESET, [file_num, quiz_num]);
+      transactionQuery.push({
+        query: SQL.ANSWER_LOG.RESET,
+        value: [file_num, quiz_num],
+      });
+
+      //トランザクション実行
+      const result = await execTransaction(transactionQuery);
+      return { result };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -325,6 +332,9 @@ export class QuizService {
         );
       }
 
+      //トランザクション実行準備
+      const transactionQuery: TransactionQuery[] = [];
+
       // 統合前の問題取得
       const pre_data: any = await execQuery(SQL.QUIZ.INFO, [
         pre_file_num,
@@ -345,24 +355,24 @@ export class QuizService {
       ).join(':');
 
       // 問題統合
-      const result = [];
-      result.push(
-        await execQuery(SQL.QUIZ.INTEGRATE, [
-          new_category,
-          post_file_num,
-          post_quiz_num,
-        ]),
-      );
+      transactionQuery.push({
+        query: SQL.QUIZ.INTEGRATE,
+        value: [new_category, post_file_num, post_quiz_num],
+      });
 
       // 統合元データは削除、それまでの解答ログデータも削除
-      result.push(
-        await execQuery(SQL.QUIZ.DELETE, [pre_file_num, pre_quiz_num]),
-      );
-      result.push(
-        await execQuery(SQL.ANSWER_LOG.RESET, [pre_file_num, pre_quiz_num]),
-      );
+      transactionQuery.push({
+        query: SQL.QUIZ.DELETE,
+        value: [pre_file_num, pre_quiz_num],
+      });
+      transactionQuery.push({
+        query: SQL.ANSWER_LOG.RESET,
+        value: [pre_file_num, pre_quiz_num],
+      });
 
-      return result;
+      //トランザクション実行
+      const result = await execTransaction(transactionQuery);
+      return { result };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -546,15 +556,31 @@ export class QuizService {
   async deleteFile(req: DeleteFileDto) {
     try {
       const { file_id } = req;
+
+      //トランザクション実行準備
+      const transactionQuery: TransactionQuery[] = [];
+
       // 指定ファイルの問題全削除
-      await execQuery(SQL.QUIZ.DELETE_FILE, [file_id]);
+      transactionQuery.push({
+        query: SQL.QUIZ.DELETE_FILE,
+        value: [file_id],
+      });
+
+      // 指定ファイルの回答ログ全削除
+      transactionQuery.push({
+        query: SQL.ANSWER_LOG.FILE.RESET,
+        value: [file_id],
+      });
 
       // 指定ファイル削除
-      const result: any = await execQuery(SQL.QUIZ_FILE.DELETE, [file_id]);
+      transactionQuery.push({
+        query: SQL.QUIZ_FILE.DELETE,
+        value: [file_id],
+      });
 
-      return {
-        result,
-      };
+      //トランザクション実行
+      const result = await execTransaction(transactionQuery);
+      return { result };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -570,10 +596,7 @@ export class QuizService {
     try {
       const { file_id } = req;
       // 指定ファイルの回答ログ削除
-      await execQuery(SQL.ANSWER_LOG.FILE.RESET, [file_id]);
-
-      // 回答ログ削除
-      const result: any = await execQuery(SQL.QUIZ_FILE.DELETE, [file_id]);
+      const result = await execQuery(SQL.ANSWER_LOG.FILE.RESET, [file_id]);
 
       return {
         result,
