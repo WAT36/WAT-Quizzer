@@ -516,4 +516,30 @@ export const SQL = {
       `,
     },
   },
+  SAYING: {
+    GET: {
+      RANDOM: {
+        ALL: `
+          SELECT
+            saying
+          FROM
+            saying
+          ORDER BY RAND()
+          LIMIT 1
+          ;
+        `,
+        BYBOOK: `
+          SELECT
+            saying
+          FROM
+            saying
+          WHERE
+            book_id = ?
+          ORDER BY RAND()
+          LIMIT 1
+          ;
+        `,
+      },
+    },
+  },
 };

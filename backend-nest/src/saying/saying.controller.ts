@@ -1,22 +1,13 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { SayingService } from './saying.service';
 
 @Controller('saying')
 export class SayingController {
   constructor(private readonly sayingService: SayingService) {}
 
-  // @Get()
-  // async getCategory(@Query('file_num') file_num: number) {
-  //   return await this.categoryService.getCategoryList(file_num);
-  // }
-
-  // @Post()
-  // async replaceAllCategory(@Body() req: SelectFileDto) {
-  //   return await this.categoryService.replaceAllCategory(req);
-  // }
-
-  // @Get('rate')
-  // async getAccuracyRateByCategory(@Query('file_num') file_num: number) {
-  //   return await this.categoryService.getAccuracyRateByCategory(file_num);
-  // }
+  // 格言取得（本ID指定、無い場合はランダムで取得）
+  @Get()
+  async getSaying(@Query('book_id') book_id: number) {
+    return await this.sayingService.getRandomSaying(book_id);
+  }
 }
