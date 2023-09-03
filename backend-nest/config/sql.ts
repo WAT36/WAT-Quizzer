@@ -517,6 +517,11 @@ export const SQL = {
     },
   },
   SAYING: {
+    ADD: `
+      INSERT INTO
+        saying (book_id,book_saying_id,saying)
+      VALUES(?,?,?)
+    `,
     GET: {
       RANDOM: {
         ALL: `
@@ -537,6 +542,19 @@ export const SQL = {
             book_id = ?
           ORDER BY RAND()
           LIMIT 1
+          ;
+        `,
+      },
+      ID: {
+        BYBOOK: `
+          SELECT
+            MAX(book_saying_id) as book_saying_id
+          FROM
+            saying
+          WHERE
+            book_id = ?
+          GROUP BY
+            book_id
           ;
         `,
       },

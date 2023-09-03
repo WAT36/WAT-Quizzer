@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { SayingService } from './saying.service';
-import { AddBookDto } from './saying.dto';
+import { AddBookDto, AddSayingDto } from './saying.dto';
 
 @Controller('saying')
 export class SayingController {
@@ -22,5 +22,11 @@ export class SayingController {
   @Get('/book')
   async getBookList() {
     return await this.sayingService.getBookListService();
+  }
+
+  // 格言追加
+  @Post()
+  async addSaying(@Body() req: AddSayingDto) {
+    return await this.sayingService.addSayingService(req);
   }
 }
