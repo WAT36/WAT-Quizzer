@@ -542,4 +542,23 @@ export const SQL = {
       },
     },
   },
+  SELFHELP_BOOK: {
+    ADD: `
+      INSERT INTO
+        selfhelp_book (name)
+      VALUES(?)
+      ;
+    `,
+    GET: {
+      ALL: `
+        SELECT
+          id,name
+        FROM
+          selfhelp_book
+        ORDER BY
+          id
+        ;
+      `,
+    },
+  },
 };

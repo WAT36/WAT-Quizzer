@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
+import { AddBookDto } from './saying.dto';
 
 @Injectable()
 export class SayingService {
@@ -12,6 +13,35 @@ export class SayingService {
       } else {
         return await execQuery(SQL.SAYING.GET.RANDOM.ALL, []);
       }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 啓発本追加
+  async addBookService(req: AddBookDto) {
+    const { book_name } = req;
+    try {
+      return await execQuery(SQL.SELFHELP_BOOK.ADD, [book_name]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 啓発本リスト取得
+  async getBookListService() {
+    try {
+      return await execQuery(SQL.SELFHELP_BOOK.GET.ALL, []);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
