@@ -54,6 +54,15 @@ export default function Top() {
           >
             English Quiz Bot
           </Button>
+          <Button
+            style={topButtonStyle}
+            variant="contained"
+            size="large"
+            color="info"
+            href={'/settings' + process.env.NEXT_PUBLIC_URL_END}
+          >
+            設定
+          </Button>
         </div>
 
         <Card variant="outlined">
