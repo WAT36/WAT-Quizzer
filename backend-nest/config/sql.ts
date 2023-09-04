@@ -190,6 +190,7 @@ export const SQL = {
         WHERE 
           file_num = ? 
           AND quiz_num = ? 
+          AND deleted_at IS NULL
       `,
       UPDATE: `
         UPDATE
@@ -255,6 +256,7 @@ export const SQL = {
           category
       WHERE
           file_num = ? 
+          AND deleted_at IS NULL
       ORDER BY
           category;
     `,
@@ -291,6 +293,8 @@ export const SQL = {
                   *
               FROM
                   partsofspeech
+              WHERE
+                  deleted_at IS NULL
               ORDER BY
                   id
               ;
@@ -302,6 +306,7 @@ export const SQL = {
                 partsofspeech
             WHERE
                 name = ?
+                AND deleted_at IS NULL
             ;
         `,
       },
@@ -319,6 +324,8 @@ export const SQL = {
                 *
             FROM
                 source
+            WHERE
+                deleted_at IS NULL
             ORDER BY
                 id
             ;
@@ -330,6 +337,7 @@ export const SQL = {
                 source
             WHERE
                 name = ?
+                AND deleted_at IS NULL
             ;
         `,
       },
@@ -354,6 +362,7 @@ export const SQL = {
           word
         WHERE
           name LIKE ?
+          AND deleted_at IS NULL
         ORDER BY
           name, id
         LIMIT 200
@@ -365,6 +374,8 @@ export const SQL = {
             * 
           FROM 
             word
+          WHERE
+            deleted_at IS NULL
           ;
         `,
         MAX_ID: `
@@ -406,6 +417,7 @@ export const SQL = {
             mean_source.source_id = source.id
           WHERE
             word.id = ?
+            AND word.deleted_at IS NULL
           ;
         `,
         NAME: `
@@ -440,6 +452,7 @@ export const SQL = {
             mean_source.source_id = source.id
           WHERE
             word.name = ?
+            AND word.deleted_at IS NULL
           ;
         `,
       },
@@ -529,6 +542,8 @@ export const SQL = {
             saying
           FROM
             saying
+          WHERE
+            deleted_at IS NULL
           ORDER BY RAND()
           LIMIT 1
           ;
@@ -540,6 +555,7 @@ export const SQL = {
             saying
           WHERE
             book_id = ?
+            AND deleted_at IS NULL
           ORDER BY RAND()
           LIMIT 1
           ;
@@ -573,6 +589,8 @@ export const SQL = {
           id,name
         FROM
           selfhelp_book
+        WHERE
+          deleted_at IS NULL
         ORDER BY
           id
         ;
