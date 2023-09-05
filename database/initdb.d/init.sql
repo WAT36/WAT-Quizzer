@@ -4,6 +4,7 @@ USE quiz_db;
 
 CREATE TABLE
     IF NOT EXISTS quiz (
+        id INT NOT NULL AUTO_INCREMENT,
         file_num INT NOT NULL,
         quiz_num INT NOT NULL,
         quiz_sentense VARCHAR(256) NOT NULL UNIQUE,
@@ -14,7 +15,8 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(file_num, quiz_num)
+        PRIMARY KEY(id),
+        UNIQUE (file_num, quiz_num)
     ) DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE
