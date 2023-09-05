@@ -85,6 +85,39 @@ CREATE TABLE
         PRIMARY KEY(id)
     ) DEFAULT CHARACTER SET = utf8;
 
+# 応用問題
+CREATE TABLE
+    IF NOT EXISTS advanced_quiz (
+        id INT NOT NULL AUTO_INCREMENT,
+        file_num INT NOT NULL,
+        advanced_quiz_num INT NOT NULL,
+        advanced_quiz_sentense VARCHAR(256) NOT NULL UNIQUE,
+        answer VARCHAR(256) NOT NULL,
+        img_file VARCHAR(128),
+        checked BOOLEAN DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+        UNIQUE(file_num, advanced_quiz_num)
+    ) DEFAULT CHARACTER SET = utf8;
+
+# 基本問題と応用問題の紐付け
+CREATE TABLE
+    IF NOT EXISTS quiz_basis_advanced_linkage (
+        id INT NOT NULL AUTO_INCREMENT,
+        basis_quiz_id INT NOT NULL,
+        advanced_quiz_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+        UNIQUE (
+            basis_quiz_id,
+            advanced_quiz_id
+        )
+    ) DEFAULT CHARACTER SET = utf8;
+
 DROP VIEW IF EXISTS quiz_view;
 
 CREATE VIEW QUIZ_VIEW AS
