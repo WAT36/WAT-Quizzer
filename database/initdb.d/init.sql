@@ -49,6 +49,42 @@ CREATE TABLE
         PRIMARY KEY(id)
     ) DEFAULT CHARACTER SET = utf8;
 
+# 類似問題グループ
+CREATE TABLE
+    IF NOT EXISTS quiz_similarity_group (
+        id INT NOT NULL AUTO_INCREMENT,
+        similarity_group_name VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET = utf8;
+
+# 類似問題
+CREATE TABLE
+    IF NOT EXISTS quiz_similarity (
+        id INT NOT NULL AUTO_INCREMENT,
+        similarity_group_id INT NOT NULL,
+        quiz_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+        UNIQUE (similarity_group_id, quiz_id)
+    ) DEFAULT CHARACTER SET = utf8;
+
+# 前提問題
+CREATE TABLE
+    IF NOT EXISTS quiz_dependency (
+        id INT NOT NULL AUTO_INCREMENT,
+        preliminary_quiz_id INT NOT NULL,
+        quiz_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET = utf8;
+
 DROP VIEW IF EXISTS quiz_view;
 
 CREATE VIEW QUIZ_VIEW AS
