@@ -109,3 +109,61 @@ CREATE TABLE
         deleted_at TIMESTAMP,
         PRIMARY KEY(id)
     ) DEFAULT CHARACTER SET = utf8;
+
+/* 類義語グループ */
+
+CREATE TABLE
+    IF NOT EXISTS word_similarity_group (
+        id INT NOT NULL AUTO_INCREMENT,
+        word_similarity_group_name VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET = utf8;
+
+/* 類義語 */
+
+CREATE TABLE
+    IF NOT EXISTS word_similarity (
+        id INT NOT NULL AUTO_INCREMENT,
+        word_similarity_group_id INT NOT NULL,
+        word_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+        UNIQUE similarity_word_id_index (
+            word_similarity_group_id,
+            word_id
+        )
+    ) DEFAULT CHARACTER SET = utf8;
+
+/* 語源グループ */
+
+CREATE TABLE
+    IF NOT EXISTS word_etymology_group (
+        id INT NOT NULL AUTO_INCREMENT,
+        word_etymology_group_name VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET = utf8;
+
+/* 単語源 */
+
+CREATE TABLE
+    IF NOT EXISTS word_etymology (
+        id INT NOT NULL AUTO_INCREMENT,
+        word_etymology_group_id INT NOT NULL,
+        word_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+        UNIQUE etymology_word_id_index (
+            word_etymology_group_id,
+            word_id
+        )
+    ) DEFAULT CHARACTER SET = utf8;
