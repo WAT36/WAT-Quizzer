@@ -11,6 +11,8 @@ import {
   AddFileDto,
   DeleteFileDto,
   DeleteAnswerLogByFile,
+  GetQuizNumSqlResultDto,
+  GetQuizInfoSqlResultDto,
 } from './quiz.dto';
 
 @Injectable()
@@ -34,8 +36,7 @@ export class QuizService {
     }
 
     try {
-      const data = await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num]);
-      return data;
+      return await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -184,7 +185,10 @@ export class QuizService {
       const { question, answer, category, img_file } = input_data;
 
       // 新問題番号を取得しINSERT
-      const res: any = await execQuery(SQL.QUIZ.MAX_QUIZ_NUM, [file_num]);
+      const res: GetQuizNumSqlResultDto[] = await execQuery(
+        SQL.QUIZ.MAX_QUIZ_NUM,
+        [file_num],
+      );
       const new_quiz_id: number =
         res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
       await execQuery(SQL.QUIZ.ADD, [
@@ -336,16 +340,16 @@ export class QuizService {
       const transactionQuery: TransactionQuery[] = [];
 
       // 統合前の問題取得
-      const pre_data: any = await execQuery(SQL.QUIZ.INFO, [
-        pre_file_num,
-        pre_quiz_num,
-      ]);
+      const pre_data: GetQuizInfoSqlResultDto[] = await execQuery(
+        SQL.QUIZ.INFO,
+        [pre_file_num, pre_quiz_num],
+      );
 
       // 統合後の問題取得
-      const post_data: any = await execQuery(SQL.QUIZ.INFO, [
-        post_file_num,
-        post_quiz_num,
-      ]);
+      const post_data: GetQuizInfoSqlResultDto[] = await execQuery(
+        SQL.QUIZ.INFO,
+        [post_file_num, post_quiz_num],
+      );
 
       // 統合データ作成
       const pre_category = new Set(pre_data[0]['category'].split(':'));
@@ -427,11 +431,11 @@ export class QuizService {
     try {
       const { file_num, quiz_num, category } = body;
       // 現在のカテゴリ取得
-      let nowCategory: any = await execQuery(SQL.QUIZ.INFO, [
+      const res: GetQuizInfoSqlResultDto[] = await execQuery(SQL.QUIZ.INFO, [
         file_num,
         quiz_num,
       ]);
-      nowCategory = nowCategory[0]['category'];
+      const nowCategory = res[0]['category'];
 
       // 指定カテゴリが含まれているか確認、含まれていなければ終了
       if (!nowCategory.includes(category)) {
@@ -504,7 +508,10 @@ export class QuizService {
     try {
       const { file_num, quiz_num } = req;
       // チェック取得
-      const result: any = await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num]);
+      const result: GetQuizInfoSqlResultDto[] = await execQuery(SQL.QUIZ.INFO, [
+        file_num,
+        quiz_num,
+      ]);
       const checked = result[0].checked;
 
       await execQuery(checked ? SQL.QUIZ.UNCHECK : SQL.QUIZ.CHECK, [
@@ -533,15 +540,11 @@ export class QuizService {
         .file_num;
 
       // ファイル追加
-      const result: any = await execQuery(SQL.QUIZ_FILE.ADD, [
+      return await execQuery(SQL.QUIZ_FILE.ADD, [
         max_file_num + 1,
         file_name,
         file_nickname,
       ]);
-
-      return {
-        result,
-      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
