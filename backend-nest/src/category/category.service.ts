@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { TransactionQuery, execQuery, execTransaction } from 'lib/db/dao';
-import { SelectFileDto } from './category.dto';
+import {
+  CategoryByFileSqlResultDto,
+  GetAccuracyRateByCategoryServiceDto,
+  SelectFileDto,
+} from './category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -29,9 +33,10 @@ export class CategoryService {
       const { file_num } = req;
 
       //指定ファイルのカテゴリ取得
-      const results: any = await execQuery(SQL.QUIZ.CATEGORY.DISTINCT, [
-        file_num,
-      ]);
+      const results: CategoryByFileSqlResultDto[] = await execQuery(
+        SQL.QUIZ.CATEGORY.DISTINCT,
+        [file_num],
+      );
 
       //カテゴリデータ作成
       let categories: Set<string> = new Set([]);
@@ -81,7 +86,7 @@ export class CategoryService {
   // カテゴリ正解率取得
   async getAccuracyRateByCategory(file_num: number) {
     try {
-      const result: any = {
+      const result: GetAccuracyRateByCategoryServiceDto = {
         result: [],
         checked_result: [],
       };
