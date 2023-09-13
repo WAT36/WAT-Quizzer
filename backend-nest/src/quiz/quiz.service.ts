@@ -12,8 +12,8 @@ import {
   DeleteFileDto,
   DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
+  QuizDto,
 } from './quiz.dto';
-import { QuizDto } from 'interface/database/quiz';
 
 @Injectable()
 export class QuizService {
