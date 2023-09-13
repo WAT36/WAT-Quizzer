@@ -12,8 +12,8 @@ import {
   DeleteFileDto,
   DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
-  GetQuizInfoSqlResultDto,
 } from './quiz.dto';
+import { QuizDto } from 'interface/database/quiz';
 
 @Injectable()
 export class QuizService {
@@ -340,16 +340,16 @@ export class QuizService {
       const transactionQuery: TransactionQuery[] = [];
 
       // 統合前の問題取得
-      const pre_data: GetQuizInfoSqlResultDto[] = await execQuery(
-        SQL.QUIZ.INFO,
-        [pre_file_num, pre_quiz_num],
-      );
+      const pre_data: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
+        pre_file_num,
+        pre_quiz_num,
+      ]);
 
       // 統合後の問題取得
-      const post_data: GetQuizInfoSqlResultDto[] = await execQuery(
-        SQL.QUIZ.INFO,
-        [post_file_num, post_quiz_num],
-      );
+      const post_data: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
+        post_file_num,
+        post_quiz_num,
+      ]);
 
       // 統合データ作成
       const pre_category = new Set(pre_data[0]['category'].split(':'));
@@ -431,7 +431,7 @@ export class QuizService {
     try {
       const { file_num, quiz_num, category } = body;
       // 現在のカテゴリ取得
-      const res: GetQuizInfoSqlResultDto[] = await execQuery(SQL.QUIZ.INFO, [
+      const res: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
         file_num,
         quiz_num,
       ]);
@@ -508,7 +508,7 @@ export class QuizService {
     try {
       const { file_num, quiz_num } = req;
       // チェック取得
-      const result: GetQuizInfoSqlResultDto[] = await execQuery(SQL.QUIZ.INFO, [
+      const result: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
         file_num,
         quiz_num,
       ]);
