@@ -16,6 +16,7 @@ import {
   Select,
   Typography
 } from '@mui/material';
+import { ProcessingApiReponse, QuizFileApiResponse } from '@/interfaces/API';
 
 export default function AccuracyRateGraphPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -27,14 +28,14 @@ export default function AccuracyRateGraphPage() {
   useEffect(() => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
-    get('/quiz/file', (data: any) => {
+    get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
         let filelist = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < res.length; i++) {
           filelist.push(
-            <MenuItem value={data[i].file_num} key={data[i].file_num}>
-              {data[i].file_nickname}
+            <MenuItem value={res[i].file_num} key={res[i].file_num}>
+              {res[i].file_nickname}
             </MenuItem>
           );
         }
