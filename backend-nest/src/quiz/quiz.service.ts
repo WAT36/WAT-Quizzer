@@ -200,14 +200,17 @@ export class QuizService {
         img_file,
       ]);
       return [
-        'Added!! [' +
-          file_num +
-          '-' +
-          new_quiz_id +
-          ']:' +
-          question +
-          ',' +
-          answer,
+        {
+          result:
+            'Added!! [' +
+            file_num +
+            '-' +
+            new_quiz_id +
+            ']:' +
+            question +
+            ',' +
+            answer,
+        },
       ];
     } catch (error: unknown) {
       if (error instanceof Error) {
