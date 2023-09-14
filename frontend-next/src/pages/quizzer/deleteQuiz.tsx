@@ -17,6 +17,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { ProcessingApiReponse, QuizApiResponse, QuizFileApiResponse } from '@/interfaces/API';
 
 export default function DeleteQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -39,14 +40,14 @@ export default function DeleteQuizPage() {
   useEffect(() => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
-    get('/quiz/file', (data: any) => {
+    get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
         let filelist = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < res.length; i++) {
           filelist.push(
-            <MenuItem value={data[i].file_num} key={data[i].file_num}>
-              {data[i].file_nickname}
+            <MenuItem value={res[i].file_num} key={res[i].file_num}>
+              {res[i].file_nickname}
             </MenuItem>
           );
         }
@@ -75,15 +76,15 @@ export default function DeleteQuizPage() {
     setMessageColor('#d3d3d3');
     get(
       '/quiz',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
-          data = data.body;
-          setGetFileNum(data[0].file_num);
-          setGetQuizNum(data[0].quiz_num);
-          setQuestion(data[0].quiz_sentense);
-          setAnswer(data[0].answer);
-          setCategory(data[0].category);
-          setImage(data[0].img_file);
+          const res: QuizApiResponse[] = data.body as QuizApiResponse[];
+          setGetFileNum(res[0].file_num);
+          setGetQuizNum(res[0].quiz_num);
+          setQuestion(res[0].quiz_sentense);
+          setAnswer(res[0].answer);
+          setCategory(res[0].category);
+          setImage(res[0].img_file);
           setMessage('　');
           setMessageColor('success.light');
         } else if (data.status === 404 || data.body?.length === 0) {
@@ -116,14 +117,14 @@ export default function DeleteQuizPage() {
     setMessageColor('#d3d3d3');
     get(
       '/quiz',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
-          data = data.body;
-          setIntegrateToQuizNum(data[0].quiz_num);
-          setIntegrateToQuestion(data[0].quiz_sentense);
-          setIntegrateToAnswer(data[0].answer);
-          setIntegrateToCategory(data[0].category);
-          setIntegrateToImage(data[0].img_file);
+          const res: QuizApiResponse[] = data.body as QuizApiResponse[];
+          setIntegrateToQuizNum(res[0].quiz_num);
+          setIntegrateToQuestion(res[0].quiz_sentense);
+          setIntegrateToAnswer(res[0].answer);
+          setIntegrateToCategory(res[0].category);
+          setIntegrateToImage(res[0].img_file);
           setMessage('　');
           setMessageColor('success.light');
         } else if (data.status === 404 || data.body?.length === 0) {
@@ -156,9 +157,8 @@ export default function DeleteQuizPage() {
         file_num: get_file_num,
         quiz_num: get_quiz_num
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200) {
-          data = data.body;
           let quiz_num = '[' + get_file_num + '-' + get_quiz_num + ']';
           setMessage('Success! 削除に成功しました' + quiz_num);
           setMessageColor('success.light');
@@ -200,9 +200,8 @@ export default function DeleteQuizPage() {
         post_file_num: get_file_num,
         post_quiz_num: integrate_to_quiz_num
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          data = data.body;
           let quiz_num = '[' + get_file_num + ':' + get_quiz_num + '->' + integrate_to_quiz_num + ']';
           setMessage('Success! 統合に成功しました' + quiz_num);
           setMessageColor('success.light');
