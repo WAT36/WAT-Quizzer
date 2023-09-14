@@ -23,6 +23,11 @@ export interface QuizFileApiResponse extends ApiResponse {
   deleted_at: string | undefined;
 }
 
+// 問題追加APIの返り値の型
+export interface AddQuizApiResponse extends ApiResponse {
+  result: string;
+}
+
 // (指定ファイルのカテゴリ毎の)正解率が入ったDTO(SQL実行結果)
 export interface AccuracyRateByCategorySqlResultDto {
   file_num: number;
