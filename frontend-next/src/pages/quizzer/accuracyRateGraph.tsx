@@ -16,13 +16,13 @@ import {
   Select,
   Typography
 } from '@mui/material';
-import { ProcessingApiReponse, QuizFileApiResponse } from '@/interfaces/API';
+import { GetAccuracyRateByCategoryServiceDto, ProcessingApiReponse, QuizFileApiResponse } from '@/interfaces/API';
 
 export default function AccuracyRateGraphPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [message, setMessage] = useState<string>('　');
   const [messageColor, setMessageColor] = useState<string>('common.black');
-  const [accuracy_data, setAccuracyData] = useState<any>();
+  const [accuracy_data, setAccuracyData] = useState<GetAccuracyRateByCategoryServiceDto>();
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
   useEffect(() => {
@@ -60,10 +60,10 @@ export default function AccuracyRateGraphPage() {
     setMessageColor('#d3d3d3');
     get(
       '/category/rate',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200) {
-          data = data.body;
-          setAccuracyData(data);
+          const res: GetAccuracyRateByCategoryServiceDto[] = data.body as GetAccuracyRateByCategoryServiceDto[];
+          setAccuracyData(res[0]);
           setMessage('　');
           setMessageColor('success.light');
         } else if (data.status === 404) {
@@ -94,9 +94,8 @@ export default function AccuracyRateGraphPage() {
       {
         file_num: file_num
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          data = data.body;
           setMessage('指定問題ファイルへのカテゴリ更新に成功しました');
           setMessageColor('success.light');
         } else if (data.status === 404) {
@@ -114,12 +113,7 @@ export default function AccuracyRateGraphPage() {
     const display_data = accuracy_data;
 
     // データがない場合は何もしない
-    if (
-      display_data === undefined ||
-      display_data === null ||
-      display_data.result === undefined ||
-      display_data.checked_result === undefined
-    ) {
+    if (!display_data) {
       return;
     }
 
@@ -136,24 +130,22 @@ export default function AccuracyRateGraphPage() {
     let checked_rate = display_data.checked_result;
     for (let i = 0; i < checked_rate.length; i++) {
       let annotation_i =
-        String(Math.round(parseFloat(checked_rate[i].accuracy_rate) * 10) / 10) +
-        '% / ' +
-        String(checked_rate[i].count) +
-        '問';
-      visualized_data.push(['(チェック済問題)', parseFloat(checked_rate[i].accuracy_rate), '#32CD32', annotation_i]);
+        // String(Math.round(parseFloat(checked_rate[i].accuracy_rate) * 10) / 10) +
+        String(Math.round(checked_rate[i].accuracy_rate * 10) / 10) + '% / ' + String(checked_rate[i].count) + '問';
+      // visualized_data.push(['(チェック済問題)', parseFloat(checked_rate[i].accuracy_rate), '#32CD32', annotation_i]);
+      visualized_data.push(['(チェック済問題)', checked_rate[i].accuracy_rate, '#32CD32', annotation_i]);
     }
 
     // カテゴリ毎のデータ追加
     let category_rate = display_data.result;
     for (let i = 0; i < category_rate.length; i++) {
       let annotation_i =
-        String(Math.round(parseFloat(category_rate[i].accuracy_rate) * 10) / 10) +
-        '% / ' +
-        String(category_rate[i].count) +
-        '問';
+        // String(Math.round(parseFloat(category_rate[i].accuracy_rate) * 10) / 10) +
+        String(Math.round(category_rate[i].accuracy_rate * 10) / 10) + '% / ' + String(category_rate[i].count) + '問';
       visualized_data.push([
         category_rate[i].c_category,
-        parseFloat(category_rate[i].accuracy_rate),
+        // parseFloat(category_rate[i].accuracy_rate),
+        category_rate[i].accuracy_rate,
         '#76A7FA',
         annotation_i
       ]);
