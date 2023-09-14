@@ -17,6 +17,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { ProcessingApiReponse, QuizApiResponse, QuizFileApiResponse } from '@/interfaces/API';
 
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -34,14 +35,14 @@ export default function EditQuizPage() {
   useEffect(() => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
-    get('/quiz/file', (data: any) => {
+    get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
         let filelist = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < res.length; i++) {
           filelist.push(
-            <MenuItem value={data[i].file_num} key={data[i].file_num}>
-              {data[i].file_nickname}
+            <MenuItem value={res[i].file_num} key={res[i].file_num}>
+              {res[i].file_nickname}
             </MenuItem>
           );
         }
@@ -70,18 +71,18 @@ export default function EditQuizPage() {
     setMessageColor('#d3d3d3');
     get(
       '/quiz',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
         } else if (data.status === 200 && data.body?.length > 0) {
-          data = data.body;
-          setEditFileNum(data[0].file_num);
-          setEditQuizNum(data[0].quiz_num);
-          setEditQuestion(data[0].quiz_sentense);
-          setEditAnswer(data[0].answer);
-          setEditCategory(data[0].category);
-          setEditImage(data[0].img_file);
+          const res: QuizApiResponse[] = data.body as QuizApiResponse[];
+          setEditFileNum(res[0].file_num);
+          setEditQuizNum(res[0].quiz_num);
+          setEditQuestion(res[0].quiz_sentense);
+          setEditAnswer(res[0].answer);
+          setEditCategory(res[0].category);
+          setEditImage(res[0].img_file);
           setMessage('　');
           setMessageColor('success.light');
         } else {
@@ -109,9 +110,8 @@ export default function EditQuizPage() {
         category: edit_category,
         img_file: edit_image
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          data = data.body;
           setEditFileNum(-1);
           setEditQuizNum(-1);
           setEditQuestion('');
