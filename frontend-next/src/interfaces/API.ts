@@ -23,6 +23,21 @@ export interface QuizFileApiResponse extends ApiResponse {
   deleted_at: string | undefined;
 }
 
+// quizからの取得結果
+export interface QuizApiResponse extends ApiResponse {
+  id: number;
+  file_num: number;
+  quiz_num: number;
+  quiz_sentense: string;
+  answer: string;
+  category: string | undefined;
+  img_file: string | undefined;
+  checked: boolean | undefined;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | undefined;
+}
+
 // 問題追加APIの返り値の型
 export interface AddQuizApiResponse extends ApiResponse {
   result: string;
