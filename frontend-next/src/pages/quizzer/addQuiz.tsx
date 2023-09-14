@@ -14,29 +14,31 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Typography
 } from '@mui/material';
 import { addQuizDto } from '../../interfaces/quizzer/addQuizDto';
+import { AddQuizApiResponse, ProcessingApiReponse, QuizFileApiResponse } from '@/interfaces/API';
 
 export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [input_data, setInputData] = useState<addQuizDto>({});
   const [message, setMessage] = useState<string>('　');
   const [messageColor, setMessageColor] = useState<string>('common.black');
-  const [addLog, setAddLog] = useState<any>();
+  const [addLog, setAddLog] = useState<string>();
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
   useEffect(() => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
-    get('/quiz/file', (data: any) => {
+    get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
         let filelist = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < res.length; i++) {
           filelist.push(
-            <MenuItem value={data[i].file_num} key={data[i].file_num}>
-              {data[i].file_nickname}
+            <MenuItem value={res[i].file_num} key={res[i].file_num}>
+              {res[i].file_nickname}
             </MenuItem>
           );
         }
@@ -50,8 +52,8 @@ export default function AddQuizPage() {
     });
   }, []);
 
-  const selectedFileChange = (e: any) => {
-    setFileNum(e.target.value);
+  const selectedFileChange = (e: SelectChangeEvent<number>) => {
+    setFileNum(e.target.value as number);
   };
 
   const addQuiz = () => {
@@ -73,12 +75,12 @@ export default function AddQuizPage() {
         file_num,
         input_data
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          data = data.body;
+          const res: AddQuizApiResponse[] = data.body as AddQuizApiResponse[];
           setMessage('Success!! 問題を追加できました!');
           setMessageColor('success.light');
-          setAddLog(data);
+          setAddLog(res[0].result);
           setInputData({});
           //入力データをクリア
           const inputQuizField = document.getElementsByTagName('textarea').item(0) as HTMLTextAreaElement;
