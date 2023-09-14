@@ -101,7 +101,7 @@ export class CategoryService {
         file_num,
       ]);
 
-      return result;
+      return [result];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
