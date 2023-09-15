@@ -96,3 +96,19 @@ export interface GetAccuracyRateByCategoryServiceDto extends ApiResponse {
   result: AccuracyRateByCategorySqlResultDto[];
   checked_result: AccuracyRateOfCheckedQuizSqlResultDto[];
 }
+
+//// 以下は　english
+
+// 英単語（単語名で）取得APIの返り値
+export interface EnglishWordByNameApiResponse extends ApiResponse {
+  word_id: string;
+  name: string;
+  pronounce: string;
+  id: number; //mean.id
+  wordmean_id: number;
+  meaning: string;
+  partsofspeech_id: number;
+  partsofspeech: string; // partofspeech.name
+  source_id: number;
+  source_name: string;
+}
