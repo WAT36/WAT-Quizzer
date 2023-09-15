@@ -523,7 +523,7 @@ export class QuizService {
       ]);
 
       // チェックしたらtrue、チェック外したらfalseを返す
-      return !checked;
+      return [{ result: !checked }];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
