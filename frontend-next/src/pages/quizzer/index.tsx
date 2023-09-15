@@ -16,10 +16,19 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Slider,
   TextField,
   Typography
 } from '@mui/material';
+import {
+  CategoryApiResponse,
+  CheckQuizApiResponse,
+  ProcessingApiReponse,
+  QuizApiResponse,
+  QuizFileApiResponse,
+  QuizViewApiResponse
+} from '@/interfaces/API';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
@@ -39,14 +48,14 @@ export default function SelectQuizPage() {
   useEffect(() => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
-    get('/quiz/file', (data: any) => {
+    get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
         let filelist = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < res.length; i++) {
           filelist.push(
-            <MenuItem value={data[i].file_num} key={data[i].file_num}>
-              {data[i].file_nickname}
+            <MenuItem value={res[i].file_num} key={res[i].file_num}>
+              {res[i].file_nickname}
             </MenuItem>
           );
         }
@@ -75,23 +84,23 @@ export default function SelectQuizPage() {
     );
   };
 
-  const selectedFileChange = (e: any) => {
+  const selectedFileChange = (e: SelectChangeEvent<number>) => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
     get(
       '/category',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200) {
-          data = data.body;
+          const res: CategoryApiResponse[] = data.body as CategoryApiResponse[];
           let categorylist = [];
-          for (var i = 0; i < data.length; i++) {
+          for (var i = 0; i < res.length; i++) {
             categorylist.push(
-              <MenuItem value={data[i].category} key={i}>
-                {data[i].category}
+              <MenuItem value={res[i].category} key={i}>
+                {res[i].category}
               </MenuItem>
             );
           }
-          setFileNum(e.target.value);
+          setFileNum(e.target.value as number);
           setCategorylistoption(categorylist);
           setMessage('　');
           setMessageColor('common.black');
@@ -101,7 +110,7 @@ export default function SelectQuizPage() {
         }
       },
       {
-        file_num: e.target.value
+        file_num: String(e.target.value)
       }
     );
   };
@@ -121,15 +130,15 @@ export default function SelectQuizPage() {
     setMessageColor('#d3d3d3');
     get(
       '/quiz',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
           setMessageColor('error');
         } else if (data.status === 200) {
-          data = data.body;
-          setQuizSentense('[' + data[0].file_num + '-' + data[0].quiz_num + ']' + data[0].quiz_sentense);
-          setAnswer(data[0].answer);
-          setQuizChecked(data[0].checked);
+          const res: QuizApiResponse[] = data.body as QuizApiResponse[];
+          setQuizSentense('[' + res[0].file_num + '-' + res[0].quiz_num + ']' + res[0].quiz_sentense);
+          setAnswer(res[0].answer);
+          setQuizChecked(res[0].checked);
           setExpanded(false);
           setMessage('　');
           setMessageColor('success.light');
@@ -180,9 +189,8 @@ export default function SelectQuizPage() {
           file_num: file_num,
           quiz_num: quiz_num
         },
-        (data: any) => {
+        (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
-            data = data.body;
             setQuizSentense('');
             setAnswer('');
             setQuizChecked(null);
@@ -227,9 +235,8 @@ export default function SelectQuizPage() {
           file_num: file_num,
           quiz_num: quiz_num
         },
-        (data: any) => {
+        (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
-            data = data.body;
             setQuizSentense('');
             setAnswer('');
             setQuizChecked(null);
@@ -274,11 +281,11 @@ export default function SelectQuizPage() {
           file_num: file_num,
           quiz_num: quiz_num
         },
-        (data: any) => {
+        (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
-            data = data.body;
-            setQuizChecked(Boolean(data));
-            setMessage(`問題[${quiz_num}] にチェック${Boolean(data) ? 'をつけ' : 'を外し'}ました`);
+            const res: CheckQuizApiResponse[] = data.body as CheckQuizApiResponse[];
+            setQuizChecked(res[0].result);
+            setMessage(`問題[${quiz_num}] にチェック${res[0].result ? 'をつけ' : 'を外し'}ました`);
             setMessageColor('success.light');
           } else {
             setMessage('エラー:外部APIとの連携に失敗しました');
@@ -326,13 +333,13 @@ export default function SelectQuizPage() {
     setMessageColor('#d3d3d3');
     get(
       '/quiz/random',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body.length > 0) {
-          data = data.body;
-          setQuizNum(data[0].quiz_num);
-          setQuizSentense(data[0].quiz_sentense);
-          setAnswer(data[0].answer);
-          setQuizChecked(data[0].checked);
+          const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+          setQuizNum(res[0].quiz_num);
+          setQuizSentense(res[0].quiz_sentense);
+          setAnswer(res[0].answer);
+          setQuizChecked(res[0].checked);
           setMessage('　');
           setMessageColor('success.light');
           setExpanded(false);
@@ -365,13 +372,13 @@ export default function SelectQuizPage() {
     setMessageColor('#d3d3d3');
     get(
       '/quiz/worst',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
-          data = data.body;
-          setQuizNum(data[0].quiz_num);
-          setQuizSentense(data[0].quiz_sentense);
-          setAnswer(data[0].answer);
-          setQuizChecked(data[0].checked);
+          const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+          setQuizNum(res[0].quiz_num);
+          setQuizSentense(res[0].quiz_sentense);
+          setAnswer(res[0].answer);
+          setQuizChecked(res[0].checked);
           setMessage('　');
           setMessageColor('success.light');
           setExpanded(false);
@@ -402,13 +409,13 @@ export default function SelectQuizPage() {
     setMessageColor('#d3d3d3');
     get(
       '/quiz/minimum',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
-          data = data.body;
-          setQuizNum(data[0].quiz_num);
-          setQuizSentense(data[0].quiz_sentense);
-          setAnswer(data[0].answer);
-          setQuizChecked(data[0].checked);
+          const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+          setQuizNum(res[0].quiz_num);
+          setQuizSentense(res[0].quiz_sentense);
+          setAnswer(res[0].answer);
+          setQuizChecked(res[0].checked);
           setMessage('　');
           setMessageColor('success.light');
           setExpanded(false);
