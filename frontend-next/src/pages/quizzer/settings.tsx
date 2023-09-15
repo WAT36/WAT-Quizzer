@@ -14,11 +14,13 @@ import {
   DialogTitle,
   MenuItem,
   Select,
+  SelectChangeEvent,
   TextField,
   Typography
 } from '@mui/material';
 import { messageBoxStyle } from '../../styles/Pages';
 import { getRandomStr } from '../../../lib/str';
+import { ProcessingApiReponse, QuizFileApiResponse } from '@/interfaces/API';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
@@ -37,14 +39,14 @@ export default function SelectQuizPage() {
   const getFile = () => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
-    get('/quiz/file', (data: any) => {
+    get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
         let filelist = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < res.length; i++) {
           filelist.push(
-            <MenuItem value={data[i].file_num} key={data[i].file_num}>
-              {data[i].file_nickname}
+            <MenuItem value={res[i].file_num} key={res[i].file_num}>
+              {res[i].file_nickname}
             </MenuItem>
           );
         }
@@ -67,9 +69,8 @@ export default function SelectQuizPage() {
         file_name: getRandomStr(),
         file_nickname: fileName
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          data = data.body;
           setMessage(`新規ファイル「${fileName}」を追加しました`);
           setMessageColor('success.light');
         } else {
@@ -99,8 +100,8 @@ export default function SelectQuizPage() {
     margin: '10px'
   };
 
-  const selectedFileChange = (e: any) => {
-    setFileNum(e.target.value);
+  const selectedFileChange = (e: SelectChangeEvent<number>) => {
+    setFileNum(e.target.value as number);
   };
 
   const handleClickOpen = () => {
@@ -128,9 +129,8 @@ export default function SelectQuizPage() {
       {
         file_id: file_num
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          data = data.body;
           setMessage(`ファイルを削除しました(id:${file_num})`);
           setMessageColor('success.light');
         } else {
@@ -159,9 +159,8 @@ export default function SelectQuizPage() {
       {
         file_id: deleteQuizFileNum
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          data = data.body;
           setMessage(`回答ログを削除しました(id:${deleteQuizFileNum})`);
           setMessageColor('success.light');
         } else {
