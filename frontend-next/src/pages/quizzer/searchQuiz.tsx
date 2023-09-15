@@ -18,10 +18,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Slider,
   TextField,
   Typography
 } from '@mui/material';
+import { CategoryApiResponse, ProcessingApiReponse, QuizFileApiResponse, QuizViewApiResponse } from '@/interfaces/API';
 
 export default function SearchQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -42,14 +44,14 @@ export default function SearchQuizPage() {
   useEffect(() => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
-    get('/quiz/file', (data: any) => {
+    get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
         let filelist = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < res.length; i++) {
           filelist.push(
-            <MenuItem value={data[i].file_num} key={data[i].file_num}>
-              {data[i].file_nickname}
+            <MenuItem value={res[i].file_num} key={res[i].file_num}>
+              {res[i].file_nickname}
             </MenuItem>
           );
         }
@@ -63,23 +65,23 @@ export default function SearchQuizPage() {
     });
   }, []);
 
-  const selectedFileChange = (e: any) => {
+  const selectedFileChange = (e: SelectChangeEvent<number>) => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
     get(
       '/category',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200) {
-          data = data.body;
+          const res: CategoryApiResponse[] = data.body as CategoryApiResponse[];
           let categorylist = [];
-          for (var i = 0; i < data.length; i++) {
+          for (var i = 0; i < res.length; i++) {
             categorylist.push(
-              <MenuItem value={data[i].category} key={i}>
-                {data[i].category}
+              <MenuItem value={res[i].category} key={i}>
+                {res[i].category}
               </MenuItem>
             );
           }
-          setFileNum(e.target.value);
+          setFileNum(e.target.value as number);
           setCategorylistoption(categorylist);
           setMessage('　');
           setMessageColor('common.black');
@@ -89,7 +91,7 @@ export default function SearchQuizPage() {
         }
       },
       {
-        file_num: e.target.value
+        file_num: String(e.target.value)
       }
     );
   };
@@ -120,11 +122,11 @@ export default function SearchQuizPage() {
     setMessageColor('#d3d3d3');
     get(
       '/quiz/search',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if ((String(data.status)[0] === '2' || String(data.status)[0] === '3') && data.body?.length > 0) {
-          data = data.body;
-          setSearchResult(data);
-          setMessage('Success!! ' + data.length + '問の問題を取得しました');
+          const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+          setSearchResult(res);
+          setMessage('Success!! ' + res.length + '問の問題を取得しました');
           setMessageColor('success.light');
         } else if (data.status === 404 || data.body?.length === 0) {
           setMessage('エラー:条件に合致するデータはありません');
@@ -148,7 +150,7 @@ export default function SearchQuizPage() {
   };
 
   // チェックした問題のIDをステートに登録
-  const registerCheckedIdList = (selectionModel: GridRowSelectionModel, details?: any) => {
+  const registerCheckedIdList = (selectionModel: GridRowSelectionModel) => {
     setCheckedIdList(selectionModel as number[]);
   };
 
@@ -177,7 +179,7 @@ export default function SearchQuizPage() {
             quiz_num: checkedId,
             category: changedCategory
           },
-          (data: any) => {
+          (data: ProcessingApiReponse) => {
             if (data.status !== 200 && data.status !== 201) {
               failureIdList.push(checkedId);
             }
@@ -232,7 +234,7 @@ export default function SearchQuizPage() {
             quiz_num: checkedId,
             category: changedCategory
           },
-          (data: any) => {
+          (data: ProcessingApiReponse) => {
             if (data.status !== 200) {
               failureIdList.push(checkedId);
             }
@@ -282,7 +284,7 @@ export default function SearchQuizPage() {
             file_num: file_num,
             quiz_num: checkedId
           },
-          (data: any) => {
+          (data: ProcessingApiReponse) => {
             if (data.status !== 200) {
               failureIdList.push(checkedId);
             }
@@ -332,7 +334,7 @@ export default function SearchQuizPage() {
             file_num: file_num,
             quiz_num: checkedId
           },
-          (data: any) => {
+          (data: ProcessingApiReponse) => {
             if (data.status !== 200) {
               failureIdList.push(checkedId);
             }
@@ -466,7 +468,7 @@ export default function SearchQuizPage() {
             pageSizeOptions={[15]}
             checkboxSelection
             disableRowSelectionOnClick
-            onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel, details)}
+            onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel)}
           />
         </div>
 
