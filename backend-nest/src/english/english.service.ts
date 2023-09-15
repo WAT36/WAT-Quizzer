@@ -188,8 +188,7 @@ export class EnglishService {
   // 単語名から単語情報取得
   async getWordByNameService(name: string) {
     try {
-      const wordData = await execQuery(SQL.ENGLISH.WORD.GET.NAME, [name]);
-      return { wordData };
+      return await execQuery(SQL.ENGLISH.WORD.GET.NAME, [name]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -258,8 +257,7 @@ export class EnglishService {
         });
       }
       //トランザクション実行
-      const result = await execTransaction(transactionQuery);
-      return { result };
+      return await execTransaction(transactionQuery);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
