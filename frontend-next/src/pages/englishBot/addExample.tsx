@@ -6,6 +6,7 @@ import { Button, Card, CardContent, CardHeader, Container, TextField, Typography
 import { get, post } from '@/common/API';
 import { DataGrid, GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid';
 import { meanColumns } from '../../../utils/englishBot/SearchWordTable';
+import { EnglishWordByNameApiResponse, ProcessingApiReponse } from '@/interfaces/API';
 
 const cardContentStyle = {
   display: 'flex',
@@ -45,10 +46,10 @@ export default function EnglishBotAddExamplePage() {
     setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
     get(
       '/english/word/byname',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200) {
-          const result = data.body?.wordData || [];
-          setSearchResult(result);
+          const result: EnglishWordByNameApiResponse[] = data.body as EnglishWordByNameApiResponse[];
+          setSearchResult(result || []);
           setMessage({
             message: 'Success!!取得しました',
             messageColor: 'success.light'
@@ -67,7 +68,7 @@ export default function EnglishBotAddExamplePage() {
   };
 
   // チェックした問題のIDをステートに登録
-  const registerCheckedIdList = (selectionModel: GridRowSelectionModel, details?: any) => {
+  const registerCheckedIdList = (selectionModel: GridRowSelectionModel) => {
     const copyInputData = Object.assign({}, inputExampleData);
     copyInputData.meanId = selectionModel as number[];
     setInputExampleData(copyInputData);
@@ -105,7 +106,7 @@ export default function EnglishBotAddExamplePage() {
         exampleJa: inputExampleData.exampleJa,
         meanId: inputExampleData.meanId
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
           setMessage({
             message: '例文を登録しました',
@@ -194,9 +195,7 @@ export default function EnglishBotAddExamplePage() {
                     pageSizeOptions={[15]}
                     checkboxSelection
                     disableRowSelectionOnClick
-                    onRowSelectionModelChange={(selectionModel, details) =>
-                      registerCheckedIdList(selectionModel, details)
-                    }
+                    onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel)}
                   />
                 </div>
               </CardContent>
