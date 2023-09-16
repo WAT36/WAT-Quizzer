@@ -8,10 +8,12 @@ export const sideBarContents = [
 ];
 
 // サイドバー開閉
-export const toggleDrawer = (isOpen: boolean, setSidebarState: any) => (event: any) => {
-  if (event.type === 'keydown' && (event.key === 'Tab' || 'Shift')) {
-    return;
-  }
+export const toggleDrawer =
+  (isOpen: boolean, setSidebarState: React.Dispatch<React.SetStateAction<{ open: boolean }>>) =>
+  (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || 'Shift')) {
+      return;
+    }
 
-  setSidebarState({ open: isOpen });
-};
+    setSidebarState({ open: isOpen });
+  };
