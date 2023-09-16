@@ -17,6 +17,14 @@ import EnglishBotLayout from '../components/EnglishBotLayout';
 import { messageBoxStyle } from '../../../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get, getApiAndGetValue, patch } from '@/common/API';
+import {
+  EnglishWordByIdApiResponse,
+  PartofSpeechApiResponse,
+  ProcessingApiReponse,
+  SourceApiResponse,
+  WordApiResponse
+} from '@/interfaces/API';
+import { GetStaticPropsContext } from 'next';
 
 type EachWordPageProps = {
   id: string;
@@ -61,7 +69,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
-  const [wordName, setWordName] = useState();
+  const [wordName, setWordName] = useState<string>();
   const [meanData, setMeanData] = useState<wordMeanData[]>([]);
   const [open, setOpen] = useState(false);
   const [posList, setPosList] = useState<JSX.Element[]>([]);
@@ -92,10 +100,10 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
       getSourceList(),
       get(
         '/english/word/' + id,
-        (data: any) => {
+        (data: ProcessingApiReponse) => {
           if (data.status === 200) {
-            const result = data.body?.wordData || [];
-            const wordmeans: wordMeanData[] = result.map((x: any) => {
+            const result: EnglishWordByIdApiResponse[] = data.body as EnglishWordByIdApiResponse[];
+            const wordmeans: wordMeanData[] = result.map((x: EnglishWordByIdApiResponse) => {
               return {
                 partofspeechId: x.partsofspeech_id,
                 partofspeechName: x.partsofspeech,
@@ -126,14 +134,14 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
       message: '通信中...',
       messageColor: '#d3d3d3'
     });
-    get('/english/partsofspeech', (data: any) => {
+    get('/english/partsofspeech', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const result: PartofSpeechApiResponse[] = data.body as PartofSpeechApiResponse[];
         let gotPosList = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < result.length; i++) {
           gotPosList.push(
-            <MenuItem value={data[i].id} key={data[i].id}>
-              {data[i].name}
+            <MenuItem value={result[i].id} key={result[i].id}>
+              {result[i].name}
             </MenuItem>
           );
         }
@@ -162,14 +170,14 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
       message: '通信中...',
       messageColor: '#d3d3d3'
     });
-    get('/english/source', (data: any) => {
+    get('/english/source', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const result: SourceApiResponse[] = data.body as SourceApiResponse[];
         let gotSourceList = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < result.length; i++) {
           gotSourceList.push(
-            <MenuItem value={data[i].id} key={data[i].id}>
-              {data[i].name}
+            <MenuItem value={result[i].id} key={result[i].id}>
+              {result[i].name}
             </MenuItem>
           );
         }
@@ -255,7 +263,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
         meaning: inputEditData?.mean,
         sourceId: inputEditData?.sourceId
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
           setMessage({
             message: 'Success!! 編集に成功しました',
@@ -363,10 +371,10 @@ export async function getAllWords() {
 }
 
 export async function getStaticPaths() {
-  const words = await getAllWords();
+  const words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
 
   return {
-    paths: words.wordData.map((word: any) => {
+    paths: words.map((word: WordApiResponse) => {
       return {
         params: {
           id: String(word.id)
@@ -377,8 +385,8 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps(context: any) {
-  const id = context.params['id'];
+export async function getStaticProps({ params }: GetStaticPropsContext) {
+  const id = params!.id;
   return {
     props: {
       id
