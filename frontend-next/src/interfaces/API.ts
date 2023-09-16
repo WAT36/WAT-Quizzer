@@ -113,6 +113,20 @@ export interface EnglishWordByNameApiResponse extends ApiResponse {
   source_name: string;
 }
 
+// 英単語（単語IDで）取得APIの返り値
+export interface EnglishWordByIdApiResponse extends ApiResponse {
+  word_id: string;
+  name: string;
+  pronounce: string;
+  mean_id: number; //mean.id
+  wordmean_id: number;
+  meaning: string;
+  partsofspeech_id: number;
+  partsofspeech: string; // partofspeech.name
+  source_id: number;
+  source_name: string;
+}
+
 // partofspeechからの取得結果
 export interface PartofSpeechApiResponse extends ApiResponse {
   id: number;
