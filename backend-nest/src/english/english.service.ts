@@ -157,8 +157,7 @@ export class EnglishService {
   // 単語全取得
   async getAllWordService() {
     try {
-      const wordData = await execQuery(SQL.ENGLISH.WORD.GET.ALL, []);
-      return { wordData };
+      return await execQuery(SQL.ENGLISH.WORD.GET.ALL, []);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -172,8 +171,7 @@ export class EnglishService {
   // IDから単語情報取得
   async getWordByIdService(id: number) {
     try {
-      const wordData = await execQuery(SQL.ENGLISH.WORD.GET.ID, [id]);
-      return { wordData };
+      return await execQuery(SQL.ENGLISH.WORD.GET.ID, [id]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
