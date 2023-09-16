@@ -14,7 +14,8 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
+import { DataGrid, GridRenderCellParams, GridRowsProp } from '@mui/x-data-grid';
+import { ProcessingApiReponse, WordApiResponse } from '@/interfaces/API';
 
 export const searchedDetailColumns = [
   {
@@ -28,9 +29,13 @@ export const searchedDetailColumns = [
     headerName: '単語',
     sortable: true,
     width: 300,
-    renderCell: (params: any) => (
-      <Link tabIndex={params.id} href={'/englishBot/detailWord/' + params.id + process.env.NEXT_PUBLIC_URL_END}>
-        {params.value}
+    // TODO  undefinedで良いのか
+    renderCell: (params: GridRenderCellParams) => (
+      <Link
+        tabIndex={params.id as number}
+        href={'/englishBot/detailWord/' + params.id + process.env.NEXT_PUBLIC_URL_END}
+      >
+        {String(params.value)}
       </Link>
     )
   }
@@ -53,10 +58,10 @@ export default function EnglishBotDetailWordPage() {
     setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
     get(
       '/english/word/search',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200) {
-          const result = data.body?.wordData || [];
-          setSearchResult(result);
+          const result: WordApiResponse[] = data.body as WordApiResponse[];
+          setSearchResult(result || []);
           setMessage({
             message: 'Success!!' + result.length + '問の問題を取得しました',
             messageColor: 'success.light'
