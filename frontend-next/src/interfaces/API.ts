@@ -130,3 +130,13 @@ export interface SourceApiResponse extends ApiResponse {
   updated_at: string;
   deleted_at: string | undefined;
 }
+
+// wordからの取得結果
+export interface WordApiResponse extends ApiResponse {
+  id: number;
+  name: string;
+  pronounce: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | undefined;
+}

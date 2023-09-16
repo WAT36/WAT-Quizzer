@@ -6,6 +6,7 @@ import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../styles/P
 import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField, Typography } from '@mui/material';
 import { columns } from '../../../utils/englishBot/SearchWordTable';
 import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
+import { ProcessingApiReponse, WordApiResponse } from '@/interfaces/API';
 
 export default function EnglishBotDictionaryPage() {
   const [query, setQuery] = useState('');
@@ -24,10 +25,10 @@ export default function EnglishBotDictionaryPage() {
     setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
     get(
       '/english/word/search',
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200) {
-          const result = data.body?.wordData || [];
-          setSearchResult(result);
+          const result: WordApiResponse[] = data.body as WordApiResponse[];
+          setSearchResult(result || []);
           setMessage({
             message: 'Success!!' + result.length + '問の問題を取得しました',
             messageColor: 'success.light'
