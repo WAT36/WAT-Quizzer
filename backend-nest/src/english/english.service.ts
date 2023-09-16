@@ -141,10 +141,9 @@ export class EnglishService {
   // 単語検索
   async searchWordService(wordName: string) {
     try {
-      const wordData = await execQuery(SQL.ENGLISH.WORD.SEARCH, [
+      return await execQuery(SQL.ENGLISH.WORD.SEARCH, [
         '%' + (wordName || '') + '%',
       ]);
-      return { wordData };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
