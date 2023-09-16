@@ -4,6 +4,7 @@ import { Button, Card, CardContent, Container, Typography } from '@mui/material'
 import { topButtonStyle } from '../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get } from '@/common/API';
+import { GetRandomSayingResponse, ProcessingApiReponse } from '@/interfaces/API';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -14,11 +15,11 @@ export default function Top() {
   });
 
   useEffect(() => {
-    get('/saying', (data: any) => {
+    get('/saying', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const result: GetRandomSayingResponse[] = data.body as GetRandomSayingResponse[];
         setSaying({
-          saying: data[0].saying,
+          saying: result[0].saying,
           color: 'common.black'
         });
       }

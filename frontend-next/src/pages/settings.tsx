@@ -8,6 +8,7 @@ import {
   Container,
   MenuItem,
   Select,
+  SelectChangeEvent,
   TextField,
   Typography
 } from '@mui/material';
@@ -15,6 +16,7 @@ import { topButtonStyle } from '../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get, post } from '@/common/API';
 import { messageBoxStyle } from '../styles/Pages';
+import { GetSelfHelpBookResponse, ProcessingApiReponse } from '@/interfaces/API';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -52,14 +54,14 @@ export default function Settings() {
 
   const getBook = () => {
     setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
-    get('/saying/book', (data: any) => {
+    get('/saying/book', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const result: GetSelfHelpBookResponse[] = data.body as GetSelfHelpBookResponse[];
         let booklist = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < result.length; i++) {
           booklist.push(
-            <MenuItem value={data[i].id} key={data[i].id}>
-              {data[i].name}
+            <MenuItem value={result[i].id} key={result[i].id}>
+              {result[i].name}
             </MenuItem>
           );
         }
@@ -83,9 +85,8 @@ export default function Settings() {
       {
         book_name: bookName
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          data = data.body;
           setMessage({ message: `新規ファイル「${bookName}」を追加しました`, messageColor: 'success.light' });
         } else {
           setMessage({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
@@ -95,7 +96,7 @@ export default function Settings() {
     getBook();
   };
 
-  const selectedFileChange = (e: any) => {
+  const selectedFileChange = (e: SelectChangeEvent<number>) => {
     setSelectedBookId(+e.target.value);
   };
 
@@ -115,9 +116,8 @@ export default function Settings() {
         book_id: selectedBookId,
         saying: inputSaying
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          data = data.body;
           setMessage({ message: `新規格言「${inputSaying}」を追加しました`, messageColor: 'success.light' });
         } else {
           setMessage({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
