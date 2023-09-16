@@ -1,8 +1,13 @@
+import { ProcessingApiReponse } from '@/interfaces/API';
 import { getApiKey } from '../../lib/aws/secrets';
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || '';
 
-export const get = async (path: string, func: any, queryParam?: { [key: string]: string }) => {
+export const get = async (
+  path: string,
+  func: (data: ProcessingApiReponse) => void,
+  queryParam?: { [key: string]: string }
+) => {
   const key = await getApiKey();
   const query = queryParam ? `?${new URLSearchParams(queryParam)}` : '';
 
@@ -36,7 +41,7 @@ export const getApiAndGetValue = async (path: string, queryParam?: { [key: strin
   });
 };
 
-export const post = async (path: string, jsondata: object, func: any) => {
+export const post = async (path: string, jsondata: object, func: (data: ProcessingApiReponse) => void) => {
   const key = await getApiKey();
   await fetch(baseURL + path, {
     method: 'POST',
@@ -58,7 +63,7 @@ export const post = async (path: string, jsondata: object, func: any) => {
     });
 };
 
-export const put = async (path: string, jsondata: object, func: any) => {
+export const put = async (path: string, jsondata: object, func: (data: ProcessingApiReponse) => void) => {
   const key = await getApiKey();
   await fetch(baseURL + path, {
     method: 'PUT',
@@ -80,7 +85,7 @@ export const put = async (path: string, jsondata: object, func: any) => {
     });
 };
 
-export const del = async (path: string, jsondata: object, func: any) => {
+export const del = async (path: string, jsondata: object, func: (data: ProcessingApiReponse) => void) => {
   const key = await getApiKey();
   await fetch(baseURL + path, {
     method: 'DELETE',
@@ -102,7 +107,7 @@ export const del = async (path: string, jsondata: object, func: any) => {
     });
 };
 
-export const patch = async (path: string, jsondata: object, func: any) => {
+export const patch = async (path: string, jsondata: object, func: (data: ProcessingApiReponse) => void) => {
   const key = await getApiKey();
   await fetch(baseURL + path, {
     method: 'PATCH',
