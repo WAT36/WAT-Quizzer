@@ -27,6 +27,7 @@ import {
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { SendToAddWordApiData, meanOfAddWordDto } from '../../interfaces/englishBot/addWordDto';
+import { PartofSpeechApiResponse, ProcessingApiReponse, SourceApiResponse } from '@/interfaces/API';
 
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<string>('　');
@@ -49,14 +50,14 @@ export default function EnglishBotAddWordPage() {
   const getPartOfSpeechList = async () => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
-    get('/english/partsofspeech', (data: any) => {
+    get('/english/partsofspeech', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const result: PartofSpeechApiResponse[] = data.body as PartofSpeechApiResponse[];
         let gotPosList = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < result.length; i++) {
           gotPosList.push(
-            <MenuItem value={data[i].id} key={data[i].id}>
-              {data[i].name}
+            <MenuItem value={result[i].id} key={result[i].id}>
+              {result[i].name}
             </MenuItem>
           );
         }
@@ -79,14 +80,14 @@ export default function EnglishBotAddWordPage() {
   const getSourceList = async () => {
     setMessage('通信中...');
     setMessageColor('#d3d3d3');
-    get('/english/source', (data: any) => {
+    get('/english/source', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        data = data.body;
+        const result: SourceApiResponse[] = data.body as SourceApiResponse[];
         let gotSourceList = [];
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < result.length; i++) {
           gotSourceList.push(
-            <MenuItem value={data[i].id} key={data[i].id}>
-              {data[i].name}
+            <MenuItem value={result[i].id} key={result[i].id}>
+              {result[i].name}
             </MenuItem>
           );
         }
@@ -409,7 +410,7 @@ export default function EnglishBotAddWordPage() {
           return previousValue;
         }, [])
       },
-      (data: any) => {
+      (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
           setMessage(`単語「${inputWord}」を登録しました`);
           setMessageColor('success.light');
