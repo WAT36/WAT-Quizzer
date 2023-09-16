@@ -154,3 +154,14 @@ export interface WordApiResponse extends ApiResponse {
   updated_at: string;
   deleted_at: string | undefined;
 }
+
+/// 以下、格言(saying)系
+
+export interface GetRandomSayingResponse extends ApiResponse {
+  saying: string;
+}
+
+export interface GetSelfHelpBookResponse extends ApiResponse {
+  id: number;
+  name: string;
+}
