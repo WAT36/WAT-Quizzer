@@ -112,3 +112,21 @@ export interface EnglishWordByNameApiResponse extends ApiResponse {
   source_id: number;
   source_name: string;
 }
+
+// partofspeechからの取得結果
+export interface PartofSpeechApiResponse extends ApiResponse {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | undefined;
+}
+
+// sourceからの取得結果
+export interface SourceApiResponse extends ApiResponse {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | undefined;
+}
