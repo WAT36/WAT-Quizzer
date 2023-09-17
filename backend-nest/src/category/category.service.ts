@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
-import { TransactionQuery, execQuery, execTransaction } from '../../lib/db/dao';
+import { execQuery, execTransaction } from '../../lib/db/dao';
 import {
   CategoryByFileSqlResultDto,
   GetAccuracyRateByCategoryServiceDto,
   SelectFileDto,
-} from './category.dto';
+} from '../../../interfaces/api/request/category';
+import { TransactionQuery } from '../../../interfaces/db';
 
 @Injectable()
 export class CategoryService {

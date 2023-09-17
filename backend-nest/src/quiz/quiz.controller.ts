@@ -17,7 +17,7 @@ import {
   EditQuizDto,
   AddFileDto,
   DeleteFileDto,
-} from './quiz.dto';
+} from '../../../interfaces/api/request/quiz';
 
 @Controller('quiz')
 export class QuizController {

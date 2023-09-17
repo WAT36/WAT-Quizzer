@@ -5,7 +5,7 @@ import {
   AddEnglishWordDto,
   AddExampleDto,
   EditWordMeanDto,
-} from './english.dto';
+} from '../../../interfaces/api/request/english';
 
 @Injectable()
 export class EnglishService {

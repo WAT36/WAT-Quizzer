@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
-import { TransactionQuery, execQuery, execTransaction } from 'lib/db/dao';
+import { execQuery, execTransaction } from 'lib/db/dao';
 import { parseStrToBool } from 'lib/str';
 import {
   UpdateCategoryOfQuizDto,
@@ -13,7 +13,8 @@ import {
   DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
   QuizDto,
-} from './quiz.dto';
+} from '../../../interfaces/api/request/quiz';
+import { TransactionQuery } from '../../../interfaces/db';
 
 @Injectable()
 export class QuizService {

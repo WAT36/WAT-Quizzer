@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { SelectFileDto } from './category.dto';
+import { SelectFileDto } from '../../../interfaces/api/request/category';
 
 @Controller('category')
 export class CategoryController {

@@ -12,7 +12,7 @@ import {
   AddEnglishWordDto,
   AddExampleDto,
   EditWordMeanDto,
-} from './english.dto';
+} from '../../../interfaces/api/request/english';
 
 @Controller('english')
 export class EnglishController {

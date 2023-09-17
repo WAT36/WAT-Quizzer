@@ -1,6 +1,9 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { SayingService } from './saying.service';
-import { AddBookDto, AddSayingDto } from './saying.dto';
+import {
+  AddBookDto,
+  AddSayingDto,
+} from '../../../interfaces/api/request/saying';
 
 @Controller('saying')
 export class SayingController {

@@ -1,5 +1,14 @@
 import { ApiResponse } from './api'
 
+export interface TransactionQuery {
+  query: string
+  value: (string | number)[]
+}
+
+//////////////
+
+// 以下はDBテーブル定義
+
 // categoryからの取得結果
 export interface CategoryApiResponse extends ApiResponse {
   file_num: number
