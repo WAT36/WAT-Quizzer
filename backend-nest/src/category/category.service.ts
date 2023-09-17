@@ -10,11 +10,7 @@ import { TransactionQuery } from '../../../interfaces/db';
 
 @Injectable()
 export class CategoryService {
-  getHello(): string {
-    return 'Hello World!';
-  }
-
-  // 問題ファイルリスト取得
+  // カテゴリリスト(ファイルごと)取得
   async getCategoryList(file_num: number) {
     try {
       return await execQuery(SQL.CATEGORY.INFO, [file_num]);
