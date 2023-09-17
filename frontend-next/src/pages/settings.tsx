@@ -16,7 +16,7 @@ import { topButtonStyle } from '../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get, post } from '@/common/API';
 import { messageBoxStyle } from '../styles/Pages';
-import { GetSelfHelpBookResponse, ProcessingApiReponse } from '@/interfaces/API';
+import { GetSelfHelpBookResponse, ProcessingApiReponse } from '../../../interfaces/api';
 
 const inter = Inter({ subsets: ['latin'] });
 

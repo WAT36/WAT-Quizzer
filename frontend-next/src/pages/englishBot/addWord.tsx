@@ -26,8 +26,9 @@ import {
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { SendToAddWordApiData, meanOfAddWordDto } from '../../interfaces/englishBot/addWordDto';
-import { PartofSpeechApiResponse, ProcessingApiReponse, SourceApiResponse } from '@/interfaces/API';
+import { SendToAddWordApiData, meanOfAddWordDto } from '../../../../interfaces/api';
+import { ProcessingApiReponse } from '../../../../interfaces/api';
+import { PartofSpeechApiResponse, SourceApiResponse } from '../../../../interfaces/db';
 
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<string>('　');

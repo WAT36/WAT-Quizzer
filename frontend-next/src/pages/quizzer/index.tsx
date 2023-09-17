@@ -21,14 +21,13 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { CheckQuizApiResponse, ProcessingApiReponse } from '../../../../interfaces/api';
 import {
   CategoryApiResponse,
-  CheckQuizApiResponse,
-  ProcessingApiReponse,
   QuizApiResponse,
   QuizFileApiResponse,
   QuizViewApiResponse
-} from '@/interfaces/API';
+} from '../../../../interfaces/db';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();

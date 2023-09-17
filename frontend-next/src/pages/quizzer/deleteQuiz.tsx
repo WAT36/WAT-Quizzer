@@ -17,7 +17,8 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { ProcessingApiReponse, QuizApiResponse, QuizFileApiResponse } from '@/interfaces/API';
+import { ProcessingApiReponse } from '../../../../interfaces/api';
+import { QuizApiResponse, QuizFileApiResponse } from '../../../../interfaces/db';
 
 export default function DeleteQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);

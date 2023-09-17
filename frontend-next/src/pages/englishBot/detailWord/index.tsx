@@ -15,7 +15,8 @@ import {
   Typography
 } from '@mui/material';
 import { DataGrid, GridRenderCellParams, GridRowsProp } from '@mui/x-data-grid';
-import { ProcessingApiReponse, WordApiResponse } from '@/interfaces/API';
+import { ProcessingApiReponse } from '../../../../../interfaces/api';
+import { WordApiResponse } from '../../../../../interfaces/db';
 
 export const searchedDetailColumns = [
   {

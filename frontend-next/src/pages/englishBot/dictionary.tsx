@@ -6,7 +6,8 @@ import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../styles/P
 import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField, Typography } from '@mui/material';
 import { columns } from '../../../utils/englishBot/SearchWordTable';
 import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
-import { ProcessingApiReponse, WordApiResponse } from '@/interfaces/API';
+import { ProcessingApiReponse } from '../../../../interfaces/api';
+import { WordApiResponse } from '../../../../interfaces/db';
 
 export default function EnglishBotDictionaryPage() {
   const [query, setQuery] = useState('');

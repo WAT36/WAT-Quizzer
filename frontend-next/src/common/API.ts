@@ -1,4 +1,4 @@
-import { ProcessingApiReponse } from '@/interfaces/API';
+import { ProcessingApiReponse } from '../../../interfaces/api';
 import { getApiKey } from '../../lib/aws/secrets';
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || '';

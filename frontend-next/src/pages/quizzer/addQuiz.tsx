@@ -17,8 +17,9 @@ import {
   SelectChangeEvent,
   Typography
 } from '@mui/material';
-import { addQuizDto } from '../../interfaces/quizzer/addQuizDto';
-import { AddQuizApiResponse, ProcessingApiReponse, QuizFileApiResponse } from '@/interfaces/API';
+import { addQuizDto } from '../../../../interfaces/api';
+import { AddQuizApiResponse, ProcessingApiReponse } from '../../../../interfaces/api';
+import { QuizFileApiResponse } from '../../../../interfaces/db';
 
 export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
