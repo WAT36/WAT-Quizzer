@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { getDbUrl } from 'lib/aws/secrets';
+import { getDbUrl } from '../aws/secrets';
 import { createConnection } from 'mysql2';
 
 // SQLを実行する

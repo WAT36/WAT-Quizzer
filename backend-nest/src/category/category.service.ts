@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SQL } from 'config/sql';
-import { TransactionQuery, execQuery, execTransaction } from 'lib/db/dao';
+import { SQL } from '../../config/sql';
+import { TransactionQuery, execQuery, execTransaction } from '../../lib/db/dao';
 import {
   CategoryByFileSqlResultDto,
   GetAccuracyRateByCategoryServiceDto,
