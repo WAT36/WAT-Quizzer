@@ -112,8 +112,7 @@ export const SQL = {
           category = ? ,
           img_file = ? ,
           checked = 0, 
-          updated_at = NOW(),
-          deleted_at = NOW() 
+          updated_at = NOW()
       WHERE 
           file_num = ? 
           AND quiz_num = ? 
