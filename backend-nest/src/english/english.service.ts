@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
-import { TransactionQuery, execQuery, execTransaction } from 'lib/db/dao';
+import { execQuery, execTransaction } from 'lib/db/dao';
 import {
   AddEnglishWordDto,
   AddExampleDto,
   EditWordMeanDto,
 } from '../../../interfaces/api/request/english';
+import { TransactionQuery } from '../../../interfaces/db';
 
 @Injectable()
 export class EnglishService {
