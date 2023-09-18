@@ -367,9 +367,8 @@ export async function getAllWords() {
 
 export async function getStaticPaths() {
   const words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
-
   return {
-    paths: words.map((word: WordApiResponse) => {
+    paths: Object.values(words).map((word: WordApiResponse) => {
       return {
         params: {
           id: String(word.id)
