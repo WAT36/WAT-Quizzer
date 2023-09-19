@@ -5,8 +5,8 @@ import {
   AddEnglishWordDto,
   AddExampleDto,
   EditWordMeanDto,
-} from '../../../interfaces/api/request/english';
-import { TransactionQuery } from '../../../interfaces/db';
+} from '../../interfaces/api/request/english';
+import { TransactionQuery } from '../../interfaces/db';
 
 @Injectable()
 export class EnglishService {

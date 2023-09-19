@@ -5,8 +5,8 @@ import {
   CategoryByFileSqlResultDto,
   GetAccuracyRateByCategoryServiceDto,
   SelectFileDto,
-} from '../../../interfaces/api/request/category';
-import { TransactionQuery } from '../../../interfaces/db';
+} from '../../interfaces/api/request/category';
+import { TransactionQuery } from '../../interfaces/db';
 
 @Injectable()
 export class CategoryService {

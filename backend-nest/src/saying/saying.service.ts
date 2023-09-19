@@ -1,10 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from 'config/sql';
 import { execQuery } from 'lib/db/dao';
-import {
-  AddBookDto,
-  AddSayingDto,
-} from '../../../interfaces/api/request/saying';
+import { AddBookDto, AddSayingDto } from '../../interfaces/api/request/saying';
 
 @Injectable()
 export class SayingService {

@@ -16,8 +16,8 @@ import {
   Select,
   Typography
 } from '@mui/material';
-import { GetAccuracyRateByCategoryServiceDto, ProcessingApiReponse } from '../../../../interfaces/api';
-import { QuizFileApiResponse } from '../../../../interfaces/db';
+import { GetAccuracyRateByCategoryServiceDto, ProcessingApiReponse } from '../../../interfaces/api/response';
+import { QuizFileApiResponse } from '../../../interfaces/db';
 
 export default function AccuracyRateGraphPage() {
   const [file_num, setFileNum] = useState<number>(-1);

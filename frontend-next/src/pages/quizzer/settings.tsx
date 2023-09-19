@@ -20,8 +20,8 @@ import {
 } from '@mui/material';
 import { messageBoxStyle } from '../../styles/Pages';
 import { getRandomStr } from '../../../lib/str';
-import { ProcessingApiReponse } from '../../../../interfaces/api';
-import { QuizFileApiResponse } from '../../../../interfaces/db';
+import { ProcessingApiReponse } from '../../../interfaces/api/response';
+import { QuizFileApiResponse } from '../../../interfaces/db';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();

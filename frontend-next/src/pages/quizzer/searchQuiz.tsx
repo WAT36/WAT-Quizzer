@@ -23,8 +23,8 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { ProcessingApiReponse } from '../../../../interfaces/api';
-import { CategoryApiResponse, QuizFileApiResponse, QuizViewApiResponse } from '../../../../interfaces/db';
+import { ProcessingApiReponse } from '../../../interfaces/api/response';
+import { CategoryApiResponse, QuizFileApiResponse, QuizViewApiResponse } from '../../../interfaces/db';
 
 export default function SearchQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
