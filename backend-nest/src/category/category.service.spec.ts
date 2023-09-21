@@ -54,4 +54,18 @@ describe('CategoryService', () => {
       }),
     ).toBe(testResult);
   });
+
+  // カテゴリ総入れ替え 異常系
+  it('replaceAllCategory - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      categoryService.replaceAllCategory({
+        file_num: 0,
+      }),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
