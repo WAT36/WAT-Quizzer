@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { getDbUrl } from '../aws/secrets';
 import { createConnection } from 'mysql2';
-import { TransactionQuery } from '../../../interfaces/db';
+import { TransactionQuery } from '../../interfaces/db';
 
 // SQLを実行する
 export const execQuery = async (query: string, value: (string | number)[]) => {

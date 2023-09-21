@@ -4,7 +4,7 @@ import { Button, Card, CardContent, Container, Typography } from '@mui/material'
 import { topButtonStyle } from '../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get } from '@/common/API';
-import { GetRandomSayingResponse, ProcessingApiReponse } from '../../../interfaces/api';
+import { GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
 
 const inter = Inter({ subsets: ['latin'] });
 

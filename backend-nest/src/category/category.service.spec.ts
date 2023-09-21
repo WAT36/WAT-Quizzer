@@ -1,4 +1,3 @@
-import { CategoryApiResponse } from '../../../interfaces/db';
 import { CategoryService } from './category.service';
 jest.mock('./category.service');
 
@@ -18,7 +17,7 @@ describe('CategoryService', () => {
       created_at: '2000-01-01 00:00:00',
       updated_at: '2000-01-01 00:00:00',
       deleted_at: null,
-    } as CategoryApiResponse;
+    };
     jest
       .spyOn(categoryService, 'getCategoryList')
       .mockResolvedValueOnce(testResult);

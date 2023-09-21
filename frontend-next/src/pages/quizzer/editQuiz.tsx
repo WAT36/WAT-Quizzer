@@ -17,8 +17,8 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { ProcessingApiReponse } from '../../../../interfaces/api';
-import { QuizApiResponse, QuizFileApiResponse } from '../../../../interfaces/db';
+import { ProcessingApiReponse } from '../../../interfaces/api/response';
+import { QuizApiResponse, QuizFileApiResponse } from '../../../interfaces/db';
 
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);

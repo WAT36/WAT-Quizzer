@@ -17,8 +17,8 @@ import EnglishBotLayout from '../components/EnglishBotLayout';
 import { messageBoxStyle } from '../../../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get, getApiAndGetValue, patch } from '@/common/API';
-import { EnglishWordByIdApiResponse, ProcessingApiReponse } from '../../../../../interfaces/api';
-import { PartofSpeechApiResponse, SourceApiResponse, WordApiResponse } from '../../../../../interfaces/db';
+import { EnglishWordByIdApiResponse, ProcessingApiReponse } from '../../../../interfaces/api/response';
+import { PartofSpeechApiResponse, SourceApiResponse, WordApiResponse } from '../../../../interfaces/db';
 import { GetStaticPropsContext } from 'next';
 
 type EachWordPageProps = {

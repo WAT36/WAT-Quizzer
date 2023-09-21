@@ -6,7 +6,7 @@ import { Button, Card, CardContent, CardHeader, Container, TextField, Typography
 import { get, post } from '@/common/API';
 import { DataGrid, GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid';
 import { meanColumns } from '../../../utils/englishBot/SearchWordTable';
-import { EnglishWordByNameApiResponse, ProcessingApiReponse } from '../../../../interfaces/api';
+import { EnglishWordByNameApiResponse, ProcessingApiReponse } from '../../../interfaces/api/response';
 
 const cardContentStyle = {
   display: 'flex',

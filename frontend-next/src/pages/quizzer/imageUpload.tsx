@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import QuizzerLayout from './components/QuizzerLayout';
 import { messageBoxStyle, dropzoneStyle } from '../../styles/Pages';
-import { ImageUploadReturnValue } from '../../../../interfaces/api';
+import { ImageUploadReturnValue } from '../../../interfaces/api/response';
 import { Card, CardContent, Container, Typography } from '@mui/material';
 
 export default function ImageUploadPage() {
