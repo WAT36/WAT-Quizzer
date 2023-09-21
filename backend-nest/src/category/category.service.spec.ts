@@ -33,21 +33,25 @@ describe('CategoryService', () => {
     });
   });
 
-  // // カテゴリ総入れ替え 正常系
-  // it('replaceAllCategory - OK', async () => {
-  //   // テストデータ 正常時の返り値
-  //   const testCategoryResult = [
-  //     {
-  //       result: 'OK',
-  //     },
-  //   ];
-  //   jest
-  //     .spyOn(categoryService, 'replaceAllCategory')
-  //     .mockResolvedValueOnce(testCategoryResult);
-  //   expect(
-  //     await categoryService.replaceAllCategory({
-  //       file_num: 0,
-  //     }),
-  //   ).toBe(testCategoryResult);
-  // });
+  // カテゴリ総入れ替え 正常系
+  it('replaceAllCategory - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testCategoryResult = [
+      {
+        category: 'カテゴリ',
+      },
+    ];
+    const testResult = [
+      {
+        result: 'OK',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testCategoryResult);
+    jest.spyOn(Dao, 'execTransaction').mockResolvedValueOnce(testResult);
+    expect(
+      await categoryService.replaceAllCategory({
+        file_num: 0,
+      }),
+    ).toBe(testResult);
+  });
 });
