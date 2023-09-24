@@ -10,10 +10,6 @@ import { TransactionQuery } from '../../interfaces/db';
 
 @Injectable()
 export class EnglishService {
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   // 品詞取得
   async getPartsofSpeechService() {
     try {
