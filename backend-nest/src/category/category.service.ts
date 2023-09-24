@@ -67,7 +67,9 @@ export class CategoryService {
         });
       }
       //トランザクション実行
-      return await execTransaction(transactionQuery);
+      const result = await execTransaction(transactionQuery);
+
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

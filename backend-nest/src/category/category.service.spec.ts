@@ -57,9 +57,12 @@ describe('CategoryService', () => {
 
   // カテゴリ総入れ替え 異常系
   it('replaceAllCategory - NG', async () => {
-    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
-      throw Error('error test by jest.');
-    });
+    // jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+    //   throw Error('error test by jest.');
+    // });
+    jest
+      .spyOn(Dao, 'execQuery')
+      .mockRejectedValueOnce(new Error('error test by jest.'));
     await expect(
       categoryService.replaceAllCategory({
         file_num: 0,
@@ -67,5 +70,22 @@ describe('CategoryService', () => {
     ).rejects.toMatchObject({
       message: 'error test by jest.',
     });
+  });
+
+  // カテゴリ正解率取得 正常系
+  it('getAccuracyRateByCategory - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'OK',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await categoryService.getAccuracyRateByCategory(0)).toEqual([
+      {
+        result: testResult,
+        checked_result: testResult,
+      },
+    ]);
   });
 });
