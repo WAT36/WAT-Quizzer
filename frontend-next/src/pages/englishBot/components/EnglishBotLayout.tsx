@@ -1,5 +1,4 @@
 import React from 'react';
-import EnglishBotFooter from './EnglishBotFooter';
 import EnglishBotSideBar from './EnglishBotSideBar';
 import { adjustedSpaceStyle } from '../../../styles/Layout';
 import Head from 'next/head';
@@ -7,6 +6,7 @@ import { toggleDrawer } from '../../../../utils/englishBot/SideBar';
 import { Header } from '@/components/ui-parts/header/Header';
 import { useSetRecoilState } from 'recoil';
 import { isOpenState } from '@/atoms/SideBar';
+import { Footer } from '@/components/ui-parts/footer/Footer';
 
 type Props = {
   contents: JSX.Element;
@@ -38,7 +38,7 @@ export default function EnglishBotLayout(props: Props) {
       <div style={adjustedSpaceStyle}></div>
 
       {/*フッタ*/}
-      <EnglishBotFooter />
+      <Footer bgColor="midnightblue" topHref={process.env.NEXT_PUBLIC_URL_END || ''}></Footer>
     </>
   );
 }

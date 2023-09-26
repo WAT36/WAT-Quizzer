@@ -1,5 +1,4 @@
 import React from 'react';
-import QuizzerFooter from './QuizzerFooter';
 import QuizzerSideBar from './QuizzerSideBar';
 import { adjustedSpaceStyle } from '../../../styles/Layout';
 import Head from 'next/head';
@@ -7,6 +6,7 @@ import { Header } from '@/components/ui-parts/header/Header';
 import { useSetRecoilState } from 'recoil';
 import { isOpenState } from '@/atoms/SideBar';
 import { toggleDrawer } from '../../../../utils/quizzer/SideBar';
+import { Footer } from '@/components/ui-parts/footer/Footer';
 
 type Props = {
   contents: JSX.Element;
@@ -37,7 +37,7 @@ export default function QuizzerLayout(props: Props) {
       <div style={adjustedSpaceStyle}></div>
 
       {/*フッタ*/}
-      <QuizzerFooter />
+      <Footer bgColor="#0077B6" topHref={process.env.NEXT_PUBLIC_URL_END || ''}></Footer>
     </>
   );
 }
