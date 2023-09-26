@@ -1,5 +1,5 @@
 import React from 'react';
-import './button.css';
+import styles from './Button.module.css';
 import { Button as MuiButton } from '@mui/material';
 
 interface ButtonProps {
@@ -15,7 +15,7 @@ export const Button = ({ color = 'primary', variant = 'outlined', label, ...prop
   return (
     <>
       <MuiButton
-        className={['button', props.mode ? (props.mode === 'regular' ? '' : props.mode) : ''].join(' ')}
+        className={[styles.button, props.mode ? (props.mode === 'regular' ? '' : styles[props.mode]) : ''].join(' ')}
         variant={variant}
         size={'medium'}
         color={color}
