@@ -1,21 +1,22 @@
 import React from 'react';
 
-import './header.css';
+import styles from './Header.module.css';
 import { IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { HeaderBar } from '../../ui-elements/headerBar/HeaderBar';
 
 interface HeaderProps {
   bgColor: string;
-  onClick: () => void;
+  onClick: (event: React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>) => void;
 }
 
 export const Header = ({ bgColor = '#0077B6', onClick }: HeaderProps) => (
-  <header style={{ backgroundColor: bgColor }}>
-    <span className="title">WAT Quizzer</span>
-    <span className="right">
+  <HeaderBar bgColor={bgColor}>
+    <span className={styles.title}>WAT Quizzer</span>
+    <span className={styles.right}>
       <IconButton onClick={onClick} size="small">
         <MenuIcon style={{ color: 'white' }} />
       </IconButton>
     </span>
-  </header>
+  </HeaderBar>
 );

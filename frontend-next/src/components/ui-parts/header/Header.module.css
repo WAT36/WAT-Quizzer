@@ -1,12 +1,3 @@
-header {
-  position: fixed as fixed;
-  top: 0;
-  width: 100%;
-  height: 30px;
-  background-color: #0077B6;
-  z-index: 10000;
-}
-
 .title {
   color: white;
   font-weight: bolder;
