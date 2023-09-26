@@ -1,9 +1,12 @@
 import React from 'react';
-import QuizzerHeader from './QuizzerHeader';
 import QuizzerFooter from './QuizzerFooter';
 import QuizzerSideBar from './QuizzerSideBar';
 import { adjustedSpaceStyle } from '../../../styles/Layout';
 import Head from 'next/head';
+import { Header } from '@/components/ui-parts/header/Header';
+import { useSetRecoilState } from 'recoil';
+import { isOpenState } from '@/atoms/SideBar';
+import { toggleDrawer } from '../../../../utils/quizzer/SideBar';
 
 type Props = {
   contents: JSX.Element;
@@ -11,6 +14,7 @@ type Props = {
 };
 
 export default function QuizzerLayout(props: Props) {
+  const setSidebarState = useSetRecoilState(isOpenState);
   return (
     <>
       {/*Head タイトルなど*/}
@@ -18,7 +22,7 @@ export default function QuizzerLayout(props: Props) {
         <title>{'WAT Quizzer ' + props.title}</title>
       </Head>
       {/*ヘッダ*/}
-      <QuizzerHeader />
+      <Header bgColor="#0077B6" onClick={toggleDrawer(true, setSidebarState)}></Header>
 
       {/*サイドバー*/}
       <QuizzerSideBar />

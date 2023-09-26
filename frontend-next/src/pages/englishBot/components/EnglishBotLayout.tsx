@@ -1,9 +1,12 @@
 import React from 'react';
-import EnglishBotHeader from './EnglishBotHeader';
 import EnglishBotFooter from './EnglishBotFooter';
 import EnglishBotSideBar from './EnglishBotSideBar';
 import { adjustedSpaceStyle } from '../../../styles/Layout';
 import Head from 'next/head';
+import { toggleDrawer } from '../../../../utils/englishBot/SideBar';
+import { Header } from '@/components/ui-parts/header/Header';
+import { useSetRecoilState } from 'recoil';
+import { isOpenState } from '@/atoms/SideBar';
 
 type Props = {
   contents: JSX.Element;
@@ -11,6 +14,7 @@ type Props = {
 };
 
 export default function EnglishBotLayout(props: Props) {
+  const setSidebarState = useSetRecoilState(isOpenState);
   return (
     <>
       {/*Head タイトルなど*/}
@@ -18,7 +22,8 @@ export default function EnglishBotLayout(props: Props) {
         <title>{'WAT Quizzer(EnglishBot) ' + props.title}</title>
       </Head>
       {/*ヘッダ*/}
-      <EnglishBotHeader />
+      {/* <EnglishBotHeader /> */}
+      <Header bgColor="midnightblue" onClick={toggleDrawer(true, setSidebarState)}></Header>
 
       {/*サイドバー*/}
       <EnglishBotSideBar />
