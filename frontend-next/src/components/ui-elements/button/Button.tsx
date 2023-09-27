@@ -10,7 +10,7 @@ interface ButtonProps {
   variant?: 'contained' | 'outlined' | 'text';
   href?: string;
   class?: string;
-  onClick?: () => void;
+  onClick?: (event: React.KeyboardEvent | React.MouseEvent) => void;
 }
 
 export const Button = ({ color = 'primary', size = 'medium', variant = 'outlined', label, ...props }: ButtonProps) => {
