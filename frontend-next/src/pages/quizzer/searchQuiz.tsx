@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { DataGrid, GridRowsProp, GridRowSelectionModel } from '@mui/x-data-grid';
 
 import { get, post, put } from '../../common/API';
-import QuizzerLayout from './components/QuizzerLayout';
 import { buttonStyle, groupStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
 import { columns } from '../../../utils/quizzer/SearchTable';
 import {
@@ -25,6 +24,7 @@ import {
 } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { CategoryApiResponse, QuizFileApiResponse, QuizViewApiResponse } from '../../../interfaces/db';
+import { Layout } from '@/components/templates/layout/Layout';
 
 export default function SearchQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -538,7 +538,7 @@ export default function SearchQuizPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} title={'問題検索'} />
+      <Layout mode="quizzer" contents={contents()} title={'問題検索'} />
     </>
   );
 }

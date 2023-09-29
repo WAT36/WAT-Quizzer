@@ -1,0 +1,11 @@
+.title {
+  color: white;
+  font-weight: bolder;
+  line-height: 30px;
+}
+
+.right {
+  position: absolute /*←絶対位置*/;
+  right: 10px;
+  line-height: 30px;
+}

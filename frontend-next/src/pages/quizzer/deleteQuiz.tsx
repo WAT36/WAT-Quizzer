@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { del, get, post } from '../../common/API';
-import QuizzerLayout from './components/QuizzerLayout';
 import { buttonStyle, messageBoxStyle, paperStyle } from '../../styles/Pages';
 import {
   Button,
@@ -19,6 +18,7 @@ import {
 } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizApiResponse, QuizFileApiResponse } from '../../../interfaces/db';
+import { Layout } from '@/components/templates/layout/Layout';
 
 export default function DeleteQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -386,7 +386,7 @@ export default function DeleteQuizPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} title={'問題削除'} />
+      <Layout mode="quizzer" contents={contents()} title={'問題削除'} />
     </>
   );
 }

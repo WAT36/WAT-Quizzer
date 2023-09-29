@@ -1,0 +1,11 @@
+.left {
+  position: absolute /*←絶対位置*/;
+  left: 0px;
+  line-height: 30px;
+}
+
+.right {
+  position: absolute /*←絶対位置*/;
+  right: 10px;
+  line-height: 30px;
+}

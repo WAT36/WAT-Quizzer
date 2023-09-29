@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-import EnglishBotLayout from './components/EnglishBotLayout';
 import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
 import { Button, Card, CardContent, CardHeader, Container, TextField, Typography } from '@mui/material';
 import { get, post } from '@/common/API';
 import { DataGrid, GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid';
 import { meanColumns } from '../../../utils/englishBot/SearchWordTable';
 import { EnglishWordByNameApiResponse, ProcessingApiReponse } from '../../../interfaces/api/response';
+import { Layout } from '@/components/templates/layout/Layout';
 
 const cardContentStyle = {
   display: 'flex',
@@ -212,7 +212,7 @@ export default function EnglishBotAddExamplePage() {
 
   return (
     <>
-      <EnglishBotLayout contents={contents()} title={'例文追加'} />
+      <Layout mode="englishBot" contents={contents()} title={'例文追加'} />
     </>
   );
 }

@@ -5,6 +5,7 @@ import { topButtonStyle } from '../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get } from '@/common/API';
 import { GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
+import { Title } from '@/components/ui-elements/title/Title';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -35,7 +36,7 @@ export default function Top() {
         <link rel="icon" href="/favicon.ico" /> */}
       </Head>
       <Container>
-        <h1>WAT Quizzer</h1>
+        <Title label="WAT Quizzer"></Title>
         <div>
           <Button
             style={topButtonStyle}

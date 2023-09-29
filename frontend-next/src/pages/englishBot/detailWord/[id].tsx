@@ -13,13 +13,13 @@ import {
   Typography,
   styled
 } from '@mui/material';
-import EnglishBotLayout from '../components/EnglishBotLayout';
 import { messageBoxStyle } from '../../../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get, getApiAndGetValue, patch } from '@/common/API';
 import { EnglishWordByIdApiResponse, ProcessingApiReponse } from '../../../../interfaces/api/response';
 import { PartofSpeechApiResponse, SourceApiResponse, WordApiResponse } from '../../../../interfaces/db';
 import { GetStaticPropsContext } from 'next';
+import { Layout } from '@/components/templates/layout/Layout';
 
 type EachWordPageProps = {
   id: string;
@@ -355,7 +355,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
 
   return (
     <>
-      <EnglishBotLayout contents={contents()} title={'各単語詳細'} />
+      <Layout mode="englishBot" contents={contents()} title={'各単語詳細'} />
     </>
   );
 }
