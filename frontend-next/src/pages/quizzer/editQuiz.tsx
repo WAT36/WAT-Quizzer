@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { get, post } from '../../common/API';
-import QuizzerLayout from './components/QuizzerLayout';
 import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
 import {
   Button,
@@ -19,6 +18,7 @@ import {
 } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizApiResponse, QuizFileApiResponse } from '../../../interfaces/db';
+import { Layout } from '@/components/templates/layout/Layout';
 
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -218,7 +218,7 @@ export default function EditQuizPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} title={'問題編集'} />
+      <Layout mode="quizzer" contents={contents()} title={'問題編集'} />
     </>
   );
 }

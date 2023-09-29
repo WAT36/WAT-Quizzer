@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
 
-import QuizzerLayout from './components/QuizzerLayout';
 import { messageBoxStyle, dropzoneStyle } from '../../styles/Pages';
 import { ImageUploadReturnValue } from '../../../interfaces/api/response';
 import { Card, CardContent, Container, Typography } from '@mui/material';
+import { Layout } from '@/components/templates/layout/Layout';
 
 export default function ImageUploadPage() {
   const [message, setMessage] = useState<string>('　');
@@ -93,7 +93,7 @@ export default function ImageUploadPage() {
 
   return (
     <>
-      <QuizzerLayout contents={contents()} title={'画像アップロード'} />
+      <Layout mode="quizzer" contents={contents()} title={'画像アップロード'} />
     </>
   );
 }
