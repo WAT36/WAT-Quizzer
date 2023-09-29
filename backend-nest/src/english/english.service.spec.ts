@@ -62,4 +62,23 @@ describe('EnglishService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 単語と意味追加 正常系
+  it('addWordAndMeanService - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'test',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    jest.spyOn(Dao, 'execTransaction').mockResolvedValue(testResult);
+    expect(
+      await englishService.addWordAndMeanService({
+        wordName: 'testWord',
+        pronounce: 'testPronounce',
+        meanArrayData: [],
+      }),
+    ).toEqual(testResult);
+  });
 });
