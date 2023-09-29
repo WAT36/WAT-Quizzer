@@ -52,4 +52,14 @@ describe('EnglishService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
     expect(await englishService.getSourceService()).toEqual(testResult);
   });
+
+  // 出典リスト取得 異常系
+  it('getSourceService - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(englishService.getSourceService()).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
