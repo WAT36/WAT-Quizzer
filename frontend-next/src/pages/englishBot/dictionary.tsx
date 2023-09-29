@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import { get } from '../../common/API';
-import EnglishBotLayout from './components/EnglishBotLayout';
 import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
 import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField, Typography } from '@mui/material';
 import { columns } from '../../../utils/englishBot/SearchWordTable';
 import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { WordApiResponse } from '../../../interfaces/db';
+import { Layout } from '@/components/templates/layout/Layout';
 
 export default function EnglishBotDictionaryPage() {
   const [query, setQuery] = useState('');
@@ -90,7 +90,7 @@ export default function EnglishBotDictionaryPage() {
 
   return (
     <>
-      <EnglishBotLayout contents={contents()} title={'辞書'} />
+      <Layout mode="englishBot" contents={contents()} title={'辞書'} />
     </>
   );
 }

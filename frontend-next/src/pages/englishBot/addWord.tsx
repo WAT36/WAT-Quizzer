@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import EnglishBotLayout from './components/EnglishBotLayout';
 import { get, post } from '../../common/API';
 import { messageBoxStyle, buttonStyle } from '../../styles/Pages';
 import {
@@ -29,6 +28,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { SendToAddWordApiData, meanOfAddWordDto } from '../../../interfaces/api/response';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { PartofSpeechApiResponse, SourceApiResponse } from '../../../interfaces/db';
+import { Layout } from '@/components/templates/layout/Layout';
 
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<string>('　');
@@ -486,7 +486,7 @@ export default function EnglishBotAddWordPage() {
 
   return (
     <>
-      <EnglishBotLayout contents={contents()} title={'単語追加'} />
+      <Layout mode="englishBot" contents={contents()} title={'単語追加'} />
     </>
   );
 }
