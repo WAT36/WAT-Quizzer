@@ -24,4 +24,16 @@ describe('EnglishService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
     expect(await englishService.getPartsofSpeechService()).toEqual(testResult);
   });
+
+  // 品詞リスト取得 異常系
+  it('getPartsofSpeechService - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      englishService.getPartsofSpeechService(),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
