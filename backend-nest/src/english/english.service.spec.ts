@@ -36,4 +36,20 @@ describe('EnglishService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 出典リスト取得 正常系
+  it('getSourceService - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        id: 0,
+        name: '出典テスト',
+        created_at: '2000-01-01 00:00:00',
+        updated_at: '2000-01-01 00:00:00',
+        deleted_at: null,
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
+    expect(await englishService.getSourceService()).toEqual(testResult);
+  });
 });
