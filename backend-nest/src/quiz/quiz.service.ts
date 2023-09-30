@@ -617,4 +617,56 @@ export class QuizService {
       }
     }
   }
+
+  // 応用問題を１問追加
+  async addAdvancedQuiz(req: AddQuizDto) {
+    try {
+      const { file_num, input_data } = req;
+      if (!file_num && !input_data) {
+        throw new HttpException(
+          `ファイル番号または問題文が入力されていません。(file_num:${file_num},input_data:${JSON.stringify(
+            input_data,
+          )})`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const { question, answer, img_file } = input_data;
+
+      // 新問題番号を取得しINSERT
+      const res: GetQuizNumSqlResultDto[] = await execQuery(
+        SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM,
+        [file_num],
+      );
+      const new_quiz_id: number =
+        res && res.length > 0 ? res[0]['advanced_quiz_num'] + 1 : 1;
+      await execQuery(SQL.ADVANCED_QUIZ.ADD, [
+        file_num,
+        new_quiz_id,
+        question,
+        answer,
+        img_file,
+      ]);
+      return [
+        {
+          result:
+            'Added!! [' +
+            file_num +
+            '-' +
+            new_quiz_id +
+            ']:' +
+            question +
+            ',' +
+            answer,
+        },
+      ];
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }

@@ -247,6 +247,24 @@ export const SQL = {
       group by checked;
     `,
   },
+  ADVANCED_QUIZ: {
+    ADD: `
+      INSERT INTO
+          advanced_quiz (file_num,advanced_quiz_num,advanced_quiz_sentense,answer,img_file,checked)
+      VALUES(?,?,?,?,?,false)
+      ;
+    `,
+    MAX_QUIZ_NUM: `
+      SELECT 
+          advanced_quiz_num
+      FROM 
+          advanced_quiz 
+      WHERE 
+          file_num = ?
+      ORDER BY advanced_quiz_num DESC
+      LIMIT 1
+    `,
+  },
   CATEGORY: {
     INFO: `
       SELECT

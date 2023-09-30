@@ -167,4 +167,10 @@ export class QuizController {
   async deleteAnswerLogByFile(@Body() req: DeleteFileDto) {
     return await this.quizService.deleteAnswerLogByFile(req);
   }
+
+  // 応用題追加
+  @Post('/advanced')
+  async addAdvanceQuiz(@Body() req: AddQuizDto) {
+    return await this.quizService.addAdvancedQuiz(req);
+  }
 }
