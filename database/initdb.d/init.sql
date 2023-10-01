@@ -52,6 +52,7 @@ CREATE TABLE
     ) DEFAULT CHARACTER SET = utf8;
 
 # 類似問題グループ
+
 CREATE TABLE
     IF NOT EXISTS quiz_similarity_group (
         id INT NOT NULL AUTO_INCREMENT,
@@ -63,6 +64,7 @@ CREATE TABLE
     ) DEFAULT CHARACTER SET = utf8;
 
 # 類似問題
+
 CREATE TABLE
     IF NOT EXISTS quiz_similarity (
         id INT NOT NULL AUTO_INCREMENT,
@@ -76,6 +78,7 @@ CREATE TABLE
     ) DEFAULT CHARACTER SET = utf8;
 
 # 前提問題
+
 CREATE TABLE
     IF NOT EXISTS quiz_dependency (
         id INT NOT NULL AUTO_INCREMENT,
@@ -88,12 +91,13 @@ CREATE TABLE
     ) DEFAULT CHARACTER SET = utf8;
 
 # 応用問題
+
 CREATE TABLE
     IF NOT EXISTS advanced_quiz (
         id INT NOT NULL AUTO_INCREMENT,
         file_num INT NOT NULL,
-        advanced_quiz_num INT NOT NULL,
-        advanced_quiz_sentense VARCHAR(256) NOT NULL UNIQUE,
+        quiz_num INT NOT NULL,
+        quiz_sentense VARCHAR(256) NOT NULL UNIQUE,
         answer VARCHAR(256) NOT NULL,
         img_file VARCHAR(128),
         checked BOOLEAN DEFAULT 0,
@@ -101,10 +105,11 @@ CREATE TABLE
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
         PRIMARY KEY(id),
-        UNIQUE(file_num, advanced_quiz_num)
+        UNIQUE(file_num, quiz_num)
     ) DEFAULT CHARACTER SET = utf8;
 
 # 基本問題と応用問題の紐付け
+
 CREATE TABLE
     IF NOT EXISTS quiz_basis_advanced_linkage (
         id INT NOT NULL AUTO_INCREMENT,
