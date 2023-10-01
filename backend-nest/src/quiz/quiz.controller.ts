@@ -42,8 +42,9 @@ export class QuizController {
   async getQuiz(
     @Query('file_num') file_num: number,
     @Query('quiz_num') quiz_num: number,
+    @Query('format') format: string,
   ) {
-    return await this.quizService.getQuiz(file_num, quiz_num);
+    return await this.quizService.getQuiz(file_num, quiz_num, format);
   }
 
   @Get('/random')

@@ -16,6 +16,13 @@ import {
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 
+export interface QueryType {
+  query: string;
+  value: (string | number)[];
+}
+
+export type FormatType = 'basic' | 'applied';
+
 @Injectable()
 export class QuizService {
   getHello(): string {
@@ -28,7 +35,7 @@ export class QuizService {
   }
 
   // 問題取得
-  async getQuiz(file_num: number, quiz_num: number) {
+  async getQuiz(file_num: number, quiz_num: number, format = 'basic') {
     if (!file_num && !quiz_num) {
       throw new HttpException(
         `ファイル番号または問題番号が入力されていません`,
@@ -37,7 +44,24 @@ export class QuizService {
     }
 
     try {
-      return await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num]);
+      let query: QueryType;
+      switch (format) {
+        case 'basic':
+          query = { query: SQL.QUIZ.INFO, value: [file_num, quiz_num] };
+          break;
+        case 'applied':
+          query = {
+            query: SQL.ADVANCED_QUIZ.INFO,
+            value: [file_num, quiz_num],
+          };
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+      return await execQuery(query.query, query.value);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -639,7 +663,7 @@ export class QuizService {
         [file_num],
       );
       const new_quiz_id: number =
-        res && res.length > 0 ? res[0]['advanced_quiz_num'] + 1 : 1;
+        res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
       await execQuery(SQL.ADVANCED_QUIZ.ADD, [
         file_num,
         new_quiz_id,

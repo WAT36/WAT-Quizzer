@@ -248,20 +248,30 @@ export const SQL = {
     `,
   },
   ADVANCED_QUIZ: {
+    INFO: `
+      SELECT 
+        * 
+      FROM 
+        advanced_quiz 
+      WHERE file_num = ? 
+      AND quiz_num = ? 
+      AND deleted_at IS NULL
+      ; 
+    `,
     ADD: `
       INSERT INTO
-          advanced_quiz (file_num,advanced_quiz_num,advanced_quiz_sentense,answer,img_file,checked)
+          advanced_quiz (file_num,quiz_num,quiz_sentense,answer,img_file,checked)
       VALUES(?,?,?,?,?,false)
       ;
     `,
     MAX_QUIZ_NUM: `
       SELECT 
-          advanced_quiz_num
+          quiz_num
       FROM 
           advanced_quiz 
       WHERE 
           file_num = ?
-      ORDER BY advanced_quiz_num DESC
+      ORDER BY quiz_num DESC
       LIMIT 1
     `,
   },
