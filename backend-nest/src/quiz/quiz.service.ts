@@ -214,8 +214,28 @@ export class QuizService {
   // 不正解登録
   async failed(req: SelectQuizDto) {
     try {
-      const { file_num, quiz_num } = req;
-      return await execQuery(SQL.QUIZ.FAILED.INPUT, [file_num, quiz_num]);
+      const { file_num, quiz_num, format } = req;
+      let query: QueryType;
+      switch (format) {
+        case 'basic': // 基礎問題
+          query = {
+            query: SQL.QUIZ.FAILED.INPUT,
+            value: [file_num, quiz_num],
+          };
+          break;
+        case 'applied': // 応用問題
+          query = {
+            query: SQL.ADVANCED_QUIZ.FAILED.INPUT,
+            value: [file_num, quiz_num],
+          };
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+      return await execQuery(query.query, query.value);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

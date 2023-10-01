@@ -80,7 +80,7 @@ export const SQL = {
       INPUT: `
         INSERT INTO 
           answer_log 
-        (quiz_format_num, file_num, quiz_num, is_corrected) VALUES (1,?,?,false);
+        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (1,?,?,false);
       `,
     },
     DELETED: {
@@ -278,6 +278,13 @@ export const SQL = {
         INSERT INTO 
           answer_log 
         (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (2,?,?,true);
+      `,
+    },
+    FAILED: {
+      INPUT: `
+        INSERT INTO 
+          answer_log 
+        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (2,?,?,false);
       `,
     },
     MAX_QUIZ_NUM: `
