@@ -63,7 +63,7 @@ export const SQL = {
       INPUT: `
         INSERT INTO 
           answer_log 
-        (quiz_format_num, file_num, quiz_num, is_corrected) VALUES (1,?,?,true);
+        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (1,?,?,true);
       `,
     },
     FAILED: {
@@ -273,6 +273,13 @@ export const SQL = {
       VALUES(?,?,?,?,?,false)
       ;
     `,
+    CLEARED: {
+      INPUT: `
+        INSERT INTO 
+          answer_log 
+        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (2,?,?,true);
+      `,
+    },
     MAX_QUIZ_NUM: `
       SELECT 
           quiz_num

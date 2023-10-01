@@ -1,4 +1,5 @@
 export interface SelectQuizDto {
+  format: string; // TODO number, format_idを使いたい
   file_num: number;
   quiz_num: number;
 }
