@@ -71,8 +71,14 @@ export class QuizController {
     @Query('file_num') file_num: number,
     @Query('category') category: string,
     @Query('checked') checked: string,
+    @Query('format') format: string,
   ) {
-    return await this.quizService.getWorstRateQuiz(file_num, category, checked);
+    return await this.quizService.getWorstRateQuiz(
+      file_num,
+      category,
+      checked,
+      format,
+    );
   }
 
   @Get('/minimum')

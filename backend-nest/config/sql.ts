@@ -267,6 +267,14 @@ export const SQL = {
       AND accuracy_rate >= ? 
       AND accuracy_rate <= ? 
       AND deleted_at IS NULL `,
+    WORST: ` 
+      SELECT
+        *
+      FROM
+          advanced_quiz_view
+      WHERE
+          file_num = ?
+      AND deleted_at IS NULL `,
     ADD: `
       INSERT INTO
           advanced_quiz (file_num,quiz_num,quiz_sentense,answer,img_file,checked)

@@ -117,8 +117,28 @@ export class QuizService {
   }
 
   // 最低正解率問題取得
-  async getWorstRateQuiz(file_num: number, category: string, checked: string) {
+  async getWorstRateQuiz(
+    file_num: number,
+    category: string,
+    checked: string,
+    format: string,
+  ) {
     try {
+      let preSQL: string;
+      switch (format) {
+        case 'basic':
+          preSQL = SQL.QUIZ.WORST;
+          break;
+        case 'applied':
+          preSQL = SQL.ADVANCED_QUIZ.WORST;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+
       const categorySQL =
         category && category !== ''
           ? ` AND category LIKE '%` + category + `%' `
@@ -128,10 +148,7 @@ export class QuizService {
 
       // 最低正解率問題取得SQL作成
       const getWorstRateQuizSQL =
-        SQL.QUIZ.WORST +
-        categorySQL +
-        checkedSQL +
-        ' ORDER BY accuracy_rate LIMIT 1; ';
+        preSQL + categorySQL + checkedSQL + ' ORDER BY accuracy_rate LIMIT 1; ';
 
       return await execQuery(getWorstRateQuizSQL, [file_num]);
     } catch (error: unknown) {
