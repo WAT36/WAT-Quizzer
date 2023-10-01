@@ -54,6 +54,7 @@ export class QuizController {
     @Query('max_rate') max_rate: number,
     @Query('category') category: string,
     @Query('checked') checked: string,
+    @Query('format') format: string,
   ) {
     return await this.quizService.getRandomQuiz(
       file_num,
@@ -61,6 +62,7 @@ export class QuizController {
       max_rate,
       category,
       checked,
+      format,
     );
   }
 

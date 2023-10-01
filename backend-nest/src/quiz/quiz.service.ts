@@ -79,6 +79,7 @@ export class QuizService {
     max_rate: number,
     category: string,
     checked: string,
+    format = 'basic',
   ) {
     try {
       const categorySQL =
@@ -88,11 +89,22 @@ export class QuizService {
 
       const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
+      let preSQL: string;
+      switch (format) {
+        case 'basic':
+          preSQL = SQL.QUIZ.RANDOM;
+          break;
+        case 'applied':
+          preSQL = SQL.ADVANCED_QUIZ.RANDOM;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
       const sql =
-        SQL.QUIZ.RANDOM +
-        categorySQL +
-        checkedSQL +
-        ' ORDER BY rand() LIMIT 1; ';
+        preSQL + categorySQL + checkedSQL + ' ORDER BY rand() LIMIT 1; ';
       return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
     } catch (error: unknown) {
       if (error instanceof Error) {

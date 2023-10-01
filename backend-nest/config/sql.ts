@@ -63,7 +63,7 @@ export const SQL = {
       INPUT: `
         INSERT INTO 
           answer_log 
-        (file_num, quiz_num, is_corrected) VALUES (?,?,true);
+        (quiz_format_num, file_num, quiz_num, is_corrected) VALUES (1,?,?,true);
       `,
     },
     FAILED: {
@@ -80,7 +80,7 @@ export const SQL = {
       INPUT: `
         INSERT INTO 
           answer_log 
-        (file_num, quiz_num, is_corrected) VALUES (?,?,false);
+        (quiz_format_num, file_num, quiz_num, is_corrected) VALUES (1,?,?,false);
       `,
     },
     DELETED: {
@@ -258,6 +258,15 @@ export const SQL = {
       AND deleted_at IS NULL
       ; 
     `,
+    RANDOM: ` 
+      SELECT 
+        * 
+      FROM 
+        advanced_quiz_view 
+      WHERE file_num = ? 
+      AND accuracy_rate >= ? 
+      AND accuracy_rate <= ? 
+      AND deleted_at IS NULL `,
     ADD: `
       INSERT INTO
           advanced_quiz (file_num,quiz_num,quiz_sentense,answer,img_file,checked)
