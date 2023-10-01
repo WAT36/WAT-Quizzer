@@ -42,6 +42,7 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS answer_log (
         id INT NOT NULL AUTO_INCREMENT,
+        quiz_format_num INT NOT NULL,
         file_num INT NOT NULL,
         quiz_num INT NOT NULL,
         is_corrected BOOLEAN,
@@ -125,6 +126,19 @@ CREATE TABLE
         )
     ) DEFAULT CHARACTER SET = utf8;
 
+-- 問題形式マスタ
+
+CREATE TABLE
+    IF NOT EXISTS quiz_format (
+        id INT NOT NULL AUTO_INCREMENT,
+        name VARCHAR(256) NOT NULL UNIQUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+        UNIQUE(name)
+    ) DEFAULT CHARACTER SET = utf8;
+
 DROP VIEW IF EXISTS quiz_view;
 
 CREATE VIEW QUIZ_VIEW AS
@@ -158,6 +172,7 @@ FROM quiz
         FROM answer_log
         WHERE
             is_corrected = true
+            and quiz_format_id = 0
         GROUP BY
             file_num,
             quiz_num
@@ -171,6 +186,7 @@ FROM quiz
         FROM answer_log
         WHERE
             is_corrected = false
+            and quiz_format_id = 0
         GROUP BY
             file_num,
             quiz_num
@@ -202,3 +218,57 @@ WHERE
     AND a.deleted_at IS NULL
 GROUP BY file_num, c_category
 ORDER BY file_num, c_category;
+
+DROP VIEW IF EXISTS advanced_quiz_view;
+
+CREATE VIEW
+    ADVANCED_QUIZ_VIEW AS
+SELECT
+    advanced_quiz.file_num,
+    advanced_quiz.quiz_num,
+    quiz_sentense,
+    answer,
+    img_file,
+    checked,
+    COALESCE(clear_count, 0) as clear_count,
+    COALESCE(fail_count, 0) as fail_count,
+    created_at,
+    updated_at,
+    deleted_at,
+    CASE
+        WHEN (
+            COALESCE(clear_count, 0) + COALESCE(fail_count, 0) = 0
+        ) THEN 0
+        ELSE 100 * COALESCE(clear_count, 0) / (
+            COALESCE(clear_count, 0) + COALESCE(fail_count, 0)
+        )
+    END AS accuracy_rate
+FROM advanced_quiz
+    LEFT OUTER JOIN (
+        SELECT
+            file_num,
+            quiz_num,
+            COUNT(*) as clear_count
+        FROM answer_log
+        WHERE
+            is_corrected = true
+            and quiz_format_id = 1
+        GROUP BY
+            file_num,
+            quiz_num
+    ) as corrected_data ON advanced_quiz.file_num = corrected_data.file_num
+    AND advanced_quiz.quiz_num = corrected_data.quiz_num
+    LEFT OUTER JOIN (
+        SELECT
+            file_num,
+            quiz_num,
+            COUNT(*) as fail_count
+        FROM answer_log
+        WHERE
+            is_corrected = false
+            and quiz_format_id = 1
+        GROUP BY
+            file_num,
+            quiz_num
+    ) as incorrected_data ON advanced_quiz.file_num = incorrected_data.file_num
+    AND advanced_quiz.quiz_num = incorrected_data.quiz_num;
