@@ -275,6 +275,14 @@ export const SQL = {
       WHERE
           file_num = ?
       AND deleted_at IS NULL `,
+    MINIMUM: ` 
+      SELECT
+        *
+      FROM
+        advanced_quiz_view
+      WHERE
+        file_num = ?
+      AND deleted_at IS NULL `,
     ADD: `
       INSERT INTO
           advanced_quiz (file_num,quiz_num,quiz_sentense,answer,img_file,checked)

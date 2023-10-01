@@ -166,8 +166,24 @@ export class QuizService {
     file_num: number,
     category: string,
     checked: string,
+    format: string,
   ) {
     try {
+      let preSQL: string;
+      switch (format) {
+        case 'basic':
+          preSQL = SQL.QUIZ.MINIMUM;
+          break;
+        case 'applied':
+          preSQL = SQL.ADVANCED_QUIZ.MINIMUM;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+
       const categorySQL =
         category && category !== ''
           ? ` AND category LIKE '%` + category + `%' `
@@ -175,12 +191,9 @@ export class QuizService {
 
       const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
-      // ランダム問題取得SQL作成
+      // 最小正解数問題取得SQL作成
       const getMinimumClearQuizSQL =
-        SQL.QUIZ.MINIMUM +
-        categorySQL +
-        checkedSQL +
-        ' ORDER BY clear_count LIMIT 1; ';
+        preSQL + categorySQL + checkedSQL + ' ORDER BY clear_count LIMIT 1; ';
 
       return await execQuery(getMinimumClearQuizSQL, [file_num]);
     } catch (error: unknown) {
