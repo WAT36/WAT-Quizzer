@@ -586,18 +586,33 @@ export class QuizService {
   // 問題のチェック反転
   async reverseCheck(req: SelectQuizDto) {
     try {
-      const { file_num, quiz_num } = req;
+      const { file_num, quiz_num, format } = req;
+      let infoSql: string;
+      let checkSql: string;
+      let uncheckSql: string;
+      switch (format) {
+        case 'basic': // 基礎問題
+          infoSql = SQL.QUIZ.INFO;
+          checkSql = SQL.QUIZ.CHECK;
+          uncheckSql = SQL.QUIZ.UNCHECK;
+          break;
+        case 'applied': // 応用問題
+          infoSql = SQL.ADVANCED_QUIZ.INFO;
+          checkSql = SQL.ADVANCED_QUIZ.CHECK;
+          uncheckSql = SQL.ADVANCED_QUIZ.UNCHECK;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+
       // チェック取得
-      const result: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
-        file_num,
-        quiz_num,
-      ]);
+      const result: QuizDto[] = await execQuery(infoSql, [file_num, quiz_num]);
       const checked = result[0].checked;
 
-      await execQuery(checked ? SQL.QUIZ.UNCHECK : SQL.QUIZ.CHECK, [
-        file_num,
-        quiz_num,
-      ]);
+      await execQuery(checked ? uncheckSql : checkSql, [file_num, quiz_num]);
 
       // チェックしたらtrue、チェック外したらfalseを返す
       return [{ result: !checked }];

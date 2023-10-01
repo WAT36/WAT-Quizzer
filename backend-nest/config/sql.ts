@@ -287,6 +287,26 @@ export const SQL = {
         (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (2,?,?,false);
       `,
     },
+    CHECK: `
+      UPDATE
+          advanced_quiz
+      SET
+          checked = true,
+          updated_at = NOW()
+      WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+    `,
+    UNCHECK: `
+      UPDATE
+          advanced_quiz
+      SET
+          checked = false,
+          updated_at = NOW()
+      WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+    `,
     MAX_QUIZ_NUM: `
       SELECT 
           quiz_num
