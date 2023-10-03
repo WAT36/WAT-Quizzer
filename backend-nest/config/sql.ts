@@ -1,6 +1,6 @@
 export const SQL = {
   ANSWER_LOG: {
-    RESET: `UPDATE answer_log SET deleted_at = NOW() WHERE file_num = ? AND quiz_num = ?; `,
+    RESET: `UPDATE answer_log SET deleted_at = NOW() WHERE quiz_format_id = ? AND file_num = ? AND quiz_num = ?; `,
     FILE: {
       RESET: `
         UPDATE
@@ -50,16 +50,6 @@ export const SQL = {
                   file_num = ?
               AND deleted_at IS NULL `,
     CLEARED: {
-      GET: `
-        SELECT
-            clear_count
-        FROM
-            quiz_view
-        WHERE
-            file_num = ?
-            AND quiz_num = ?
-            AND deleted_at IS NULL 
-      `,
       INPUT: `
         INSERT INTO 
           answer_log 
@@ -67,16 +57,6 @@ export const SQL = {
       `,
     },
     FAILED: {
-      GET: `
-        SELECT
-            fail_count
-        FROM
-            quiz_view
-        WHERE
-            file_num = ?
-            AND quiz_num = ?
-            AND deleted_at IS NULL
-      `,
       INPUT: `
         INSERT INTO 
           answer_log 
@@ -283,12 +263,6 @@ export const SQL = {
       WHERE
         file_num = ?
       AND deleted_at IS NULL `,
-    ADD: `
-      INSERT INTO
-          advanced_quiz (file_num,quiz_num,quiz_sentense,answer,img_file,checked)
-      VALUES(?,?,?,?,?,false)
-      ;
-    `,
     CLEARED: {
       INPUT: `
         INSERT INTO 
@@ -303,6 +277,25 @@ export const SQL = {
         (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (2,?,?,false);
       `,
     },
+    ADD: `
+      INSERT INTO
+          advanced_quiz (file_num,quiz_num,quiz_sentense,answer,img_file,checked)
+      VALUES(?,?,?,?,?,false)
+      ;
+    `,
+    EDIT: `
+      UPDATE
+          advanced_quiz
+      SET
+          quiz_sentense = ? ,
+          answer = ? ,
+          img_file = ? ,
+          updated_at = NOW()
+      WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+      ;
+    `,
     CHECK: `
       UPDATE
           advanced_quiz
@@ -332,6 +325,29 @@ export const SQL = {
           file_num = ?
       ORDER BY quiz_num DESC
       LIMIT 1
+    `,
+    SEARCH: `
+      SELECT
+          file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, img_file, checked, ROUND(accuracy_rate,1) AS accuracy_rate 
+      FROM
+          advanced_quiz_view
+      WHERE
+          file_num = ?
+      AND accuracy_rate >= ? 
+      AND accuracy_rate <= ? 
+      AND deleted_at IS NULL 
+    `,
+    DELETE: `
+      UPDATE
+          advanced_quiz
+      SET
+          quiz_sentense = concat(quiz_sentense,'(削除済-',DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'),')'),
+          updated_at = NOW(), 
+          deleted_at = NOW()
+      WHERE 
+          file_num = ? 
+          AND quiz_num = ? 
+      ;
     `,
   },
   CATEGORY: {
@@ -369,6 +385,13 @@ export const SQL = {
           file_num = ? 
       ORDER BY 
           accuracy_rate 
+    `,
+  },
+  QUIZ_BASIS_ADVANCED_LINKAGE: {
+    ADD: `
+      INSERT INTO
+          quiz_basis_advanced_linkage(file_num, basis_quiz_id, advanced_quiz_id)
+      VALUES (?,?,?) ;
     `,
   },
   ENGLISH: {

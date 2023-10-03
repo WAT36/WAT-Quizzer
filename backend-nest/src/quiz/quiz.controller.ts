@@ -126,6 +126,7 @@ export class QuizController {
     @Query('query') query: string,
     @Query('searchInOnlySentense') searchInOnlySentense: string,
     @Query('searchInOnlyAnswer') searchInOnlyAnswer: string,
+    @Query('format') format: string,
   ) {
     return await this.quizService.search(
       file_num,
@@ -136,6 +137,7 @@ export class QuizController {
       query,
       searchInOnlySentense,
       searchInOnlyAnswer,
+      format,
     );
   }
 
