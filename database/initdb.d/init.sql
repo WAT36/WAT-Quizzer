@@ -114,6 +114,7 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS quiz_basis_advanced_linkage (
         id INT NOT NULL AUTO_INCREMENT,
+        file_num INT NOT NULL,
         basis_quiz_id INT NOT NULL,
         advanced_quiz_id INT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
