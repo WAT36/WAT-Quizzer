@@ -300,6 +300,16 @@ export default function AddQuizPage() {
                     onChange={(e) => updateInputData('img_data', e.target.value)}
                   />
                 </Typography>
+
+                <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                  関連基礎問題番号(カンマ区切りで問題番号を指定)：
+                  <Input
+                    fullWidth
+                    maxRows={1}
+                    value={input_data.matched_basic_quiz_id || ''}
+                    onChange={(e) => updateInputData('matched_basic_quiz_id', e.target.value)}
+                  />
+                </Typography>
               </CardContent>
             </CustomTabPanel>
           </Card>
