@@ -26,6 +26,7 @@ import { CheckQuizApiResponse, ProcessingApiReponse } from '../../../interfaces/
 import { CategoryApiResponse, QuizApiResponse, QuizFileApiResponse, QuizViewApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
+import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
@@ -436,13 +437,7 @@ export default function SelectQuizPage() {
       <Container>
         <h1>WAT Quizzer</h1>
 
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={messageColor}>
-              {message}
-            </Typography>
-          </CardContent>
-        </Card>
+        <MessageCard message={message} messageColor={messageColor}></MessageCard>
 
         <FormGroup>
           <FormControl>
