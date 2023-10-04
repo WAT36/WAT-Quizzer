@@ -111,4 +111,16 @@ describe('EnglishService', () => {
       testResult,
     );
   });
+
+  // 単語検索 異常系
+  it('searchWordService - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      englishService.searchWordService('searchWord'),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
