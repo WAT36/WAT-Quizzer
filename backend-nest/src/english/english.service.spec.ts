@@ -97,4 +97,18 @@ describe('EnglishService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 単語検索 正常系
+  it('searchWordService - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'test',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await englishService.searchWordService('searchWord')).toEqual(
+      testResult,
+    );
+  });
 });
