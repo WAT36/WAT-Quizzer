@@ -1,15 +1,19 @@
 import React, { ReactNode } from 'react';
-import styles from './Button.module.css';
 import { Card as MuiCard } from '@mui/material';
+import styles from './Card.module.css';
 
 interface CardProps {
+  variant: string;
+  attr?: string;
   children?: ReactNode;
 }
 
-export const Card = ({ ...props }: CardProps) => {
+export const Card = ({ variant = 'outlined', ...props }: CardProps) => {
   return (
     <>
-      <MuiCard>{props.children}</MuiCard>
+      <MuiCard className={(props.attr ? props.attr.split(' ').map((x) => styles[x] || '') : []).join(' ')}>
+        {props.children}
+      </MuiCard>
     </>
   );
 };
