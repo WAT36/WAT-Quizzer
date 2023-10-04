@@ -8,10 +8,14 @@ import {
   CardContent,
   Container,
   FormControl,
+  FormControlLabel,
   FormGroup,
+  FormLabel,
   InputLabel,
   MenuItem,
   Paper,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
   Typography
@@ -37,6 +41,7 @@ export default function DeleteQuizPage() {
   const [integrate_to_answer, setIntegrateToAnswer] = useState<string>();
   const [integrate_to_category, setIntegrateToCategory] = useState<string>();
   const [integrate_to_image, setIntegrateToImage] = useState<string>();
+  const [format, setFormat] = useState<string>('basic');
 
   useEffect(() => {
     setMessage('通信中...');
@@ -98,7 +103,8 @@ export default function DeleteQuizPage() {
       },
       {
         file_num: String(file_num),
-        quiz_num: String(quiz_num)
+        quiz_num: String(quiz_num),
+        format
       }
     );
   };
@@ -138,7 +144,8 @@ export default function DeleteQuizPage() {
       },
       {
         file_num: String(get_file_num),
-        quiz_num: String(integrate_to_quiz_num)
+        quiz_num: String(integrate_to_quiz_num),
+        format
       }
     );
   };
@@ -156,7 +163,8 @@ export default function DeleteQuizPage() {
       '/quiz',
       {
         file_num: get_file_num,
-        quiz_num: get_quiz_num
+        quiz_num: get_quiz_num,
+        format
       },
       (data: ProcessingApiReponse) => {
         if (data.status === 200) {
@@ -228,6 +236,11 @@ export default function DeleteQuizPage() {
     );
   };
 
+  // ラジオボタンの選択変更時の処理
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormat((event.target as HTMLInputElement).value);
+  };
+
   const contents = () => {
     return (
       <Container>
@@ -274,6 +287,21 @@ export default function DeleteQuizPage() {
                       setQuizNum(Number(e.target.value));
                     }}
                   />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                    value={format}
+                    defaultValue="basic"
+                    onChange={handleRadioChange}
+                  >
+                    <FormControlLabel value="basic" control={<Radio />} label="基礎問題" />
+                    <FormControlLabel value="applied" control={<Radio />} label="応用問題" />
+                  </RadioGroup>
                 </FormControl>
               </FormGroup>
 
@@ -344,9 +372,30 @@ export default function DeleteQuizPage() {
                     }}
                   />
                 </FormControl>
+
+                <FormControl>
+                  <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                    value={format}
+                    defaultValue={format}
+                    //onChange={handleRadioChange}
+                  >
+                    <FormControlLabel disabled value="basic" control={<Radio />} label="基礎問題" />
+                    <FormControlLabel disabled value="applied" control={<Radio />} label="応用問題" />
+                  </RadioGroup>
+                </FormControl>
               </FormGroup>
 
-              <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => getIntegrateToQuiz()}>
+              <Button
+                style={buttonStyle}
+                variant="contained"
+                color="primary"
+                disabled={format !== 'basic'}
+                onClick={(e) => getIntegrateToQuiz()}
+              >
                 問題取得
               </Button>
 
@@ -376,7 +425,13 @@ export default function DeleteQuizPage() {
             </CardContent>
           </Card>
 
-          <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => integrateQuiz()}>
+          <Button
+            style={buttonStyle}
+            variant="contained"
+            color="primary"
+            disabled={format !== 'basic'}
+            onClick={(e) => integrateQuiz()}
+          >
             統合
           </Button>
         </Paper>

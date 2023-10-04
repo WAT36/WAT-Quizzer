@@ -12,7 +12,7 @@ interface FooterProps {
 export const Footer = ({ bgColor = '#0077B6', topHref }: FooterProps) => (
   <FooterBar bgColor={bgColor}>
     <span className={styles.left}>
-      <Button class="no-margin no-border" size="small" color="inherit" href={topHref} label="トップ" />
+      <Button attr="no-margin no-border" size="small" color="inherit" href={topHref} label="トップ" />
     </span>
     <span className={styles.right}>©️ Tatsuroh Wakasugi</span>
   </FooterBar>

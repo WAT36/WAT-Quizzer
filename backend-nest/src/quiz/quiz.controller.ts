@@ -42,8 +42,9 @@ export class QuizController {
   async getQuiz(
     @Query('file_num') file_num: number,
     @Query('quiz_num') quiz_num: number,
+    @Query('format') format: string,
   ) {
-    return await this.quizService.getQuiz(file_num, quiz_num);
+    return await this.quizService.getQuiz(file_num, quiz_num, format);
   }
 
   @Get('/random')
@@ -53,6 +54,7 @@ export class QuizController {
     @Query('max_rate') max_rate: number,
     @Query('category') category: string,
     @Query('checked') checked: string,
+    @Query('format') format: string,
   ) {
     return await this.quizService.getRandomQuiz(
       file_num,
@@ -60,6 +62,7 @@ export class QuizController {
       max_rate,
       category,
       checked,
+      format,
     );
   }
 
@@ -68,8 +71,14 @@ export class QuizController {
     @Query('file_num') file_num: number,
     @Query('category') category: string,
     @Query('checked') checked: string,
+    @Query('format') format: string,
   ) {
-    return await this.quizService.getWorstRateQuiz(file_num, category, checked);
+    return await this.quizService.getWorstRateQuiz(
+      file_num,
+      category,
+      checked,
+      format,
+    );
   }
 
   @Get('/minimum')
@@ -77,11 +86,13 @@ export class QuizController {
     @Query('file_num') file_num: number,
     @Query('category') category: string,
     @Query('checked') checked: string,
+    @Query('format') format: string,
   ) {
     return await this.quizService.getMinimumAnsweredQuiz(
       file_num,
       category,
       checked,
+      format,
     );
   }
 
@@ -115,6 +126,7 @@ export class QuizController {
     @Query('query') query: string,
     @Query('searchInOnlySentense') searchInOnlySentense: string,
     @Query('searchInOnlyAnswer') searchInOnlyAnswer: string,
+    @Query('format') format: string,
   ) {
     return await this.quizService.search(
       file_num,
@@ -125,6 +137,7 @@ export class QuizController {
       query,
       searchInOnlySentense,
       searchInOnlyAnswer,
+      format,
     );
   }
 
@@ -166,5 +179,11 @@ export class QuizController {
   @Patch('/answer_log/file')
   async deleteAnswerLogByFile(@Body() req: DeleteFileDto) {
     return await this.quizService.deleteAnswerLogByFile(req);
+  }
+
+  // 応用題追加
+  @Post('/advanced')
+  async addAdvanceQuiz(@Body() req: AddQuizDto) {
+    return await this.quizService.addAdvancedQuiz(req);
   }
 }
