@@ -81,4 +81,20 @@ describe('EnglishService', () => {
       }),
     ).toEqual(testResult);
   });
+
+  // 単語と意味追加 異常系
+  it('addWordAndMeanService - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      englishService.addWordAndMeanService({
+        wordName: 'testWord',
+        pronounce: 'testPronounce',
+        meanArrayData: [],
+      }),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
