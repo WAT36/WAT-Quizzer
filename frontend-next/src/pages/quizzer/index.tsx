@@ -19,13 +19,13 @@ import {
   RadioGroup,
   Select,
   SelectChangeEvent,
-  Slider,
   TextField,
   Typography
 } from '@mui/material';
 import { CheckQuizApiResponse, ProcessingApiReponse } from '../../../interfaces/api/response';
 import { CategoryApiResponse, QuizApiResponse, QuizFileApiResponse, QuizViewApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
+import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
@@ -37,7 +37,7 @@ export default function SelectQuizPage() {
   const [quiz_checked, setQuizChecked] = useState<boolean | null>();
   const [selected_category, setSelectedCategory] = useState<string>();
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [value, setValue] = useState<number[] | number>([0, 100]);
+  const [rateRange, setRateRange] = useState<number[] | number>([0, 100]);
   const [checked, setChecked] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('　');
   const [messageColor, setMessageColor] = useState<string>('common.black');
@@ -67,21 +67,6 @@ export default function SelectQuizPage() {
       }
     });
   }, []);
-
-  const rangeSlider = () => {
-    const handleChange = (event: Event, newValue: number[] | number) => {
-      setValue(newValue);
-    };
-
-    return (
-      <>
-        <Typography id="range-slider" gutterBottom>
-          正解率(%)指定
-        </Typography>
-        <Slider value={value} onChange={handleChange} valueLabelDisplay="auto" aria-labelledby="range-slider" />
-      </>
-    );
-  };
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
     setMessage('通信中...');
@@ -356,8 +341,8 @@ export default function SelectQuizPage() {
       },
       {
         file_num: String(file_num),
-        min_rate: String(Array.isArray(value) ? value[0] : value),
-        max_rate: String(Array.isArray(value) ? value[1] : value),
+        min_rate: String(Array.isArray(rateRange) ? rateRange[0] : rateRange),
+        max_rate: String(Array.isArray(rateRange) ? rateRange[1] : rateRange),
         category: selected_category || '',
         checked: String(checked),
         format
@@ -501,7 +486,9 @@ export default function SelectQuizPage() {
             </Select>
           </FormControl>
 
-          <FormControl>{rangeSlider()}</FormControl>
+          <FormControl>
+            <RangeSliderSection sectionTitle={'正解率(%)指定'} setStater={setRateRange} />
+          </FormControl>
 
           <FormControl>
             <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
