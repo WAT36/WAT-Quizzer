@@ -16,6 +16,13 @@ import {
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 
+export interface QueryType {
+  query: string;
+  value: (string | number)[];
+}
+
+export type FormatType = 'basic' | 'applied';
+
 @Injectable()
 export class QuizService {
   getHello(): string {
@@ -28,7 +35,7 @@ export class QuizService {
   }
 
   // 問題取得
-  async getQuiz(file_num: number, quiz_num: number) {
+  async getQuiz(file_num: number, quiz_num: number, format = 'basic') {
     if (!file_num && !quiz_num) {
       throw new HttpException(
         `ファイル番号または問題番号が入力されていません`,
@@ -37,7 +44,24 @@ export class QuizService {
     }
 
     try {
-      return await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num]);
+      let query: QueryType;
+      switch (format) {
+        case 'basic':
+          query = { query: SQL.QUIZ.INFO, value: [file_num, quiz_num] };
+          break;
+        case 'applied':
+          query = {
+            query: SQL.ADVANCED_QUIZ.INFO,
+            value: [file_num, quiz_num],
+          };
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+      return await execQuery(query.query, query.value);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -55,6 +79,7 @@ export class QuizService {
     max_rate: number,
     category: string,
     checked: string,
+    format = 'basic',
   ) {
     try {
       const categorySQL =
@@ -64,11 +89,22 @@ export class QuizService {
 
       const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
+      let preSQL: string;
+      switch (format) {
+        case 'basic':
+          preSQL = SQL.QUIZ.RANDOM;
+          break;
+        case 'applied':
+          preSQL = SQL.ADVANCED_QUIZ.RANDOM;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
       const sql =
-        SQL.QUIZ.RANDOM +
-        categorySQL +
-        checkedSQL +
-        ' ORDER BY rand() LIMIT 1; ';
+        preSQL + categorySQL + checkedSQL + ' ORDER BY rand() LIMIT 1; ';
       return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -81,8 +117,28 @@ export class QuizService {
   }
 
   // 最低正解率問題取得
-  async getWorstRateQuiz(file_num: number, category: string, checked: string) {
+  async getWorstRateQuiz(
+    file_num: number,
+    category: string,
+    checked: string,
+    format: string,
+  ) {
     try {
+      let preSQL: string;
+      switch (format) {
+        case 'basic':
+          preSQL = SQL.QUIZ.WORST;
+          break;
+        case 'applied':
+          preSQL = SQL.ADVANCED_QUIZ.WORST;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+
       const categorySQL =
         category && category !== ''
           ? ` AND category LIKE '%` + category + `%' `
@@ -92,10 +148,7 @@ export class QuizService {
 
       // 最低正解率問題取得SQL作成
       const getWorstRateQuizSQL =
-        SQL.QUIZ.WORST +
-        categorySQL +
-        checkedSQL +
-        ' ORDER BY accuracy_rate LIMIT 1; ';
+        preSQL + categorySQL + checkedSQL + ' ORDER BY accuracy_rate LIMIT 1; ';
 
       return await execQuery(getWorstRateQuizSQL, [file_num]);
     } catch (error: unknown) {
@@ -113,8 +166,24 @@ export class QuizService {
     file_num: number,
     category: string,
     checked: string,
+    format: string,
   ) {
     try {
+      let preSQL: string;
+      switch (format) {
+        case 'basic':
+          preSQL = SQL.QUIZ.MINIMUM;
+          break;
+        case 'applied':
+          preSQL = SQL.ADVANCED_QUIZ.MINIMUM;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+
       const categorySQL =
         category && category !== ''
           ? ` AND category LIKE '%` + category + `%' `
@@ -122,12 +191,9 @@ export class QuizService {
 
       const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
-      // ランダム問題取得SQL作成
+      // 最小正解数問題取得SQL作成
       const getMinimumClearQuizSQL =
-        SQL.QUIZ.MINIMUM +
-        categorySQL +
-        checkedSQL +
-        ' ORDER BY clear_count LIMIT 1; ';
+        preSQL + categorySQL + checkedSQL + ' ORDER BY clear_count LIMIT 1; ';
 
       return await execQuery(getMinimumClearQuizSQL, [file_num]);
     } catch (error: unknown) {
@@ -143,8 +209,28 @@ export class QuizService {
   // 正解登録
   async cleared(req: SelectQuizDto) {
     try {
-      const { file_num, quiz_num } = req;
-      return await execQuery(SQL.QUIZ.CLEARED.INPUT, [file_num, quiz_num]);
+      const { file_num, quiz_num, format } = req;
+      let query: QueryType;
+      switch (format) {
+        case 'basic': // 基礎問題
+          query = {
+            query: SQL.QUIZ.CLEARED.INPUT,
+            value: [file_num, quiz_num],
+          };
+          break;
+        case 'applied': // 応用問題
+          query = {
+            query: SQL.ADVANCED_QUIZ.CLEARED.INPUT,
+            value: [file_num, quiz_num],
+          };
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+      return await execQuery(query.query, query.value);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -158,8 +244,28 @@ export class QuizService {
   // 不正解登録
   async failed(req: SelectQuizDto) {
     try {
-      const { file_num, quiz_num } = req;
-      return await execQuery(SQL.QUIZ.FAILED.INPUT, [file_num, quiz_num]);
+      const { file_num, quiz_num, format } = req;
+      let query: QueryType;
+      switch (format) {
+        case 'basic': // 基礎問題
+          query = {
+            query: SQL.QUIZ.FAILED.INPUT,
+            value: [file_num, quiz_num],
+          };
+          break;
+        case 'applied': // 応用問題
+          query = {
+            query: SQL.ADVANCED_QUIZ.FAILED.INPUT,
+            value: [file_num, quiz_num],
+          };
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+      return await execQuery(query.query, query.value);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -226,19 +332,56 @@ export class QuizService {
   // 問題編集
   async edit(req: EditQuizDto) {
     try {
-      const { file_num, quiz_num, question, answer, category, img_file } = req;
+      const {
+        format,
+        file_num,
+        quiz_num,
+        question,
+        answer,
+        category,
+        img_file,
+      } = req;
 
-      //トランザクション実行準備
+      // クエリ用意
+      let editSql: string;
+      let editSqlValue: (number | string)[];
+      let deleteLogSqlValue: (number | string)[];
+      switch (format) {
+        case 'basic':
+          editSql = SQL.QUIZ.EDIT;
+          editSqlValue = [
+            question,
+            answer,
+            category,
+            img_file,
+            file_num,
+            quiz_num,
+          ];
+          deleteLogSqlValue = [1, file_num, quiz_num];
+          break;
+        case 'applied':
+          editSql = SQL.ADVANCED_QUIZ.EDIT;
+          editSqlValue = [question, answer, img_file, file_num, quiz_num];
+          deleteLogSqlValue = [2, file_num, quiz_num];
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+
+      // トランザクション実行準備
       const transactionQuery: TransactionQuery[] = [];
 
       transactionQuery.push({
-        query: SQL.QUIZ.EDIT,
-        value: [question, answer, category, img_file, file_num, quiz_num],
+        query: editSql,
+        value: editSqlValue,
       });
       // 編集した問題の解答ログ削除
       transactionQuery.push({
         query: SQL.ANSWER_LOG.RESET,
-        value: [file_num, quiz_num],
+        value: deleteLogSqlValue,
       });
 
       //トランザクション実行
@@ -264,8 +407,24 @@ export class QuizService {
     query: string,
     queryOnlyInSentense: string,
     queryOnlyInAnswer: string,
+    format: string,
   ) {
     try {
+      let preSQL: string;
+      switch (format) {
+        case 'basic':
+          preSQL = SQL.QUIZ.SEARCH;
+          break;
+        case 'applied':
+          preSQL = SQL.ADVANCED_QUIZ.SEARCH;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+
       const categorySQL =
         category && category !== ''
           ? ` AND category LIKE '%` + category + `%' `
@@ -290,11 +449,7 @@ export class QuizService {
 
       // ランダム問題取得SQL作成
       const searchQuizSQL =
-        SQL.QUIZ.SEARCH +
-        categorySQL +
-        checkedSQL +
-        querySQL +
-        ' ORDER BY quiz_num; ';
+        preSQL + categorySQL + checkedSQL + querySQL + ' ORDER BY quiz_num; ';
       return await execQuery(searchQuizSQL, [
         file_num,
         min_rate || 0,
@@ -313,9 +468,24 @@ export class QuizService {
   // 問題削除
   async delete(req: SelectQuizDto) {
     try {
-      const { file_num, quiz_num } = req;
+      const { format, file_num, quiz_num } = req;
+
+      let sql: string;
+      switch (format) {
+        case 'basic':
+          sql = SQL.QUIZ.DELETE;
+          break;
+        case 'applied':
+          sql = SQL.ADVANCED_QUIZ.DELETE;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
       // 削除済にアップデート
-      return await execQuery(SQL.QUIZ.DELETE, [file_num, quiz_num]);
+      return await execQuery(sql, [file_num, quiz_num]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -326,7 +496,7 @@ export class QuizService {
     }
   }
 
-  // 問題統合
+  // 問題統合（とりあえず基礎問題のみ）
   async integrate(req: IntegrateQuizDto) {
     try {
       const { pre_file_num, pre_quiz_num, post_file_num, post_quiz_num } = req;
@@ -375,7 +545,7 @@ export class QuizService {
       });
       transactionQuery.push({
         query: SQL.ANSWER_LOG.RESET,
-        value: [pre_file_num, pre_quiz_num],
+        value: [1, pre_file_num, pre_quiz_num],
       });
 
       //トランザクション実行
@@ -510,18 +680,33 @@ export class QuizService {
   // 問題のチェック反転
   async reverseCheck(req: SelectQuizDto) {
     try {
-      const { file_num, quiz_num } = req;
+      const { file_num, quiz_num, format } = req;
+      let infoSql: string;
+      let checkSql: string;
+      let uncheckSql: string;
+      switch (format) {
+        case 'basic': // 基礎問題
+          infoSql = SQL.QUIZ.INFO;
+          checkSql = SQL.QUIZ.CHECK;
+          uncheckSql = SQL.QUIZ.UNCHECK;
+          break;
+        case 'applied': // 応用問題
+          infoSql = SQL.ADVANCED_QUIZ.INFO;
+          checkSql = SQL.ADVANCED_QUIZ.CHECK;
+          uncheckSql = SQL.ADVANCED_QUIZ.UNCHECK;
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+
       // チェック取得
-      const result: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
-        file_num,
-        quiz_num,
-      ]);
+      const result: QuizDto[] = await execQuery(infoSql, [file_num, quiz_num]);
       const checked = result[0].checked;
 
-      await execQuery(checked ? SQL.QUIZ.UNCHECK : SQL.QUIZ.CHECK, [
-        file_num,
-        quiz_num,
-      ]);
+      await execQuery(checked ? uncheckSql : checkSql, [file_num, quiz_num]);
 
       // チェックしたらtrue、チェック外したらfalseを返す
       return [{ result: !checked }];
@@ -559,7 +744,7 @@ export class QuizService {
     }
   }
 
-  // ファイル削除
+  // ファイル削除（とりあえず基礎問題のみ）
   async deleteFile(req: DeleteFileDto) {
     try {
       const { file_id } = req;
@@ -608,6 +793,87 @@ export class QuizService {
       return {
         result,
       };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 応用問題を１問追加
+  async addAdvancedQuiz(req: AddQuizDto) {
+    try {
+      const { file_num, input_data } = req;
+      if (!file_num && !input_data) {
+        throw new HttpException(
+          `ファイル番号または問題文が入力されていません。(file_num:${file_num},input_data:${JSON.stringify(
+            input_data,
+          )})`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const { question, answer, img_file, matched_basic_quiz_id } = input_data;
+
+      //トランザクション実行準備
+      const transactionQuery: TransactionQuery[] = [];
+
+      // 関連する基礎問題番号リストのバリデーション・取得
+      const matched_basic_quiz_id_list: number[] = [];
+      if (matched_basic_quiz_id) {
+        const id_list = matched_basic_quiz_id.split(',');
+        for (let i = 0; i < id_list.length; i++) {
+          if (isNaN(+id_list[i])) {
+            throw new HttpException(
+              `入力した関連基礎問題番号でエラーが発生しました；("${id_list[i]}"は数値ではありません)`,
+              HttpStatus.BAD_REQUEST,
+            );
+          } else {
+            matched_basic_quiz_id_list.push(+id_list[i]);
+          }
+        }
+      }
+
+      // 新問題番号を取得しINSERT
+      const res: GetQuizNumSqlResultDto[] = await execQuery(
+        SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM,
+        [file_num],
+      );
+      const new_quiz_id: number =
+        res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
+      transactionQuery.push({
+        query: SQL.ADVANCED_QUIZ.ADD,
+        value: [file_num, new_quiz_id, question, answer, img_file],
+      });
+
+      // 関連する基礎問題番号リストを追加
+      for (let i = 0; i < matched_basic_quiz_id_list.length; i++) {
+        transactionQuery.push({
+          query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.ADD,
+          value: [file_num, matched_basic_quiz_id_list[i], new_quiz_id],
+        });
+      }
+
+      // トランザクション処理実行
+      await execTransaction(transactionQuery);
+      return [
+        {
+          result:
+            'Added!! [' +
+            file_num +
+            '-' +
+            new_quiz_id +
+            ']:' +
+            question +
+            ',' +
+            answer +
+            ',関連基礎問題:' +
+            JSON.stringify(matched_basic_quiz_id_list),
+        },
+      ];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

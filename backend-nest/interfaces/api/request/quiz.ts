@@ -1,4 +1,5 @@
 export interface SelectQuizDto {
+  format: string; // TODO number, format_idを使いたい
   file_num: number;
   quiz_num: number;
 }
@@ -16,6 +17,7 @@ export interface AddQuizDto {
     answer?: string;
     category?: string;
     img_file?: string;
+    matched_basic_quiz_id?: string;
   };
 }
 
@@ -27,6 +29,7 @@ export interface IntegrateQuizDto {
 }
 
 export interface EditQuizDto {
+  format: string; // TODO number, format_idを使いたい
   file_num: number;
   quiz_num: number;
   question: string;

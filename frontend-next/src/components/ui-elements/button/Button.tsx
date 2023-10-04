@@ -9,7 +9,7 @@ interface ButtonProps {
   color?: 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
   variant?: 'contained' | 'outlined' | 'text';
   href?: string;
-  class?: string;
+  attr?: string;
   onClick?: (event: React.KeyboardEvent | React.MouseEvent) => void;
 }
 
@@ -18,7 +18,7 @@ export const Button = ({ color = 'primary', size = 'medium', variant = 'outlined
     <>
       <MuiButton
         className={[styles.button, props.mode ? (props.mode === 'regular' ? '' : styles[props.mode]) : '']
-          .concat(props.class ? props.class.split(' ').map((x) => styles[x] || '') : [])
+          .concat(props.attr ? props.attr.split(' ').map((x) => styles[x] || '') : [])
           .join(' ')}
         variant={variant}
         size={'medium'}

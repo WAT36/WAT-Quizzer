@@ -12,8 +12,11 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormLabel,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   SelectChangeEvent,
   Slider,
@@ -38,6 +41,8 @@ export default function SelectQuizPage() {
   const [checked, setChecked] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('　');
   const [messageColor, setMessageColor] = useState<string>('common.black');
+
+  const [format, setFormat] = useState<string>('basic');
 
   useEffect(() => {
     setMessage('通信中...');
@@ -143,7 +148,8 @@ export default function SelectQuizPage() {
       },
       {
         file_num: String(file_num),
-        quiz_num: String(quiz_num)
+        quiz_num: String(quiz_num),
+        format
       }
     );
   };
@@ -180,6 +186,7 @@ export default function SelectQuizPage() {
       post(
         '/quiz/clear',
         {
+          format,
           file_num: file_num,
           quiz_num: quiz_num
         },
@@ -226,6 +233,7 @@ export default function SelectQuizPage() {
       post(
         '/quiz/fail',
         {
+          format,
           file_num: file_num,
           quiz_num: quiz_num
         },
@@ -272,6 +280,7 @@ export default function SelectQuizPage() {
       post(
         '/quiz/check',
         {
+          format,
           file_num: file_num,
           quiz_num: quiz_num
         },
@@ -350,7 +359,8 @@ export default function SelectQuizPage() {
         min_rate: String(Array.isArray(value) ? value[0] : value),
         max_rate: String(Array.isArray(value) ? value[1] : value),
         category: selected_category || '',
-        checked: String(checked)
+        checked: String(checked),
+        format
       }
     );
   };
@@ -387,7 +397,8 @@ export default function SelectQuizPage() {
       {
         file_num: String(file_num),
         category: selected_category || '',
-        checked: String(checked)
+        checked: String(checked),
+        format
       }
     );
   };
@@ -424,9 +435,15 @@ export default function SelectQuizPage() {
       {
         file_num: String(file_num),
         category: selected_category || '',
-        checked: String(checked)
+        checked: String(checked),
+        format
       }
     );
+  };
+
+  // ラジオボタンの選択変更時の処理
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormat((event.target as HTMLInputElement).value);
   };
 
   const contents = () => {
@@ -485,6 +502,21 @@ export default function SelectQuizPage() {
           </FormControl>
 
           <FormControl>{rangeSlider()}</FormControl>
+
+          <FormControl>
+            <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+              value={format}
+              defaultValue="basic"
+              onChange={handleRadioChange}
+            >
+              <FormControlLabel value="basic" control={<Radio />} label="基礎問題" />
+              <FormControlLabel value="applied" control={<Radio />} label="応用問題" />
+            </RadioGroup>
+          </FormControl>
 
           <FormControl>
             <FormControlLabel

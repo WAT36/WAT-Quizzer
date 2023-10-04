@@ -8,10 +8,14 @@ import {
   CardContent,
   Container,
   FormControl,
+  FormControlLabel,
   FormGroup,
+  FormLabel,
   Input,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
   Typography
@@ -25,6 +29,7 @@ export default function EditQuizPage() {
   const [message, setMessage] = useState<string>('　');
   const [messageColor, setMessageColor] = useState<string>('common.black');
   const [quiz_num, setQuizNum] = useState<number>();
+  const [edit_format, setEditFormat] = useState<string>();
   const [edit_file_num, setEditFileNum] = useState<number>();
   const [edit_quiz_num, setEditQuizNum] = useState<number>();
   const [edit_question, setEditQuestion] = useState<string>();
@@ -32,6 +37,7 @@ export default function EditQuizPage() {
   const [edit_category, setEditCategory] = useState<string>();
   const [edit_image, setEditImage] = useState<string>();
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
+  const [format, setFormat] = useState<string>('basic');
 
   useEffect(() => {
     setMessage('通信中...');
@@ -78,12 +84,13 @@ export default function EditQuizPage() {
           setMessageColor('error');
         } else if (data.status === 200 && data.body?.length > 0) {
           const res: QuizApiResponse[] = data.body as QuizApiResponse[];
+          setEditFormat(format);
           setEditFileNum(res[0].file_num);
           setEditQuizNum(res[0].quiz_num);
-          setEditQuestion(res[0].quiz_sentense);
-          setEditAnswer(res[0].answer);
-          setEditCategory(res[0].category);
-          setEditImage(res[0].img_file);
+          setEditQuestion(res[0].quiz_sentense || '');
+          setEditAnswer(res[0].answer || '');
+          setEditCategory(res[0].category || '');
+          setEditImage(res[0].img_file || '');
           setMessage('　');
           setMessageColor('success.light');
         } else {
@@ -93,7 +100,8 @@ export default function EditQuizPage() {
       },
       {
         file_num: String(file_num),
-        quiz_num: String(quiz_num)
+        quiz_num: String(quiz_num),
+        format
       }
     );
   };
@@ -109,10 +117,12 @@ export default function EditQuizPage() {
         question: edit_question,
         answer: edit_answer,
         category: edit_category,
-        img_file: edit_image
+        img_file: edit_image,
+        format: edit_format
       },
       (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
+          setEditFormat('');
           setEditFileNum(-1);
           setEditQuizNum(-1);
           setEditQuestion('');
@@ -127,6 +137,11 @@ export default function EditQuizPage() {
         }
       }
     );
+  };
+
+  // ラジオボタンの選択変更時の処理
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormat((event.target as HTMLInputElement).value);
   };
 
   const contents = () => {
@@ -168,6 +183,21 @@ export default function EditQuizPage() {
                 setQuizNum(Number(e.target.value));
               }}
             />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+              value={format}
+              defaultValue="basic"
+              onChange={handleRadioChange}
+            >
+              <FormControlLabel value="basic" control={<Radio />} label="基礎問題" />
+              <FormControlLabel value="applied" control={<Radio />} label="応用問題" />
+            </RadioGroup>
           </FormControl>
         </FormGroup>
 
