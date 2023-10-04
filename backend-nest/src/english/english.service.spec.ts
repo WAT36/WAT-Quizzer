@@ -123,4 +123,16 @@ describe('EnglishService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 単語全取得 正常系
+  it('getAllWordService - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'test',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await englishService.getAllWordService()).toEqual(testResult);
+  });
 });
