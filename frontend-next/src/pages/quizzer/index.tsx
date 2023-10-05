@@ -27,6 +27,7 @@ import { CategoryApiResponse, QuizApiResponse, QuizFileApiResponse, QuizViewApiR
 import { Layout } from '@/components/templates/layout/Layout';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
+import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
@@ -427,11 +428,6 @@ export default function SelectQuizPage() {
     );
   };
 
-  // ラジオボタンの選択変更時の処理
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormat((event.target as HTMLInputElement).value);
-  };
-
   const contents = () => {
     return (
       <Container>
@@ -486,18 +482,23 @@ export default function SelectQuizPage() {
           </FormControl>
 
           <FormControl>
-            <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-              value={format}
-              defaultValue="basic"
-              onChange={handleRadioChange}
-            >
-              <FormControlLabel value="basic" control={<Radio />} label="基礎問題" />
-              <FormControlLabel value="applied" control={<Radio />} label="応用問題" />
-            </RadioGroup>
+            <RadioGroupSection
+              sectionTitle={'問題種別'}
+              radioGroupProps={{
+                radioButtonProps: [
+                  {
+                    value: 'basic',
+                    label: '基礎問題'
+                  },
+                  {
+                    value: 'applied',
+                    label: '応用問題'
+                  }
+                ],
+                defaultValue: 'basic',
+                setStater: setFormat
+              }}
+            />
           </FormControl>
 
           <FormControl>
