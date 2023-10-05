@@ -1,6 +1,6 @@
 import { FormControlLabel, Radio } from '@mui/material';
 
-interface RadioButtonProps {
+export interface RadioButtonProps {
   value: string;
   label: string;
 }
