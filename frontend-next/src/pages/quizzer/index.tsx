@@ -28,6 +28,7 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
@@ -431,7 +432,7 @@ export default function SelectQuizPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>WAT Quizzer</h1>
+        <Title label="WAT Quizzer"></Title>
 
         <MessageCard message={message} messageColor={messageColor}></MessageCard>
 
