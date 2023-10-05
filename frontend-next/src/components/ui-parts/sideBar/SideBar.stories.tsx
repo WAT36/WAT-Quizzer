@@ -3,7 +3,7 @@ import { SideBar } from './SideBar';
 import { RecoilRoot } from 'recoil';
 
 const meta = {
-  title: 'Organisms/SideBar',
+  title: 'Molecules/SideBar',
   component: SideBar,
   decorators: [(story) => <RecoilRoot>{story()} </RecoilRoot>],
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
