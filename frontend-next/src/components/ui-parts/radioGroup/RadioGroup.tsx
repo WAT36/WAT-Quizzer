@@ -32,7 +32,7 @@ export const RadioGroup = ({ radioButtonProps, defaultValue, setStater }: RadioG
       >
         {radioButtonProps.map((x) => (
           <>
-            <RadioButton value={x.value} label={x.label}></RadioButton>
+            <RadioButton key={x.value} value={x.value} label={x.label}></RadioButton>
           </>
         ))}
       </MuiRadioGroup>
