@@ -135,4 +135,14 @@ describe('EnglishService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
     expect(await englishService.getAllWordService()).toEqual(testResult);
   });
+
+  // 単語全取得 異常系
+  it('getAllWordService - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(englishService.getAllWordService()).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
