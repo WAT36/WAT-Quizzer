@@ -145,4 +145,16 @@ describe('EnglishService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // IDから単語情報取得 正常系
+  it('getWordByIdService - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'test',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await englishService.getWordByIdService(0)).toEqual(testResult);
+  });
 });
