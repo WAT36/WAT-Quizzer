@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { get, post } from '../../common/API';
-import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
+import { buttonStyle } from '../../styles/Pages';
 import {
   Button,
   Card,
@@ -12,14 +12,10 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
-  FormLabel,
   InputLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
   SelectChangeEvent,
-  TextField,
   Typography
 } from '@mui/material';
 import { CheckQuizApiResponse, ProcessingApiReponse } from '../../../interfaces/api/response';
@@ -29,12 +25,13 @@ import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSli
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 import { Title } from '@/components/ui-elements/title/Title';
+import { TextField } from '@/components/ui-elements/textField/TextField';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
   const [categorylistoption, setCategorylistoption] = useState<JSX.Element[]>();
   const [file_num, setFileNum] = useState<number>(-1);
-  const [quiz_num, setQuizNum] = useState<number>();
+  const [quiz_num, setQuizNum] = useState<string>('');
   const [quiz_sentense, setQuizSentense] = useState<string>();
   const [answer, setAnswer] = useState<string>();
   const [quiz_checked, setQuizChecked] = useState<boolean | null>();
@@ -136,7 +133,7 @@ export default function SelectQuizPage() {
       },
       {
         file_num: String(file_num),
-        quiz_num: String(quiz_num),
+        quiz_num: quiz_num,
         format
       }
     );
@@ -327,7 +324,7 @@ export default function SelectQuizPage() {
       (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
-          setQuizNum(res[0].quiz_num);
+          setQuizNum(String(res[0].quiz_num));
           setQuizSentense(res[0].quiz_sentense);
           setAnswer(res[0].answer);
           setQuizChecked(res[0].checked);
@@ -367,7 +364,7 @@ export default function SelectQuizPage() {
       (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
-          setQuizNum(res[0].quiz_num);
+          setQuizNum(String(res[0].quiz_num));
           setQuizSentense(res[0].quiz_sentense);
           setAnswer(res[0].answer);
           setQuizChecked(res[0].checked);
@@ -405,7 +402,7 @@ export default function SelectQuizPage() {
       (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
-          setQuizNum(res[0].quiz_num);
+          setQuizNum(String(res[0].quiz_num));
           setQuizSentense(res[0].quiz_sentense);
           setAnswer(res[0].answer);
           setQuizChecked(res[0].checked);
@@ -454,12 +451,7 @@ export default function SelectQuizPage() {
           </FormControl>
 
           <FormControl>
-            <TextField
-              label="問題番号"
-              onChange={(e) => {
-                setQuizNum(Number(e.target.value));
-              }}
-            />
+            <TextField label="問題番号" setStater={setQuizNum} />
           </FormControl>
 
           <FormControl>
