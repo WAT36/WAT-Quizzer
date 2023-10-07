@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 export const Example: Story = {
   args: {
     label: 'プルダウンテスト',
-    fileListOption: [
+    optionList: [
       {
         value: 0,
         label: '選択肢テスト０'
