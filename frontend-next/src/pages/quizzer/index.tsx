@@ -12,9 +12,6 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
-  InputLabel,
-  MenuItem,
-  Select,
   SelectChangeEvent,
   Typography
 } from '@mui/material';
@@ -26,10 +23,21 @@ import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 import { Title } from '@/components/ui-elements/title/Title';
 import { TextField } from '@/components/ui-elements/textField/TextField';
+import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 
 export default function SelectQuizPage() {
-  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
-  const [categorylistoption, setCategorylistoption] = useState<JSX.Element[]>();
+  const [filelistoption, setFilelistoption] = useState<
+    {
+      value: number;
+      label: string;
+    }[]
+  >([]);
+  const [categorylistoption, setCategorylistoption] = useState<
+    {
+      value: string;
+      label: string;
+    }[]
+  >([]);
   const [file_num, setFileNum] = useState<number>(-1);
   const [quiz_num, setQuizNum] = useState<string>('');
   const [quiz_sentense, setQuizSentense] = useState<string>();
@@ -52,11 +60,10 @@ export default function SelectQuizPage() {
         const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
         let filelist = [];
         for (var i = 0; i < res.length; i++) {
-          filelist.push(
-            <MenuItem value={res[i].file_num} key={res[i].file_num}>
-              {res[i].file_nickname}
-            </MenuItem>
-          );
+          filelist.push({
+            value: res[i].file_num,
+            label: res[i].file_nickname
+          });
         }
         setFilelistoption(filelist);
         setMessage('　');
@@ -78,11 +85,10 @@ export default function SelectQuizPage() {
           const res: CategoryApiResponse[] = data.body as CategoryApiResponse[];
           let categorylist = [];
           for (var i = 0; i < res.length; i++) {
-            categorylist.push(
-              <MenuItem value={res[i].category} key={i}>
-                {res[i].category}
-              </MenuItem>
-            );
+            categorylist.push({
+              value: res[i].category,
+              label: res[i].category
+            });
           }
           setFileNum(e.target.value as number);
           setCategorylistoption(categorylist);
@@ -435,19 +441,7 @@ export default function SelectQuizPage() {
 
         <FormGroup>
           <FormControl>
-            <InputLabel id="quiz-file-input">問題ファイル</InputLabel>
-            <Select
-              labelId="quiz-file-name"
-              id="quiz-file-id"
-              defaultValue={-1}
-              // value={age}
-              onChange={(e) => selectedFileChange(e)}
-            >
-              <MenuItem value={-1} key={-1}>
-                選択なし
-              </MenuItem>
-              {filelistoption}
-            </Select>
+            <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
           </FormControl>
 
           <FormControl>
@@ -455,19 +449,13 @@ export default function SelectQuizPage() {
           </FormControl>
 
           <FormControl>
-            <InputLabel id="demo-simple-select-label">カテゴリ</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              defaultValue={''}
-              // value={age}
+            <PullDown
+              label={'カテゴリ'}
+              optionList={categorylistoption}
               onChange={(e) => {
                 setSelectedCategory(String(e.target.value));
               }}
-            >
-              <MenuItem value={-1}>選択なし</MenuItem>
-              {categorylistoption}
-            </Select>
+            />
           </FormControl>
 
           <FormControl>
