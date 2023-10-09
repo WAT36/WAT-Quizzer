@@ -6,7 +6,6 @@ import { get } from '@/common/API';
 import { DisplayQuizState, MessageState } from '../../../../../interfaces/state';
 
 interface GetQuizButtonProps {
-  label: string;
   file_num: number;
   quiz_num: number;
   format: string;
@@ -14,14 +13,7 @@ interface GetQuizButtonProps {
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
 }
 
-const getQuizAPI = ({
-  label,
-  file_num,
-  quiz_num,
-  format,
-  setMessageStater,
-  setDisplayQuizStater
-}: GetQuizButtonProps) => {
+const getQuizAPI = ({ file_num, quiz_num, format, setMessageStater, setDisplayQuizStater }: GetQuizButtonProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
   if (!setMessageStater || !setDisplayQuizStater) {
     return;
@@ -80,7 +72,6 @@ const getQuizAPI = ({
 };
 
 export const GetQuizButton = ({
-  label = '問題出題',
   file_num,
   quiz_num,
   format,
@@ -90,10 +81,10 @@ export const GetQuizButton = ({
   return (
     <>
       <Button
-        label={label}
+        label={'出題'}
         variant="contained"
         color="primary"
-        onClick={(e) => getQuizAPI({ label, file_num, quiz_num, format, setMessageStater, setDisplayQuizStater })}
+        onClick={(e) => getQuizAPI({ file_num, quiz_num, format, setMessageStater, setDisplayQuizStater })}
       />
     </>
   );
