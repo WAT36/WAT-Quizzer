@@ -4,8 +4,20 @@ export interface MessageState {
 }
 
 export interface DisplayQuizState {
+  fileNum: number;
+  quizNum: number;
   quizSentense: string;
   quizAnswer: string;
   checked: boolean;
   expanded: boolean;
+}
+
+export interface QueryOfQuizState {
+  fileNum: number;
+  quizNum: number;
+  format: string;
+  minRate?: number;
+  maxRate?: number;
+  category?: string;
+  checked?: boolean;
 }

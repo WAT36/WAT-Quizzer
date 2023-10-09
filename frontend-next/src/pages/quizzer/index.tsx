@@ -47,6 +47,8 @@ export default function SelectQuizPage() {
   const [checked, setChecked] = useState<boolean>(false);
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
   const [displayQuiz, setDisplayQuiz] = useState<DisplayQuizState>({
+    fileNum: -1,
+    quizNum: -1,
     quizSentense: '',
     quizAnswer: '',
     checked: false,

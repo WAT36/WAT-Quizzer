@@ -47,6 +47,8 @@ const getQuizAPI = ({ file_num, quiz_num, format, setMessageStater, setDisplayQu
       } else if (data.status === 200) {
         const res: QuizApiResponse[] = data.body as QuizApiResponse[];
         setDisplayQuizStater({
+          fileNum: res[0].file_num,
+          quizNum: res[0].quiz_num,
           quizSentense: '[' + res[0].file_num + '-' + res[0].quiz_num + ']' + res[0].quiz_sentense,
           quizAnswer: res[0].answer,
           checked: res[0].checked || false,
