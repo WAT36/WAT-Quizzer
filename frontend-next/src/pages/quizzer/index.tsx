@@ -24,6 +24,8 @@ import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGrou
 import { Title } from '@/components/ui-elements/title/Title';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { DisplayQuizState, MessageState } from '../../../interfaces/state';
+import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/GetQuiz.button';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<
@@ -40,21 +42,24 @@ export default function SelectQuizPage() {
   >([]);
   const [file_num, setFileNum] = useState<number>(-1);
   const [quiz_num, setQuizNum] = useState<string>('');
-  const [quiz_sentense, setQuizSentense] = useState<string>();
-  const [answer, setAnswer] = useState<string>();
-  const [quiz_checked, setQuizChecked] = useState<boolean | null>();
   const [selected_category, setSelectedCategory] = useState<string>();
-  const [expanded, setExpanded] = useState<boolean>(false);
   const [rateRange, setRateRange] = useState<number[] | number>([0, 100]);
   const [checked, setChecked] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<string>('common.black');
+  const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
+  const [displayQuiz, setDisplayQuiz] = useState<DisplayQuizState>({
+    quizSentense: '',
+    quizAnswer: '',
+    checked: false,
+    expanded: false
+  });
 
   const [format, setFormat] = useState<string>('basic');
 
   useEffect(() => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
@@ -66,18 +71,24 @@ export default function SelectQuizPage() {
           });
         }
         setFilelistoption(filelist);
-        setMessage('　');
-        setMessageColor('common.black');
+        setMessage({
+          message: '　',
+          messageColor: 'common.black'
+        });
       } else {
-        setMessage('エラー:外部APIとの連携に失敗しました');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
       }
     });
   }, []);
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get(
       '/category',
       (data: ProcessingApiReponse) => {
@@ -92,11 +103,15 @@ export default function SelectQuizPage() {
           }
           setFileNum(e.target.value as number);
           setCategorylistoption(categorylist);
-          setMessage('　');
-          setMessageColor('common.black');
+          setMessage({
+            message: '　',
+            messageColor: 'common.black'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       },
       {
@@ -105,75 +120,39 @@ export default function SelectQuizPage() {
     );
   };
 
-  const getQuiz = () => {
-    if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
-      return;
-    } else if (!quiz_num) {
-      setMessage('エラー:問題番号を入力して下さい');
-      setMessageColor('error');
-      return;
-    }
-
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
-    get(
-      '/quiz',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 404 || data.body?.length === 0) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
-        } else if (data.status === 200) {
-          const res: QuizApiResponse[] = data.body as QuizApiResponse[];
-          setQuizSentense('[' + res[0].file_num + '-' + res[0].quiz_num + ']' + res[0].quiz_sentense);
-          setAnswer(res[0].answer);
-          setQuizChecked(res[0].checked);
-          setExpanded(false);
-          setMessage('　');
-          setMessageColor('success.light');
-        } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
-        }
-      },
-      {
-        file_num: String(file_num),
-        quiz_num: quiz_num,
-        format
-      }
-    );
-  };
-
   const answerSection = () => {
     const handleExpandClick = () => {
-      setExpanded(!expanded);
+      setDisplayQuiz({
+        ...displayQuiz,
+        expanded: !displayQuiz.expanded
+      });
     };
 
     const inputCorrect = () => {
       if (file_num === -1) {
-        setMessage('エラー:問題ファイルを選択して下さい');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:問題ファイルを選択して下さい',
+          messageColor: 'error'
+        });
         return;
       } else if (!quiz_num) {
-        setMessage('エラー:問題番号を入力して下さい');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:問題番号を入力して下さい',
+          messageColor: 'error'
+        });
         return;
-      } else if (
-        quiz_sentense === undefined ||
-        quiz_sentense === null ||
-        quiz_sentense === '' ||
-        answer === undefined ||
-        answer === null ||
-        answer === ''
-      ) {
-        setMessage('エラー:問題を出題してから登録して下さい');
-        setMessageColor('error');
+      } else if (!displayQuiz.quizSentense || !displayQuiz.quizAnswer) {
+        setMessage({
+          message: 'エラー:問題を出題してから登録して下さい',
+          messageColor: 'error'
+        });
         return;
       }
 
-      setMessage('通信中...');
-      setMessageColor('#d3d3d3');
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3'
+      });
       post(
         '/quiz/clear',
         {
@@ -183,15 +162,22 @@ export default function SelectQuizPage() {
         },
         (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
-            setQuizSentense('');
-            setAnswer('');
-            setQuizChecked(null);
-            setMessage('問題[' + quiz_num + '] 正解+1! 登録しました');
-            setMessageColor('success.light');
-            setExpanded(false);
+            setDisplayQuiz({
+              ...displayQuiz,
+              quizSentense: '',
+              quizAnswer: '',
+              checked: false,
+              expanded: false
+            });
+            setMessage({
+              message: `問題[${quiz_num}] 正解+1! 登録しました`,
+              messageColor: 'success.light'
+            });
           } else {
-            setMessage('エラー:外部APIとの連携に失敗しました');
-            setMessageColor('error');
+            setMessage({
+              message: 'エラー:外部APIとの連携に失敗しました',
+              messageColor: 'error'
+            });
           }
         }
       );
@@ -199,28 +185,29 @@ export default function SelectQuizPage() {
 
     const inputIncorrect = () => {
       if (file_num === -1) {
-        setMessage('エラー:問題ファイルを選択して下さい');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:問題ファイルを選択して下さい',
+          messageColor: 'error'
+        });
         return;
       } else if (!quiz_num) {
-        setMessage('エラー:問題番号を入力して下さい');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:問題番号を入力して下さい',
+          messageColor: 'error'
+        });
         return;
-      } else if (
-        quiz_sentense === undefined ||
-        quiz_sentense === null ||
-        quiz_sentense === '' ||
-        answer === undefined ||
-        answer === null ||
-        answer === ''
-      ) {
-        setMessage('エラー:問題を出題してから登録して下さい');
-        setMessageColor('error');
+      } else if (!displayQuiz.quizSentense || !displayQuiz.quizAnswer) {
+        setMessage({
+          message: 'エラー:問題を出題してから登録して下さい',
+          messageColor: 'error'
+        });
         return;
       }
 
-      setMessage('通信中...');
-      setMessageColor('#d3d3d3');
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3'
+      });
       post(
         '/quiz/fail',
         {
@@ -230,15 +217,22 @@ export default function SelectQuizPage() {
         },
         (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
-            setQuizSentense('');
-            setAnswer('');
-            setQuizChecked(null);
-            setMessage('問題[' + quiz_num + '] 不正解+1.. 登録しました');
-            setMessageColor('success.light');
-            setExpanded(false);
+            setDisplayQuiz({
+              ...displayQuiz,
+              quizSentense: '',
+              quizAnswer: '',
+              checked: false,
+              expanded: false
+            });
+            setMessage({
+              message: `問題[${quiz_num}] 不正解+1.. 登録しました`,
+              messageColor: 'success.light'
+            });
           } else {
-            setMessage('エラー:外部APIとの連携に失敗しました');
-            setMessageColor('error');
+            setMessage({
+              message: 'エラー:外部APIとの連携に失敗しました',
+              messageColor: 'error'
+            });
           }
         }
       );
@@ -246,28 +240,29 @@ export default function SelectQuizPage() {
 
     const checkReverseToQuiz = () => {
       if (file_num === -1) {
-        setMessage('エラー:問題ファイルを選択して下さい');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:問題ファイルを選択して下さい',
+          messageColor: 'error'
+        });
         return;
       } else if (!quiz_num) {
-        setMessage('エラー:問題番号を入力して下さい');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:問題番号を入力して下さい',
+          messageColor: 'error'
+        });
         return;
-      } else if (
-        quiz_sentense === undefined ||
-        quiz_sentense === null ||
-        quiz_sentense === '' ||
-        answer === undefined ||
-        answer === null ||
-        answer === ''
-      ) {
-        setMessage('エラー:問題を出題してから登録して下さい');
-        setMessageColor('error');
+      } else if (!displayQuiz.quizSentense || !displayQuiz.quizAnswer) {
+        setMessage({
+          message: 'エラー:問題を出題してから登録して下さい',
+          messageColor: 'error'
+        });
         return;
       }
 
-      setMessage('通信中...');
-      setMessageColor('#d3d3d3');
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3'
+      });
       post(
         '/quiz/check',
         {
@@ -278,12 +273,19 @@ export default function SelectQuizPage() {
         (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
             const res: CheckQuizApiResponse[] = data.body as CheckQuizApiResponse[];
-            setQuizChecked(res[0].result);
-            setMessage(`問題[${quiz_num}] にチェック${res[0].result ? 'をつけ' : 'を外し'}ました`);
-            setMessageColor('success.light');
+            setDisplayQuiz({
+              ...displayQuiz,
+              checked: res[0].result
+            });
+            setMessage({
+              message: `問題[${quiz_num}] にチェック${res[0].result ? 'をつけ' : 'を外し'}ました`,
+              messageColor: 'success.light'
+            });
           } else {
-            setMessage('エラー:外部APIとの連携に失敗しました');
-            setMessageColor('error');
+            setMessage({
+              message: 'エラー:外部APIとの連携に失敗しました',
+              messageColor: 'error'
+            });
           }
         }
       );
@@ -292,14 +294,14 @@ export default function SelectQuizPage() {
     return (
       <>
         <CardActions>
-          <Button size="small" onClick={handleExpandClick} aria-expanded={expanded}>
+          <Button size="small" onClick={handleExpandClick} aria-expanded={displayQuiz.expanded}>
             答え
           </Button>
         </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Collapse in={displayQuiz.expanded} timeout="auto" unmountOnExit>
           <CardContent>
             <Typography variant="subtitle1" component="h2">
-              {answer}
+              {displayQuiz.quizAnswer}
             </Typography>
             <Button style={buttonStyle} variant="contained" color="primary" onClick={inputCorrect}>
               正解!!
@@ -318,31 +320,44 @@ export default function SelectQuizPage() {
 
   const getRandomQuiz = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get(
       '/quiz/random',
       (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
           setQuizNum(String(res[0].quiz_num));
-          setQuizSentense(res[0].quiz_sentense);
-          setAnswer(res[0].answer);
-          setQuizChecked(res[0].checked);
-          setMessage('　');
-          setMessageColor('success.light');
-          setExpanded(false);
+          setDisplayQuiz({
+            ...displayQuiz,
+            quizSentense: res[0].quiz_sentense,
+            quizAnswer: res[0].answer,
+            checked: res[0].checked || false,
+            expanded: false
+          });
+          setMessage({
+            message: '　',
+            messageColor: 'common.black'
+          });
         } else if (data.status === 404 || data.body?.length === 0) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       },
       {
@@ -358,31 +373,44 @@ export default function SelectQuizPage() {
 
   const getWorstRateQuiz = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get(
       '/quiz/worst',
       (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
           setQuizNum(String(res[0].quiz_num));
-          setQuizSentense(res[0].quiz_sentense);
-          setAnswer(res[0].answer);
-          setQuizChecked(res[0].checked);
-          setMessage('　');
-          setMessageColor('success.light');
-          setExpanded(false);
+          setDisplayQuiz({
+            ...displayQuiz,
+            quizSentense: res[0].quiz_sentense,
+            quizAnswer: res[0].answer,
+            checked: res[0].checked || false,
+            expanded: false
+          });
+          setMessage({
+            message: '　',
+            messageColor: 'common.black'
+          });
         } else if (data.status === 404 || data.body?.length === 0) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       },
       {
@@ -396,31 +424,44 @@ export default function SelectQuizPage() {
 
   const getMinimumClearQuiz = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get(
       '/quiz/minimum',
       (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
           setQuizNum(String(res[0].quiz_num));
-          setQuizSentense(res[0].quiz_sentense);
-          setAnswer(res[0].answer);
-          setQuizChecked(res[0].checked);
-          setMessage('　');
-          setMessageColor('success.light');
-          setExpanded(false);
+          setDisplayQuiz({
+            ...displayQuiz,
+            quizSentense: res[0].quiz_sentense,
+            quizAnswer: res[0].answer,
+            checked: res[0].checked || false,
+            expanded: false
+          });
+          setMessage({
+            message: '　',
+            messageColor: 'common.black'
+          });
         } else if (data.status === 404 || data.body?.length === 0) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       },
       {
@@ -437,7 +478,7 @@ export default function SelectQuizPage() {
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <MessageCard message={message} messageColor={messageColor}></MessageCard>
+        <MessageCard messageState={message}></MessageCard>
 
         <FormGroup>
           <FormControl>
@@ -492,9 +533,13 @@ export default function SelectQuizPage() {
           </FormControl>
         </FormGroup>
 
-        <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => getQuiz()}>
-          出題
-        </Button>
+        <GetQuizButton
+          file_num={file_num}
+          quiz_num={+quiz_num}
+          format={format}
+          setDisplayQuizStater={setDisplayQuiz}
+          setMessageStater={setMessage}
+        />
         <Button style={buttonStyle} variant="contained" color="secondary" onClick={(e) => getRandomQuiz()}>
           ランダム出題
         </Button>
@@ -514,8 +559,8 @@ export default function SelectQuizPage() {
               問題
             </Typography>
             <Typography variant="subtitle1" component="h2">
-              {quiz_checked ? '✅' : ''}
-              {quiz_sentense}
+              {displayQuiz.checked ? '✅' : ''}
+              {displayQuiz.quizSentense}
             </Typography>
           </CardContent>
           {answerSection()}
