@@ -24,7 +24,7 @@ import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGrou
 import { Title } from '@/components/ui-elements/title/Title';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { DisplayQuizState, MessageState } from '../../../interfaces/state';
+import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
 import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/GetQuiz.button';
 
 export default function SelectQuizPage() {
@@ -40,12 +40,13 @@ export default function SelectQuizPage() {
       label: string;
     }[]
   >([]);
-  const [file_num, setFileNum] = useState<number>(-1);
-  const [quiz_num, setQuizNum] = useState<string>('');
-  const [selected_category, setSelectedCategory] = useState<string>();
-  const [rateRange, setRateRange] = useState<number[] | number>([0, 100]);
   const [checked, setChecked] = useState<boolean>(false);
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
+  const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
+    fileNum: -1,
+    quizNum: -1,
+    format: 'basic'
+  });
   const [displayQuiz, setDisplayQuiz] = useState<DisplayQuizState>({
     fileNum: -1,
     quizNum: -1,
@@ -103,7 +104,10 @@ export default function SelectQuizPage() {
               label: res[i].category
             });
           }
-          setFileNum(e.target.value as number);
+          setQueryOfQuiz({
+            ...queryOfQuiz,
+            fileNum: e.target.value as number
+          });
           setCategorylistoption(categorylist);
           setMessage({
             message: '　',
@@ -131,13 +135,13 @@ export default function SelectQuizPage() {
     };
 
     const inputCorrect = () => {
-      if (file_num === -1) {
+      if (queryOfQuiz.fileNum === -1) {
         setMessage({
           message: 'エラー:問題ファイルを選択して下さい',
           messageColor: 'error'
         });
         return;
-      } else if (!quiz_num) {
+      } else if (!queryOfQuiz.quizNum) {
         setMessage({
           message: 'エラー:問題番号を入力して下さい',
           messageColor: 'error'
@@ -159,8 +163,8 @@ export default function SelectQuizPage() {
         '/quiz/clear',
         {
           format,
-          file_num: file_num,
-          quiz_num: quiz_num
+          file_num: queryOfQuiz.fileNum,
+          quiz_num: queryOfQuiz.quizNum
         },
         (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
@@ -172,7 +176,7 @@ export default function SelectQuizPage() {
               expanded: false
             });
             setMessage({
-              message: `問題[${quiz_num}] 正解+1! 登録しました`,
+              message: `問題[${queryOfQuiz.quizNum}] 正解+1! 登録しました`,
               messageColor: 'success.light'
             });
           } else {
@@ -186,13 +190,13 @@ export default function SelectQuizPage() {
     };
 
     const inputIncorrect = () => {
-      if (file_num === -1) {
+      if (queryOfQuiz.fileNum === -1) {
         setMessage({
           message: 'エラー:問題ファイルを選択して下さい',
           messageColor: 'error'
         });
         return;
-      } else if (!quiz_num) {
+      } else if (!queryOfQuiz.quizNum) {
         setMessage({
           message: 'エラー:問題番号を入力して下さい',
           messageColor: 'error'
@@ -214,8 +218,8 @@ export default function SelectQuizPage() {
         '/quiz/fail',
         {
           format,
-          file_num: file_num,
-          quiz_num: quiz_num
+          file_num: queryOfQuiz.fileNum,
+          quiz_num: queryOfQuiz.quizNum
         },
         (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
@@ -227,7 +231,7 @@ export default function SelectQuizPage() {
               expanded: false
             });
             setMessage({
-              message: `問題[${quiz_num}] 不正解+1.. 登録しました`,
+              message: `問題[${queryOfQuiz.quizNum}] 不正解+1.. 登録しました`,
               messageColor: 'success.light'
             });
           } else {
@@ -241,13 +245,13 @@ export default function SelectQuizPage() {
     };
 
     const checkReverseToQuiz = () => {
-      if (file_num === -1) {
+      if (queryOfQuiz.fileNum === -1) {
         setMessage({
           message: 'エラー:問題ファイルを選択して下さい',
           messageColor: 'error'
         });
         return;
-      } else if (!quiz_num) {
+      } else if (!queryOfQuiz.quizNum) {
         setMessage({
           message: 'エラー:問題番号を入力して下さい',
           messageColor: 'error'
@@ -269,8 +273,8 @@ export default function SelectQuizPage() {
         '/quiz/check',
         {
           format,
-          file_num: file_num,
-          quiz_num: quiz_num
+          file_num: queryOfQuiz.fileNum,
+          quiz_num: queryOfQuiz.quizNum
         },
         (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
@@ -280,7 +284,7 @@ export default function SelectQuizPage() {
               checked: res[0].result
             });
             setMessage({
-              message: `問題[${quiz_num}] にチェック${res[0].result ? 'をつけ' : 'を外し'}ました`,
+              message: `問題[${queryOfQuiz.quizNum}] にチェック${res[0].result ? 'をつけ' : 'を外し'}ました`,
               messageColor: 'success.light'
             });
           } else {
@@ -321,7 +325,7 @@ export default function SelectQuizPage() {
   };
 
   const getRandomQuiz = () => {
-    if (file_num === -1) {
+    if (queryOfQuiz.fileNum === -1) {
       setMessage({
         message: 'エラー:問題ファイルを選択して下さい',
         messageColor: 'error'
@@ -338,7 +342,10 @@ export default function SelectQuizPage() {
       (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
-          setQuizNum(String(res[0].quiz_num));
+          setQueryOfQuiz({
+            ...queryOfQuiz,
+            quizNum: res[0].quiz_num
+          });
           setDisplayQuiz({
             ...displayQuiz,
             quizSentense: res[0].quiz_sentense,
@@ -363,10 +370,10 @@ export default function SelectQuizPage() {
         }
       },
       {
-        file_num: String(file_num),
-        min_rate: String(Array.isArray(rateRange) ? rateRange[0] : rateRange),
-        max_rate: String(Array.isArray(rateRange) ? rateRange[1] : rateRange),
-        category: selected_category || '',
+        file_num: String(queryOfQuiz.fileNum),
+        min_rate: String(queryOfQuiz.minRate),
+        max_rate: String(queryOfQuiz.maxRate),
+        category: queryOfQuiz.category || '',
         checked: String(checked),
         format
       }
@@ -374,7 +381,7 @@ export default function SelectQuizPage() {
   };
 
   const getWorstRateQuiz = () => {
-    if (file_num === -1) {
+    if (queryOfQuiz.fileNum === -1) {
       setMessage({
         message: 'エラー:問題ファイルを選択して下さい',
         messageColor: 'error'
@@ -391,7 +398,10 @@ export default function SelectQuizPage() {
       (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
-          setQuizNum(String(res[0].quiz_num));
+          setQueryOfQuiz({
+            ...queryOfQuiz,
+            quizNum: res[0].quiz_num
+          });
           setDisplayQuiz({
             ...displayQuiz,
             quizSentense: res[0].quiz_sentense,
@@ -416,8 +426,8 @@ export default function SelectQuizPage() {
         }
       },
       {
-        file_num: String(file_num),
-        category: selected_category || '',
+        file_num: String(queryOfQuiz.fileNum),
+        category: queryOfQuiz.category || '',
         checked: String(checked),
         format
       }
@@ -425,7 +435,7 @@ export default function SelectQuizPage() {
   };
 
   const getMinimumClearQuiz = () => {
-    if (file_num === -1) {
+    if (queryOfQuiz.fileNum === -1) {
       setMessage({
         message: 'エラー:問題ファイルを選択して下さい',
         messageColor: 'error'
@@ -442,7 +452,10 @@ export default function SelectQuizPage() {
       (data: ProcessingApiReponse) => {
         if (data.status === 200 && data.body?.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
-          setQuizNum(String(res[0].quiz_num));
+          setQueryOfQuiz({
+            ...queryOfQuiz,
+            quizNum: res[0].quiz_num
+          });
           setDisplayQuiz({
             ...displayQuiz,
             quizSentense: res[0].quiz_sentense,
@@ -467,8 +480,8 @@ export default function SelectQuizPage() {
         }
       },
       {
-        file_num: String(file_num),
-        category: selected_category || '',
+        file_num: String(queryOfQuiz.fileNum),
+        category: queryOfQuiz.category || '',
         checked: String(checked),
         format
       }
@@ -488,7 +501,15 @@ export default function SelectQuizPage() {
           </FormControl>
 
           <FormControl>
-            <TextField label="問題番号" setStater={setQuizNum} />
+            <TextField
+              label="問題番号"
+              setStater={(value: string) => {
+                setQueryOfQuiz({
+                  ...queryOfQuiz,
+                  quizNum: +value
+                });
+              }}
+            />
           </FormControl>
 
           <FormControl>
@@ -496,13 +517,25 @@ export default function SelectQuizPage() {
               label={'カテゴリ'}
               optionList={categorylistoption}
               onChange={(e) => {
-                setSelectedCategory(String(e.target.value));
+                setQueryOfQuiz({
+                  ...queryOfQuiz,
+                  category: String(e.target.value)
+                });
               }}
             />
           </FormControl>
 
           <FormControl>
-            <RangeSliderSection sectionTitle={'正解率(%)指定'} setStater={setRateRange} />
+            <RangeSliderSection
+              sectionTitle={'正解率(%)指定'}
+              setStater={(value: number[] | number) => {
+                setQueryOfQuiz({
+                  ...queryOfQuiz,
+                  minRate: Array.isArray(value) ? value[0] : value,
+                  maxRate: Array.isArray(value) ? value[1] : value
+                });
+              }}
+            />
           </FormControl>
 
           <FormControl>
@@ -536,8 +569,8 @@ export default function SelectQuizPage() {
         </FormGroup>
 
         <GetQuizButton
-          file_num={file_num}
-          quiz_num={+quiz_num}
+          file_num={queryOfQuiz.fileNum}
+          quiz_num={+queryOfQuiz.quizNum}
           format={format}
           setDisplayQuizStater={setDisplayQuiz}
           setMessageStater={setMessage}

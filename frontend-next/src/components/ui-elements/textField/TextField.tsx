@@ -4,7 +4,7 @@ import { TextField as MuiTextField } from '@mui/material';
 
 interface TextFieldProps {
   label: string;
-  setStater?: React.Dispatch<React.SetStateAction<string>>;
+  setStater?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
 }
 
 export const TextField = ({ label, setStater }: TextFieldProps) => (
