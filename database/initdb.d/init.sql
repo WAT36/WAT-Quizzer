@@ -98,6 +98,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT,
         file_num INT NOT NULL,
         quiz_num INT NOT NULL,
+        advanced_quiz_type_id INT NOT NULL,
         quiz_sentense VARCHAR(256) NOT NULL UNIQUE,
         answer VARCHAR(256) NOT NULL,
         img_file VARCHAR(128),
@@ -107,6 +108,20 @@ CREATE TABLE
         deleted_at TIMESTAMP,
         PRIMARY KEY(id),
         UNIQUE(file_num, quiz_num)
+    ) DEFAULT CHARACTER SET = utf8;
+
+# 応用問題の種類
+
+CREATE TABLE
+    IF NOT EXISTS advanced_quiz_type (
+        id INT NOT NULL AUTO_INCREMENT,
+        type_name VARCHAR(256) NOT NULL,
+        type_nickname VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+        UNIQUE (type_name)
     ) DEFAULT CHARACTER SET = utf8;
 
 # 基本問題と応用問題の紐付け
