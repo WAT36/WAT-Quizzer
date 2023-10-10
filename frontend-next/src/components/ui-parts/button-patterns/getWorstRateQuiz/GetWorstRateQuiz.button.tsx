@@ -5,19 +5,19 @@ import { QuizApiResponse, QuizViewApiResponse } from '../../../../../interfaces/
 import { get } from '@/common/API';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../interfaces/state';
 
-interface GetRandomQuizButtonProps {
+interface GetWorstRateQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
   setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
 }
 
-const getRandomQuizAPI = ({
+const getWorstRateQuizAPI = ({
   queryOfQuizState,
   setMessageStater,
   setDisplayQuizStater,
   setQueryofQuizStater
-}: GetRandomQuizButtonProps) => {
+}: GetWorstRateQuizButtonProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
   if (!setMessageStater || !setDisplayQuizStater || !setQueryofQuizStater) {
     return;
@@ -53,9 +53,9 @@ const getRandomQuizAPI = ({
     messageColor: '#d3d3d3'
   });
   get(
-    '/quiz/random',
+    '/quiz/worst',
     (data: ProcessingApiReponse) => {
-      if (data.status === 200 && data.body.length > 0) {
+      if (data.status === 200 && data.body?.length > 0) {
         const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
         setQueryofQuizStater({
           ...queryOfQuizState,
@@ -89,20 +89,20 @@ const getRandomQuizAPI = ({
   );
 };
 
-export const GetRandomQuizButton = ({
+export const GetWorstRateQuizButton = ({
   queryOfQuizState,
   setMessageStater,
   setDisplayQuizStater,
   setQueryofQuizStater
-}: GetRandomQuizButtonProps) => {
+}: GetWorstRateQuizButtonProps) => {
   return (
     <>
       <Button
-        label={'ランダム出題'}
+        label={'最低正解率問出題'}
         variant="contained"
         color="secondary"
         onClick={(e) =>
-          getRandomQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+          getWorstRateQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
         }
       />
     </>
