@@ -27,6 +27,7 @@ import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
 import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/GetQuiz.button';
 import { GetRandomQuizButton } from '@/components/ui-parts/button-patterns/getRandomQuiz/GetRandomQuiz.button';
+import { GetWorstRateQuizButton } from '@/components/ui-parts/button-patterns/getWorstRateQuiz/GetWorstRateQuiz.button';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<
@@ -325,60 +326,6 @@ export default function SelectQuizPage() {
     );
   };
 
-  const getWorstRateQuiz = () => {
-    if (queryOfQuiz.fileNum === -1) {
-      setMessage({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      });
-      return;
-    }
-
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get(
-      '/quiz/worst',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200 && data.body?.length > 0) {
-          const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
-          setQueryOfQuiz({
-            ...queryOfQuiz,
-            quizNum: res[0].quiz_num
-          });
-          setDisplayQuiz({
-            ...displayQuiz,
-            quizSentense: res[0].quiz_sentense,
-            quizAnswer: res[0].answer,
-            checked: res[0].checked || false,
-            expanded: false
-          });
-          setMessage({
-            message: '　',
-            messageColor: 'common.black'
-          });
-        } else if (data.status === 404 || data.body?.length === 0) {
-          setMessage({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      },
-      {
-        file_num: String(queryOfQuiz.fileNum),
-        category: queryOfQuiz.category || '',
-        checked: String(checked),
-        format
-      }
-    );
-  };
-
   const getMinimumClearQuiz = () => {
     if (queryOfQuiz.fileNum === -1) {
       setMessage({
@@ -526,9 +473,12 @@ export default function SelectQuizPage() {
           setMessageStater={setMessage}
           setQueryofQuizStater={setQueryOfQuiz}
         />
-        <Button style={buttonStyle} variant="contained" color="secondary" onClick={(e) => getWorstRateQuiz()}>
-          最低正解率問出題
-        </Button>
+        <GetWorstRateQuizButton
+          queryOfQuizState={queryOfQuiz}
+          setDisplayQuizStater={setDisplayQuiz}
+          setMessageStater={setMessage}
+          setQueryofQuizStater={setQueryOfQuiz}
+        />
         <Button style={buttonStyle} variant="contained" color="secondary" onClick={(e) => getMinimumClearQuiz()}>
           最小正解数問出題
         </Button>
