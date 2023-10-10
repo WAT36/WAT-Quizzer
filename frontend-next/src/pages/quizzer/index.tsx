@@ -26,6 +26,7 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
 import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/GetQuiz.button';
+import { GetRandomQuizButton } from '@/components/ui-parts/button-patterns/getRandomQuiz/GetRandomQuiz.button';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<
@@ -575,9 +576,12 @@ export default function SelectQuizPage() {
           setDisplayQuizStater={setDisplayQuiz}
           setMessageStater={setMessage}
         />
-        <Button style={buttonStyle} variant="contained" color="secondary" onClick={(e) => getRandomQuiz()}>
-          ランダム出題
-        </Button>
+        <GetRandomQuizButton
+          queryOfQuizState={queryOfQuiz}
+          setDisplayQuizStater={setDisplayQuiz}
+          setMessageStater={setMessage}
+          setQueryofQuizStater={setQueryOfQuiz}
+        />
         <Button style={buttonStyle} variant="contained" color="secondary" onClick={(e) => getWorstRateQuiz()}>
           最低正解率問出題
         </Button>

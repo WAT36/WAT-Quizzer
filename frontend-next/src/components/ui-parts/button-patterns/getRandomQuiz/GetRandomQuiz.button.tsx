@@ -30,6 +30,24 @@ const getRandomQuizAPI = ({
     return;
   }
 
+  // 送信データ作成
+  const sendData: { [key: string]: string } = {
+    file_num: String(queryOfQuizState.fileNum),
+    format: queryOfQuizState.format
+  };
+  if (queryOfQuizState.minRate) {
+    sendData.min_rate = String(queryOfQuizState.minRate);
+  }
+  if (queryOfQuizState.maxRate) {
+    sendData.max_rate = String(queryOfQuizState.maxRate);
+  }
+  if (queryOfQuizState.category) {
+    sendData.category = String(queryOfQuizState.category);
+  }
+  if (queryOfQuizState.checked) {
+    sendData.checked = String(queryOfQuizState.checked);
+  }
+
   setMessageStater({
     message: '通信中...',
     messageColor: '#d3d3d3'
@@ -63,14 +81,7 @@ const getRandomQuizAPI = ({
         });
       }
     },
-    {
-      file_num: String(queryOfQuizState.fileNum),
-      min_rate: String(queryOfQuizState.minRate),
-      max_rate: String(queryOfQuizState.maxRate),
-      category: String(queryOfQuizState.category) || '',
-      checked: String(queryOfQuizState.checked),
-      format: queryOfQuizState.format
-    }
+    sendData
   );
 };
 
