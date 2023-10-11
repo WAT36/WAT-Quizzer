@@ -155,6 +155,19 @@ CREATE TABLE
         UNIQUE(name)
     ) DEFAULT CHARACTER SET = utf8;
 
+-- 四択問題ダミー選択肢
+
+CREATE TABLE
+    IF NOT EXISTS dummy_choice (
+        id INT NOT NULL AUTO_INCREMENT,
+        advanced_quiz_id INT NOT NULL,
+        dummy_choice_sentense VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+    ) DEFAULT CHARACTER SET = utf8;
+
 DROP VIEW IF EXISTS quiz_view;
 
 CREATE VIEW QUIZ_VIEW AS
