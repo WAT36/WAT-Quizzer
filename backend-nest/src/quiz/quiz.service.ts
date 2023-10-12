@@ -837,23 +837,140 @@ export class QuizService {
         }
       }
 
-      // 新問題番号を取得しINSERT
-      const res: GetQuizNumSqlResultDto[] = await execQuery(
-        SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM,
+      // 新問題番号(ファイルごとの)を取得しINSERT
+      let res: GetQuizNumSqlResultDto[] = await execQuery(
+        SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.BYFILE,
         [file_num],
       );
       const new_quiz_id: number =
         res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
       transactionQuery.push({
         query: SQL.ADVANCED_QUIZ.ADD,
-        value: [file_num, new_quiz_id, question, answer, img_file],
+        value: [file_num, new_quiz_id, 1, question, answer, img_file],
+      });
+
+      // 新問題番号(advanced_quiz全体での)を取得しINSERT
+      res = await execQuery(SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.ALL, []);
+      const new_id: number = res && res.length > 0 ? res[0]['id'] + 1 : 1;
+      // 関連する基礎問題番号リストを追加
+      for (let i = 0; i < matched_basic_quiz_id_list.length; i++) {
+        transactionQuery.push({
+          query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.ADD,
+          value: [file_num, matched_basic_quiz_id_list[i], new_id],
+        });
+      }
+
+      // トランザクション処理実行
+      await execTransaction(transactionQuery);
+      return [
+        {
+          result:
+            'Added!! [' +
+            file_num +
+            '-' +
+            new_quiz_id +
+            ']:' +
+            question +
+            ',' +
+            answer +
+            ',関連基礎問題:' +
+            JSON.stringify(matched_basic_quiz_id_list),
+        },
+      ];
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 四択問題を１問追加
+  async addFourChoiceQuiz(req: AddQuizDto) {
+    try {
+      const { file_num, input_data } = req;
+      if (!file_num && !input_data) {
+        throw new HttpException(
+          `ファイル番号または問題文が入力されていません。(file_num:${file_num},input_data:${JSON.stringify(
+            input_data,
+          )})`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const {
+        question,
+        answer,
+        img_file,
+        matched_basic_quiz_id,
+        dummy1,
+        dummy2,
+        dummy3,
+      } = input_data;
+
+      if (!dummy1 && !dummy2 && !dummy3) {
+        throw new HttpException(
+          `ダミー選択肢が3つ入力されていません。`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      //トランザクション実行準備
+      const transactionQuery: TransactionQuery[] = [];
+
+      // 関連する基礎問題番号リストのバリデーション・取得
+      const matched_basic_quiz_id_list: number[] = [];
+      if (matched_basic_quiz_id) {
+        const id_list = matched_basic_quiz_id.split(',');
+        for (let i = 0; i < id_list.length; i++) {
+          if (isNaN(+id_list[i])) {
+            throw new HttpException(
+              `入力した関連基礎問題番号でエラーが発生しました；("${id_list[i]}"は数値ではありません)`,
+              HttpStatus.BAD_REQUEST,
+            );
+          } else {
+            matched_basic_quiz_id_list.push(+id_list[i]);
+          }
+        }
+      }
+
+      // 新問題番号(ファイルごとの)を取得しINSERT
+      let res: GetQuizNumSqlResultDto[] = await execQuery(
+        SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.BYFILE,
+        [file_num],
+      );
+      const new_quiz_id: number =
+        res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
+      transactionQuery.push({
+        query: SQL.ADVANCED_QUIZ.ADD,
+        value: [file_num, new_quiz_id, 1, question, answer, img_file],
+      });
+
+      // 新問題番号(advanced_quiz全体での)を取得しINSERT
+      res = await execQuery(SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.ALL, []);
+      const new_id: number = res && res.length > 0 ? res[0]['id'] + 1 : 1;
+
+      // ダミー選択肢をINSERT
+      transactionQuery.push({
+        query: SQL.ADVANCED_QUIZ.DUMMY_CHOICE.ADD,
+        value: [new_id, dummy1],
+      });
+      transactionQuery.push({
+        query: SQL.ADVANCED_QUIZ.DUMMY_CHOICE.ADD,
+        value: [new_id, dummy2],
+      });
+      transactionQuery.push({
+        query: SQL.ADVANCED_QUIZ.DUMMY_CHOICE.ADD,
+        value: [new_id, dummy3],
       });
 
       // 関連する基礎問題番号リストを追加
       for (let i = 0; i < matched_basic_quiz_id_list.length; i++) {
         transactionQuery.push({
           query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.ADD,
-          value: [file_num, matched_basic_quiz_id_list[i], new_quiz_id],
+          value: [file_num, matched_basic_quiz_id_list[i], new_id],
         });
       }
 

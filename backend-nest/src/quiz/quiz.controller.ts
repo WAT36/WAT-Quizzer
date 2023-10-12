@@ -186,4 +186,10 @@ export class QuizController {
   async addAdvanceQuiz(@Body() req: AddQuizDto) {
     return await this.quizService.addAdvancedQuiz(req);
   }
+
+  // 応用題追加
+  @Post('/advanced/4choice')
+  async addFourChoiceQuiz(@Body() req: AddQuizDto) {
+    return await this.quizService.addFourChoiceQuiz(req);
+  }
 }

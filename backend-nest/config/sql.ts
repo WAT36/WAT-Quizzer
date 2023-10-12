@@ -279,8 +279,8 @@ export const SQL = {
     },
     ADD: `
       INSERT INTO
-          advanced_quiz (file_num,quiz_num,quiz_sentense,answer,img_file,checked)
-      VALUES(?,?,?,?,?,false)
+          advanced_quiz (file_num,quiz_num,advanced_quiz_type_id,quiz_sentense,answer,img_file,checked)
+      VALUES(?,?,?,?,?,?,false)
       ;
     `,
     EDIT: `
@@ -316,16 +316,24 @@ export const SQL = {
           file_num = ? 
           AND quiz_num = ? 
     `,
-    MAX_QUIZ_NUM: `
-      SELECT 
-          quiz_num
-      FROM 
-          advanced_quiz 
-      WHERE 
-          file_num = ?
-      ORDER BY quiz_num DESC
-      LIMIT 1
-    `,
+    MAX_QUIZ_NUM: {
+      BYFILE: `
+        SELECT 
+            quiz_num
+        FROM 
+            advanced_quiz 
+        WHERE 
+            file_num = ?
+        ORDER BY quiz_num DESC
+        LIMIT 1
+      `,
+      ALL: `
+        SELECT 
+            MAX(id) as id
+        FROM 
+            advanced_quiz 
+      `,
+    },
     SEARCH: `
       SELECT
           file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, img_file, checked, ROUND(accuracy_rate,1) AS accuracy_rate 
@@ -349,6 +357,13 @@ export const SQL = {
           AND quiz_num = ? 
       ;
     `,
+    DUMMY_CHOICE: {
+      ADD: `
+        INSERT INTO 
+          dummy_choice (advanced_quiz_id,dummy_choice_sentense)
+        VALUES(?,?)
+      `,
+    },
   },
   CATEGORY: {
     INFO: `
