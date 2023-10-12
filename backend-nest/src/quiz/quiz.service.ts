@@ -945,7 +945,7 @@ export class QuizService {
         res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
       transactionQuery.push({
         query: SQL.ADVANCED_QUIZ.ADD,
-        value: [file_num, new_quiz_id, 1, question, answer, img_file],
+        value: [file_num, new_quiz_id, 2, question, answer, img_file],
       });
 
       // 新問題番号(advanced_quiz全体での)を取得しINSERT
