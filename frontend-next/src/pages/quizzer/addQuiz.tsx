@@ -148,6 +148,32 @@ export default function AddQuizPage() {
           }
         }
       );
+    } else if (value === 2) {
+      // 四択問題の時(value===2)
+      post(
+        '/quiz/advanced/4choice',
+        {
+          file_num,
+          input_data
+        },
+        (data: ProcessingApiReponse) => {
+          if (data.status === 200 || data.status === 201) {
+            const res: AddQuizApiResponse[] = data.body as AddQuizApiResponse[];
+            setMessage('Success!! 問題を追加できました!');
+            setMessageColor('success.light');
+            setAddLog(res[0].result);
+            setInputData({});
+            //入力データをクリア
+            const inputQuizField = document.getElementsByTagName('textarea').item(0) as HTMLTextAreaElement;
+            if (inputQuizField) {
+              inputQuizField.value = '';
+            }
+          } else {
+            setMessage('エラー:外部APIとの連携に失敗しました');
+            setMessageColor('error');
+          }
+        }
+      );
     }
   };
 
