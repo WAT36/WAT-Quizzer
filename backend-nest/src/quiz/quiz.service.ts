@@ -121,7 +121,6 @@ export class QuizService {
         ' ORDER BY rand() LIMIT 1 ' +
         postSQL +
         ';';
-      console.log(`random sql:${sql}`);
       return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -142,12 +141,17 @@ export class QuizService {
   ) {
     try {
       let preSQL: string;
+      let postSQL = '';
       switch (format) {
         case 'basic':
           preSQL = SQL.QUIZ.WORST;
           break;
         case 'applied':
           preSQL = SQL.ADVANCED_QUIZ.WORST;
+          break;
+        case '4choice':
+          preSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.WORST.PRE;
+          postSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.WORST.POST;
           break;
         default:
           throw new HttpException(
@@ -165,7 +169,12 @@ export class QuizService {
 
       // 最低正解率問題取得SQL作成
       const getWorstRateQuizSQL =
-        preSQL + categorySQL + checkedSQL + ' ORDER BY accuracy_rate LIMIT 1; ';
+        preSQL +
+        categorySQL +
+        checkedSQL +
+        ' ORDER BY accuracy_rate LIMIT 1 ' +
+        postSQL +
+        ';';
 
       return await execQuery(getWorstRateQuizSQL, [file_num]);
     } catch (error: unknown) {

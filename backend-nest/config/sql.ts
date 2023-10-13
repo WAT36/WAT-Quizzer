@@ -414,6 +414,31 @@ export const SQL = {
             a.id = d.advanced_quiz_id
         `,
       },
+      WORST: {
+        PRE: ` 
+          SELECT 
+            a.id,
+            a.file_num,
+            a.quiz_num,
+            a.quiz_sentense,
+            a.answer,
+            a.img_file,
+            a.checked,
+            d.dummy_choice_sentense
+          FROM 
+          ( SELECT * FROM 
+            advanced_quiz_view 
+          WHERE file_num = ? 
+          AND advanced_quiz_type_id = 2 
+          AND deleted_at IS NULL `,
+        POST: `
+        ) as a
+          INNER JOIN
+            dummy_choice as d
+          ON
+            a.id = d.advanced_quiz_id
+    `,
+      },
       CLEARED: `
         INSERT INTO 
           answer_log 
