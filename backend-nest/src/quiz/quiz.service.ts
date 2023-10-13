@@ -241,6 +241,12 @@ export class QuizService {
             value: [file_num, quiz_num],
           };
           break;
+        case '4choice': // 四択問題
+          query = {
+            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.CLEARED,
+            value: [file_num, quiz_num],
+          };
+          break;
         default:
           throw new HttpException(
             `入力された問題形式が不正です`,
@@ -273,6 +279,12 @@ export class QuizService {
         case 'applied': // 応用問題
           query = {
             query: SQL.ADVANCED_QUIZ.FAILED.INPUT,
+            value: [file_num, quiz_num],
+          };
+          break;
+        case '4choice': // 四択問題
+          query = {
+            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.FAILED,
             value: [file_num, quiz_num],
           };
           break;

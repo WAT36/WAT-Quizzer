@@ -414,6 +414,16 @@ export const SQL = {
             a.id = d.advanced_quiz_id
         `,
       },
+      CLEARED: `
+        INSERT INTO 
+          answer_log 
+        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (3,?,?,true);
+      `,
+      FAILED: `
+        INSERT INTO 
+          answer_log 
+        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (3,?,?,false);
+      `,
     },
   },
   CATEGORY: {
