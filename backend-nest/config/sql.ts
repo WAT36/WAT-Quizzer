@@ -23,7 +23,7 @@ export const SQL = {
     INFO: `SELECT 
             * 
           FROM 
-            quiz 
+            quiz_view 
           WHERE file_num = ? 
           AND quiz_num = ? 
           AND deleted_at IS NULL; `,
@@ -232,7 +232,7 @@ export const SQL = {
       SELECT 
         * 
       FROM 
-        advanced_quiz 
+        advanced_quiz_view 
       WHERE file_num = ? 
       AND quiz_num = ? 
       AND deleted_at IS NULL
@@ -244,6 +244,7 @@ export const SQL = {
       FROM 
         advanced_quiz_view 
       WHERE file_num = ? 
+      AND advanced_quiz_type_id = 1 
       AND accuracy_rate >= ? 
       AND accuracy_rate <= ? 
       AND deleted_at IS NULL `,
@@ -385,6 +386,34 @@ export const SQL = {
           a.file_num = ?
           AND a.quiz_num = ?
       `,
+      RANDOM: {
+        PRE: ` 
+          SELECT 
+            a.id,
+            a.file_num,
+            a.quiz_num,
+            a.quiz_sentense,
+            a.answer,
+            a.img_file,
+            a.checked,
+            d.dummy_choice_sentense
+          FROM 
+          ( SELECT * FROM 
+            advanced_quiz_view 
+          WHERE file_num = ? 
+          AND advanced_quiz_type_id = 2 
+          AND accuracy_rate >= ? 
+          AND accuracy_rate <= ? 
+          AND deleted_at IS NULL 
+        `,
+        POST: `
+        ) as a
+          INNER JOIN
+            dummy_choice as d
+          ON
+            a.id = d.advanced_quiz_id
+        `,
+      },
     },
   },
   CATEGORY: {

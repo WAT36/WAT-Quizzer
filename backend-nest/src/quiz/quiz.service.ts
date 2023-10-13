@@ -96,12 +96,17 @@ export class QuizService {
       const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
       let preSQL: string;
+      let postSQL = '';
       switch (format) {
         case 'basic':
           preSQL = SQL.QUIZ.RANDOM;
           break;
         case 'applied':
           preSQL = SQL.ADVANCED_QUIZ.RANDOM;
+          break;
+        case '4choice':
+          preSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.RANDOM.PRE;
+          postSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.RANDOM.POST;
           break;
         default:
           throw new HttpException(
@@ -110,7 +115,13 @@ export class QuizService {
           );
       }
       const sql =
-        preSQL + categorySQL + checkedSQL + ' ORDER BY rand() LIMIT 1; ';
+        preSQL +
+        categorySQL +
+        checkedSQL +
+        ' ORDER BY rand() LIMIT 1 ' +
+        postSQL +
+        ';';
+      console.log(`random sql:${sql}`);
       return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
     } catch (error: unknown) {
       if (error instanceof Error) {
