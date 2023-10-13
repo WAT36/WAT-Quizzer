@@ -5,18 +5,18 @@ import { useState } from 'react';
 export interface RadioGroupProps {
   radioButtonProps: RadioButtonProps[];
   defaultValue: string;
-  setStater?: React.Dispatch<React.SetStateAction<string>>;
+  setQueryofQuizStater?: (value: string) => void;
 }
 
-export const RadioGroup = ({ radioButtonProps, defaultValue, setStater }: RadioGroupProps) => {
+export const RadioGroup = ({ radioButtonProps, defaultValue, setQueryofQuizStater }: RadioGroupProps) => {
   const [radioValue, setRadioValue] = useState<string>(defaultValue);
 
   // ラジオボタンの選択変更時の処理
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = (event.target as HTMLInputElement).value;
     setRadioValue(value);
-    if (setStater) {
-      setStater(value);
+    if (setQueryofQuizStater) {
+      setQueryofQuizStater(value);
     }
   };
 

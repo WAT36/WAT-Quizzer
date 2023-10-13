@@ -13,7 +13,7 @@ export const RadioGroupSection = ({ sectionTitle, radioGroupProps }: RadioGroupS
       <RadioGroup
         radioButtonProps={radioGroupProps.radioButtonProps}
         defaultValue={radioGroupProps.defaultValue}
-        setStater={radioGroupProps.setStater}
+        setQueryofQuizStater={radioGroupProps.setQueryofQuizStater}
       />
     </>
   );
