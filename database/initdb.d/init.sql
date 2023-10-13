@@ -284,7 +284,7 @@ FROM advanced_quiz
         FROM answer_log
         WHERE
             is_corrected = true
-            and quiz_format_id = 2
+            and quiz_format_id <> 1
         GROUP BY
             file_num,
             quiz_num
@@ -298,7 +298,7 @@ FROM advanced_quiz
         FROM answer_log
         WHERE
             is_corrected = false
-            and quiz_format_id = 2
+            and quiz_format_id <> 1
         GROUP BY
             file_num,
             quiz_num
