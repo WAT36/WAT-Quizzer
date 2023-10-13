@@ -389,6 +389,10 @@ export default function SelectQuizPage() {
                   {
                     value: 'applied',
                     label: '応用問題'
+                  },
+                  {
+                    value: '4choice',
+                    label: '四択問題'
                   }
                 ],
                 defaultValue: 'basic',
@@ -443,7 +447,9 @@ export default function SelectQuizPage() {
             </Typography>
             <Typography variant="subtitle1" component="h2">
               {displayQuiz.checked ? '✅' : ''}
-              {displayQuiz.quizSentense}
+              {displayQuiz.quizSentense.split(/(\n)/).map((item, index) => {
+                return <React.Fragment key={index}>{item.match(/\n/) ? <br /> : item}</React.Fragment>;
+              })}
             </Typography>
           </CardContent>
           {answerSection()}

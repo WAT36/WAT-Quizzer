@@ -34,6 +34,8 @@ export interface QuizApiResponse extends ApiResponse {
   created_at: string;
   updated_at: string;
   deleted_at: string | undefined;
+
+  dummy_choice_sentense?: string; // TODO テーブルごとの型なので本当は望ましくない getQuiz専用のAPI返り値型を作るべき
 }
 
 // quiz_viewからの取得結果(正解数、不正解数、正解率など)

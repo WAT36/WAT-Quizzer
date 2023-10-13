@@ -4,6 +4,7 @@ import { ProcessingApiReponse } from '../../../../../interfaces/api/response';
 import { QuizApiResponse } from '../../../../../interfaces/db';
 import { get } from '@/common/API';
 import { DisplayQuizState, MessageState } from '../../../../../interfaces/state';
+import { generateQuizSentense } from '@/common/response';
 
 interface GetQuizButtonProps {
   file_num: number;
@@ -49,7 +50,7 @@ const getQuizAPI = ({ file_num, quiz_num, format, setMessageStater, setDisplayQu
         setDisplayQuizStater({
           fileNum: res[0].file_num,
           quizNum: res[0].quiz_num,
-          quizSentense: '[' + res[0].file_num + '-' + res[0].quiz_num + ']' + res[0].quiz_sentense,
+          quizSentense: generateQuizSentense(format, res),
           quizAnswer: res[0].answer,
           checked: res[0].checked || false,
           expanded: false

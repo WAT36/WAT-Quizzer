@@ -90,6 +90,7 @@ export interface GetSelfHelpBookResponse extends ApiResponse {
 // 画面で利用するデータ型
 // (Quizzer)
 
+// TODO これはresponse.tsではなくrequest.tsにして分けるべきでは？
 // 問題追加画面で、入力されたデータを格納するデータ型
 export interface addQuizDto {
   question?: string;
