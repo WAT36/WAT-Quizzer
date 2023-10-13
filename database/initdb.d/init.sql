@@ -172,6 +172,7 @@ DROP VIEW IF EXISTS quiz_view;
 
 CREATE VIEW QUIZ_VIEW AS
 SELECT
+    quiz.id,
     quiz.file_num,
     quiz.quiz_num,
     quiz_sentense,
@@ -253,8 +254,10 @@ DROP VIEW IF EXISTS advanced_quiz_view;
 CREATE VIEW
     ADVANCED_QUIZ_VIEW AS
 SELECT
+    advanced_quiz.id,
     advanced_quiz.file_num,
     advanced_quiz.quiz_num,
+    advanced_quiz.advanced_quiz_type_id,
     quiz_sentense,
     answer,
     img_file,
