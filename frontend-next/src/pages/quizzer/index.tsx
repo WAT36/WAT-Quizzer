@@ -59,8 +59,6 @@ export default function SelectQuizPage() {
     expanded: false
   });
 
-  const [format, setFormat] = useState<string>('basic');
-
   useEffect(() => {
     setMessage({
       message: '通信中...',
@@ -165,7 +163,7 @@ export default function SelectQuizPage() {
       post(
         '/quiz/clear',
         {
-          format,
+          format: queryOfQuiz.format,
           file_num: queryOfQuiz.fileNum,
           quiz_num: queryOfQuiz.quizNum
         },
@@ -220,7 +218,7 @@ export default function SelectQuizPage() {
       post(
         '/quiz/fail',
         {
-          format,
+          format: queryOfQuiz.format,
           file_num: queryOfQuiz.fileNum,
           quiz_num: queryOfQuiz.quizNum
         },
@@ -275,7 +273,7 @@ export default function SelectQuizPage() {
       post(
         '/quiz/check',
         {
-          format,
+          format: queryOfQuiz.format,
           file_num: queryOfQuiz.fileNum,
           quiz_num: queryOfQuiz.quizNum
         },
@@ -396,7 +394,12 @@ export default function SelectQuizPage() {
                   }
                 ],
                 defaultValue: 'basic',
-                setStater: setFormat
+                setQueryofQuizStater: (value: string) => {
+                  setQueryOfQuiz({
+                    ...queryOfQuiz,
+                    format: value
+                  });
+                }
               }}
             />
           </FormControl>
@@ -414,7 +417,7 @@ export default function SelectQuizPage() {
         <GetQuizButton
           file_num={queryOfQuiz.fileNum}
           quiz_num={+queryOfQuiz.quizNum}
-          format={format}
+          format={queryOfQuiz.format}
           setDisplayQuizStater={setDisplayQuiz}
           setMessageStater={setMessage}
         />

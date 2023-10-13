@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/ui-elements/button/Button';
 import { ProcessingApiReponse } from '../../../../../interfaces/api/response';
-import { QuizApiResponse, QuizViewApiResponse } from '../../../../../interfaces/db';
+import { QuizViewApiResponse } from '../../../../../interfaces/db';
 import { get } from '@/common/API';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../interfaces/state';
+import { generateQuizSentense } from '@/common/response';
 
 interface GetRandomQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;
@@ -64,7 +65,7 @@ const getRandomQuizAPI = ({
         setDisplayQuizStater({
           fileNum: res[0].file_num,
           quizNum: res[0].quiz_num,
-          quizSentense: res[0].quiz_sentense,
+          quizSentense: generateQuizSentense(sendData.format, res),
           quizAnswer: res[0].answer,
           checked: res[0].checked || false,
           expanded: false
