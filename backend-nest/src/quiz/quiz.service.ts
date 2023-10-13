@@ -55,6 +55,12 @@ export class QuizService {
             value: [file_num, quiz_num],
           };
           break;
+        case '4choice':
+          query = {
+            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET,
+            value: [file_num, quiz_num],
+          };
+          break;
         default:
           throw new HttpException(
             `入力された問題形式が不正です`,
