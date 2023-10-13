@@ -196,12 +196,17 @@ export class QuizService {
   ) {
     try {
       let preSQL: string;
+      let postSQL = '';
       switch (format) {
         case 'basic':
           preSQL = SQL.QUIZ.MINIMUM;
           break;
         case 'applied':
           preSQL = SQL.ADVANCED_QUIZ.MINIMUM;
+          break;
+        case '4choice':
+          preSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.MINIMUM.PRE;
+          postSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.MINIMUM.POST;
           break;
         default:
           throw new HttpException(
@@ -219,7 +224,12 @@ export class QuizService {
 
       // 最小正解数問題取得SQL作成
       const getMinimumClearQuizSQL =
-        preSQL + categorySQL + checkedSQL + ' ORDER BY clear_count LIMIT 1; ';
+        preSQL +
+        categorySQL +
+        checkedSQL +
+        ' ORDER BY clear_count LIMIT 1 ' +
+        postSQL +
+        ';';
 
       return await execQuery(getMinimumClearQuizSQL, [file_num]);
     } catch (error: unknown) {
