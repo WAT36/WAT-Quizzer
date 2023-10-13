@@ -40,6 +40,7 @@ export interface QuizApiResponse extends ApiResponse {
 
 // quiz_viewからの取得結果(正解数、不正解数、正解率など)
 export interface QuizViewApiResponse extends ApiResponse {
+  id: number;
   file_num: number;
   quiz_num: number;
   quiz_sentense: string;
@@ -53,6 +54,8 @@ export interface QuizViewApiResponse extends ApiResponse {
   updated_at: string;
   deleted_at: string | undefined;
   accuracy_rate: number;
+
+  dummy_choice_sentense?: string; // TODO テーブルごとの型なので本当は望ましくない getQuiz専用のAPI返り値型を作るべき
 }
 
 // categoryからの取得結果
