@@ -3,35 +3,41 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { ProcessingApiReponse } from '../../../../../interfaces/api/response';
 import { QuizViewApiResponse } from '../../../../../interfaces/db';
 import { get } from '@/common/API';
-import { DisplayQuizState, MessageState } from '../../../../../interfaces/state';
+import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../interfaces/state';
 import { generateQuizSentense } from '@/common/response';
 
 interface GetQuizButtonProps {
-  file_num: number;
-  quiz_num: number;
-  format: string;
+  queryOfQuizState: QueryOfQuizState;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
+  setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
 }
 
-const getQuizAPI = ({ file_num, quiz_num, format, setMessageStater, setDisplayQuizStater }: GetQuizButtonProps) => {
+const getQuizAPI = ({ queryOfQuizState, setMessageStater, setDisplayQuizStater }: GetQuizButtonProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
   if (!setMessageStater || !setDisplayQuizStater) {
     return;
   }
-  if (file_num === -1) {
+  if (queryOfQuizState.fileNum === -1) {
     setMessageStater({
       message: 'エラー:問題ファイルを選択して下さい',
       messageColor: 'error'
     });
     return;
-  } else if (!quiz_num) {
+  } else if (!queryOfQuizState.quizNum || queryOfQuizState.quizNum === -1) {
     setMessageStater({
       message: 'エラー:問題番号を入力して下さい',
       messageColor: 'error'
     });
     return;
   }
+
+  // 送信データ作成
+  const sendData: { [key: string]: string } = {
+    file_num: String(queryOfQuizState.fileNum),
+    quiz_num: String(queryOfQuizState.quizNum),
+    format: queryOfQuizState.format
+  };
 
   setMessageStater({
     message: '通信中...',
@@ -50,7 +56,7 @@ const getQuizAPI = ({ file_num, quiz_num, format, setMessageStater, setDisplayQu
         setDisplayQuizStater({
           fileNum: res[0].file_num,
           quizNum: res[0].quiz_num,
-          quizSentense: generateQuizSentense(format, res),
+          quizSentense: generateQuizSentense(queryOfQuizState.format, res),
           quizAnswer: res[0].answer,
           checked: res[0].checked || false,
           expanded: false
@@ -66,20 +72,15 @@ const getQuizAPI = ({ file_num, quiz_num, format, setMessageStater, setDisplayQu
         });
       }
     },
-    {
-      file_num: String(file_num),
-      quiz_num: String(quiz_num),
-      format
-    }
+    sendData
   );
 };
 
 export const GetQuizButton = ({
-  file_num,
-  quiz_num,
-  format,
+  queryOfQuizState,
   setMessageStater,
-  setDisplayQuizStater
+  setDisplayQuizStater,
+  setQueryofQuizStater
 }: GetQuizButtonProps) => {
   return (
     <>
@@ -87,7 +88,7 @@ export const GetQuizButton = ({
         label={'出題'}
         variant="contained"
         color="primary"
-        onClick={(e) => getQuizAPI({ file_num, quiz_num, format, setMessageStater, setDisplayQuizStater })}
+        onClick={(e) => getQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })}
       />
     </>
   );

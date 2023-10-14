@@ -416,11 +416,10 @@ export default function SelectQuizPage() {
         </FormGroup>
 
         <GetQuizButton
-          file_num={queryOfQuiz.fileNum}
-          quiz_num={+queryOfQuiz.quizNum}
-          format={queryOfQuiz.format}
+          queryOfQuizState={queryOfQuiz}
           setDisplayQuizStater={setDisplayQuiz}
           setMessageStater={setMessage}
+          setQueryofQuizStater={setQueryOfQuiz}
         />
         <GetRandomQuizButton
           queryOfQuizState={queryOfQuiz}
