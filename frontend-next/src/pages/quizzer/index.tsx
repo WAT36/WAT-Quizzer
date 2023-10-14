@@ -29,6 +29,7 @@ import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/Get
 import { GetRandomQuizButton } from '@/components/ui-parts/button-patterns/getRandomQuiz/GetRandomQuiz.button';
 import { GetWorstRateQuizButton } from '@/components/ui-parts/button-patterns/getWorstRateQuiz/GetWorstRateQuiz.button';
 import { GetMinimumClearQuizButton } from '@/components/ui-parts/button-patterns/getMinimumClearQuiz/GetMinimumClearQuiz.button';
+import { GetImageOfQuizButton } from '@/components/ui-parts/button-patterns/getImageOfQuiz/GetImageOfQuiz.button';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<
@@ -439,9 +440,12 @@ export default function SelectQuizPage() {
           setMessageStater={setMessage}
           setQueryofQuizStater={setQueryOfQuiz}
         />
-        <Button style={buttonStyle} variant="contained" color="info" disabled>
-          画像表示
-        </Button>
+        <GetImageOfQuizButton
+          queryOfQuizState={queryOfQuiz}
+          setDisplayQuizStater={setDisplayQuiz}
+          setMessageStater={setMessage}
+          setQueryofQuizStater={setQueryOfQuiz}
+        />
 
         <Card variant="outlined">
           <CardContent>
