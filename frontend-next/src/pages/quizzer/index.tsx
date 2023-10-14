@@ -26,6 +26,7 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
 import { GetQuizButtonGroup } from '@/components/ui-forms/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
+import { ClearQuizButton } from '@/components/ui-parts/button-patterns/clearQuiz/ClearQuiz.button';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<
@@ -130,61 +131,6 @@ export default function SelectQuizPage() {
         ...displayQuiz,
         expanded: !displayQuiz.expanded
       });
-    };
-
-    const inputCorrect = () => {
-      if (queryOfQuiz.fileNum === -1) {
-        setMessage({
-          message: 'エラー:問題ファイルを選択して下さい',
-          messageColor: 'error'
-        });
-        return;
-      } else if (!queryOfQuiz.quizNum) {
-        setMessage({
-          message: 'エラー:問題番号を入力して下さい',
-          messageColor: 'error'
-        });
-        return;
-      } else if (!displayQuiz.quizSentense || !displayQuiz.quizAnswer) {
-        setMessage({
-          message: 'エラー:問題を出題してから登録して下さい',
-          messageColor: 'error'
-        });
-        return;
-      }
-
-      setMessage({
-        message: '通信中...',
-        messageColor: '#d3d3d3'
-      });
-      post(
-        '/quiz/clear',
-        {
-          format: queryOfQuiz.format,
-          file_num: queryOfQuiz.fileNum,
-          quiz_num: queryOfQuiz.quizNum
-        },
-        (data: ProcessingApiReponse) => {
-          if (data.status === 200 || data.status === 201) {
-            setDisplayQuiz({
-              ...displayQuiz,
-              quizSentense: '',
-              quizAnswer: '',
-              checked: false,
-              expanded: false
-            });
-            setMessage({
-              message: `問題[${queryOfQuiz.quizNum}] 正解+1! 登録しました`,
-              messageColor: 'success.light'
-            });
-          } else {
-            setMessage({
-              message: 'エラー:外部APIとの連携に失敗しました',
-              messageColor: 'error'
-            });
-          }
-        }
-      );
     };
 
     const inputIncorrect = () => {
@@ -307,9 +253,13 @@ export default function SelectQuizPage() {
             <Typography variant="subtitle1" component="h2">
               {displayQuiz.quizAnswer}
             </Typography>
-            <Button style={buttonStyle} variant="contained" color="primary" onClick={inputCorrect}>
-              正解!!
-            </Button>
+            <ClearQuizButton
+              queryOfQuizState={queryOfQuiz}
+              displayQuizState={displayQuiz}
+              setMessageStater={setMessage}
+              setDisplayQuizStater={setDisplayQuiz}
+              setQueryofQuizStater={setQueryOfQuiz}
+            />
             <Button style={buttonStyle} variant="contained" color="secondary" onClick={inputIncorrect}>
               不正解..
             </Button>
