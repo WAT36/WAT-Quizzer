@@ -1,4 +1,42 @@
-import { QuizViewApiResponse } from '../../interfaces/db';
+import { ProcessingApiReponse } from '../../interfaces/api/response';
+import { QuizFileApiResponse, QuizViewApiResponse } from '../../interfaces/db';
+import { MessageState, PullDownOptionState } from '../../interfaces/state';
+import { get } from './API';
+
+// TODO この辺の関数群は適切なファイル名フォルダ構成にしてわかりやすいように振り分けるべき
+
+// quizzer各画面用 問題ファイルリストをapi通信して取ってくる
+export const getFileList = (
+  setMessageStater: React.Dispatch<React.SetStateAction<MessageState>>,
+  setFilelistoption: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>
+) => {
+  setMessageStater({
+    message: '通信中...',
+    messageColor: '#d3d3d3'
+  });
+  get('/quiz/file', (data: ProcessingApiReponse) => {
+    if (data.status === 200) {
+      const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
+      let filelist: PullDownOptionState[] = [];
+      for (var i = 0; i < res.length; i++) {
+        filelist.push({
+          value: String(res[i].file_num),
+          label: res[i].file_nickname
+        });
+      }
+      setFilelistoption(filelist);
+      setMessageStater({
+        message: '　',
+        messageColor: 'common.black'
+      });
+    } else {
+      setMessageStater({
+        message: 'エラー:外部APIとの連携に失敗しました',
+        messageColor: 'error'
+      });
+    }
+  });
+};
 
 // 問題取得系APIの返り値から問題文を生成する
 export const generateQuizSentense = (format: string, res: QuizViewApiResponse[]) => {

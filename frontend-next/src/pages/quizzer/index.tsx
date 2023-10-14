@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { get } from '../../common/API';
 import { Container } from '@mui/material';
-import { ProcessingApiReponse } from '../../../interfaces/api/response';
-import { QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
@@ -10,6 +7,7 @@ import { DisplayQuizState, MessageState, PullDownOptionState, QueryOfQuizState }
 import { GetQuizButtonGroup } from '@/components/ui-forms/quizzer/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
 import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displayQuizSection/DisplayQuizSection';
 import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
+import { getFileList } from '@/common/response';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
@@ -30,32 +28,7 @@ export default function SelectQuizPage() {
   });
 
   useEffect(() => {
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get('/quiz/file', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
-        let filelist: PullDownOptionState[] = [];
-        for (var i = 0; i < res.length; i++) {
-          filelist.push({
-            value: String(res[i].file_num),
-            label: res[i].file_nickname
-          });
-        }
-        setFilelistoption(filelist);
-        setMessage({
-          message: '　',
-          messageColor: 'common.black'
-        });
-      } else {
-        setMessage({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        });
-      }
-    });
+    getFileList(setMessage, setFilelistoption);
   }, []);
 
   const contents = () => {
