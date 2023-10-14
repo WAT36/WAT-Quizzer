@@ -7,9 +7,9 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
 import { DisplayQuizState, MessageState, PullDownOptionState, QueryOfQuizState } from '../../../interfaces/state';
-import { GetQuizButtonGroup } from '@/components/ui-forms/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
-import { DisplayQuizSection } from '@/components/ui-forms/getQuiz/displayQuizSection/DisplayQuizSection';
-import { InputQueryForm } from '@/components/ui-forms/getQuiz/inputQueryForm/InputQueryForm';
+import { GetQuizButtonGroup } from '@/components/ui-forms/quizzer/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
+import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displayQuizSection/DisplayQuizSection';
+import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);

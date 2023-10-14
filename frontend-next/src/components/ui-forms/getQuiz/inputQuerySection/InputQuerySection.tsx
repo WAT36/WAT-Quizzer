@@ -1,5 +1,5 @@
 import React from 'react';
-import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../interfaces/state';
+import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { Button, CardActions, CardContent, Collapse, Typography } from '@mui/material';
 import { ClearQuizButton } from '@/components/ui-parts/button-patterns/clearQuiz/ClearQuiz.button';
 import { FailQuizButton } from '@/components/ui-parts/button-patterns/failQuiz/FailQuiz.button';

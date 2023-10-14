@@ -1,13 +1,18 @@
 import React from 'react';
-import { DisplayQuizState, MessageState, PullDownOptionState, QueryOfQuizState } from '../../../../../interfaces/state';
+import {
+  DisplayQuizState,
+  MessageState,
+  PullDownOptionState,
+  QueryOfQuizState
+} from '../../../../../../interfaces/state';
 import { Checkbox, FormControl, FormControlLabel, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
-import { ProcessingApiReponse } from '../../../../../interfaces/api/response';
+import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
 import { get } from '@/common/API';
-import { CategoryApiResponse } from '../../../../../interfaces/db';
+import { CategoryApiResponse } from '../../../../../../interfaces/db';
 
 interface InputQueryFormProps {
   filelistoption: PullDownOptionState[];

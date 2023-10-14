@@ -1,4 +1,4 @@
-import { QuizApiResponse, QuizViewApiResponse } from '../../interfaces/db';
+import { QuizViewApiResponse } from '../../interfaces/db';
 
 // 問題取得系APIの返り値から問題文を生成する
 export const generateQuizSentense = (format: string, res: QuizViewApiResponse[]) => {
