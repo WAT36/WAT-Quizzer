@@ -4,19 +4,19 @@ import { ProcessingApiReponse } from '../../../../../interfaces/api/response';
 import { post } from '@/common/API';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../interfaces/state';
 
-interface ClearQuizButtonProps {
+interface FailQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;
   displayQuizState: DisplayQuizState;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
 }
 
-const clearQuizAPI = ({
+const failQuizAPI = ({
   queryOfQuizState,
   displayQuizState,
   setMessageStater,
   setDisplayQuizStater
-}: ClearQuizButtonProps) => {
+}: FailQuizButtonProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
   if (!setMessageStater || !setDisplayQuizStater) {
     return;
@@ -47,7 +47,7 @@ const clearQuizAPI = ({
     messageColor: '#d3d3d3'
   });
   post(
-    '/quiz/clear',
+    '/quiz/fail',
     {
       format: queryOfQuizState.format,
       file_num: queryOfQuizState.fileNum,
@@ -63,7 +63,7 @@ const clearQuizAPI = ({
           expanded: false
         });
         setMessageStater({
-          message: `問題[${queryOfQuizState.quizNum}] 正解+1! 登録しました`,
+          message: `問題[${queryOfQuizState.quizNum}] 不正解+1.. 登録しました`,
           messageColor: 'success.light'
         });
       } else {
@@ -76,20 +76,20 @@ const clearQuizAPI = ({
   );
 };
 
-export const ClearQuizButton = ({
+export const FailQuizButton = ({
   queryOfQuizState,
   displayQuizState,
   setMessageStater,
   setDisplayQuizStater
-}: ClearQuizButtonProps) => {
+}: FailQuizButtonProps) => {
   return (
     <>
       <Button
-        label={'正解!!'}
+        label={'不正解...'}
         variant="contained"
-        color="primary"
+        color="secondary"
         onClick={(e) =>
-          clearQuizAPI({
+          failQuizAPI({
             queryOfQuizState,
             displayQuizState,
             setMessageStater,
