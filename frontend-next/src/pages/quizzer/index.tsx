@@ -1,21 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { get, post } from '../../common/API';
-import { buttonStyle } from '../../styles/Pages';
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Checkbox,
-  Collapse,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  SelectChangeEvent,
-  Typography
-} from '@mui/material';
-import { CheckQuizApiResponse, ProcessingApiReponse } from '../../../interfaces/api/response';
+import { get } from '../../common/API';
+import { Checkbox, Container, FormControl, FormControlLabel, FormGroup, SelectChangeEvent } from '@mui/material';
+import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { CategoryApiResponse, QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
@@ -26,9 +12,7 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
 import { GetQuizButtonGroup } from '@/components/ui-forms/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
-import { ClearQuizButton } from '@/components/ui-parts/button-patterns/clearQuiz/ClearQuiz.button';
-import { FailQuizButton } from '@/components/ui-parts/button-patterns/failQuiz/FailQuiz.button';
-import { ReverseCheckQuizButton } from '@/components/ui-parts/button-patterns/reverseCheckQuiz/reverseCheckQuiz.button';
+import { DisplayQuizSection } from '@/components/ui-forms/getQuiz/displayQuizSection/DisplayQuizSection';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<
@@ -124,50 +108,6 @@ export default function SelectQuizPage() {
       {
         file_num: String(e.target.value)
       }
-    );
-  };
-
-  const answerSection = () => {
-    const handleExpandClick = () => {
-      setDisplayQuiz({
-        ...displayQuiz,
-        expanded: !displayQuiz.expanded
-      });
-    };
-
-    return (
-      <>
-        <CardActions>
-          <Button size="small" onClick={handleExpandClick} aria-expanded={displayQuiz.expanded}>
-            答え
-          </Button>
-        </CardActions>
-        <Collapse in={displayQuiz.expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <Typography variant="subtitle1" component="h2">
-              {displayQuiz.quizAnswer}
-            </Typography>
-            <ClearQuizButton
-              queryOfQuizState={queryOfQuiz}
-              displayQuizState={displayQuiz}
-              setMessageStater={setMessage}
-              setDisplayQuizStater={setDisplayQuiz}
-            />
-            <FailQuizButton
-              queryOfQuizState={queryOfQuiz}
-              displayQuizState={displayQuiz}
-              setMessageStater={setMessage}
-              setDisplayQuizStater={setDisplayQuiz}
-            />
-            <ReverseCheckQuizButton
-              queryOfQuizState={queryOfQuiz}
-              displayQuizState={displayQuiz}
-              setMessageStater={setMessage}
-              setDisplayQuizStater={setDisplayQuiz}
-            />
-          </CardContent>
-        </Collapse>
-      </>
     );
   };
 
@@ -267,20 +207,12 @@ export default function SelectQuizPage() {
           setQueryofQuizStater={setQueryOfQuiz}
         />
 
-        <Card variant="outlined">
-          <CardContent>
-            <Typography variant="h5" component="h2">
-              問題
-            </Typography>
-            <Typography variant="subtitle1" component="h2">
-              {displayQuiz.checked ? '✅' : ''}
-              {displayQuiz.quizSentense.split(/(\n)/).map((item, index) => {
-                return <React.Fragment key={index}>{item.match(/\n/) ? <br /> : item}</React.Fragment>;
-              })}
-            </Typography>
-          </CardContent>
-          {answerSection()}
-        </Card>
+        <DisplayQuizSection
+          queryOfQuizState={queryOfQuiz}
+          displayQuizState={displayQuiz}
+          setMessageStater={setMessage}
+          setDisplayQuizStater={setDisplayQuiz}
+        />
       </Container>
     );
   };
