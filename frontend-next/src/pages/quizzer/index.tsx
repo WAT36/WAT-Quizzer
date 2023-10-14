@@ -28,6 +28,7 @@ import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../inter
 import { GetQuizButtonGroup } from '@/components/ui-forms/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
 import { ClearQuizButton } from '@/components/ui-parts/button-patterns/clearQuiz/ClearQuiz.button';
 import { FailQuizButton } from '@/components/ui-parts/button-patterns/failQuiz/FailQuiz.button';
+import { ReverseCheckQuizButton } from '@/components/ui-parts/button-patterns/reverseCheckQuiz/reverseCheckQuiz.button';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<
@@ -134,59 +135,6 @@ export default function SelectQuizPage() {
       });
     };
 
-    const checkReverseToQuiz = () => {
-      if (queryOfQuiz.fileNum === -1) {
-        setMessage({
-          message: 'エラー:問題ファイルを選択して下さい',
-          messageColor: 'error'
-        });
-        return;
-      } else if (!queryOfQuiz.quizNum) {
-        setMessage({
-          message: 'エラー:問題番号を入力して下さい',
-          messageColor: 'error'
-        });
-        return;
-      } else if (!displayQuiz.quizSentense || !displayQuiz.quizAnswer) {
-        setMessage({
-          message: 'エラー:問題を出題してから登録して下さい',
-          messageColor: 'error'
-        });
-        return;
-      }
-
-      setMessage({
-        message: '通信中...',
-        messageColor: '#d3d3d3'
-      });
-      post(
-        '/quiz/check',
-        {
-          format: queryOfQuiz.format,
-          file_num: queryOfQuiz.fileNum,
-          quiz_num: queryOfQuiz.quizNum
-        },
-        (data: ProcessingApiReponse) => {
-          if (data.status === 200 || data.status === 201) {
-            const res: CheckQuizApiResponse[] = data.body as CheckQuizApiResponse[];
-            setDisplayQuiz({
-              ...displayQuiz,
-              checked: res[0].result
-            });
-            setMessage({
-              message: `問題[${queryOfQuiz.quizNum}] にチェック${res[0].result ? 'をつけ' : 'を外し'}ました`,
-              messageColor: 'success.light'
-            });
-          } else {
-            setMessage({
-              message: 'エラー:外部APIとの連携に失敗しました',
-              messageColor: 'error'
-            });
-          }
-        }
-      );
-    };
-
     return (
       <>
         <CardActions>
@@ -211,9 +159,12 @@ export default function SelectQuizPage() {
               setMessageStater={setMessage}
               setDisplayQuizStater={setDisplayQuiz}
             />
-            <Button style={buttonStyle} variant="contained" color="warning" onClick={checkReverseToQuiz}>
-              チェックつける/外す
-            </Button>
+            <ReverseCheckQuizButton
+              queryOfQuizState={queryOfQuiz}
+              displayQuizState={displayQuiz}
+              setMessageStater={setMessage}
+              setDisplayQuizStater={setDisplayQuiz}
+            />
           </CardContent>
         </Collapse>
       </>
