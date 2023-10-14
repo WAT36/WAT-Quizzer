@@ -43,7 +43,6 @@ export const DisplayQuizSection = ({
           </Typography>
         </CardContent>
 
-        {/* {answerSection()} */}
         <CardActions>
           <Button size="small" onClick={handleExpandClick} aria-expanded={displayQuizState.expanded}>
             答え

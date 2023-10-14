@@ -3,6 +3,11 @@ export interface MessageState {
   messageColor: string;
 }
 
+export interface PullDownOptionState {
+  value: string;
+  label: string;
+}
+
 export interface DisplayQuizState {
   fileNum: number;
   quizNum: number;
