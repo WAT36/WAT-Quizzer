@@ -25,11 +25,7 @@ import { Title } from '@/components/ui-elements/title/Title';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
-import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/GetQuiz.button';
-import { GetRandomQuizButton } from '@/components/ui-parts/button-patterns/getRandomQuiz/GetRandomQuiz.button';
-import { GetWorstRateQuizButton } from '@/components/ui-parts/button-patterns/getWorstRateQuiz/GetWorstRateQuiz.button';
-import { GetMinimumClearQuizButton } from '@/components/ui-parts/button-patterns/getMinimumClearQuiz/GetMinimumClearQuiz.button';
-import { GetImageOfQuizButton } from '@/components/ui-parts/button-patterns/getImageOfQuiz/GetImageOfQuiz.button';
+import { GetQuizButtonGroup } from '@/components/ui-forms/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<
@@ -415,31 +411,7 @@ export default function SelectQuizPage() {
           </FormControl>
         </FormGroup>
 
-        <GetQuizButton
-          queryOfQuizState={queryOfQuiz}
-          setDisplayQuizStater={setDisplayQuiz}
-          setMessageStater={setMessage}
-          setQueryofQuizStater={setQueryOfQuiz}
-        />
-        <GetRandomQuizButton
-          queryOfQuizState={queryOfQuiz}
-          setDisplayQuizStater={setDisplayQuiz}
-          setMessageStater={setMessage}
-          setQueryofQuizStater={setQueryOfQuiz}
-        />
-        <GetWorstRateQuizButton
-          queryOfQuizState={queryOfQuiz}
-          setDisplayQuizStater={setDisplayQuiz}
-          setMessageStater={setMessage}
-          setQueryofQuizStater={setQueryOfQuiz}
-        />
-        <GetMinimumClearQuizButton
-          queryOfQuizState={queryOfQuiz}
-          setDisplayQuizStater={setDisplayQuiz}
-          setMessageStater={setMessage}
-          setQueryofQuizStater={setQueryOfQuiz}
-        />
-        <GetImageOfQuizButton
+        <GetQuizButtonGroup
           queryOfQuizState={queryOfQuiz}
           setDisplayQuizStater={setDisplayQuiz}
           setMessageStater={setMessage}
