@@ -37,7 +37,9 @@ export default function Top() {
 
   // DB ヘルスチェック
   const executeDbHealthCheck = async () => {
+    console.log('health pre');
     const result = await dbHealthCheck();
+    console.log(`health:${JSON.stringify(result)}`);
     setDbHealth(result);
   };
 
