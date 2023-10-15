@@ -941,9 +941,9 @@ export class QuizService {
       const { file_num, input_data } = req;
       if (!file_num && !input_data) {
         throw new HttpException(
-          `ファイル番号または問題文が入力されていません。(file_num:${file_num},input_data:${JSON.stringify(
-            input_data,
-          )})`,
+          `ファイル番号または問題文が入力されていません。(req:${JSON.stringify(
+            req,
+          )},file_num:${file_num},input_data:${JSON.stringify(input_data)})`,
           HttpStatus.BAD_REQUEST,
         );
       }
