@@ -1,4 +1,4 @@
 .message-card {
-  margin: '10px 0px 20px';
-  border: 'none';
+  margin: 10px 0px 20px !important;
+  border: none;
 };
