@@ -22,6 +22,7 @@ import { addQuizDto } from '../../../interfaces/api/response';
 import { AddQuizApiResponse, ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
+import { MessageState } from '../../../interfaces/state';
 
 export interface TabPanelProps {
   children?: React.ReactNode;
@@ -48,16 +49,17 @@ const CustomTabPanel = memo<TabPanelProps>((props: TabPanelProps) => {
 export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [input_data, setInputData] = useState<addQuizDto>({});
-  const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<string>('common.black');
+  const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
   const [addLog, setAddLog] = useState<string>();
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
   const [value, setValue] = React.useState(0);
 
   useEffect(() => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
@@ -70,11 +72,15 @@ export default function AddQuizPage() {
           );
         }
         setFilelistoption(filelist);
-        setMessage('　');
-        setMessageColor('common.black');
+        setMessage({
+          message: '　',
+          messageColor: 'common.black'
+        });
       } else {
-        setMessage('エラー:外部APIとの連携に失敗しました');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
       }
     });
   }, []);
@@ -85,17 +91,23 @@ export default function AddQuizPage() {
 
   const addQuiz = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error'
+      });
       return;
     } else if (!input_data.question || !input_data.answer) {
-      setMessage('エラー:追加する問題文・正解を入力して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:追加する問題文・正解を入力して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     // 基礎問題のとき(value==0)
     if (value === 0) {
       post(
@@ -107,8 +119,10 @@ export default function AddQuizPage() {
         (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
             const res: AddQuizApiResponse[] = data.body as AddQuizApiResponse[];
-            setMessage('Success!! 問題を追加できました!');
-            setMessageColor('success.light');
+            setMessage({
+              message: 'Success!! 問題を追加できました!',
+              messageColor: 'success.light'
+            });
             setAddLog(res[0].result);
             setInputData({});
             //入力データをクリア
@@ -117,8 +131,10 @@ export default function AddQuizPage() {
               inputQuizField.value = '';
             }
           } else {
-            setMessage('エラー:外部APIとの連携に失敗しました');
-            setMessageColor('error');
+            setMessage({
+              message: 'エラー:外部APIとの連携に失敗しました',
+              messageColor: 'error'
+            });
           }
         }
       );
@@ -133,8 +149,10 @@ export default function AddQuizPage() {
         (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
             const res: AddQuizApiResponse[] = data.body as AddQuizApiResponse[];
-            setMessage('Success!! 問題を追加できました!');
-            setMessageColor('success.light');
+            setMessage({
+              message: 'Success!! 問題を追加できました!',
+              messageColor: 'success.light'
+            });
             setAddLog(res[0].result);
             setInputData({});
             //入力データをクリア
@@ -143,8 +161,10 @@ export default function AddQuizPage() {
               inputQuizField.value = '';
             }
           } else {
-            setMessage('エラー:外部APIとの連携に失敗しました');
-            setMessageColor('error');
+            setMessage({
+              message: 'エラー:外部APIとの連携に失敗しました',
+              messageColor: 'error'
+            });
           }
         }
       );
@@ -159,8 +179,10 @@ export default function AddQuizPage() {
         (data: ProcessingApiReponse) => {
           if (data.status === 200 || data.status === 201) {
             const res: AddQuizApiResponse[] = data.body as AddQuizApiResponse[];
-            setMessage('Success!! 問題を追加できました!');
-            setMessageColor('success.light');
+            setMessage({
+              message: 'Success!! 問題を追加できました!',
+              messageColor: 'success.light'
+            });
             setAddLog(res[0].result);
             setInputData({});
             //入力データをクリア
@@ -169,8 +191,10 @@ export default function AddQuizPage() {
               inputQuizField.value = '';
             }
           } else {
-            setMessage('エラー:外部APIとの連携に失敗しました');
-            setMessageColor('error');
+            setMessage({
+              message: 'エラー:外部APIとの連携に失敗しました',
+              messageColor: 'error'
+            });
           }
         }
       );
@@ -206,8 +230,8 @@ export default function AddQuizPage() {
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography variant="h6" component="h6" color={messageColor}>
-              {message}
+            <Typography variant="h6" component="h6" color={message.messageColor}>
+              {message.message}
             </Typography>
           </CardContent>
         </Card>
