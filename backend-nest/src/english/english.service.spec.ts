@@ -234,4 +234,23 @@ describe('EnglishService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 例文追加 正常系
+  it('addExampleService - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'test',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    jest.spyOn(Dao, 'execTransaction').mockResolvedValue(testResult);
+    expect(
+      await englishService.addExampleService({
+        exampleEn: 'Example',
+        exampleJa: '例文',
+        meanId: [0, 1, 2],
+      }),
+    ).toEqual(testResult);
+  });
 });
