@@ -193,4 +193,26 @@ describe('EnglishService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 単語の意味などを更新 正常系
+  it('editWordMeanService - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'test',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    jest.spyOn(Dao, 'execTransaction').mockResolvedValue(testResult);
+    expect(
+      await englishService.editWordMeanService({
+        wordId: 0,
+        wordMeanId: 0,
+        meanId: 0,
+        partofspeechId: 0,
+        meaning: '意味テスト',
+        sourceId: 0,
+      }),
+    ).toEqual({ result: testResult });
+  });
 });
