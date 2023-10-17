@@ -215,4 +215,23 @@ describe('EnglishService', () => {
       }),
     ).toEqual({ result: testResult });
   });
+
+  // 単語の意味などを更新 異常系
+  it('editWordMeanService - NG', async () => {
+    jest.spyOn(Dao, 'execTransaction').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      englishService.editWordMeanService({
+        wordId: 0,
+        wordMeanId: 0,
+        meanId: 0,
+        partofspeechId: 0,
+        meaning: '意味テスト',
+        sourceId: 0,
+      }),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
