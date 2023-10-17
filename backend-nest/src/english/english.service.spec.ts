@@ -253,4 +253,23 @@ describe('EnglishService', () => {
       }),
     ).toEqual(testResult);
   });
+
+  // 例文追加 異常系
+  it('addExampleService - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    jest.spyOn(Dao, 'execTransaction').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      englishService.addExampleService({
+        exampleEn: 'Example',
+        exampleJa: '例文',
+        meanId: [0, 1, 2],
+      }),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
