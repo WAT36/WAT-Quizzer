@@ -23,6 +23,7 @@ import { AddQuizApiResponse, ProcessingApiReponse } from '../../../interfaces/ap
 import { QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState } from '../../../interfaces/state';
+import { AddQuizLogSection } from '@/components/ui-forms/quizzer/addQuiz/addQuizLogSection/AddQuizLogSection';
 
 export interface TabPanelProps {
   children?: React.ReactNode;
@@ -50,7 +51,7 @@ export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [input_data, setInputData] = useState<addQuizDto>({});
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
-  const [addLog, setAddLog] = useState<string>();
+  const [addLog, setAddLog] = useState<string>('');
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
 
   const [value, setValue] = React.useState(0);
@@ -457,16 +458,7 @@ export default function AddQuizPage() {
           送信
         </Button>
 
-        <Card variant="outlined">
-          <CardContent>
-            <Typography style={typoStyles} color="textSecondary" gutterBottom>
-              --実行ログ--
-            </Typography>
-            <Typography variant="h6" component="h6">
-              {addLog}
-            </Typography>
-          </CardContent>
-        </Card>
+        <AddQuizLogSection log={addLog} />
       </Container>
     );
   };
