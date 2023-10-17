@@ -181,4 +181,16 @@ describe('EnglishService', () => {
       testResult,
     );
   });
+
+  // 単語名から単語情報取得 異常系
+  it('getWordByNameService - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      englishService.getWordByNameService('test'),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
