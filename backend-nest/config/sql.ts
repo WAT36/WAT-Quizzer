@@ -23,7 +23,7 @@ export const SQL = {
     INFO: `SELECT 
             * 
           FROM 
-            quiz 
+            quiz_view 
           WHERE file_num = ? 
           AND quiz_num = ? 
           AND deleted_at IS NULL; `,
@@ -232,7 +232,7 @@ export const SQL = {
       SELECT 
         * 
       FROM 
-        advanced_quiz 
+        advanced_quiz_view 
       WHERE file_num = ? 
       AND quiz_num = ? 
       AND deleted_at IS NULL
@@ -244,6 +244,7 @@ export const SQL = {
       FROM 
         advanced_quiz_view 
       WHERE file_num = ? 
+      AND advanced_quiz_type_id = 1 
       AND accuracy_rate >= ? 
       AND accuracy_rate <= ? 
       AND deleted_at IS NULL `,
@@ -279,8 +280,8 @@ export const SQL = {
     },
     ADD: `
       INSERT INTO
-          advanced_quiz (file_num,quiz_num,quiz_sentense,answer,img_file,checked)
-      VALUES(?,?,?,?,?,false)
+          advanced_quiz (file_num,quiz_num,advanced_quiz_type_id,quiz_sentense,answer,img_file,checked)
+      VALUES(?,?,?,?,?,?,false)
       ;
     `,
     EDIT: `
@@ -316,16 +317,24 @@ export const SQL = {
           file_num = ? 
           AND quiz_num = ? 
     `,
-    MAX_QUIZ_NUM: `
-      SELECT 
-          quiz_num
-      FROM 
-          advanced_quiz 
-      WHERE 
-          file_num = ?
-      ORDER BY quiz_num DESC
-      LIMIT 1
-    `,
+    MAX_QUIZ_NUM: {
+      BYFILE: `
+        SELECT 
+            quiz_num
+        FROM 
+            advanced_quiz 
+        WHERE 
+            file_num = ?
+        ORDER BY quiz_num DESC
+        LIMIT 1
+      `,
+      ALL: `
+        SELECT 
+            MAX(id) as id
+        FROM 
+            advanced_quiz 
+      `,
+    },
     SEARCH: `
       SELECT
           file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, img_file, checked, ROUND(accuracy_rate,1) AS accuracy_rate 
@@ -349,6 +358,123 @@ export const SQL = {
           AND quiz_num = ? 
       ;
     `,
+    DUMMY_CHOICE: {
+      ADD: `
+        INSERT INTO 
+          dummy_choice (advanced_quiz_id,dummy_choice_sentense)
+        VALUES(?,?)
+      `,
+    },
+    FOUR_CHOICE: {
+      GET: `
+        SELECT
+          a.id,
+          a.file_num,
+          a.quiz_num,
+          a.quiz_sentense,
+          a.answer,
+          a.img_file,
+          a.checked,
+          d.dummy_choice_sentense
+        FROM
+          advanced_quiz as a
+        INNER JOIN
+          dummy_choice as d
+        ON
+          a.id = d.advanced_quiz_id
+        WHERE
+          a.file_num = ?
+          AND a.quiz_num = ?
+      `,
+      RANDOM: {
+        PRE: ` 
+          SELECT 
+            a.id,
+            a.file_num,
+            a.quiz_num,
+            a.quiz_sentense,
+            a.answer,
+            a.img_file,
+            a.checked,
+            d.dummy_choice_sentense
+          FROM 
+          ( SELECT * FROM 
+            advanced_quiz_view 
+          WHERE file_num = ? 
+          AND advanced_quiz_type_id = 2 
+          AND accuracy_rate >= ? 
+          AND accuracy_rate <= ? 
+          AND deleted_at IS NULL 
+        `,
+        POST: `
+        ) as a
+          INNER JOIN
+            dummy_choice as d
+          ON
+            a.id = d.advanced_quiz_id
+        `,
+      },
+      WORST: {
+        PRE: ` 
+          SELECT 
+            a.id,
+            a.file_num,
+            a.quiz_num,
+            a.quiz_sentense,
+            a.answer,
+            a.img_file,
+            a.checked,
+            d.dummy_choice_sentense
+          FROM 
+          ( SELECT * FROM 
+            advanced_quiz_view 
+          WHERE file_num = ? 
+          AND advanced_quiz_type_id = 2 
+          AND deleted_at IS NULL `,
+        POST: `
+        ) as a
+          INNER JOIN
+            dummy_choice as d
+          ON
+            a.id = d.advanced_quiz_id
+        `,
+      },
+      MINIMUM: {
+        PRE: ` 
+          SELECT 
+            a.id,
+            a.file_num,
+            a.quiz_num,
+            a.quiz_sentense,
+            a.answer,
+            a.img_file,
+            a.checked,
+            d.dummy_choice_sentense
+          FROM 
+          ( SELECT * FROM 
+            advanced_quiz_view 
+          WHERE file_num = ? 
+          AND advanced_quiz_type_id = 2 
+          AND deleted_at IS NULL `,
+        POST: `
+        ) as a
+          INNER JOIN
+            dummy_choice as d
+          ON
+            a.id = d.advanced_quiz_id
+        `,
+      },
+      CLEARED: `
+        INSERT INTO 
+          answer_log 
+        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (3,?,?,true);
+      `,
+      FAILED: `
+        INSERT INTO 
+          answer_log 
+        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (3,?,?,false);
+      `,
+    },
   },
   CATEGORY: {
     INFO: `

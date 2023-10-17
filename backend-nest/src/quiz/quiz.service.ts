@@ -55,6 +55,12 @@ export class QuizService {
             value: [file_num, quiz_num],
           };
           break;
+        case '4choice':
+          query = {
+            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET,
+            value: [file_num, quiz_num],
+          };
+          break;
         default:
           throw new HttpException(
             `入力された問題形式が不正です`,
@@ -90,12 +96,17 @@ export class QuizService {
       const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
 
       let preSQL: string;
+      let postSQL = '';
       switch (format) {
         case 'basic':
           preSQL = SQL.QUIZ.RANDOM;
           break;
         case 'applied':
           preSQL = SQL.ADVANCED_QUIZ.RANDOM;
+          break;
+        case '4choice':
+          preSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.RANDOM.PRE;
+          postSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.RANDOM.POST;
           break;
         default:
           throw new HttpException(
@@ -104,7 +115,12 @@ export class QuizService {
           );
       }
       const sql =
-        preSQL + categorySQL + checkedSQL + ' ORDER BY rand() LIMIT 1; ';
+        preSQL +
+        categorySQL +
+        checkedSQL +
+        ' ORDER BY rand() LIMIT 1 ' +
+        postSQL +
+        ';';
       return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -125,12 +141,17 @@ export class QuizService {
   ) {
     try {
       let preSQL: string;
+      let postSQL = '';
       switch (format) {
         case 'basic':
           preSQL = SQL.QUIZ.WORST;
           break;
         case 'applied':
           preSQL = SQL.ADVANCED_QUIZ.WORST;
+          break;
+        case '4choice':
+          preSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.WORST.PRE;
+          postSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.WORST.POST;
           break;
         default:
           throw new HttpException(
@@ -148,7 +169,12 @@ export class QuizService {
 
       // 最低正解率問題取得SQL作成
       const getWorstRateQuizSQL =
-        preSQL + categorySQL + checkedSQL + ' ORDER BY accuracy_rate LIMIT 1; ';
+        preSQL +
+        categorySQL +
+        checkedSQL +
+        ' ORDER BY accuracy_rate LIMIT 1 ' +
+        postSQL +
+        ';';
 
       return await execQuery(getWorstRateQuizSQL, [file_num]);
     } catch (error: unknown) {
@@ -170,12 +196,17 @@ export class QuizService {
   ) {
     try {
       let preSQL: string;
+      let postSQL = '';
       switch (format) {
         case 'basic':
           preSQL = SQL.QUIZ.MINIMUM;
           break;
         case 'applied':
           preSQL = SQL.ADVANCED_QUIZ.MINIMUM;
+          break;
+        case '4choice':
+          preSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.MINIMUM.PRE;
+          postSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.MINIMUM.POST;
           break;
         default:
           throw new HttpException(
@@ -193,7 +224,12 @@ export class QuizService {
 
       // 最小正解数問題取得SQL作成
       const getMinimumClearQuizSQL =
-        preSQL + categorySQL + checkedSQL + ' ORDER BY clear_count LIMIT 1; ';
+        preSQL +
+        categorySQL +
+        checkedSQL +
+        ' ORDER BY clear_count LIMIT 1 ' +
+        postSQL +
+        ';';
 
       return await execQuery(getMinimumClearQuizSQL, [file_num]);
     } catch (error: unknown) {
@@ -221,6 +257,12 @@ export class QuizService {
         case 'applied': // 応用問題
           query = {
             query: SQL.ADVANCED_QUIZ.CLEARED.INPUT,
+            value: [file_num, quiz_num],
+          };
+          break;
+        case '4choice': // 四択問題
+          query = {
+            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.CLEARED,
             value: [file_num, quiz_num],
           };
           break;
@@ -256,6 +298,12 @@ export class QuizService {
         case 'applied': // 応用問題
           query = {
             query: SQL.ADVANCED_QUIZ.FAILED.INPUT,
+            value: [file_num, quiz_num],
+          };
+          break;
+        case '4choice': // 四択問題
+          query = {
+            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.FAILED,
             value: [file_num, quiz_num],
           };
           break;
@@ -837,23 +885,140 @@ export class QuizService {
         }
       }
 
-      // 新問題番号を取得しINSERT
-      const res: GetQuizNumSqlResultDto[] = await execQuery(
-        SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM,
+      // 新問題番号(ファイルごとの)を取得しINSERT
+      let res: GetQuizNumSqlResultDto[] = await execQuery(
+        SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.BYFILE,
         [file_num],
       );
       const new_quiz_id: number =
         res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
       transactionQuery.push({
         query: SQL.ADVANCED_QUIZ.ADD,
-        value: [file_num, new_quiz_id, question, answer, img_file],
+        value: [file_num, new_quiz_id, 1, question, answer, img_file],
+      });
+
+      // 新問題番号(advanced_quiz全体での)を取得しINSERT
+      res = await execQuery(SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.ALL, []);
+      const new_id: number = res && res.length > 0 ? res[0]['id'] + 1 : 1;
+      // 関連する基礎問題番号リストを追加
+      for (let i = 0; i < matched_basic_quiz_id_list.length; i++) {
+        transactionQuery.push({
+          query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.ADD,
+          value: [file_num, matched_basic_quiz_id_list[i], new_id],
+        });
+      }
+
+      // トランザクション処理実行
+      await execTransaction(transactionQuery);
+      return [
+        {
+          result:
+            'Added!! [' +
+            file_num +
+            '-' +
+            new_quiz_id +
+            ']:' +
+            question +
+            ',' +
+            answer +
+            ',関連基礎問題:' +
+            JSON.stringify(matched_basic_quiz_id_list),
+        },
+      ];
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 四択問題を１問追加
+  async addFourChoiceQuiz(req: AddQuizDto) {
+    try {
+      const { file_num, input_data } = req;
+      if (!file_num && !input_data) {
+        throw new HttpException(
+          `ファイル番号または問題文が入力されていません。(req:${JSON.stringify(
+            req,
+          )},file_num:${file_num},input_data:${JSON.stringify(input_data)})`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const {
+        question,
+        answer,
+        img_file,
+        matched_basic_quiz_id,
+        dummy1,
+        dummy2,
+        dummy3,
+      } = input_data;
+
+      if (!dummy1 && !dummy2 && !dummy3) {
+        throw new HttpException(
+          `ダミー選択肢が3つ入力されていません。`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      //トランザクション実行準備
+      const transactionQuery: TransactionQuery[] = [];
+
+      // 関連する基礎問題番号リストのバリデーション・取得
+      const matched_basic_quiz_id_list: number[] = [];
+      if (matched_basic_quiz_id) {
+        const id_list = matched_basic_quiz_id.split(',');
+        for (let i = 0; i < id_list.length; i++) {
+          if (isNaN(+id_list[i])) {
+            throw new HttpException(
+              `入力した関連基礎問題番号でエラーが発生しました；("${id_list[i]}"は数値ではありません)`,
+              HttpStatus.BAD_REQUEST,
+            );
+          } else {
+            matched_basic_quiz_id_list.push(+id_list[i]);
+          }
+        }
+      }
+
+      // 新問題番号(ファイルごとの)を取得しINSERT
+      let res: GetQuizNumSqlResultDto[] = await execQuery(
+        SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.BYFILE,
+        [file_num],
+      );
+      const new_quiz_id: number =
+        res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
+      transactionQuery.push({
+        query: SQL.ADVANCED_QUIZ.ADD,
+        value: [file_num, new_quiz_id, 2, question, answer, img_file],
+      });
+
+      // 新問題番号(advanced_quiz全体での)を取得しINSERT
+      res = await execQuery(SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.ALL, []);
+      const new_id: number = res && res.length > 0 ? res[0]['id'] + 1 : 1;
+
+      // ダミー選択肢をINSERT
+      transactionQuery.push({
+        query: SQL.ADVANCED_QUIZ.DUMMY_CHOICE.ADD,
+        value: [new_id, dummy1],
+      });
+      transactionQuery.push({
+        query: SQL.ADVANCED_QUIZ.DUMMY_CHOICE.ADD,
+        value: [new_id, dummy2],
+      });
+      transactionQuery.push({
+        query: SQL.ADVANCED_QUIZ.DUMMY_CHOICE.ADD,
+        value: [new_id, dummy3],
       });
 
       // 関連する基礎問題番号リストを追加
       for (let i = 0; i < matched_basic_quiz_id_list.length; i++) {
         transactionQuery.push({
           query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.ADD,
-          value: [file_num, matched_basic_quiz_id_list[i], new_quiz_id],
+          value: [file_num, matched_basic_quiz_id_list[i], new_id],
         });
       }
 

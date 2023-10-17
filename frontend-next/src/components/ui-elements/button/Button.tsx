@@ -10,6 +10,7 @@ interface ButtonProps {
   variant?: 'contained' | 'outlined' | 'text';
   href?: string;
   attr?: string;
+  disabled?: boolean;
   onClick?: (event: React.KeyboardEvent | React.MouseEvent) => void;
 }
 

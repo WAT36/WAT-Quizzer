@@ -18,6 +18,9 @@ export interface AddQuizDto {
     category?: string;
     img_file?: string;
     matched_basic_quiz_id?: string;
+    dummy1?: string; //四択問題のダミー選択肢１
+    dummy2?: string; //四択問題のダミー選択肢２
+    dummy3?: string; //四択問題のダミー選択肢３
   };
 }
 

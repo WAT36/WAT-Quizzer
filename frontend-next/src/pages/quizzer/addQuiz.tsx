@@ -148,6 +148,32 @@ export default function AddQuizPage() {
           }
         }
       );
+    } else if (value === 2) {
+      // 四択問題の時(value===2)
+      post(
+        '/quiz/advanced/4choice',
+        {
+          file_num,
+          input_data
+        },
+        (data: ProcessingApiReponse) => {
+          if (data.status === 200 || data.status === 201) {
+            const res: AddQuizApiResponse[] = data.body as AddQuizApiResponse[];
+            setMessage('Success!! 問題を追加できました!');
+            setMessageColor('success.light');
+            setAddLog(res[0].result);
+            setInputData({});
+            //入力データをクリア
+            const inputQuizField = document.getElementsByTagName('textarea').item(0) as HTMLTextAreaElement;
+            if (inputQuizField) {
+              inputQuizField.value = '';
+            }
+          } else {
+            setMessage('エラー:外部APIとの連携に失敗しました');
+            setMessageColor('error');
+          }
+        }
+      );
     }
   };
 
@@ -207,6 +233,7 @@ export default function AddQuizPage() {
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
               <Tab label="基礎問題" {...a11yProps(0)} />
               <Tab label="応用問題" {...a11yProps(1)} />
+              <Tab label="四択問題" {...a11yProps(2)} />
             </Tabs>
             <CustomTabPanel value={value} index={0}>
               <CardContent>
@@ -258,7 +285,7 @@ export default function AddQuizPage() {
             <CustomTabPanel value={value} index={1}>
               <CardContent>
                 <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  追加する応用問題（問題文,正解,カテゴリ,画像ファイル名）
+                  追加する応用問題（問題文,正解,画像ファイル名,関連基礎問題番号）
                 </Typography>
 
                 <Typography variant="h6" component="h6" style={messageBoxStyle}>
@@ -308,6 +335,93 @@ export default function AddQuizPage() {
                     maxRows={1}
                     value={input_data.matched_basic_quiz_id || ''}
                     onChange={(e) => updateInputData('matched_basic_quiz_id', e.target.value)}
+                  />
+                </Typography>
+              </CardContent>
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={2}>
+              <CardContent>
+                <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                  追加する四択問題（問題文,正解,カテゴリ,画像ファイル名）
+                </Typography>
+
+                <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                  問題文　：
+                  <Input
+                    fullWidth
+                    maxRows={1}
+                    value={input_data.question || ''}
+                    onChange={(e) => updateInputData('question', e.target.value)}
+                  />
+                </Typography>
+
+                <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                  正解　　：
+                  <Input
+                    fullWidth
+                    maxRows={1}
+                    value={input_data.answer || ''}
+                    onChange={(e) => updateInputData('answer', e.target.value)}
+                  />
+                </Typography>
+
+                <Typography variant="h6" component="h6" style={{ ...messageBoxStyle, visibility: 'hidden' }}>
+                  カテゴリ：
+                  <Input
+                    fullWidth
+                    maxRows={1}
+                    value={input_data.category || ''}
+                    onChange={(e) => updateInputData('category', e.target.value)}
+                  />
+                </Typography>
+
+                <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                  画像ファイル名：
+                  <Input
+                    fullWidth
+                    maxRows={1}
+                    value={input_data.img_file || ''}
+                    onChange={(e) => updateInputData('img_data', e.target.value)}
+                  />
+                </Typography>
+
+                <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                  関連基礎問題番号(カンマ区切りで問題番号を指定)：
+                  <Input
+                    fullWidth
+                    maxRows={1}
+                    value={input_data.matched_basic_quiz_id || ''}
+                    onChange={(e) => updateInputData('matched_basic_quiz_id', e.target.value)}
+                  />
+                </Typography>
+
+                <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                  ダミー選択肢1：
+                  <Input
+                    fullWidth
+                    maxRows={1}
+                    value={input_data.dummy1 || ''}
+                    onChange={(e) => updateInputData('dummy1', e.target.value)}
+                  />
+                </Typography>
+
+                <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                  ダミー選択肢2：
+                  <Input
+                    fullWidth
+                    maxRows={1}
+                    value={input_data.dummy2 || ''}
+                    onChange={(e) => updateInputData('dummy2', e.target.value)}
+                  />
+                </Typography>
+
+                <Typography variant="h6" component="h6" style={messageBoxStyle}>
+                  ダミー選択肢3：
+                  <Input
+                    fullWidth
+                    maxRows={1}
+                    value={input_data.dummy3 || ''}
+                    onChange={(e) => updateInputData('dummy3', e.target.value)}
                   />
                 </Typography>
               </CardContent>

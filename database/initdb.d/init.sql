@@ -98,6 +98,7 @@ CREATE TABLE
         id INT NOT NULL AUTO_INCREMENT,
         file_num INT NOT NULL,
         quiz_num INT NOT NULL,
+        advanced_quiz_type_id INT NOT NULL,
         quiz_sentense VARCHAR(256) NOT NULL UNIQUE,
         answer VARCHAR(256) NOT NULL,
         img_file VARCHAR(128),
@@ -107,6 +108,20 @@ CREATE TABLE
         deleted_at TIMESTAMP,
         PRIMARY KEY(id),
         UNIQUE(file_num, quiz_num)
+    ) DEFAULT CHARACTER SET = utf8;
+
+# 応用問題の種類
+
+CREATE TABLE
+    IF NOT EXISTS advanced_quiz_type (
+        id INT NOT NULL AUTO_INCREMENT,
+        type_name VARCHAR(256) NOT NULL,
+        type_nickname VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+        UNIQUE (type_name)
     ) DEFAULT CHARACTER SET = utf8;
 
 # 基本問題と応用問題の紐付け
@@ -140,10 +155,24 @@ CREATE TABLE
         UNIQUE(name)
     ) DEFAULT CHARACTER SET = utf8;
 
+-- 四択問題ダミー選択肢
+
+CREATE TABLE
+    IF NOT EXISTS dummy_choice (
+        id INT NOT NULL AUTO_INCREMENT,
+        advanced_quiz_id INT NOT NULL,
+        dummy_choice_sentense VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+    ) DEFAULT CHARACTER SET = utf8;
+
 DROP VIEW IF EXISTS quiz_view;
 
 CREATE VIEW QUIZ_VIEW AS
 SELECT
+    quiz.id,
     quiz.file_num,
     quiz.quiz_num,
     quiz_sentense,
@@ -225,8 +254,10 @@ DROP VIEW IF EXISTS advanced_quiz_view;
 CREATE VIEW
     ADVANCED_QUIZ_VIEW AS
 SELECT
+    advanced_quiz.id,
     advanced_quiz.file_num,
     advanced_quiz.quiz_num,
+    advanced_quiz.advanced_quiz_type_id,
     quiz_sentense,
     answer,
     img_file,
@@ -253,7 +284,7 @@ FROM advanced_quiz
         FROM answer_log
         WHERE
             is_corrected = true
-            and quiz_format_id = 2
+            and quiz_format_id <> 1
         GROUP BY
             file_num,
             quiz_num
@@ -267,7 +298,7 @@ FROM advanced_quiz
         FROM answer_log
         WHERE
             is_corrected = false
-            and quiz_format_id = 2
+            and quiz_format_id <> 1
         GROUP BY
             file_num,
             quiz_num

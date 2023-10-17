@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { get } from '@/common/API';
 import { GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
 import { Title } from '@/components/ui-elements/title/Title';
+import { dbHealthCheck } from '@/common/health';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -14,18 +15,33 @@ export default function Top() {
     saying: '(取得中...)',
     color: 'grey.200'
   });
+  const [dbHealth, setDbHealth] = useState({
+    status: '(取得中...)',
+    color: 'grey.200'
+  });
 
   useEffect(() => {
-    get('/saying', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const result: GetRandomSayingResponse[] = data.body as GetRandomSayingResponse[];
-        setSaying({
-          saying: result[0].saying,
-          color: 'common.black'
-        });
-      }
-    });
+    Promise.all([
+      get('/saying', (data: ProcessingApiReponse) => {
+        if (data.status === 200) {
+          const result: GetRandomSayingResponse[] = data.body as GetRandomSayingResponse[];
+          setSaying({
+            saying: result[0].saying,
+            color: 'common.black'
+          });
+        }
+      }),
+      executeDbHealthCheck()
+    ]);
   }, []);
+
+  // DB ヘルスチェック
+  const executeDbHealthCheck = async () => {
+    console.log('health pre');
+    const result = await dbHealthCheck();
+    console.log(`health:${JSON.stringify(result)}`);
+    setDbHealth(result);
+  };
 
   return (
     <>
@@ -77,6 +93,17 @@ export default function Top() {
             </Typography>
             <Typography variant="subtitle1" component="p" color="grey.500">
               出典
+            </Typography>
+          </CardContent>
+        </Card>
+
+        <Card variant="outlined">
+          <CardContent>
+            <Typography variant="h6" component="span" color="common.black">
+              DB接続状況：
+            </Typography>
+            <Typography variant="h6" component="span" color={dbHealth.color}>
+              {dbHealth.status}
             </Typography>
           </CardContent>
         </Card>
