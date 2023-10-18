@@ -24,6 +24,8 @@ import { QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState } from '../../../interfaces/state';
 import { AddQuizLogSection } from '@/components/ui-forms/quizzer/addQuiz/addQuizLogSection/AddQuizLogSection';
+import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export interface TabPanelProps {
   children?: React.ReactNode;
@@ -227,15 +229,9 @@ export default function AddQuizPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>WAT Quizzer</h1>
+        <Title label="WAT Quizzer"></Title>
 
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
+        <MessageCard messageState={message}></MessageCard>
 
         <FormGroup>
           <FormControl>
