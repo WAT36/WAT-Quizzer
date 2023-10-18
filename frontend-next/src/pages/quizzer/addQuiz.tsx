@@ -1,7 +1,7 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { get, post } from '../../common/API';
-import { buttonStyle, messageBoxStyle, typoStyles } from '../../styles/Pages';
+import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
 import {
   Button,
   Card,
@@ -26,28 +26,7 @@ import { MessageState } from '../../../interfaces/state';
 import { AddQuizLogSection } from '@/components/ui-forms/quizzer/addQuiz/addQuizLogSection/AddQuizLogSection';
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
-
-export interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-// タブ内コンテンツの中身、別コンポーネント化
-// eslint-disable-next-line react/display-name
-const CustomTabPanel = memo<TabPanelProps>((props: TabPanelProps) => {
-  const { children, value, index } = props;
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-    >
-      {value === index && <>{children}</>}
-    </div>
-  );
-});
+import { TabPanel } from '@/components/ui-elements/tabPanel/TabPanel';
 
 export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -256,7 +235,7 @@ export default function AddQuizPage() {
               <Tab label="応用問題" {...a11yProps(1)} />
               <Tab label="四択問題" {...a11yProps(2)} />
             </Tabs>
-            <CustomTabPanel value={value} index={0}>
+            <TabPanel value={value} index={0}>
               <CardContent>
                 <Typography variant="h6" component="h6" style={messageBoxStyle}>
                   追加する基礎問題（問題文,正解,カテゴリ,画像ファイル名）
@@ -302,8 +281,8 @@ export default function AddQuizPage() {
                   />
                 </Typography>
               </CardContent>
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
               <CardContent>
                 <Typography variant="h6" component="h6" style={messageBoxStyle}>
                   追加する応用問題（問題文,正解,画像ファイル名,関連基礎問題番号）
@@ -359,8 +338,8 @@ export default function AddQuizPage() {
                   />
                 </Typography>
               </CardContent>
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
+            </TabPanel>
+            <TabPanel value={value} index={2}>
               <CardContent>
                 <Typography variant="h6" component="h6" style={messageBoxStyle}>
                   追加する四択問題（問題文,正解,カテゴリ,画像ファイル名）
@@ -446,7 +425,7 @@ export default function AddQuizPage() {
                   />
                 </Typography>
               </CardContent>
-            </CustomTabPanel>
+            </TabPanel>
           </Card>
         </FormGroup>
 
