@@ -27,6 +27,7 @@ import { AddQuizLogSection } from '@/components/ui-forms/quizzer/addQuiz/addQuiz
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
 import { TabPanel } from '@/components/ui-elements/tabPanel/TabPanel';
+import { BasisTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQuiz/basisTabPanel/Basis.tabpanel';
 
 export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -235,53 +236,7 @@ export default function AddQuizPage() {
               <Tab label="応用問題" {...a11yProps(1)} />
               <Tab label="四択問題" {...a11yProps(2)} />
             </Tabs>
-            <TabPanel value={value} index={0}>
-              <CardContent>
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  追加する基礎問題（問題文,正解,カテゴリ,画像ファイル名）
-                </Typography>
-
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  問題文　：
-                  <Input
-                    fullWidth
-                    maxRows={1}
-                    value={input_data.question || ''}
-                    onChange={(e) => updateInputData('question', e.target.value)}
-                  />
-                </Typography>
-
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  答え　　：
-                  <Input
-                    fullWidth
-                    maxRows={1}
-                    value={input_data.answer || ''}
-                    onChange={(e) => updateInputData('answer', e.target.value)}
-                  />
-                </Typography>
-
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  カテゴリ：
-                  <Input
-                    fullWidth
-                    maxRows={1}
-                    value={input_data.category || ''}
-                    onChange={(e) => updateInputData('category', e.target.value)}
-                  />
-                </Typography>
-
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  画像ファイル名：
-                  <Input
-                    fullWidth
-                    maxRows={1}
-                    value={input_data.img_file || ''}
-                    onChange={(e) => updateInputData('img_data', e.target.value)}
-                  />
-                </Typography>
-              </CardContent>
-            </TabPanel>
+            <BasisTabPanel value={value} index={0} inputData={input_data} setInputData={setInputData} />
             <TabPanel value={value} index={1}>
               <CardContent>
                 <Typography variant="h6" component="h6" style={messageBoxStyle}>

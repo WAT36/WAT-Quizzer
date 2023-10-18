@@ -6,12 +6,13 @@ import { addQuizDto } from '../../../../../../interfaces/api/response';
 
 interface BasisTabPanelProps {
   value: number;
+  index: number;
   inputData: addQuizDto;
   setInputData?: React.Dispatch<React.SetStateAction<addQuizDto>>;
 }
 
-export const BasisTabPanel = ({ value, inputData, setInputData }: BasisTabPanelProps) => (
-  <TabPanel value={value} index={0}>
+export const BasisTabPanel = ({ value, index, inputData, setInputData }: BasisTabPanelProps) => (
+  <TabPanel value={value} index={index}>
     <CardContent>
       <Typography variant="h6" component="h6" className={styles.messageBox}>
         追加する基礎問題（問題文,正解,カテゴリ,画像ファイル名）
