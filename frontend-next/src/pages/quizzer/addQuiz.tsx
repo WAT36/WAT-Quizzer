@@ -28,6 +28,7 @@ import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
 import { TabPanel } from '@/components/ui-elements/tabPanel/TabPanel';
 import { BasisTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQuiz/basisTabPanel/Basis.tabpanel';
+import { AppliedTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQuiz/appliedTabPanel/Applied.tabpanel';
 
 export default function AddQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -237,63 +238,7 @@ export default function AddQuizPage() {
               <Tab label="四択問題" {...a11yProps(2)} />
             </Tabs>
             <BasisTabPanel value={value} index={0} inputData={input_data} setInputData={setInputData} />
-            <TabPanel value={value} index={1}>
-              <CardContent>
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  追加する応用問題（問題文,正解,画像ファイル名,関連基礎問題番号）
-                </Typography>
-
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  応用問題文　：
-                  <Input
-                    fullWidth
-                    maxRows={1}
-                    value={input_data.question || ''}
-                    onChange={(e) => updateInputData('question', e.target.value)}
-                  />
-                </Typography>
-
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  応用問題の答え　　：
-                  <Input
-                    fullWidth
-                    maxRows={1}
-                    value={input_data.answer || ''}
-                    onChange={(e) => updateInputData('answer', e.target.value)}
-                  />
-                </Typography>
-
-                <Typography variant="h6" component="h6" style={{ ...messageBoxStyle, visibility: 'hidden' }}>
-                  カテゴリ：
-                  <Input
-                    fullWidth
-                    maxRows={1}
-                    value={input_data.category || ''}
-                    onChange={(e) => updateInputData('category', e.target.value)}
-                  />
-                </Typography>
-
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  画像ファイル名：
-                  <Input
-                    fullWidth
-                    maxRows={1}
-                    value={input_data.img_file || ''}
-                    onChange={(e) => updateInputData('img_data', e.target.value)}
-                  />
-                </Typography>
-
-                <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                  関連基礎問題番号(カンマ区切りで問題番号を指定)：
-                  <Input
-                    fullWidth
-                    maxRows={1}
-                    value={input_data.matched_basic_quiz_id || ''}
-                    onChange={(e) => updateInputData('matched_basic_quiz_id', e.target.value)}
-                  />
-                </Typography>
-              </CardContent>
-            </TabPanel>
+            <AppliedTabPanel value={value} index={1} inputData={input_data} setInputData={setInputData} />
             <TabPanel value={value} index={2}>
               <CardContent>
                 <Typography variant="h6" component="h6" style={messageBoxStyle}>
