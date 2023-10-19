@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
 import { get, post } from '../../common/API';
-import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
+import { buttonStyle } from '../../styles/Pages';
 import {
   Button,
   Card,
-  CardContent,
   Container,
   FormControl,
   FormGroup,
-  Input,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   Tab,
-  Tabs,
-  Typography
+  Tabs
 } from '@mui/material';
 import { addQuizDto } from '../../../interfaces/api/response';
 import { AddQuizApiResponse, ProcessingApiReponse } from '../../../interfaces/api/response';
@@ -26,7 +23,6 @@ import { MessageState } from '../../../interfaces/state';
 import { AddQuizLogSection } from '@/components/ui-forms/quizzer/addQuiz/addQuizLogSection/AddQuizLogSection';
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
-import { TabPanel } from '@/components/ui-elements/tabPanel/TabPanel';
 import { BasisTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQuiz/basisTabPanel/Basis.tabpanel';
 import { AppliedTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQuiz/appliedTabPanel/Applied.tabpanel';
 import { FourChoiceTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQuiz/fourChoiceTabPanel/FourChoice.tabpanel';
@@ -184,14 +180,6 @@ export default function AddQuizPage() {
         }
       );
     }
-  };
-
-  // 入力データを登録
-  const updateInputData = (attrName: string, value: string) => {
-    setInputData((prev) => ({
-      ...prev,
-      [attrName]: value
-    }));
   };
 
   // タブ内コンテンツの設定
