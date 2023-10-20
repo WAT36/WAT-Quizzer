@@ -75,4 +75,14 @@ describe('QuizService', () => {
       message: '入力された問題形式が不正です',
     });
   });
+
+  // 問題取得 異常系２
+  it('getQuiz - NG2', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.getQuiz(1, 1, 'basic')).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
