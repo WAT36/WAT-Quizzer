@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SQL } from 'config/sql';
-import { execQuery, execTransaction } from 'lib/db/dao';
-import { parseStrToBool } from 'lib/str';
+import { SQL } from '../../config/sql';
+import { execQuery, execTransaction } from '../../lib/db/dao';
+import { parseStrToBool } from '../../lib/str';
 import {
   UpdateCategoryOfQuizDto,
   SelectQuizDto,
@@ -25,10 +25,6 @@ export type FormatType = 'basic' | 'applied';
 
 @Injectable()
 export class QuizService {
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   // ファイル名リスト取得
   async getFileList() {
     return await execQuery(SQL.QUIZ_FILE.LIST, []);
