@@ -32,7 +32,7 @@ export class QuizService {
 
   // 問題取得
   async getQuiz(file_num: number, quiz_num: number, format = 'basic') {
-    if (!file_num && !quiz_num) {
+    if (file_num <= 0 || quiz_num <= 0) {
       throw new HttpException(
         `ファイル番号または問題番号が入力されていません`,
         HttpStatus.BAD_REQUEST,
