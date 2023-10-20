@@ -17,6 +17,7 @@ export interface DisplayQuizState {
   expanded: boolean;
 }
 
+// TODO 名前変える　QueryOfGetQuizState
 export interface QueryOfQuizState {
   fileNum: number;
   quizNum: number;
@@ -25,4 +26,16 @@ export interface QueryOfQuizState {
   maxRate?: number;
   category?: string;
   checked?: boolean;
+}
+
+export interface QueryOfAddQuizState {
+  fileNum: number;
+  question?: string;
+  answer?: string;
+  category?: string;
+  img_file?: string;
+  matched_basic_quiz_id?: string;
+  dummy1?: string; //四択問題のダミー選択肢１
+  dummy2?: string; //四択問題のダミー選択肢２
+  dummy3?: string; //四択問題のダミー選択肢３
 }

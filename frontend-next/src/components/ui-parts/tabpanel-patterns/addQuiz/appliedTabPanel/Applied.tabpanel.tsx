@@ -2,16 +2,21 @@ import { TabPanel } from '@/components/ui-elements/tabPanel/TabPanel';
 import { CardContent, Input, Typography } from '@mui/material';
 import React from 'react';
 import styles from '../../TabPanel.module.css';
-import { addQuizDto } from '../../../../../../interfaces/api/response';
+import { QueryOfAddQuizState } from '../../../../../../interfaces/state';
 
 interface AppliedTabPanelProps {
   value: number;
   index: number;
-  inputData: addQuizDto;
-  setInputData?: React.Dispatch<React.SetStateAction<addQuizDto>>;
+  queryOfAddQuizState: QueryOfAddQuizState;
+  setQueryofAddQuizStater?: React.Dispatch<React.SetStateAction<QueryOfAddQuizState>>;
 }
 
-export const AppliedTabPanel = ({ value, index, inputData, setInputData }: AppliedTabPanelProps) => (
+export const AppliedTabPanel = ({
+  value,
+  index,
+  queryOfAddQuizState,
+  setQueryofAddQuizStater
+}: AppliedTabPanelProps) => (
   <TabPanel value={value} index={index}>
     <CardContent>
       <Typography variant="h6" component="h6" className={styles.messageBox}>
@@ -23,10 +28,10 @@ export const AppliedTabPanel = ({ value, index, inputData, setInputData }: Appli
         <Input
           fullWidth
           maxRows={1}
-          value={inputData.question || ''}
+          value={queryOfAddQuizState.question || ''}
           onChange={(e) => {
-            if (setInputData) {
-              setInputData((prev) => ({
+            if (setQueryofAddQuizStater) {
+              setQueryofAddQuizStater((prev) => ({
                 ...prev,
                 ['question']: e.target.value
               }));
@@ -40,10 +45,10 @@ export const AppliedTabPanel = ({ value, index, inputData, setInputData }: Appli
         <Input
           fullWidth
           maxRows={1}
-          value={inputData.answer || ''}
+          value={queryOfAddQuizState.answer || ''}
           onChange={(e) => {
-            if (setInputData) {
-              setInputData((prev) => ({
+            if (setQueryofAddQuizStater) {
+              setQueryofAddQuizStater((prev) => ({
                 ...prev,
                 ['answer']: e.target.value
               }));
@@ -57,10 +62,10 @@ export const AppliedTabPanel = ({ value, index, inputData, setInputData }: Appli
         <Input
           fullWidth
           maxRows={1}
-          value={inputData.category || ''}
+          value={queryOfAddQuizState.category || ''}
           onChange={(e) => {
-            if (setInputData) {
-              setInputData((prev) => ({
+            if (setQueryofAddQuizStater) {
+              setQueryofAddQuizStater((prev) => ({
                 ...prev,
                 ['category']: e.target.value
               }));
@@ -74,10 +79,10 @@ export const AppliedTabPanel = ({ value, index, inputData, setInputData }: Appli
         <Input
           fullWidth
           maxRows={1}
-          value={inputData.img_file || ''}
+          value={queryOfAddQuizState.img_file || ''}
           onChange={(e) => {
-            if (setInputData) {
-              setInputData((prev) => ({
+            if (setQueryofAddQuizStater) {
+              setQueryofAddQuizStater((prev) => ({
                 ...prev,
                 ['img_data']: e.target.value
               }));
@@ -91,10 +96,10 @@ export const AppliedTabPanel = ({ value, index, inputData, setInputData }: Appli
         <Input
           fullWidth
           maxRows={1}
-          value={inputData.matched_basic_quiz_id || ''}
+          value={queryOfAddQuizState.matched_basic_quiz_id || ''}
           onChange={(e) => {
-            if (setInputData) {
-              setInputData((prev) => ({
+            if (setQueryofAddQuizStater) {
+              setQueryofAddQuizStater((prev) => ({
                 ...prev,
                 ['matched_basic_quiz_id']: e.target.value
               }));
