@@ -59,4 +59,20 @@ describe('QuizService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
     expect(await quizService.getQuiz(1, 1, 'basic')).toEqual(testResult);
   });
+
+  // 問題取得 異常系１
+  it('getQuiz - NG', async () => {
+    await expect(quizService.getQuiz(-1, -1, 'basic')).rejects.toMatchObject({
+      message: 'ファイル番号または問題番号が入力されていません',
+    });
+    await expect(quizService.getQuiz(0, 1, 'basic')).rejects.toMatchObject({
+      message: 'ファイル番号または問題番号が入力されていません',
+    });
+    await expect(quizService.getQuiz(1, 0, 'basic')).rejects.toMatchObject({
+      message: 'ファイル番号または問題番号が入力されていません',
+    });
+    await expect(quizService.getQuiz(1, 1, 'xxxxxxxx')).rejects.toMatchObject({
+      message: '入力された問題形式が不正です',
+    });
+  });
 });
