@@ -29,6 +29,7 @@ import { FourChoiceTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQ
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { getFileList } from '@/common/response';
 import { AddQuizButton } from '@/components/ui-parts/button-patterns/addQuiz/AddQuiz.button';
+import { AddQuizForm } from '@/components/ui-forms/quizzer/addQuiz/addQuizForm/AddQuizForm';
 
 export default function AddQuizPage() {
   const [queryOfAddQuiz, setQueryOfAddQuiz] = useState<QueryOfAddQuizState>({
@@ -37,36 +38,12 @@ export default function AddQuizPage() {
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
   const [addLog, setAddLog] = useState<string>('');
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
-
   const [value, setValue] = React.useState(0);
 
   // 問題ファイルリスト取得
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
   }, []);
-
-  const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    setQueryOfAddQuiz((prev) => ({
-      ...prev,
-      ['fileNum']: e.target.value as number
-    }));
-  };
-
-  // タブ内コンテンツの設定
-  const a11yProps = (index: number) => {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`
-    };
-  };
-
-  // タブの切り替え
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-    setQueryOfAddQuiz((prev) => ({
-      fileNum: queryOfAddQuiz.fileNum
-    }));
-  };
 
   const contents = () => {
     return (
@@ -75,37 +52,13 @@ export default function AddQuizPage() {
 
         <MessageCard messageState={message}></MessageCard>
 
-        <FormGroup>
-          <FormControl>
-            <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
-          </FormControl>
-
-          <Card variant="outlined">
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-              <Tab label="基礎問題" {...a11yProps(0)} />
-              <Tab label="応用問題" {...a11yProps(1)} />
-              <Tab label="四択問題" {...a11yProps(2)} />
-            </Tabs>
-            <BasisTabPanel
-              value={value}
-              index={0}
-              queryOfAddQuizState={queryOfAddQuiz}
-              setQueryofAddQuizStater={setQueryOfAddQuiz}
-            />
-            <AppliedTabPanel
-              value={value}
-              index={1}
-              queryOfAddQuizState={queryOfAddQuiz}
-              setQueryofAddQuizStater={setQueryOfAddQuiz}
-            />
-            <FourChoiceTabPanel
-              value={value}
-              index={2}
-              queryOfAddQuizState={queryOfAddQuiz}
-              setQueryofAddQuizStater={setQueryOfAddQuiz}
-            />
-          </Card>
-        </FormGroup>
+        <AddQuizForm
+          filelistoption={filelistoption}
+          value={value}
+          queryOfAddQuizState={queryOfAddQuiz}
+          setValue={setValue}
+          setQueryofAddQuizStater={setQueryOfAddQuiz}
+        />
 
         <AddQuizButton
           value={value}
