@@ -25,4 +25,14 @@ describe('QuizService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
     expect(await quizService.getFileList()).toEqual(testResult);
   });
+
+  // ファイル名リスト取得 異常系
+  it('getFileList - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.getFileList()).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
