@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { Inter } from 'next/font/google';
-import { Card, CardContent, Container, Typography } from '@mui/material';
+import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { get } from '@/common/API';
 import { GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
@@ -8,7 +8,8 @@ import { Title } from '@/components/ui-elements/title/Title';
 import { dbHealthCheck } from '@/common/health';
 import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButtonGroup';
 import { SayingCard } from '@/components/ui-forms/top/sayingCard/SayingCard';
-import { SayingState } from '../../interfaces/state';
+import { DbHealthCheckState, SayingState } from '../../interfaces/state';
+import { DbHealthCheckCard } from '@/components/ui-forms/top/dbHealthCheckCard/DbHealthCheckCard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,7 +18,7 @@ export default function Top() {
     saying: '(取得中...)',
     color: 'grey.200'
   });
-  const [dbHealth, setDbHealth] = useState({
+  const [dbHealth, setDbHealth] = useState<DbHealthCheckState>({
     status: '(取得中...)',
     color: 'grey.200'
   });
@@ -54,19 +55,8 @@ export default function Top() {
       <Container>
         <Title label="WAT Quizzer"></Title>
         <TopButtonGroup />
-
         <SayingCard sayingState={saying} />
-
-        <Card variant="outlined">
-          <CardContent>
-            <Typography variant="h6" component="span" color="common.black">
-              DB接続状況：
-            </Typography>
-            <Typography variant="h6" component="span" color={dbHealth.color}>
-              {dbHealth.status}
-            </Typography>
-          </CardContent>
-        </Card>
+        <DbHealthCheckCard dbHealthCheckState={dbHealth} />
       </Container>
     </>
   );
