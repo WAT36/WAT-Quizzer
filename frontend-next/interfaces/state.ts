@@ -44,3 +44,8 @@ export interface SayingState {
   saying: string;
   color: string;
 }
+
+export interface DbHealthCheckState {
+  status: string;
+  color: string;
+}
