@@ -135,7 +135,7 @@ export const FourChoiceTabPanel = ({
             if (setQueryofAddQuizStater) {
               setQueryofAddQuizStater((prev) => ({
                 ...prev,
-                ['dummmy2']: e.target.value
+                ['dummy2']: e.target.value
               }));
             }
           }}
