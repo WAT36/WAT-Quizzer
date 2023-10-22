@@ -21,7 +21,7 @@ interface LayoutConfig {
 interface LayoutProps {
   title?: string;
   contents: JSX.Element;
-  mode: 'quizzer' | 'englishBot';
+  mode: 'quizzer' | 'englishBot' | 'settings';
 }
 
 const urlEnd = process.env.NEXT_PUBLIC_URL_END || '';
@@ -49,6 +49,10 @@ const config: { [key: string]: LayoutConfig } = {
       { name: 'Detail Word', link: '/englishBot/detailWord' + urlEnd },
       { name: 'Add Example', link: '/englishBot/addExample' + urlEnd }
     ]
+  },
+  settings: {
+    bgColor: '#0288d1',
+    sideBarContents: []
   }
 };
 
@@ -62,23 +66,30 @@ export const Layout = ({ title, contents, mode = 'quizzer' }: LayoutProps) => {
         <title>{'WAT Quizzer ' + title}</title>
       </Head>
       {/*ヘッダ*/}
-      <Header bgColor={modeConfig.bgColor} onClick={toggleDrawer(true, setSidebarState)}></Header>
+      <Header
+        bgColor={modeConfig.bgColor}
+        onClick={modeConfig.sideBarContents.length > 0 ? toggleDrawer(true, setSidebarState) : undefined}
+      ></Header>
 
-      {/*サイドバー*/}
-      <SideBar>
-        <List>
-          {modeConfig.sideBarContents.map((value) => (
-            <ListItem key={value.name}>
-              <Button
-                variant="text"
-                href={value.link}
-                label={value.name}
-                onClick={toggleDrawer(false, setSidebarState)}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </SideBar>
+      {/*サイドバー、sideBarContens無い場合非表示*/}
+      {modeConfig.sideBarContents.length > 0 ? (
+        <SideBar>
+          <List>
+            {modeConfig.sideBarContents.map((value) => (
+              <ListItem key={value.name}>
+                <Button
+                  variant="text"
+                  href={value.link}
+                  label={value.name}
+                  onClick={toggleDrawer(false, setSidebarState)}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </SideBar>
+      ) : (
+        <></>
+      )}
 
       {/*ヘッダとコンテンツ間の調整余白 */}
       <div className={styles.space}></div>
