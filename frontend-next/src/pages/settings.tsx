@@ -18,6 +18,8 @@ import { get, post } from '@/common/API';
 import { messageBoxStyle } from '../styles/Pages';
 import { GetSelfHelpBookResponse, ProcessingApiReponse } from '../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
+import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
+import { Title } from '@/components/ui-elements/title/Title';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -138,15 +140,9 @@ export default function Settings() {
           <link rel="icon" href="/favicon.ico" /> */}
         </Head>
         <Container>
-          <h1>WAT Quizzer - 設定</h1>
+          <Title label="WAT Quizzer - 設定"></Title>
 
-          <Card variant="outlined" style={messageBoxStyle}>
-            <CardContent>
-              <Typography variant="h6" component="h6" color={message.messageColor}>
-                {message.message}
-              </Typography>
-            </CardContent>
-          </Card>
+          <MessageCard messageState={message}></MessageCard>
 
           <Card variant="outlined" style={cardStyle}>
             <CardHeader title="格言設定" />
