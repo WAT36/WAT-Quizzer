@@ -44,10 +44,10 @@ const addQuizAPI = ({
       apiPath = '/quiz/add';
       break;
     case 1:
-      apiPath = '/quiz/add';
+      apiPath = '/quiz/advanced';
       break;
     case 2:
-      apiPath = '/quiz/add';
+      apiPath = '/quiz/advanced/4choice';
       break;
     default:
       setMessageStater({
