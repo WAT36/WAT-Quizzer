@@ -15,14 +15,20 @@ export class DnsStack extends cdk.Stack {
 
   constructor(scope: Construct, id: string, props: DnsStackProps) {
     super(scope, id, {
-      env: { region: 'us-east-1' },
+      env: { region: process.env.REGION || '' },
       crossRegionReferences: true
     })
 
-    // DNS hostzone
-    this.hostedZone = new route53.HostedZone(this, 'HostedZone', {
-      zoneName: process.env.HOSTZONE_NAME || ''
-    })
-    this.hostedZone.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
+    // 既に作ったホストゾーンをインポートする
+    this.hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      this,
+      'HostedZone',
+      {
+        zoneName: process.env.HOSTZONE_NAME || '',
+        hostedZoneId: process.env.HOSTZONE_ID || ''
+      }
+    ) as route53.HostedZone
+
+    //this.hostedZone.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN);
   }
 }
