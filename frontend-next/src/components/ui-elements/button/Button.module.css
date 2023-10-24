@@ -20,3 +20,8 @@
 .no-border {
   border: none !important;
 }
+
+.after-inline {
+  flex: none;
+  margin: 10px;
+}

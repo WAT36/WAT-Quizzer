@@ -1,4 +1,4 @@
-import { ProcessingApiReponse } from '../../interfaces/api/response';
+import { GetSelfHelpBookResponse, ProcessingApiReponse } from '../../interfaces/api/response';
 import { QuizFileApiResponse, QuizViewApiResponse } from '../../interfaces/db';
 import { MessageState, PullDownOptionState } from '../../interfaces/state';
 import { get } from './API';
@@ -57,4 +57,29 @@ export const generateQuizSentense = (format: string, res: QuizViewApiResponse[])
   } else {
     return `[${res[0].file_num}-${res[0].quiz_num}]${res[0].quiz_sentense}`;
   }
+};
+
+// 設定ページ用 啓発本名リストをapi通信して取ってくる
+export const getBook = (
+  setMessageStater: React.Dispatch<React.SetStateAction<MessageState>>,
+  setBooklistoption: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>
+) => {
+  setMessageStater({ message: '通信中...', messageColor: '#d3d3d3' });
+  get('/saying/book', (data: ProcessingApiReponse) => {
+    if (data.status === 200) {
+      const result: GetSelfHelpBookResponse[] = data.body as GetSelfHelpBookResponse[];
+      let booklist: PullDownOptionState[] = [];
+      for (var i = 0; i < result.length; i++) {
+        booklist.push({
+          value: String(result[i].id),
+          label: result[i].name
+        });
+      }
+      setBooklistoption(booklist);
+      console.log(JSON.stringify(booklist));
+      setMessageStater({ message: '　', messageColor: 'common.black' });
+    } else {
+      setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
+    }
+  });
 };
