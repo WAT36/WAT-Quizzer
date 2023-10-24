@@ -1,25 +1,16 @@
 import Head from 'next/head';
 import { Inter } from 'next/font/google';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Container,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
-  Typography
-} from '@mui/material';
-import { topButtonStyle } from '../styles/Pages';
+import { Button, Card, CardContent, CardHeader, Container, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { get, post } from '@/common/API';
-import { messageBoxStyle } from '../styles/Pages';
-import { GetSelfHelpBookResponse, ProcessingApiReponse } from '../../interfaces/api/response';
+import { post } from '@/common/API';
+import { ProcessingApiReponse } from '../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
+import { getBook } from '@/common/response';
+import { PullDownOptionState } from '../../interfaces/state';
+import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { AddBookButton } from '@/components/ui-parts/button-patterns/addBook/AddBook.button';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -42,8 +33,8 @@ const buttonAfterInputTextStyle = {
 };
 
 export default function Settings() {
-  const [booklistoption, setBooklistoption] = useState<JSX.Element[]>();
-  const [bookName, setBookName] = useState<string>();
+  const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
+  const [bookName, setBookName] = useState<string>('');
   const [selectedBookId, setSelectedBookId] = useState<number>();
   const [inputSaying, setInputSaying] = useState<string>();
   const [message, setMessage] = useState({
@@ -52,52 +43,8 @@ export default function Settings() {
   });
 
   useEffect(() => {
-    getBook();
+    getBook(setMessage, setBooklistoption);
   }, []);
-
-  const getBook = () => {
-    setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
-    get('/saying/book', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const result: GetSelfHelpBookResponse[] = data.body as GetSelfHelpBookResponse[];
-        let booklist = [];
-        for (var i = 0; i < result.length; i++) {
-          booklist.push(
-            <MenuItem value={result[i].id} key={result[i].id}>
-              {result[i].name}
-            </MenuItem>
-          );
-        }
-        setBooklistoption(booklist);
-        setMessage({ message: '　', messageColor: 'common.black' });
-      } else {
-        setMessage({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
-      }
-    });
-  };
-
-  const addBook = () => {
-    if (!bookName || bookName === '') {
-      setMessage({ message: 'エラー:本名を入力して下さい', messageColor: 'error' });
-      return;
-    }
-
-    setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
-    post(
-      '/saying/book',
-      {
-        book_name: bookName
-      },
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200 || data.status === 201) {
-          setMessage({ message: `新規ファイル「${bookName}」を追加しました`, messageColor: 'success.light' });
-        } else {
-          setMessage({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
-        }
-      }
-    );
-    getBook();
-  };
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
     setSelectedBookId(+e.target.value);
@@ -127,7 +74,7 @@ export default function Settings() {
         }
       }
     );
-    getBook();
+    getBook(setMessage, setBooklistoption);
   };
 
   const contents = () => {
@@ -158,25 +105,17 @@ export default function Settings() {
                     }}
                     style={inputTextBeforeButtonStyle}
                   />
-                  <Button variant="contained" style={buttonAfterInputTextStyle} onClick={(e) => addBook()}>
-                    追加
-                  </Button>
+                  <AddBookButton
+                    bookName={bookName}
+                    setMessageStater={setMessage}
+                    setBooklistoption={setBooklistoption}
+                    attr={'after-inline'}
+                  />
                 </CardContent>
                 <CardHeader subheader="格言追加" />
 
                 <CardContent style={cardContentStyle}>
-                  <Select
-                    labelId="quiz-file-name"
-                    id="quiz-file-id"
-                    defaultValue={-1}
-                    onChange={(e) => selectedFileChange(e)}
-                    style={{ width: '20%', margin: '2px 0' }}
-                  >
-                    <MenuItem value={-1} key={-1}>
-                      選択なし
-                    </MenuItem>
-                    {booklistoption}
-                  </Select>
+                  <PullDown label={''} optionList={booklistoption} onChange={selectedFileChange} />
                 </CardContent>
                 <CardContent style={cardContentStyle}>
                   <TextField
