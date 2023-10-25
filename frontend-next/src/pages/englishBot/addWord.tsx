@@ -29,10 +29,10 @@ import { SendToAddWordApiData, meanOfAddWordDto } from '../../../interfaces/api/
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { PartofSpeechApiResponse, SourceApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
+import { MessageState } from '../../../interfaces/state';
 
 export default function EnglishBotAddWordPage() {
-  const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<string>('common.black');
+  const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
   const [posList, setPosList] = useState<JSX.Element[]>([]);
   const [sourceList, setSourceList] = useState<JSX.Element[]>([]);
   const [meanRowList, setMeanRowList] = useState<meanOfAddWordDto[]>([]);
@@ -43,14 +43,18 @@ export default function EnglishBotAddWordPage() {
   }, []);
 
   const messeageClear = () => {
-    setMessage('　');
-    setMessageColor('common.black');
+    setMessage({
+      message: '　',
+      messageColor: 'common.black'
+    });
   };
 
   // 品詞リスト取得
   const getPartOfSpeechList = async () => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get('/english/partsofspeech', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const result: PartofSpeechApiResponse[] = data.body as PartofSpeechApiResponse[];
@@ -68,19 +72,25 @@ export default function EnglishBotAddWordPage() {
           </MenuItem>
         );
         setPosList(gotPosList);
-        setMessage('　');
-        setMessageColor('common.black');
+        setMessage({
+          message: '　',
+          messageColor: 'common.black'
+        });
       } else {
-        setMessage('エラー:外部APIとの連携に失敗しました');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
       }
     });
   };
 
   // 出典リスト取得
   const getSourceList = async () => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get('/english/source', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const result: SourceApiResponse[] = data.body as SourceApiResponse[];
@@ -98,11 +108,15 @@ export default function EnglishBotAddWordPage() {
           </MenuItem>
         );
         setSourceList(gotSourceList);
-        setMessage('　');
-        setMessageColor('common.black');
+        setMessage({
+          message: '　',
+          messageColor: 'common.black'
+        });
       } else {
-        setMessage('エラー:外部APIとの連携に失敗しました');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
       }
     });
   };
@@ -374,25 +388,33 @@ export default function EnglishBotAddWordPage() {
   // 登録ボタン押下後。単語と意味をDBに登録
   const addWord = () => {
     if (inputWord === '') {
-      setMessage('エラー:単語が入力されておりません');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:単語が入力されておりません',
+        messageColor: 'error'
+      });
       return;
     }
 
     for (let i = 0; i < meanRowList.length; i++) {
       if (meanRowList[i].pos.id === -1 || (meanRowList[i].pos.id === -2 && !meanRowList[i].pos.name)) {
-        setMessage(`エラー:${i + 1}行目の品詞を入力してください`);
-        setMessageColor('error');
+        setMessage({
+          message: `エラー:${i + 1}行目の品詞を入力してください`,
+          messageColor: 'error'
+        });
         return;
       } else if (!meanRowList[i].mean || meanRowList[i].mean === '') {
-        setMessage(`エラー:${i + 1}行目の意味を入力してください`);
-        setMessageColor('error');
+        setMessage({
+          message: `エラー:${i + 1}行目の意味を入力してください`,
+          messageColor: 'error'
+        });
         return;
       }
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     post(
       '/english/word/add',
       {
@@ -413,13 +435,17 @@ export default function EnglishBotAddWordPage() {
       },
       (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          setMessage(`単語「${inputWord}」を登録しました`);
-          setMessageColor('success.light');
+          setMessage({
+            message: `単語「${inputWord}」を登録しました`,
+            messageColor: 'success.light'
+          });
           setInputWord('');
           setMeanRowList([]);
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       }
     );
@@ -450,8 +476,8 @@ export default function EnglishBotAddWordPage() {
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography variant="h6" component="h6" color={messageColor}>
-              {message}
+            <Typography variant="h6" component="h6" color={message.messageColor}>
+              {message.message}
             </Typography>
           </CardContent>
         </Card>
