@@ -11,6 +11,7 @@ import { getBook } from '@/common/response';
 import { PullDownOptionState } from '../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { AddBookButton } from '@/components/ui-parts/button-patterns/addBook/AddBook.button';
+import { AddSayingButton } from '@/components/ui-parts/button-patterns/addSaying/AddSaying.button';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,16 +28,11 @@ const inputTextBeforeButtonStyle = {
   flex: 'auto'
 };
 
-const buttonAfterInputTextStyle = {
-  flex: 'none',
-  margin: '10px'
-};
-
 export default function Settings() {
   const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
   const [bookName, setBookName] = useState<string>('');
-  const [selectedBookId, setSelectedBookId] = useState<number>();
-  const [inputSaying, setInputSaying] = useState<string>();
+  const [selectedBookId, setSelectedBookId] = useState<number>(-1);
+  const [inputSaying, setInputSaying] = useState<string>('');
   const [message, setMessage] = useState({
     message: '　',
     messageColor: 'common.black'
@@ -126,9 +122,13 @@ export default function Settings() {
                     }}
                     style={inputTextBeforeButtonStyle}
                   />
-                  <Button variant="contained" style={buttonAfterInputTextStyle} onClick={(e) => addSaying()}>
-                    登録
-                  </Button>
+                  <AddSayingButton
+                    selectedBookId={selectedBookId}
+                    inputSaying={inputSaying}
+                    setMessageStater={setMessage}
+                    setBooklistoption={setBooklistoption}
+                    attr={'after-inline'}
+                  />
                 </CardContent>
               </Card>
             </CardContent>
