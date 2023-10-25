@@ -12,6 +12,7 @@ import { PullDownOptionState } from '../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { AddBookButton } from '@/components/ui-parts/button-patterns/addBook/AddBook.button';
 import { AddSayingButton } from '@/components/ui-parts/button-patterns/addSaying/AddSaying.button';
+import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookForm';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -46,33 +47,6 @@ export default function Settings() {
     setSelectedBookId(+e.target.value);
   };
 
-  const addSaying = () => {
-    if (!selectedBookId) {
-      setMessage({ message: 'エラー:本名を選択して下さい', messageColor: 'error' });
-      return;
-    } else if (!inputSaying || inputSaying === '') {
-      setMessage({ message: 'エラー:格言を入力して下さい', messageColor: 'error' });
-      return;
-    }
-
-    setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
-    post(
-      '/saying',
-      {
-        book_id: selectedBookId,
-        saying: inputSaying
-      },
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200 || data.status === 201) {
-          setMessage({ message: `新規格言「${inputSaying}」を追加しました`, messageColor: 'success.light' });
-        } else {
-          setMessage({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
-        }
-      }
-    );
-    getBook(setMessage, setBooklistoption);
-  };
-
   const contents = () => {
     return (
       <>
@@ -91,23 +65,12 @@ export default function Settings() {
             <CardHeader title="格言設定" />
             <CardContent>
               <Card variant="outlined">
-                <CardHeader subheader="新規追加 - 啓発本" />
-                <CardContent style={cardContentStyle}>
-                  <TextField
-                    label="新規啓発本名"
-                    variant="outlined"
-                    onChange={(e) => {
-                      setBookName(e.target.value);
-                    }}
-                    style={inputTextBeforeButtonStyle}
-                  />
-                  <AddBookButton
-                    bookName={bookName}
-                    setMessageStater={setMessage}
-                    setBooklistoption={setBooklistoption}
-                    attr={'after-inline'}
-                  />
-                </CardContent>
+                <AddBookForm
+                  bookName={bookName}
+                  setBookName={setBookName}
+                  setMessageStater={setMessage}
+                  setBooklistoption={setBooklistoption}
+                />
                 <CardHeader subheader="格言追加" />
 
                 <CardContent style={cardContentStyle}>
