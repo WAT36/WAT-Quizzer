@@ -134,4 +134,16 @@ describe('QuizService', () => {
       message: '入力された問題形式が不正です',
     });
   });
+
+  // 問題ランダム取得 異常系２
+  it('getRandomQuiz - NG2', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      quizService.getRandomQuiz(1, 0, 100, 'カテゴリテスト', 'true', 'basic'),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
