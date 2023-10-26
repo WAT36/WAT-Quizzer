@@ -118,4 +118,20 @@ describe('QuizService', () => {
       ),
     ).toEqual(testResult);
   });
+
+  // 問題ランダム取得 異常系１
+  it('getRandomQuiz - NG1', async () => {
+    await expect(
+      quizService.getRandomQuiz(
+        1,
+        0,
+        100,
+        'カテゴリテスト',
+        'true',
+        'xxxxxxxxxx',
+      ),
+    ).rejects.toMatchObject({
+      message: '入力された問題形式が不正です',
+    });
+  });
 });
