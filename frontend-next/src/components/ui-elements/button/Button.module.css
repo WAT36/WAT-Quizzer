@@ -7,6 +7,12 @@
   height: 100px;
 }
 
+.top-button {
+  margin: 20px !important;
+  width: 100px;
+  height: 100px;
+}
+
 .no-margin {
   margin: 0px !important;
 }

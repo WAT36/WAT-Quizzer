@@ -39,3 +39,13 @@ export interface QueryOfAddQuizState {
   dummy2?: string; //四択問題のダミー選択肢２
   dummy3?: string; //四択問題のダミー選択肢３
 }
+
+export interface SayingState {
+  saying: string;
+  color: string;
+}
+
+export interface DbHealthCheckState {
+  status: string;
+  color: string;
+}

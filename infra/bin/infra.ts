@@ -10,11 +10,11 @@ import { CertificateStack } from '../lib/stack/usEast1/certificate-stack'
 const app = new cdk.App()
 const env = app.node.tryGetContext('env')
 
-const dnsStack = new DnsStack(app, 'DnsStack', {
+const dnsStack = new DnsStack(app, `${env}QuizzerDnsStack`, {
   env
 })
 
-const certificateStack = new CertificateStack(app, 'CertificateStack', {
+const certificateStack = new CertificateStack(app, `${env}CertificateStack`, {
   env,
   hostedZone: dnsStack.hostedZone
 })

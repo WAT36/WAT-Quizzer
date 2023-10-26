@@ -1,21 +1,24 @@
 import Head from 'next/head';
 import { Inter } from 'next/font/google';
-import { Button, Card, CardContent, Container, Typography } from '@mui/material';
-import { topButtonStyle } from '../styles/Pages';
+import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { get } from '@/common/API';
 import { GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { dbHealthCheck } from '@/common/health';
+import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButtonGroup';
+import { SayingCard } from '@/components/ui-forms/top/sayingCard/SayingCard';
+import { DbHealthCheckState, SayingState } from '../../interfaces/state';
+import { DbHealthCheckCard } from '@/components/ui-forms/top/dbHealthCheckCard/DbHealthCheckCard';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Top() {
-  const [saying, setSaying] = useState({
+  const [saying, setSaying] = useState<SayingState>({
     saying: '(取得中...)',
     color: 'grey.200'
   });
-  const [dbHealth, setDbHealth] = useState({
+  const [dbHealth, setDbHealth] = useState<DbHealthCheckState>({
     status: '(取得中...)',
     color: 'grey.200'
   });
@@ -37,9 +40,7 @@ export default function Top() {
 
   // DB ヘルスチェック
   const executeDbHealthCheck = async () => {
-    console.log('health pre');
     const result = await dbHealthCheck();
-    console.log(`health:${JSON.stringify(result)}`);
     setDbHealth(result);
   };
 
@@ -53,60 +54,9 @@ export default function Top() {
       </Head>
       <Container>
         <Title label="WAT Quizzer"></Title>
-        <div>
-          <Button
-            style={topButtonStyle}
-            variant="contained"
-            size="large"
-            color="primary"
-            href={'/quizzer' + process.env.NEXT_PUBLIC_URL_END}
-          >
-            Quizzer
-          </Button>
-          <Button
-            style={topButtonStyle}
-            variant="contained"
-            size="large"
-            color="secondary"
-            href={'/englishBot' + process.env.NEXT_PUBLIC_URL_END}
-          >
-            English Quiz Bot
-          </Button>
-          <Button
-            style={topButtonStyle}
-            variant="contained"
-            size="large"
-            color="info"
-            href={'/settings' + process.env.NEXT_PUBLIC_URL_END}
-          >
-            設定
-          </Button>
-        </div>
-
-        <Card variant="outlined">
-          <CardContent>
-            <Typography variant="h6" component="h6" color="grey.700">
-              今回の格言
-            </Typography>
-            <Typography variant="h2" component="p" color={saying.color}>
-              {saying.saying}
-            </Typography>
-            <Typography variant="subtitle1" component="p" color="grey.500">
-              出典
-            </Typography>
-          </CardContent>
-        </Card>
-
-        <Card variant="outlined">
-          <CardContent>
-            <Typography variant="h6" component="span" color="common.black">
-              DB接続状況：
-            </Typography>
-            <Typography variant="h6" component="span" color={dbHealth.color}>
-              {dbHealth.status}
-            </Typography>
-          </CardContent>
-        </Card>
+        <TopButtonGroup />
+        <SayingCard sayingState={saying} />
+        <DbHealthCheckCard dbHealthCheckState={dbHealth} />
       </Container>
     </>
   );

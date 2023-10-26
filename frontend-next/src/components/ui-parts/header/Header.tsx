@@ -7,16 +7,20 @@ import { HeaderBar } from '../../ui-elements/headerBar/HeaderBar';
 
 interface HeaderProps {
   bgColor: string;
-  onClick: (event: React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>) => void;
+  onClick?: (event: React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>) => void;
 }
 
 export const Header = ({ bgColor = '#0077B6', onClick }: HeaderProps) => (
   <HeaderBar bgColor={bgColor}>
     <span className={styles.title}>WAT Quizzer</span>
-    <span className={styles.right}>
-      <IconButton onClick={onClick} size="small">
-        <MenuIcon style={{ color: 'white' }} />
-      </IconButton>
-    </span>
+    {onClick ? (
+      <span className={styles.right}>
+        <IconButton onClick={onClick} size="small">
+          <MenuIcon style={{ color: 'white' }} />
+        </IconButton>
+      </span>
+    ) : (
+      <></>
+    )}
   </HeaderBar>
 );
