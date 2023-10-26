@@ -1,33 +1,14 @@
 import Head from 'next/head';
 import { Inter } from 'next/font/google';
-import { Button, Card, CardContent, CardHeader, Container, Select, SelectChangeEvent, TextField } from '@mui/material';
+import { Card, CardContent, CardHeader, Container, SelectChangeEvent } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { post } from '@/common/API';
-import { ProcessingApiReponse } from '../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getBook } from '@/common/response';
 import { PullDownOptionState } from '../../interfaces/state';
-import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { AddBookButton } from '@/components/ui-parts/button-patterns/addBook/AddBook.button';
-import { AddSayingButton } from '@/components/ui-parts/button-patterns/addSaying/AddSaying.button';
 import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookForm';
-
-const inter = Inter({ subsets: ['latin'] });
-
-const cardStyle = {
-  margin: '10px 0'
-};
-
-const cardContentStyle = {
-  display: 'flex',
-  width: '100%'
-};
-
-const inputTextBeforeButtonStyle = {
-  flex: 'auto'
-};
+import { AddSayingForm } from '@/components/ui-forms/settings/addSayingForm/AddSayingForm';
 
 export default function Settings() {
   const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
@@ -43,10 +24,6 @@ export default function Settings() {
     getBook(setMessage, setBooklistoption);
   }, []);
 
-  const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    setSelectedBookId(+e.target.value);
-  };
-
   const contents = () => {
     return (
       <>
@@ -61,7 +38,12 @@ export default function Settings() {
 
           <MessageCard messageState={message}></MessageCard>
 
-          <Card variant="outlined" style={cardStyle}>
+          <Card
+            variant="outlined"
+            style={{
+              margin: '10px 0'
+            }}
+          >
             <CardHeader title="格言設定" />
             <CardContent>
               <Card variant="outlined">
@@ -71,28 +53,15 @@ export default function Settings() {
                   setMessageStater={setMessage}
                   setBooklistoption={setBooklistoption}
                 />
-                <CardHeader subheader="格言追加" />
-
-                <CardContent style={cardContentStyle}>
-                  <PullDown label={''} optionList={booklistoption} onChange={selectedFileChange} />
-                </CardContent>
-                <CardContent style={cardContentStyle}>
-                  <TextField
-                    label="新規格言"
-                    variant="outlined"
-                    onChange={(e) => {
-                      setInputSaying(e.target.value);
-                    }}
-                    style={inputTextBeforeButtonStyle}
-                  />
-                  <AddSayingButton
-                    selectedBookId={selectedBookId}
-                    inputSaying={inputSaying}
-                    setMessageStater={setMessage}
-                    setBooklistoption={setBooklistoption}
-                    attr={'after-inline'}
-                  />
-                </CardContent>
+                <AddSayingForm
+                  inputSaying={inputSaying}
+                  selectedBookId={selectedBookId}
+                  booklistoption={booklistoption}
+                  setInputSaying={setInputSaying}
+                  setMessageStater={setMessage}
+                  setSelectedBookId={setSelectedBookId}
+                  setBooklistoption={setBooklistoption}
+                />
               </Card>
             </CardContent>
           </Card>
