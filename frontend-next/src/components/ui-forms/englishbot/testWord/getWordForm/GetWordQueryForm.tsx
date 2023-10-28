@@ -1,12 +1,35 @@
 import React from 'react';
-import { FormGroup } from '@mui/material';
+import { FormControl, FormGroup } from '@mui/material';
+import { PullDownOptionState, QueryOfGetWordState } from '../../../../../../interfaces/state';
+import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 
-interface GetWordQueryFormProps {}
+interface GetWordQueryFormProps {
+  sourcelistoption: PullDownOptionState[];
+  queryOfGetWordState: QueryOfGetWordState;
+  setQueryofWordStater?: React.Dispatch<React.SetStateAction<QueryOfGetWordState>>;
+}
 
-export const GetWordQueryForm = ({}: GetWordQueryFormProps) => {
+export const GetWordQueryForm = ({
+  sourcelistoption,
+  queryOfGetWordState,
+  setQueryofWordStater
+}: GetWordQueryFormProps) => {
   return (
     <FormGroup>
-      <p>{'form test'}</p>
+      <FormControl>
+        <PullDown
+          label={'出典'}
+          optionList={sourcelistoption}
+          onChange={(e) => {
+            if (setQueryofWordStater) {
+              setQueryofWordStater({
+                ...queryOfGetWordState,
+                source: String(e.target.value)
+              });
+            }
+          }}
+        />
+      </FormControl>
     </FormGroup>
   );
 };

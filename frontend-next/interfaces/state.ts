@@ -40,6 +40,10 @@ export interface QueryOfAddQuizState {
   dummy3?: string; //四択問題のダミー選択肢３
 }
 
+export interface QueryOfGetWordState {
+  source?: string;
+}
+
 export interface SayingState {
   saying: string;
   color: string;
