@@ -48,6 +48,12 @@ export class EnglishController {
     return await this.englishService.getSourceService();
   }
 
+  @Get('/word/random')
+  async getRandomWord(@Query('sourceId') sourceId: number) {
+    return await this.englishService.getRandomWordService(+sourceId);
+  }
+
+  /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
   @Get('/word/:id')
   async getWordById(@Param('id') id: string) {
     return await this.englishService.getWordByIdService(+id);

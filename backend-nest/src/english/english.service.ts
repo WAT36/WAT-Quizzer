@@ -265,4 +265,28 @@ export class EnglishService {
       }
     }
   }
+
+  // 単語をランダムに取得
+  async getRandomWordService(sourceId: number) {
+    try {
+      const sourceIdSql = !sourceId
+        ? ''
+        : `
+      LEFT OUTER JOIN
+        mean_source ms 
+      ON
+        m.id = ms.mean_id 
+      WHERE ms.source_id = ${sourceId}
+      `;
+      // ランダムに英単語id,nameを返す
+      return await execQuery(SQL.ENGLISH.WORD.GET.RANDOM(sourceIdSql), []);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }

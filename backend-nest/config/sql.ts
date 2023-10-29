@@ -690,6 +690,26 @@ export const SQL = {
             AND word.deleted_at IS NULL
           ;
         `,
+        RANDOM: (sourceTemplate: string) => {
+          return `
+        SELECT
+          w.id,
+          w.name
+        FROM
+          word w 
+        INNER JOIN
+          (
+          SELECT 
+            word_id
+          FROM
+            mean m 
+          ${sourceTemplate}
+          GROUP BY word_id
+          ORDER BY RAND() LIMIT 1) as random_word
+        ON
+          w.id = random_word.word_id;
+        `;
+        },
       },
     },
     MEAN: {
