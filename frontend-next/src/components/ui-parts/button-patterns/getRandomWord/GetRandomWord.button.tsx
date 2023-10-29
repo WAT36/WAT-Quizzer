@@ -3,16 +3,17 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { ProcessingApiReponse } from '../../../../../interfaces/api/response';
 import { WordApiResponse } from '../../../../../interfaces/db';
 import { get } from '@/common/API';
-import { MessageState, QueryOfGetWordState } from '../../../../../interfaces/state';
+import { DisplayWordTestState, MessageState, QueryOfGetWordState } from '../../../../../interfaces/state';
 
 interface GetRandomWordButtonProps {
   queryOfGetWordState: QueryOfGetWordState;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setDisplayWordTest?: React.Dispatch<React.SetStateAction<DisplayWordTestState>>;
 }
 
-const getRandomWordAPI = ({ queryOfGetWordState, setMessageStater }: GetRandomWordButtonProps) => {
+const getRandomWordAPI = ({ queryOfGetWordState, setMessageStater, setDisplayWordTest }: GetRandomWordButtonProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
-  if (!setMessageStater) {
+  if (!setMessageStater || !setDisplayWordTest) {
     return;
   }
 
@@ -31,7 +32,9 @@ const getRandomWordAPI = ({ queryOfGetWordState, setMessageStater }: GetRandomWo
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body.length > 0) {
         const res: WordApiResponse[] = data.body as WordApiResponse[];
-        console.log(`word:[${res[0].id}]:${res[0].name}`);
+        setDisplayWordTest({
+          wordName: res[0].name
+        });
         setMessageStater({
           message: '　',
           messageColor: 'common.black'
@@ -52,14 +55,18 @@ const getRandomWordAPI = ({ queryOfGetWordState, setMessageStater }: GetRandomWo
   );
 };
 
-export const GetRandomWordButton = ({ queryOfGetWordState, setMessageStater }: GetRandomWordButtonProps) => {
+export const GetRandomWordButton = ({
+  queryOfGetWordState,
+  setMessageStater,
+  setDisplayWordTest
+}: GetRandomWordButtonProps) => {
   return (
     <>
       <Button
         label={'Random'}
         variant="contained"
         color="primary"
-        onClick={(e) => getRandomWordAPI({ queryOfGetWordState, setMessageStater })}
+        onClick={(e) => getRandomWordAPI({ queryOfGetWordState, setMessageStater, setDisplayWordTest })}
       />
     </>
   );

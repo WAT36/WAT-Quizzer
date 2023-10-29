@@ -44,6 +44,10 @@ export interface QueryOfGetWordState {
   source?: string;
 }
 
+export interface DisplayWordTestState {
+  wordName: string;
+}
+
 export interface SayingState {
   saying: string;
   color: string;

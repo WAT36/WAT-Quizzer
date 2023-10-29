@@ -1,7 +1,12 @@
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Container } from '@mui/material';
-import { MessageState, PullDownOptionState, QueryOfGetWordState } from '../../../interfaces/state';
+import {
+  DisplayWordTestState,
+  MessageState,
+  PullDownOptionState,
+  QueryOfGetWordState
+} from '../../../interfaces/state';
 import { useEffect, useState } from 'react';
 import { GetWordQueryForm } from '@/components/ui-forms/englishbot/testWord/getWordForm/GetWordQueryForm';
 import { GetWordButtonGroup } from '@/components/ui-forms/englishbot/testWord/getWordButtonGroup/GetWordButtonGroup';
@@ -13,6 +18,9 @@ export default function TestWordPage() {
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
   const [queryOfGetWord, setQueryOfGetWord] = useState<QueryOfGetWordState>({});
+  const [displayWordTest, setDisplayWordTest] = useState<DisplayWordTestState>({
+    wordName: ''
+  });
 
   // 出典リスト取得
   useEffect(() => {
@@ -32,9 +40,13 @@ export default function TestWordPage() {
           setQueryofWordStater={setQueryOfGetWord}
         />
 
-        <GetWordButtonGroup queryOfGetWordState={queryOfGetWord} setMessageStater={setMessage} />
+        <GetWordButtonGroup
+          queryOfGetWordState={queryOfGetWord}
+          setMessageStater={setMessage}
+          setDisplayWordTest={setDisplayWordTest}
+        />
 
-        <DisplayTestWordSection />
+        <DisplayTestWordSection displayWordTest={displayWordTest} />
       </Container>
     );
   };
