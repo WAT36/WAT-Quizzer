@@ -1,16 +1,16 @@
 import React from 'react';
+import { MessageState, QueryOfGetWordState } from '../../../../../../interfaces/state';
+import { GetRandomWordButton } from '@/components/ui-parts/button-patterns/getRandomWord/GetRandomWord.button';
 
-interface GetWordButtonGroupProps {}
+interface GetWordButtonGroupProps {
+  queryOfGetWordState: QueryOfGetWordState;
+  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
+}
 
-export const GetWordButtonGroup = ({}: GetWordButtonGroupProps) => {
+export const GetWordButtonGroup = ({ queryOfGetWordState, setMessageStater }: GetWordButtonGroupProps) => {
   return (
     <>
-      {/* <GetQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
-        setQueryofQuizStater={setQueryofQuizStater}
-      /> */}
+      <GetRandomWordButton queryOfGetWordState={queryOfGetWordState} setMessageStater={setMessageStater} />
     </>
   );
 };

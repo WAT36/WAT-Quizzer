@@ -32,7 +32,7 @@ export default function TestWordPage() {
           setQueryofWordStater={setQueryOfGetWord}
         />
 
-        <GetWordButtonGroup />
+        <GetWordButtonGroup queryOfGetWordState={queryOfGetWord} setMessageStater={setMessage} />
 
         <DisplayTestWordSection />
       </Container>

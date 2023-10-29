@@ -90,7 +90,6 @@ export const getBook = (
         });
       }
       setBooklistoption(booklist);
-      console.log(JSON.stringify(booklist));
       setMessageStater({ message: '　', messageColor: 'common.black' });
     } else {
       setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
@@ -119,7 +118,6 @@ export const getSourceList = (
           });
         }
         setSourcelistoption(sourcelist);
-        console.log(JSON.stringify(sourcelist));
         setMessageStater({ message: '　', messageColor: 'common.black' });
       } else {
         setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
