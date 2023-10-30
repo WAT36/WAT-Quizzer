@@ -721,6 +721,36 @@ export const SQL = {
             mean
           ;
         `,
+        BY_WORD_ID: `
+          SELECT
+            id,
+            word_id,
+            wordmean_id,
+            partsofspeech_id,
+            meaning
+          FROM
+            mean
+          WHERE
+            word_id = ?
+          ORDER BY RAND()
+          LIMIT 1
+          ;
+        `,
+        BY_NOT_WORD_ID: `
+          SELECT
+            id,
+            word_id,
+            wordmean_id,
+            partsofspeech_id,
+            meaning
+          FROM
+            mean
+          WHERE
+            word_id <> ?
+          ORDER BY RAND()
+          LIMIT 3
+          ;
+        `,
       },
       ADD: `
         INSERT INTO
