@@ -167,3 +167,16 @@ CREATE TABLE
             word_id
         )
     ) DEFAULT CHARACTER SET = utf8;
+
+/* 単語テスト解答ログ*/
+
+CREATE TABLE
+    IF NOT EXISTS englishbot_answer_log (
+        id INT NOT NULL AUTO_INCREMENT,
+        word_id INT NOT NULL,
+        result BOOLEAN,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET = utf8;
