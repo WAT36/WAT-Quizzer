@@ -5,13 +5,13 @@ export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || '';
 
 export const get = async (
   path: string,
-  func: (data: ProcessingApiReponse) => void,
+  func: (data: ProcessingApiReponse) => any,
   queryParam?: { [key: string]: string }
 ) => {
   const key = await getApiKey();
   const query = queryParam ? `?${new URLSearchParams(queryParam)}` : '';
 
-  await fetch(baseURL + path + query, {
+  const result = await fetch(baseURL + path + query, {
     method: 'GET',
     headers: {
       'x-api-key': key
@@ -27,6 +27,7 @@ export const get = async (
     .catch((error) => {
       console.error(`GET(${path}): ${error}`);
     });
+  return result;
 };
 
 export const getApiAndGetValue = async (path: string, queryParam?: { [key: string]: string }) => {
