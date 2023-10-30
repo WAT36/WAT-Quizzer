@@ -26,3 +26,7 @@ export interface AddExampleDto {
   exampleJa: string;
   meanId: number[];
 }
+
+export interface AddWordTestLogDto {
+  wordId: number;
+}

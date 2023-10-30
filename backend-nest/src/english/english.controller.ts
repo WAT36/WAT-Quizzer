@@ -11,6 +11,7 @@ import { EnglishService } from './english.service';
 import {
   AddEnglishWordDto,
   AddExampleDto,
+  AddWordTestLogDto,
   EditWordMeanDto,
 } from '../../interfaces/api/request/english';
 
@@ -57,6 +58,16 @@ export class EnglishController {
   @Get('/word/fourchoice')
   async makeFourChoice(@Query('wordId') wordId: number) {
     return await this.englishService.makeFourChoiceService(+wordId);
+  }
+
+  @Post('/word/test/clear')
+  async wordTestCleared(@Body() req: AddWordTestLogDto) {
+    return await this.englishService.wordTestClearedService(req);
+  }
+
+  @Post('/word/test/fail')
+  async wordTestFailed(@Body() req: AddWordTestLogDto) {
+    return await this.englishService.wordTestFailedService(req);
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */

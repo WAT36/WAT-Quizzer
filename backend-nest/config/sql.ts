@@ -813,6 +813,22 @@ export const SQL = {
         ;
       `,
     },
+    WORD_TEST: {
+      CLEARED: {
+        INPUT: `
+          INSERT INTO 
+            englishbot_answer_log 
+          (word_id, result) VALUES (?,true);
+        `,
+      },
+      FAILED: {
+        INPUT: `
+          INSERT INTO 
+            englishbot_answer_log 
+          (word_id, result) VALUES (?,false);
+        `,
+      },
+    },
   },
   SAYING: {
     ADD: `

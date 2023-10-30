@@ -4,6 +4,7 @@ import { execQuery, execTransaction } from 'lib/db/dao';
 import {
   AddEnglishWordDto,
   AddExampleDto,
+  AddWordTestLogDto,
   EditWordMeanDto,
 } from '../../interfaces/api/request/english';
 import { TransactionQuery } from '../../interfaces/db';
@@ -316,6 +317,36 @@ export class EnglishService {
           })),
         },
       ];
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 正解登録
+  async wordTestClearedService(req: AddWordTestLogDto) {
+    try {
+      const { wordId } = req;
+      return await execQuery(SQL.ENGLISH.WORD_TEST.CLEARED.INPUT, [wordId]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 不正解登録
+  async wordTestFailedService(req: AddWordTestLogDto) {
+    try {
+      const { wordId } = req;
+      return await execQuery(SQL.ENGLISH.WORD_TEST.CLEARED.INPUT, [wordId]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
