@@ -53,6 +53,12 @@ export class EnglishController {
     return await this.englishService.getRandomWordService(+sourceId);
   }
 
+  // 指定した単語を出題するときの四択選択肢（正解選択肢1つとダミー選択肢3つ）を作る
+  @Get('/word/fourchoice')
+  async makeFourChoice(@Query('wordId') wordId: number) {
+    return await this.englishService.makeFourChoiceService(+wordId);
+  }
+
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
   @Get('/word/:id')
   async getWordById(@Param('id') id: string) {

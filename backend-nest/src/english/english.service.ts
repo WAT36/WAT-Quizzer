@@ -289,4 +289,40 @@ export class EnglishService {
       }
     }
   }
+
+  // 指定した単語を出題するときの四択選択肢（正解選択肢1つとダミー選択肢3つ）を作る
+  async makeFourChoiceService(wordId: number) {
+    try {
+      if (isNaN(wordId)) {
+        throw new HttpException(
+          `単語IDが不正です:${wordId}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      // 指定単語idの意味を取得
+      const correctMeans = await execQuery(SQL.ENGLISH.MEAN.GET.BY_WORD_ID, [
+        wordId,
+      ]);
+      // ダミー選択肢用の意味を取得
+      const dummyMeans = await execQuery(SQL.ENGLISH.MEAN.GET.BY_NOT_WORD_ID, [
+        wordId,
+      ]);
+
+      return [
+        {
+          correct: { mean: correctMeans[0].meaning },
+          dummy: dummyMeans.map((x) => ({
+            mean: x.meaning,
+          })),
+        },
+      ];
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }
