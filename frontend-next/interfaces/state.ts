@@ -45,7 +45,15 @@ export interface QueryOfGetWordState {
 }
 
 export interface DisplayWordTestState {
-  wordName: string;
+  wordName?: string;
+  choice?: {
+    correct: {
+      mean: string;
+    };
+    dummy: {
+      mean: string;
+    }[];
+  };
 }
 
 export interface SayingState {

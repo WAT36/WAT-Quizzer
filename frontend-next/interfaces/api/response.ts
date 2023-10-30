@@ -126,3 +126,13 @@ export interface SendToAddWordApiData {
   partOfSpeechName?: string;
   sourceName?: string;
 }
+
+// 英単語テスト画面での四択選択肢をAPIから受け取るときのデータ型
+export interface EnglishBotTestFourChoiceResponse extends ApiResponse {
+  correct: {
+    mean: string;
+  };
+  dummy: {
+    mean: string;
+  }[];
+}
