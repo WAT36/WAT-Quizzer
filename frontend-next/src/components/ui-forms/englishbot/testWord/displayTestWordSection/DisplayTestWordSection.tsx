@@ -10,8 +10,15 @@ export const DisplayTestWordSection = ({ displayWordTest }: DisplayTestWordSecti
   return (
     <>
       <Card variant="outlined">
-        <p>{'単語表示セクション'}</p>
-        <p>{displayWordTest.wordName}</p>
+        <h2>{displayWordTest.wordName}</h2>
+        {displayWordTest.choice && (
+          <ol>
+            <li>{displayWordTest.choice?.correct.mean}</li>
+            <li>{displayWordTest.choice?.dummy[0].mean}</li>
+            <li>{displayWordTest.choice?.dummy[1].mean}</li>
+            <li>{displayWordTest.choice?.dummy[2].mean}</li>
+          </ol>
+        )}
       </Card>
     </>
   );

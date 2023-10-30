@@ -41,6 +41,7 @@ export default function TestWordPage() {
         />
 
         <GetWordButtonGroup
+          displayWordTestState={displayWordTest}
           queryOfGetWordState={queryOfGetWord}
           setMessageStater={setMessage}
           setDisplayWordTest={setDisplayWordTest}
