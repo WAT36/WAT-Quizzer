@@ -3,12 +3,14 @@ import { DisplayWordTestState, MessageState, QueryOfGetWordState } from '../../.
 import { GetRandomWordButton } from '@/components/ui-parts/button-patterns/getRandomWord/GetRandomWord.button';
 
 interface GetWordButtonGroupProps {
+  displayWordTestState: DisplayWordTestState;
   queryOfGetWordState: QueryOfGetWordState;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDisplayWordTest?: React.Dispatch<React.SetStateAction<DisplayWordTestState>>;
 }
 
 export const GetWordButtonGroup = ({
+  displayWordTestState,
   queryOfGetWordState,
   setMessageStater,
   setDisplayWordTest
@@ -16,6 +18,7 @@ export const GetWordButtonGroup = ({
   return (
     <>
       <GetRandomWordButton
+        displayWordTestState={displayWordTestState}
         queryOfGetWordState={queryOfGetWordState}
         setMessageStater={setMessageStater}
         setDisplayWordTest={setDisplayWordTest}
