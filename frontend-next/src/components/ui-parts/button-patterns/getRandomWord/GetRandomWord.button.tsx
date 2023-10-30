@@ -1,17 +1,23 @@
 import React from 'react';
 import { Button } from '@/components/ui-elements/button/Button';
-import { ProcessingApiReponse } from '../../../../../interfaces/api/response';
+import { EnglishBotTestFourChoiceResponse, ProcessingApiReponse } from '../../../../../interfaces/api/response';
 import { WordApiResponse } from '../../../../../interfaces/db';
 import { get } from '@/common/API';
 import { DisplayWordTestState, MessageState, QueryOfGetWordState } from '../../../../../interfaces/state';
 
 interface GetRandomWordButtonProps {
+  displayWordTestState: DisplayWordTestState;
   queryOfGetWordState: QueryOfGetWordState;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDisplayWordTest?: React.Dispatch<React.SetStateAction<DisplayWordTestState>>;
 }
 
-const getRandomWordAPI = ({ queryOfGetWordState, setMessageStater, setDisplayWordTest }: GetRandomWordButtonProps) => {
+const getRandomWordAPI = async ({
+  displayWordTestState,
+  queryOfGetWordState,
+  setMessageStater,
+  setDisplayWordTest
+}: GetRandomWordButtonProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
   if (!setMessageStater || !setDisplayWordTest) {
     return;
@@ -27,13 +33,48 @@ const getRandomWordAPI = ({ queryOfGetWordState, setMessageStater, setDisplayWor
     message: '通信中...',
     messageColor: '#d3d3d3'
   });
-  get(
+  const wordData = await get(
     '/english/word/random',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body.length > 0) {
         const res: WordApiResponse[] = data.body as WordApiResponse[];
         setDisplayWordTest({
           wordName: res[0].name
+        });
+        setMessageStater({
+          message: '　',
+          messageColor: 'common.black'
+        });
+        return {
+          id: res[0].id,
+          name: res[0].name
+        };
+      } else if (data.status === 404 || data.body?.length === 0) {
+        setMessageStater({
+          message: 'エラー:条件に合致するデータはありません',
+          messageColor: 'error'
+        });
+      } else {
+        setMessageStater({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
+      }
+    },
+    sendData
+  );
+
+  await get(
+    '/english/word/fourchoice',
+    (data: ProcessingApiReponse) => {
+      if (data.status === 200 && data.body.length > 0) {
+        const res: EnglishBotTestFourChoiceResponse[] = data.body as EnglishBotTestFourChoiceResponse[];
+        setDisplayWordTest({
+          wordName: wordData.name,
+          choice: {
+            correct: res[0].correct,
+            dummy: res[0].dummy
+          }
         });
         setMessageStater({
           message: '　',
@@ -51,11 +92,14 @@ const getRandomWordAPI = ({ queryOfGetWordState, setMessageStater, setDisplayWor
         });
       }
     },
-    sendData
+    {
+      wordId: String(wordData.id)
+    }
   );
 };
 
 export const GetRandomWordButton = ({
+  displayWordTestState,
   queryOfGetWordState,
   setMessageStater,
   setDisplayWordTest
@@ -66,7 +110,9 @@ export const GetRandomWordButton = ({
         label={'Random'}
         variant="contained"
         color="primary"
-        onClick={(e) => getRandomWordAPI({ queryOfGetWordState, setMessageStater, setDisplayWordTest })}
+        onClick={(e) =>
+          getRandomWordAPI({ displayWordTestState, queryOfGetWordState, setMessageStater, setDisplayWordTest })
+        }
       />
     </>
   );
