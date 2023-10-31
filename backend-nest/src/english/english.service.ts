@@ -346,7 +346,7 @@ export class EnglishService {
   async wordTestFailedService(req: AddWordTestLogDto) {
     try {
       const { wordId } = req;
-      return await execQuery(SQL.ENGLISH.WORD_TEST.CLEARED.INPUT, [wordId]);
+      return await execQuery(SQL.ENGLISH.WORD_TEST.FAILED.INPUT, [wordId]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
