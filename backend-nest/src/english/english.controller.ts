@@ -70,6 +70,11 @@ export class EnglishController {
     return await this.englishService.wordTestFailedService(req);
   }
 
+  @Post('/example')
+  async addExample(@Body() req: AddExampleDto) {
+    return await this.englishService.addExampleService(req);
+  }
+
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
   @Get('/word/:id')
   async getWordById(@Param('id') id: string) {
@@ -79,10 +84,5 @@ export class EnglishController {
   @Patch('/word/:id')
   async editWordMean(@Body() req: EditWordMeanDto) {
     return await this.englishService.editWordMeanService(req);
-  }
-
-  @Post('/example')
-  async addExample(@Body() req: AddExampleDto) {
-    return await this.englishService.addExampleService(req);
   }
 }
