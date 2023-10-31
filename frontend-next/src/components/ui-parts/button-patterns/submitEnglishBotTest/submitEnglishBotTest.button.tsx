@@ -17,7 +17,6 @@ const submitEnglishBotTestAPI = ({
   setMessageStater,
   setDisplayWordTestState
 }: SubmitEnglishBotTestButtonProps) => {
-  console.log(`button wordId:${wordId}, value:${selectedValue}`);
   // 設定ステートない場合はreturn(storybook表示用に設定)
   if (!setMessageStater || !setDisplayWordTestState) {
     return;
@@ -30,7 +29,7 @@ const submitEnglishBotTestAPI = ({
     });
     return;
   }
-  console.log(`button wordId22:${wordId}, value:${selectedValue}`);
+
   setMessageStater({
     message: '通信中...',
     messageColor: '#d3d3d3'

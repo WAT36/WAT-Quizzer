@@ -45,6 +45,7 @@ export interface QueryOfGetWordState {
 }
 
 export interface DisplayWordTestState {
+  wordId?: number;
   wordName?: string;
   choice?: {
     correct: {

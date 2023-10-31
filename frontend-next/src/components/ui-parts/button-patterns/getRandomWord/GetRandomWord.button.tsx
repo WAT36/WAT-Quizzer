@@ -70,6 +70,7 @@ const getRandomWordAPI = async ({
       if (data.status === 200 && data.body.length > 0) {
         const res: EnglishBotTestFourChoiceResponse[] = data.body as EnglishBotTestFourChoiceResponse[];
         setDisplayWordTest({
+          wordId: +wordData.id,
           wordName: wordData.name,
           choice: {
             correct: res[0].correct,

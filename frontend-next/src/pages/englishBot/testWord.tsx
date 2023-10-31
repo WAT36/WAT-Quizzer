@@ -47,7 +47,11 @@ export default function TestWordPage() {
           setDisplayWordTest={setDisplayWordTest}
         />
 
-        <DisplayTestWordSection displayWordTest={displayWordTest} />
+        <DisplayTestWordSection
+          displayWordTest={displayWordTest}
+          setMessageStater={setMessage}
+          setDisplayWordTestState={setDisplayWordTest}
+        />
       </Container>
     );
   };
