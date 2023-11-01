@@ -1,6 +1,7 @@
 export interface MessageState {
   message: string;
   messageColor: string;
+  isDisplay?: boolean;
 }
 
 export interface PullDownOptionState {
