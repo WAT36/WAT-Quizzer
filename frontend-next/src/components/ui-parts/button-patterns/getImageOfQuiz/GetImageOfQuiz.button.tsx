@@ -22,7 +22,8 @@ const getImageOfQuizAPI = ({
   if (queryOfQuizState.fileNum === -1) {
     setMessageStater({
       message: 'エラー:問題ファイルを選択して下さい',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   }

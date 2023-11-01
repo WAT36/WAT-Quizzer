@@ -8,11 +8,16 @@ import { GetQuizButtonGroup } from '@/components/ui-forms/quizzer/getQuiz/getQui
 import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displayQuizSection/DisplayQuizSection';
 import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
 import { getFileList } from '@/common/response';
+import { MessageBar } from '@/components/ui-elements/messageBar/MessageBar';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionState[]>([]);
-  const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
+  const [message, setMessage] = useState<MessageState>({
+    message: '　',
+    messageColor: 'common.black',
+    isDisplay: false
+  });
   const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
     fileNum: -1,
     quizNum: -1,
@@ -38,6 +43,7 @@ export default function SelectQuizPage() {
         <Title label="WAT Quizzer"></Title>
 
         <MessageCard messageState={message}></MessageCard>
+        <MessageBar messageState={message} setMessageState={setMessage} />
 
         <InputQueryForm
           filelistoption={filelistoption}

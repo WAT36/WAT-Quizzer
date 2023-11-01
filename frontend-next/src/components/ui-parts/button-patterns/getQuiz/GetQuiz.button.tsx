@@ -21,13 +21,15 @@ const getQuizAPI = ({ queryOfQuizState, setMessageStater, setDisplayQuizStater }
   if (queryOfQuizState.fileNum === -1) {
     setMessageStater({
       message: 'エラー:問題ファイルを選択して下さい',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   } else if (!queryOfQuizState.quizNum || queryOfQuizState.quizNum === -1) {
     setMessageStater({
       message: 'エラー:問題番号を入力して下さい',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   }
@@ -41,7 +43,8 @@ const getQuizAPI = ({ queryOfQuizState, setMessageStater, setDisplayQuizStater }
 
   setMessageStater({
     message: '通信中...',
-    messageColor: '#d3d3d3'
+    messageColor: '#d3d3d3',
+    isDisplay: true
   });
   get(
     '/quiz',
@@ -49,7 +52,8 @@ const getQuizAPI = ({ queryOfQuizState, setMessageStater, setDisplayQuizStater }
       if (data.status === 404 || data.body?.length === 0) {
         setMessageStater({
           message: 'エラー:条件に合致するデータはありません',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       } else if (data.status === 200) {
         const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
@@ -63,12 +67,14 @@ const getQuizAPI = ({ queryOfQuizState, setMessageStater, setDisplayQuizStater }
         });
         setMessageStater({
           message: '　',
-          messageColor: 'success.light'
+          messageColor: 'success.light',
+          isDisplay: false
         });
       } else {
         setMessageStater({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     },

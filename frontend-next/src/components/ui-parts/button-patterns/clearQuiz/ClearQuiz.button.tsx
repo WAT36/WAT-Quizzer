@@ -25,26 +25,30 @@ const clearQuizAPI = ({
   if (queryOfQuizState.fileNum === -1) {
     setMessageStater({
       message: 'エラー:問題ファイルを選択して下さい',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   } else if (!queryOfQuizState.quizNum) {
     setMessageStater({
       message: 'エラー:問題番号を入力して下さい',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   } else if (!displayQuizState.quizSentense || !displayQuizState.quizAnswer) {
     setMessageStater({
       message: 'エラー:問題を出題してから登録して下さい',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   }
 
   setMessageStater({
     message: '通信中...',
-    messageColor: '#d3d3d3'
+    messageColor: '#d3d3d3',
+    isDisplay: true
   });
   post(
     '/quiz/clear',
@@ -64,12 +68,14 @@ const clearQuizAPI = ({
         });
         setMessageStater({
           message: `問題[${queryOfQuizState.quizNum}] 正解+1! 登録しました`,
-          messageColor: 'success.light'
+          messageColor: 'success.light',
+          isDisplay: true
         });
       } else {
         setMessageStater({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     }

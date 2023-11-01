@@ -26,7 +26,8 @@ const getWorstRateQuizAPI = ({
   if (queryOfQuizState.fileNum === -1) {
     setMessageStater({
       message: 'エラー:問題ファイルを選択して下さい',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   }
@@ -51,7 +52,8 @@ const getWorstRateQuizAPI = ({
 
   setMessageStater({
     message: '通信中...',
-    messageColor: '#d3d3d3'
+    messageColor: '#d3d3d3',
+    isDisplay: true
   });
   get(
     '/quiz/worst',
@@ -72,17 +74,20 @@ const getWorstRateQuizAPI = ({
         });
         setMessageStater({
           message: '　',
-          messageColor: 'common.black'
+          messageColor: 'common.black',
+          isDisplay: false
         });
       } else if (data.status === 404 || data.body?.length === 0) {
         setMessageStater({
           message: 'エラー:条件に合致するデータはありません',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       } else {
         setMessageStater({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     },

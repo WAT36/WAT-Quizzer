@@ -12,7 +12,8 @@ export const getFileList = (
 ) => {
   setMessageStater({
     message: '通信中...',
-    messageColor: '#d3d3d3'
+    messageColor: '#d3d3d3',
+    isDisplay: true
   });
 
   const storageKey = 'fileName';
@@ -31,14 +32,16 @@ export const getFileList = (
         setFilelistoption(filelist);
         setMessageStater({
           message: '　',
-          messageColor: 'common.black'
+          messageColor: 'common.black',
+          isDisplay: false
         });
         // session storageに保存
         sessionStorage.setItem(storageKey, JSON.stringify(filelist));
       } else {
         setMessageStater({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     });
@@ -47,7 +50,8 @@ export const getFileList = (
     setFilelistoption(JSON.parse(savedFileList));
     setMessageStater({
       message: '　',
-      messageColor: 'common.black'
+      messageColor: 'common.black',
+      isDisplay: false
     });
   }
 };

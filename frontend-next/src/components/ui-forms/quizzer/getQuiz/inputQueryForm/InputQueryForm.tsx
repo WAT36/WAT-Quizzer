@@ -42,7 +42,8 @@ export const InputQueryForm = ({
 
     setMessageStater({
       message: '通信中...',
-      messageColor: '#d3d3d3'
+      messageColor: '#d3d3d3',
+      isDisplay: true
     });
     get(
       '/category',
@@ -63,12 +64,14 @@ export const InputQueryForm = ({
           setCategorylistoption(categorylist);
           setMessageStater({
             message: '　',
-            messageColor: 'common.black'
+            messageColor: 'common.black',
+            isDisplay: false
           });
         } else {
           setMessageStater({
             message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
+            messageColor: 'error',
+            isDisplay: true
           });
         }
       },
