@@ -25,14 +25,16 @@ const submitEnglishBotTestAPI = ({
   if (selectedValue === undefined) {
     setMessageStater({
       message: 'エラー:解答が入力されていません',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   }
 
   setMessageStater({
     message: '通信中...',
-    messageColor: '#d3d3d3'
+    messageColor: '#d3d3d3',
+    isDisplay: true
   });
   post(
     selectedValue ? '/english/word/test/clear' : '/english/word/test/fail',
@@ -44,12 +46,14 @@ const submitEnglishBotTestAPI = ({
         setDisplayWordTestState({});
         setMessageStater({
           message: `${selectedValue ? '正解+1!' : '不正解+1..'} 登録しました`,
-          messageColor: 'success.light'
+          messageColor: 'success.light',
+          isDisplay: true
         });
       } else {
         setMessageStater({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     }

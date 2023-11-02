@@ -32,8 +32,6 @@ export default function TestWordPage() {
       <Container>
         <Title label="WAT Quizzer - englishBot"></Title>
 
-        <MessageCard messageState={message}></MessageCard>
-
         <GetWordQueryForm
           sourcelistoption={sourcelistoption}
           queryOfGetWordState={queryOfGetWord}
@@ -58,7 +56,13 @@ export default function TestWordPage() {
 
   return (
     <>
-      <Layout mode="englishBot" contents={contents()} title={'単語テスト'} />
+      <Layout
+        mode="englishBot"
+        contents={contents()}
+        title={'単語テスト'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }

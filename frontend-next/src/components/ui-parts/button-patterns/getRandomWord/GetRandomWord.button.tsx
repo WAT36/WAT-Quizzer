@@ -31,7 +31,8 @@ const getRandomWordAPI = async ({
 
   setMessageStater({
     message: '通信中...',
-    messageColor: '#d3d3d3'
+    messageColor: '#d3d3d3',
+    isDisplay: true
   });
   const wordData = await get(
     '/english/word/random',
@@ -43,7 +44,8 @@ const getRandomWordAPI = async ({
         });
         setMessageStater({
           message: '　',
-          messageColor: 'common.black'
+          messageColor: 'common.black',
+          isDisplay: false
         });
         return {
           id: res[0].id,
@@ -52,12 +54,14 @@ const getRandomWordAPI = async ({
       } else if (data.status === 404 || data.body?.length === 0) {
         setMessageStater({
           message: 'エラー:条件に合致するデータはありません',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       } else {
         setMessageStater({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     },
@@ -79,17 +83,20 @@ const getRandomWordAPI = async ({
         });
         setMessageStater({
           message: '　',
-          messageColor: 'common.black'
+          messageColor: 'common.black',
+          isDisplay: false
         });
       } else if (data.status === 404 || data.body?.length === 0) {
         setMessageStater({
           message: 'エラー:条件に合致するデータはありません',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       } else {
         setMessageStater({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     },
