@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
 import { DisplayQuizState, MessageState, PullDownOptionState, QueryOfQuizState } from '../../../interfaces/state';
 import { GetQuizButtonGroup } from '@/components/ui-forms/quizzer/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
 import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displayQuizSection/DisplayQuizSection';
 import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
 import { getFileList } from '@/common/response';
-import { MessageBar } from '@/components/ui-elements/messageBar/MessageBar';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
