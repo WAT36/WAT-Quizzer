@@ -20,14 +20,14 @@ const addSayingAPI = ({ selectedBookId, inputSaying, setMessageStater, setBookli
   }
 
   if (!selectedBookId) {
-    setMessageStater({ message: 'エラー:本名を選択して下さい', messageColor: 'error' });
+    setMessageStater({ message: 'エラー:本名を選択して下さい', messageColor: 'error', isDisplay: true });
     return;
   } else if (!inputSaying || inputSaying === '') {
-    setMessageStater({ message: 'エラー:格言を入力して下さい', messageColor: 'error' });
+    setMessageStater({ message: 'エラー:格言を入力して下さい', messageColor: 'error', isDisplay: true });
     return;
   }
 
-  setMessageStater({ message: '通信中...', messageColor: '#d3d3d3' });
+  setMessageStater({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
   post(
     '/saying',
     {
@@ -36,9 +36,13 @@ const addSayingAPI = ({ selectedBookId, inputSaying, setMessageStater, setBookli
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
-        setMessageStater({ message: `新規格言「${inputSaying}」を追加しました`, messageColor: 'success.light' });
+        setMessageStater({
+          message: `新規格言「${inputSaying}」を追加しました`,
+          messageColor: 'success.light',
+          isDisplay: true
+        });
       } else {
-        setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
+        setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error', isDisplay: true });
       }
     }
   );

@@ -82,7 +82,7 @@ export const getBook = (
   setMessageStater: React.Dispatch<React.SetStateAction<MessageState>>,
   setBooklistoption: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>
 ) => {
-  setMessageStater({ message: '通信中...', messageColor: '#d3d3d3' });
+  setMessageStater({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
   get('/saying/book', (data: ProcessingApiReponse) => {
     if (data.status === 200) {
       const result: GetSelfHelpBookResponse[] = data.body as GetSelfHelpBookResponse[];
@@ -94,9 +94,9 @@ export const getBook = (
         });
       }
       setBooklistoption(booklist);
-      setMessageStater({ message: '　', messageColor: 'common.black' });
+      setMessageStater({ message: '　', messageColor: 'common.black', isDisplay: false });
     } else {
-      setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error' });
+      setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error', isDisplay: true });
     }
   });
 };

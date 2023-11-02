@@ -1,9 +1,7 @@
 import Head from 'next/head';
-import { Inter } from 'next/font/google';
-import { Card, CardContent, CardHeader, Container, SelectChangeEvent } from '@mui/material';
+import { Card, CardContent, CardHeader, Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getBook } from '@/common/response';
 import { PullDownOptionState } from '../../interfaces/state';
@@ -35,8 +33,6 @@ export default function Settings() {
         </Head>
         <Container>
           <Title label="WAT Quizzer - 設定"></Title>
-
-          <MessageCard messageState={message}></MessageCard>
 
           <Card
             variant="outlined"
@@ -72,7 +68,13 @@ export default function Settings() {
 
   return (
     <>
-      <Layout mode="settings" contents={contents()} title={'設定'} />
+      <Layout
+        mode="settings"
+        contents={contents()}
+        title={'設定'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
