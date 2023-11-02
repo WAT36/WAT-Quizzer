@@ -42,9 +42,6 @@ export default function SelectQuizPage() {
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <MessageCard messageState={message}></MessageCard>
-        <MessageBar messageState={message} setMessageState={setMessage} />
-
         <InputQueryForm
           filelistoption={filelistoption}
           categorylistoption={categorylistoption}
@@ -75,7 +72,13 @@ export default function SelectQuizPage() {
 
   return (
     <>
-      <Layout mode="quizzer" contents={contents()} title={'問題出題'} />
+      <Layout
+        mode="quizzer"
+        contents={contents()}
+        title={'問題出題'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
