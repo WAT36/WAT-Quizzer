@@ -26,13 +26,15 @@ const addQuizAPI = ({
   if (queryOfAddQuizState.fileNum === -1) {
     setMessageStater({
       message: 'エラー:問題ファイルを選択して下さい',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   } else if (!queryOfAddQuizState.question || !queryOfAddQuizState.answer) {
     setMessageStater({
       message: 'エラー:問題文及び答えを入力して下さい',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   }
@@ -52,14 +54,16 @@ const addQuizAPI = ({
     default:
       setMessageStater({
         message: `エラー：問題形式不正:${value}`,
-        messageColor: 'error'
+        messageColor: 'error',
+        isDisplay: true
       });
       return;
   }
 
   setMessageStater({
     message: '通信中...',
-    messageColor: '#d3d3d3'
+    messageColor: '#d3d3d3',
+    isDisplay: true
   });
   post(
     apiPath,
@@ -72,7 +76,8 @@ const addQuizAPI = ({
         const res: AddQuizApiResponse[] = data.body as AddQuizApiResponse[];
         setMessageStater({
           message: 'Success!! 問題を追加できました!',
-          messageColor: 'success.light'
+          messageColor: 'success.light',
+          isDisplay: true
         });
         setAddLog(res[0].result);
         setQueryofAddQuizStater({
@@ -86,7 +91,8 @@ const addQuizAPI = ({
       } else {
         setMessageStater({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     }
