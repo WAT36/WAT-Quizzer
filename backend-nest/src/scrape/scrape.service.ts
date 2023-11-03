@@ -18,7 +18,7 @@ export class ScrapeService {
               : '',
         })),
       );
-      return titles;
+      return titles.slice(0, 5);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
