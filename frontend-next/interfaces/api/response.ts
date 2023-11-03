@@ -87,6 +87,12 @@ export interface GetSelfHelpBookResponse extends ApiResponse {
   name: string;
 }
 
+// おすすめイベント取得APIの型
+export interface GetPopularEventResponse extends ApiResponse {
+  name: string;
+  link: string;
+}
+
 // 画面で利用するデータ型
 // (Quizzer)
 
