@@ -23,10 +23,11 @@ import {
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizApiResponse, QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
+import { MessageState } from '../../../interfaces/state';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
-  const [message, setMessage] = useState<string>('　');
   const [messageColor, setMessageColor] = useState<string>('common.black');
   const [quiz_num, setQuizNum] = useState<number>();
   const [edit_format, setEditFormat] = useState<string>();
@@ -38,10 +39,18 @@ export default function EditQuizPage() {
   const [edit_image, setEditImage] = useState<string>();
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
   const [format, setFormat] = useState<string>('basic');
+  const [message, setMessage] = useState<MessageState>({
+    message: '　',
+    messageColor: 'common.black',
+    isDisplay: false
+  });
 
   useEffect(() => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3',
+      isDisplay: true
+    });
     get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
@@ -54,34 +63,52 @@ export default function EditQuizPage() {
           );
         }
         setFilelistoption(filelist);
-        setMessage('　');
-        setMessageColor('common.black');
+        setMessage({
+          message: '　',
+          messageColor: 'common.black',
+          isDisplay: false
+        });
       } else {
-        setMessage('エラー:外部APIとの連携に失敗しました');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error',
+          isDisplay: true
+        });
       }
     });
   }, []);
 
   const getQuiz = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error',
+        isDisplay: true
+      });
       return;
     } else if (!quiz_num) {
-      setMessage('エラー:問題番号を入力して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題番号を入力して下さい',
+        messageColor: 'error',
+        isDisplay: true
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3',
+      isDisplay: true
+    });
     get(
       '/quiz',
       (data: ProcessingApiReponse) => {
         if (data.status === 404 || data.body?.length === 0) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error',
+            isDisplay: true
+          });
         } else if (data.status === 200 && data.body?.length > 0) {
           const res: QuizApiResponse[] = data.body as QuizApiResponse[];
           setEditFormat(format);
@@ -91,11 +118,17 @@ export default function EditQuizPage() {
           setEditAnswer(res[0].answer || '');
           setEditCategory(res[0].category || '');
           setEditImage(res[0].img_file || '');
-          setMessage('　');
-          setMessageColor('success.light');
+          setMessage({
+            message: '　',
+            messageColor: 'common.black',
+            isDisplay: false
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error',
+            isDisplay: true
+          });
         }
       },
       {
@@ -107,8 +140,11 @@ export default function EditQuizPage() {
   };
 
   const editQuiz = () => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3',
+      isDisplay: true
+    });
     post(
       '/quiz/edit',
       {
@@ -129,11 +165,17 @@ export default function EditQuizPage() {
           setEditAnswer('');
           setEditCategory('');
           setEditImage('');
-          setMessage('Success!! 編集に成功しました');
-          setMessageColor('success.light');
+          setMessage({
+            message: 'Success!! 編集に成功しました',
+            messageColor: 'success.light',
+            isDisplay: true
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error',
+            isDisplay: true
+          });
         }
       }
     );
@@ -147,12 +189,12 @@ export default function EditQuizPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>WAT Quizzer</h1>
+        <Title label="WAT Quizzer"></Title>
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography variant="h6" component="h6" color={messageColor}>
-              {message}
+            <Typography variant="h6" component="h6" color={message.messageColor}>
+              {message.message}
             </Typography>
           </CardContent>
         </Card>
@@ -248,7 +290,13 @@ export default function EditQuizPage() {
 
   return (
     <>
-      <Layout mode="quizzer" contents={contents()} title={'問題編集'} />
+      <Layout
+        mode="quizzer"
+        contents={contents()}
+        title={'問題編集'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
