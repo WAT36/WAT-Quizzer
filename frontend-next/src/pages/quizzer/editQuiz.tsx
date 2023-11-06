@@ -28,7 +28,6 @@ import { Title } from '@/components/ui-elements/title/Title';
 
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
-  const [messageColor, setMessageColor] = useState<string>('common.black');
   const [quiz_num, setQuizNum] = useState<number>();
   const [edit_format, setEditFormat] = useState<string>();
   const [edit_file_num, setEditFileNum] = useState<number>();
