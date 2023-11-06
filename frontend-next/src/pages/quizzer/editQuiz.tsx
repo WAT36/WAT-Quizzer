@@ -12,19 +12,19 @@ import {
   FormGroup,
   FormLabel,
   Input,
-  InputLabel,
-  MenuItem,
   Radio,
   RadioGroup,
-  Select,
+  SelectChangeEvent,
   TextField,
   Typography
 } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
-import { QuizApiResponse, QuizFileApiResponse } from '../../../interfaces/db';
+import { QuizApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState } from '../../../interfaces/state';
+import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
+import { getFileList } from '@/common/response';
+import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -36,7 +36,7 @@ export default function EditQuizPage() {
   const [edit_answer, setEditAnswer] = useState<string>();
   const [edit_category, setEditCategory] = useState<string>();
   const [edit_image, setEditImage] = useState<string>();
-  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [format, setFormat] = useState<string>('basic');
   const [message, setMessage] = useState<MessageState>({
     message: '　',
@@ -45,36 +45,7 @@ export default function EditQuizPage() {
   });
 
   useEffect(() => {
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3',
-      isDisplay: true
-    });
-    get('/quiz/file', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
-        let filelist = [];
-        for (var i = 0; i < res.length; i++) {
-          filelist.push(
-            <MenuItem value={res[i].file_num} key={res[i].file_num}>
-              {res[i].file_nickname}
-            </MenuItem>
-          );
-        }
-        setFilelistoption(filelist);
-        setMessage({
-          message: '　',
-          messageColor: 'common.black',
-          isDisplay: false
-        });
-      } else {
-        setMessage({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error',
-          isDisplay: true
-        });
-      }
-    });
+    getFileList(setMessage, setFilelistoption);
   }, []);
 
   const getQuiz = () => {
@@ -186,6 +157,19 @@ export default function EditQuizPage() {
   };
 
   const contents = () => {
+    // ファイル選択の切り替え
+    const selectedFileChange = (e: SelectChangeEvent<number>) => {
+      // if (setQueryofAddQuizStater) {
+      //   setQueryofAddQuizStater((prev) => ({
+      //     ...prev,
+      //     ['fileNum']: e.target.value as number
+      //   }));
+      // }
+
+      // 臨時
+      setFileNum(e.target.value as number);
+    };
+
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
@@ -200,21 +184,7 @@ export default function EditQuizPage() {
 
         <FormGroup>
           <FormControl>
-            <InputLabel id="quiz-file-input">問題ファイル</InputLabel>
-            <Select
-              labelId="quiz-file-name"
-              id="quiz-file-id"
-              defaultValue={-1}
-              // value={age}
-              onChange={(e) => {
-                setFileNum(Number(e.target.value));
-              }}
-            >
-              <MenuItem value={-1} key={-1}>
-                選択なし
-              </MenuItem>
-              {filelistoption}
-            </Select>
+            <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
           </FormControl>
 
           <FormControl>
