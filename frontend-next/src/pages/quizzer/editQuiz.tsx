@@ -2,29 +2,20 @@ import React, { useEffect, useState } from 'react';
 
 import { get, post } from '../../common/API';
 import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
-import {
-  Button,
-  Card,
-  CardContent,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  Input,
-  Radio,
-  RadioGroup,
-  SelectChangeEvent,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Button, Card, CardContent, Container, Input, Typography } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import {
+  DisplayQuizState,
+  MessageState,
+  PullDownOptionState,
+  QueryOfEditQuizState,
+  QueryOfQuizState
+} from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
-import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { InputQueryForEditForm } from '@/components/ui-forms/quizzer/editQuiz/InputQueryForEditForm/InputQueryForEditForm';
 
 export default function EditQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -38,6 +29,23 @@ export default function EditQuizPage() {
   const [edit_image, setEditImage] = useState<string>();
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [format, setFormat] = useState<string>('basic');
+  const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
+    fileNum: -1,
+    quizNum: -1,
+    format: 'basic'
+  });
+  const [fetchedQuiz, setFetchedQuiz] = useState<DisplayQuizState>({
+    fileNum: -1,
+    quizNum: -1,
+    quizSentense: '',
+    quizAnswer: '',
+    checked: false,
+    expanded: false
+  });
+  const [queryOfEditQuiz, setQueryOfEditQuiz] = useState<QueryOfEditQuizState>({
+    fileNum: -1,
+    quizNum: -1
+  });
   const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black',
@@ -157,19 +165,6 @@ export default function EditQuizPage() {
   };
 
   const contents = () => {
-    // ファイル選択の切り替え
-    const selectedFileChange = (e: SelectChangeEvent<number>) => {
-      // if (setQueryofAddQuizStater) {
-      //   setQueryofAddQuizStater((prev) => ({
-      //     ...prev,
-      //     ['fileNum']: e.target.value as number
-      //   }));
-      // }
-
-      // 臨時
-      setFileNum(e.target.value as number);
-    };
-
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
@@ -182,39 +177,13 @@ export default function EditQuizPage() {
           </CardContent>
         </Card>
 
-        <FormGroup>
-          <FormControl>
-            <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
-          </FormControl>
-
-          <FormControl>
-            <TextField
-              label="問題番号"
-              onChange={(e) => {
-                setQuizNum(Number(e.target.value));
-              }}
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-              value={format}
-              defaultValue="basic"
-              onChange={handleRadioChange}
-            >
-              <FormControlLabel value="basic" control={<Radio />} label="基礎問題" />
-              <FormControlLabel value="applied" control={<Radio />} label="応用問題" />
-            </RadioGroup>
-          </FormControl>
-        </FormGroup>
-
-        <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => getQuiz()}>
-          問題取得
-        </Button>
+        <InputQueryForEditForm
+          filelistoption={filelistoption}
+          queryOfQuizState={queryOfQuiz}
+          setMessageStater={setMessage}
+          setQueryofQuizStater={setQueryOfQuiz}
+          setDisplayQuizStater={setFetchedQuiz}
+        />
 
         <Card variant="outlined">
           <CardContent>
