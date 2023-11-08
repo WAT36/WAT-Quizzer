@@ -169,14 +169,6 @@ export default function EditQuizPage() {
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
-
         <InputQueryForEditForm
           filelistoption={filelistoption}
           queryOfQuizState={queryOfQuiz}
