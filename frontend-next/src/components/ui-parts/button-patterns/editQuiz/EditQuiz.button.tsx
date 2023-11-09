@@ -43,9 +43,9 @@ const editQuizAPI = ({
     case 0:
       apiPath = '/quiz/edit';
       break;
-    // case 1:
-    //   apiPath = '/quiz/advanced';
-    //   break;
+    case 1:
+      apiPath = '/quiz/edit';
+      break;
     // case 2:
     //   apiPath = '/quiz/advanced/4choice';
     //   break;
