@@ -22,6 +22,7 @@ const a11yProps = (index: number) => {
 };
 
 export const PutQuizForm = ({ value, queryOfPutQuizState, setValue, setQueryofPutQuizStater }: PutQuizFormProps) => {
+  console.log(`value:${value},queryOfPutQuizState:${JSON.stringify(queryOfPutQuizState)}`);
   // タブの切り替え
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     if (setValue && setQueryofPutQuizStater) {
@@ -36,11 +37,15 @@ export const PutQuizForm = ({ value, queryOfPutQuizState, setValue, setQueryofPu
   return (
     <>
       <Card variant="outlined">
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="基礎問題" {...a11yProps(0)} />
-          <Tab label="応用問題" {...a11yProps(1)} />
-          <Tab label="四択問題" {...a11yProps(2)} />
-        </Tabs>
+        {setValue ? (
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+            <Tab label="基礎問題" {...a11yProps(0)} />
+            <Tab label="応用問題" {...a11yProps(1)} />
+            <Tab label="四択問題" {...a11yProps(2)} />
+          </Tabs>
+        ) : (
+          <></>
+        )}
         <BasisTabPanel
           value={value}
           index={0}

@@ -32,6 +32,8 @@ export interface QueryOfQuizState {
 export interface QueryOfPutQuizState {
   fileNum: number;
   quizNum: number;
+  format?: string;
+  formatValue?: number;
   question?: string;
   answer?: string;
   category?: string;

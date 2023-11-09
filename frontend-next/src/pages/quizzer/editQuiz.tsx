@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import { get, post } from '../../common/API';
-import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
-import { Button, Card, CardContent, Container, Input, Typography } from '@mui/material';
+import { post } from '../../common/API';
+import { buttonStyle } from '../../styles/Pages';
+import { Button, Container } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
-import { QuizApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
-import {
-  DisplayQuizState,
-  MessageState,
-  PullDownOptionState,
-  QueryOfEditQuizState,
-  QueryOfQuizState
-} from '../../../interfaces/state';
+import { MessageState, PullDownOptionState, QueryOfPutQuizState, QueryOfQuizState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
 import { InputQueryForEditForm } from '@/components/ui-forms/quizzer/editQuiz/InputQueryForEditForm/InputQueryForEditForm';
+import { PutQuizForm } from '@/components/ui-forms/quizzer/forms/putQuizForm/PutQuizForm';
 
 export default function EditQuizPage() {
-  const [file_num, setFileNum] = useState<number>(-1);
-  const [quiz_num, setQuizNum] = useState<number>();
   const [edit_format, setEditFormat] = useState<string>();
   const [edit_file_num, setEditFileNum] = useState<number>();
   const [edit_quiz_num, setEditQuizNum] = useState<number>();
@@ -28,23 +20,17 @@ export default function EditQuizPage() {
   const [edit_category, setEditCategory] = useState<string>();
   const [edit_image, setEditImage] = useState<string>();
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
-  const [format, setFormat] = useState<string>('basic');
+
   const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
     fileNum: -1,
     quizNum: -1,
     format: 'basic'
   });
-  const [fetchedQuiz, setFetchedQuiz] = useState<DisplayQuizState>({
+  const [queryOfEditQuiz, setQueryOfEditQuiz] = useState<QueryOfPutQuizState>({
     fileNum: -1,
     quizNum: -1,
-    quizSentense: '',
-    quizAnswer: '',
-    checked: false,
-    expanded: false
-  });
-  const [queryOfEditQuiz, setQueryOfEditQuiz] = useState<QueryOfEditQuizState>({
-    fileNum: -1,
-    quizNum: -1
+    format: 'basic',
+    formatValue: 0
   });
   const [message, setMessage] = useState<MessageState>({
     message: '　',
@@ -55,67 +41,6 @@ export default function EditQuizPage() {
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
   }, []);
-
-  const getQuiz = () => {
-    if (file_num === -1) {
-      setMessage({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      });
-      return;
-    } else if (!quiz_num) {
-      setMessage({
-        message: 'エラー:問題番号を入力して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      });
-      return;
-    }
-
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3',
-      isDisplay: true
-    });
-    get(
-      '/quiz',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 404 || data.body?.length === 0) {
-          setMessage({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error',
-            isDisplay: true
-          });
-        } else if (data.status === 200 && data.body?.length > 0) {
-          const res: QuizApiResponse[] = data.body as QuizApiResponse[];
-          setEditFormat(format);
-          setEditFileNum(res[0].file_num);
-          setEditQuizNum(res[0].quiz_num);
-          setEditQuestion(res[0].quiz_sentense || '');
-          setEditAnswer(res[0].answer || '');
-          setEditCategory(res[0].category || '');
-          setEditImage(res[0].img_file || '');
-          setMessage({
-            message: '　',
-            messageColor: 'common.black',
-            isDisplay: false
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          });
-        }
-      },
-      {
-        file_num: String(file_num),
-        quiz_num: String(quiz_num),
-        format
-      }
-    );
-  };
 
   const editQuiz = () => {
     setMessage({
@@ -159,12 +84,8 @@ export default function EditQuizPage() {
     );
   };
 
-  // ラジオボタンの選択変更時の処理
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormat((event.target as HTMLInputElement).value);
-  };
-
   const contents = () => {
+    console.log(`queryOfEditQuiz:${JSON.stringify(queryOfEditQuiz)}`);
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
@@ -174,42 +95,14 @@ export default function EditQuizPage() {
           queryOfQuizState={queryOfQuiz}
           setMessageStater={setMessage}
           setQueryofQuizStater={setQueryOfQuiz}
-          setDisplayQuizStater={setFetchedQuiz}
+          setQueryOfEditQuizStater={setQueryOfEditQuiz}
         />
 
-        <Card variant="outlined">
-          <CardContent>
-            <Typography variant="h6" component="h6" style={messageBoxStyle}>
-              ファイル：
-              {edit_file_num === -1 ? '' : edit_file_num}
-            </Typography>
-
-            <Typography variant="h6" component="h6" style={messageBoxStyle}>
-              問題番号：
-              {edit_quiz_num === -1 ? '' : edit_quiz_num}
-            </Typography>
-
-            <Typography variant="h6" component="h6" style={messageBoxStyle}>
-              問題　　：
-              <Input fullWidth maxRows={1} value={edit_question} onChange={(e) => setEditQuestion(e.target.value)} />
-            </Typography>
-
-            <Typography variant="h6" component="h6" style={messageBoxStyle}>
-              答え　　：
-              <Input fullWidth maxRows={1} value={edit_answer} onChange={(e) => setEditAnswer(e.target.value)} />
-            </Typography>
-
-            <Typography variant="h6" component="h6" style={messageBoxStyle}>
-              カテゴリ：
-              <Input fullWidth maxRows={1} value={edit_category} onChange={(e) => setEditCategory(e.target.value)} />
-            </Typography>
-
-            <Typography variant="h6" component="h6" style={messageBoxStyle}>
-              画像ファイル：
-              <Input fullWidth maxRows={1} value={edit_image} onChange={(e) => setEditImage(e.target.value)} />
-            </Typography>
-          </CardContent>
-        </Card>
+        <PutQuizForm
+          value={queryOfEditQuiz.formatValue || 0}
+          queryOfPutQuizState={queryOfEditQuiz}
+          setQueryofPutQuizStater={setQueryOfEditQuiz}
+        />
 
         <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => editQuiz()}>
           更新

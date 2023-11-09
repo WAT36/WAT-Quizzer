@@ -25,7 +25,6 @@ export const GetQuizButtonGroup = ({
         queryOfQuizState={queryOfQuizState}
         setDisplayQuizStater={setDisplayQuizStater}
         setMessageStater={setMessageStater}
-        setQueryofQuizStater={setQueryofQuizStater}
       />
       <GetRandomQuizButton
         queryOfQuizState={queryOfQuizState}
