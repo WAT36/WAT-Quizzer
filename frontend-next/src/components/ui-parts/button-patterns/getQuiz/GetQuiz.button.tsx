@@ -73,7 +73,9 @@ const getQuizAPI = ({
           });
         }
         if (setQueryofPutQuizStater) {
-          setQueryofPutQuizStater({
+          setQueryofPutQuizStater((prev) => ({
+            format: prev.format,
+            formatValue: prev.formatValue,
             fileNum: res[0].file_num,
             quizNum: res[0].quiz_num,
             question: res[0].quiz_sentense,
@@ -84,7 +86,7 @@ const getQuizAPI = ({
             // dummy1: res[0].dummy1, //四択問題のダミー選択肢１
             // dummy2: res[0].dummy2, //四択問題のダミー選択肢２
             // dummy3: res[0].dummy3, //四択問題のダミー選択肢３
-          });
+          }));
         }
         setMessageStater({
           message: '　',

@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  DisplayQuizState,
   MessageState,
   PullDownOptionState,
   QueryOfPutQuizState,

@@ -22,7 +22,6 @@ const a11yProps = (index: number) => {
 };
 
 export const PutQuizForm = ({ value, queryOfPutQuizState, setValue, setQueryofPutQuizStater }: PutQuizFormProps) => {
-  console.log(`value:${value},queryOfPutQuizState:${JSON.stringify(queryOfPutQuizState)}`);
   // タブの切り替え
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     if (setValue && setQueryofPutQuizStater) {
