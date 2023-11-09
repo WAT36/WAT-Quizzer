@@ -29,8 +29,9 @@ export interface QueryOfQuizState {
   checked?: boolean;
 }
 
-export interface QueryOfAddQuizState {
+export interface QueryOfPutQuizState {
   fileNum: number;
+  quizNum: number;
   question?: string;
   answer?: string;
   category?: string;

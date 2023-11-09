@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState, PullDownOptionState, QueryOfAddQuizState } from '../../../interfaces/state';
+import { MessageState, PullDownOptionState, QueryOfPutQuizState } from '../../../interfaces/state';
 import { AddQuizLogSection } from '@/components/ui-forms/quizzer/addQuiz/addQuizLogSection/AddQuizLogSection';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
@@ -10,8 +10,9 @@ import { AddQuizButton } from '@/components/ui-parts/button-patterns/addQuiz/Add
 import { AddQuizForm } from '@/components/ui-forms/quizzer/addQuiz/addQuizForm/AddQuizForm';
 
 export default function AddQuizPage() {
-  const [queryOfAddQuiz, setQueryOfAddQuiz] = useState<QueryOfAddQuizState>({
-    fileNum: -1
+  const [queryOfAddQuiz, setQueryOfAddQuiz] = useState<QueryOfPutQuizState>({
+    fileNum: -1,
+    quizNum: -1
   });
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
   const [addLog, setAddLog] = useState<string>('');
@@ -31,9 +32,9 @@ export default function AddQuizPage() {
         <AddQuizForm
           filelistoption={filelistoption}
           value={value}
-          queryOfAddQuizState={queryOfAddQuiz}
+          queryOfPutQuizState={queryOfAddQuiz}
           setValue={setValue}
-          setQueryofAddQuizStater={setQueryOfAddQuiz}
+          setQueryofPutQuizStater={setQueryOfAddQuiz}
         />
 
         <AddQuizButton

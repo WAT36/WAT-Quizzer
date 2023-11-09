@@ -2,14 +2,14 @@ import React from 'react';
 import { Button } from '@/components/ui-elements/button/Button';
 import { AddQuizApiResponse, ProcessingApiReponse } from '../../../../../interfaces/api/response';
 import { post } from '@/common/API';
-import { MessageState, QueryOfAddQuizState } from '../../../../../interfaces/state';
+import { MessageState, QueryOfPutQuizState } from '../../../../../interfaces/state';
 
 interface AddQuizButtonProps {
   value: number;
-  queryOfAddQuizState: QueryOfAddQuizState;
+  queryOfAddQuizState: QueryOfPutQuizState;
   setAddLog?: React.Dispatch<React.SetStateAction<string>>;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setQueryofAddQuizStater?: React.Dispatch<React.SetStateAction<QueryOfAddQuizState>>;
+  setQueryofAddQuizStater?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
 }
 
 const addQuizAPI = ({
@@ -81,7 +81,8 @@ const addQuizAPI = ({
         });
         setAddLog(res[0].result);
         setQueryofAddQuizStater({
-          fileNum: queryOfAddQuizState.fileNum
+          fileNum: queryOfAddQuizState.fileNum,
+          quizNum: -1
         });
         //入力データをクリア
         const inputQuizField = document.getElementsByTagName('textarea').item(0) as HTMLTextAreaElement;

@@ -21,8 +21,9 @@ export const FourChoiceTab: Story = {
   args: {
     value: 2,
     index: 2,
-    queryOfAddQuizState: {
-      fileNum: -1
+    queryOfPutQuizState: {
+      fileNum: -1,
+      quizNum: -1
     }
   }
 };

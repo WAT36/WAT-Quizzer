@@ -2,20 +2,20 @@ import { TabPanel } from '@/components/ui-elements/tabPanel/TabPanel';
 import { CardContent, Input, Typography } from '@mui/material';
 import React from 'react';
 import styles from '../../TabPanel.module.css';
-import { QueryOfAddQuizState } from '../../../../../../interfaces/state';
+import { QueryOfPutQuizState } from '../../../../../../interfaces/state';
 
 interface FourChoiceTabPanelProps {
   value: number;
   index: number;
-  queryOfAddQuizState: QueryOfAddQuizState;
-  setQueryofAddQuizStater?: React.Dispatch<React.SetStateAction<QueryOfAddQuizState>>;
+  queryOfPutQuizState: QueryOfPutQuizState;
+  setQueryofPutQuizStater?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
 }
 
 export const FourChoiceTabPanel = ({
   value,
   index,
-  queryOfAddQuizState,
-  setQueryofAddQuizStater
+  queryOfPutQuizState,
+  setQueryofPutQuizStater
 }: FourChoiceTabPanelProps) => (
   <TabPanel value={value} index={index}>
     <CardContent>
@@ -28,10 +28,10 @@ export const FourChoiceTabPanel = ({
         <Input
           fullWidth
           maxRows={1}
-          value={queryOfAddQuizState.question || ''}
+          value={queryOfPutQuizState.question || ''}
           onChange={(e) => {
-            if (setQueryofAddQuizStater) {
-              setQueryofAddQuizStater((prev) => ({
+            if (setQueryofPutQuizStater) {
+              setQueryofPutQuizStater((prev) => ({
                 ...prev,
                 ['question']: e.target.value
               }));
@@ -45,10 +45,10 @@ export const FourChoiceTabPanel = ({
         <Input
           fullWidth
           maxRows={1}
-          value={queryOfAddQuizState.answer || ''}
+          value={queryOfPutQuizState.answer || ''}
           onChange={(e) => {
-            if (setQueryofAddQuizStater) {
-              setQueryofAddQuizStater((prev) => ({
+            if (setQueryofPutQuizStater) {
+              setQueryofPutQuizStater((prev) => ({
                 ...prev,
                 ['answer']: e.target.value
               }));
@@ -62,10 +62,10 @@ export const FourChoiceTabPanel = ({
         <Input
           fullWidth
           maxRows={1}
-          value={queryOfAddQuizState.category || ''}
+          value={queryOfPutQuizState.category || ''}
           onChange={(e) => {
-            if (setQueryofAddQuizStater) {
-              setQueryofAddQuizStater((prev) => ({
+            if (setQueryofPutQuizStater) {
+              setQueryofPutQuizStater((prev) => ({
                 ...prev,
                 ['category']: e.target.value
               }));
@@ -79,10 +79,10 @@ export const FourChoiceTabPanel = ({
         <Input
           fullWidth
           maxRows={1}
-          value={queryOfAddQuizState.img_file || ''}
+          value={queryOfPutQuizState.img_file || ''}
           onChange={(e) => {
-            if (setQueryofAddQuizStater) {
-              setQueryofAddQuizStater((prev) => ({
+            if (setQueryofPutQuizStater) {
+              setQueryofPutQuizStater((prev) => ({
                 ...prev,
                 ['img_data']: e.target.value
               }));
@@ -96,10 +96,10 @@ export const FourChoiceTabPanel = ({
         <Input
           fullWidth
           maxRows={1}
-          value={queryOfAddQuizState.matched_basic_quiz_id || ''}
+          value={queryOfPutQuizState.matched_basic_quiz_id || ''}
           onChange={(e) => {
-            if (setQueryofAddQuizStater) {
-              setQueryofAddQuizStater((prev) => ({
+            if (setQueryofPutQuizStater) {
+              setQueryofPutQuizStater((prev) => ({
                 ...prev,
                 ['matched_basic_quiz_id']: e.target.value
               }));
@@ -113,10 +113,10 @@ export const FourChoiceTabPanel = ({
         <Input
           fullWidth
           maxRows={1}
-          value={queryOfAddQuizState.dummy1 || ''}
+          value={queryOfPutQuizState.dummy1 || ''}
           onChange={(e) => {
-            if (setQueryofAddQuizStater) {
-              setQueryofAddQuizStater((prev) => ({
+            if (setQueryofPutQuizStater) {
+              setQueryofPutQuizStater((prev) => ({
                 ...prev,
                 ['dummy1']: e.target.value
               }));
@@ -130,10 +130,10 @@ export const FourChoiceTabPanel = ({
         <Input
           fullWidth
           maxRows={1}
-          value={queryOfAddQuizState.dummy2 || ''}
+          value={queryOfPutQuizState.dummy2 || ''}
           onChange={(e) => {
-            if (setQueryofAddQuizStater) {
-              setQueryofAddQuizStater((prev) => ({
+            if (setQueryofPutQuizStater) {
+              setQueryofPutQuizStater((prev) => ({
                 ...prev,
                 ['dummy2']: e.target.value
               }));
@@ -147,10 +147,10 @@ export const FourChoiceTabPanel = ({
         <Input
           fullWidth
           maxRows={1}
-          value={queryOfAddQuizState.dummy3 || ''}
+          value={queryOfPutQuizState.dummy3 || ''}
           onChange={(e) => {
-            if (setQueryofAddQuizStater) {
-              setQueryofAddQuizStater((prev) => ({
+            if (setQueryofPutQuizStater) {
+              setQueryofPutQuizStater((prev) => ({
                 ...prev,
                 ['dummy3']: e.target.value
               }));
