@@ -37,34 +37,13 @@ const editQuizAPI = ({
     return;
   }
 
-  // 問題形式によりAPI決定
-  let apiPath;
-  switch (value) {
-    case 0:
-      apiPath = '/quiz/edit';
-      break;
-    case 1:
-      apiPath = '/quiz/edit';
-      break;
-    // case 2:
-    //   apiPath = '/quiz/advanced/4choice';
-    //   break;
-    default:
-      setMessageStater({
-        message: `エラー：問題形式不正:${value}`,
-        messageColor: 'error',
-        isDisplay: true
-      });
-      return;
-  }
-
   setMessageStater({
     message: '通信中...',
     messageColor: '#d3d3d3',
     isDisplay: true
   });
   post(
-    apiPath,
+    '/quiz/edit',
     {
       format: queryOfEditQuizState.format,
       file_num: queryOfEditQuizState.fileNum,

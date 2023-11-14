@@ -13,6 +13,7 @@ import {
   DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
   QuizDto,
+  GetIdDto,
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 
@@ -388,6 +389,10 @@ export class QuizService {
         answer,
         category,
         img_file,
+        matched_basic_quiz_id,
+        dummy1,
+        dummy2,
+        dummy3,
       } = req;
 
       // クエリ用意
@@ -412,6 +417,11 @@ export class QuizService {
           editSqlValue = [question, answer, img_file, file_num, quiz_num];
           deleteLogSqlValue = [2, file_num, quiz_num];
           break;
+        case '4choice':
+          editSql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.ADVANCED_QUIZ
+          editSqlValue = [question, answer, img_file, file_num, quiz_num];
+          deleteLogSqlValue = [2, file_num, quiz_num];
+          break;
         default:
           throw new HttpException(
             `入力された問題形式が不正です`,
@@ -426,6 +436,37 @@ export class QuizService {
         query: editSql,
         value: editSqlValue,
       });
+      
+      // 四択問題時 ダミー選択肢の編集
+      if(format === '4choice'){
+        // 問題番号を取得
+        const res: GetQuizNumSqlResultDto[] = await execQuery(
+          SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET,
+          [file_num,quiz_num],
+        );
+        const advanced_quiz_id: number =
+          res && res.length > 0 ? res[0]['id'] : -1
+        ;
+        // ダミー選択肢編集
+        const dummyChoices = [dummy1,dummy2,dummy3]
+        for(let i=0;i<dummyChoices.length;i++){
+          // 編集対象ダミー選択肢のID取得
+          const res: GetIdDto[] = await execQuery(
+            SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.GET_DUMMY_CHOICE_ID,
+            [advanced_quiz_id,i],
+          );
+          const id: number =
+            res && res.length > 0 ? res[0]['id'] : -1
+          ;
+
+          //編集対象ダミー選択肢の更新
+          transactionQuery.push({
+            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.DUMMY_CHOICE,
+            value: [dummyChoices[i],id],
+          });
+        }
+      }
+
       // 編集した問題の解答ログ削除
       transactionQuery.push({
         query: SQL.ANSWER_LOG.RESET,

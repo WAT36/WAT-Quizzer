@@ -63,6 +63,11 @@ export interface GetQuizNumSqlResultDto {
   quiz_num: number;
 }
 
+// ID(のみ)を取得する用のDTO
+export interface GetIdDto {
+  id: number;
+}
+
 // 問題の詳細情報を取得した結果のDTO
 export type QuizDto = {
   id: number;

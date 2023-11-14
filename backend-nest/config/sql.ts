@@ -474,6 +474,43 @@ export const SQL = {
           answer_log 
         (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (3,?,?,false);
       `,
+      EDIT: {
+        ADVANCED_QUIZ: `
+          UPDATE
+              advanced_quiz
+          SET
+              quiz_sentense = ? ,
+              answer = ? ,
+              img_file = ? ,
+              updated_at = NOW()
+          WHERE 
+              file_num = ? 
+              AND quiz_num = ? 
+              AND advanced_quiz_type_id = 2
+          ;
+        `,
+        DUMMY_CHOICE: `
+          UPDATE
+              dummy_choice
+          SET
+              dummy_choice_sentense = ? ,
+              updated_at = NOW()
+          WHERE 
+              id = ?
+          ;
+        `,
+        GET_DUMMY_CHOICE_ID: `
+          SELECT
+            id
+          FROM
+            dummy_choice
+          WHERE
+            advanced_quiz_id = ?
+          ORDER BY
+              id
+          LIMIT 1 OFFSET ?
+        `
+      },
     },
   },
   CATEGORY: {
