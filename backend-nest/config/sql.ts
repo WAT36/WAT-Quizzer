@@ -365,27 +365,62 @@ export const SQL = {
         VALUES(?,?)
       `,
     },
-    FOUR_CHOICE: {
+    BASIC_LINKAGE: {
       GET: `
         SELECT
-          a.id,
-          a.file_num,
-          a.quiz_num,
-          a.quiz_sentense,
-          a.answer,
-          a.img_file,
-          a.checked,
-          d.dummy_choice_sentense
+          basis_quiz_id
         FROM
           advanced_quiz as a
         INNER JOIN
-          dummy_choice as d
+          quiz_basis_advanced_linkage as b
         ON
-          a.id = d.advanced_quiz_id
+          a.file_num = b.file_num
+        AND a.id = b.advanced_quiz_id
         WHERE
           a.file_num = ?
           AND a.quiz_num = ?
-      `,
+        ;
+      `
+    },
+    FOUR_CHOICE: {
+      GET: {
+        DUMMY_CHOICE:`
+          SELECT
+            a.id,
+            a.file_num,
+            a.quiz_num,
+            a.quiz_sentense,
+            a.answer,
+            a.img_file,
+            a.checked,
+            d.dummy_choice_sentense
+          FROM
+            advanced_quiz as a
+          INNER JOIN
+            dummy_choice as d
+          ON
+            a.id = d.advanced_quiz_id
+          WHERE
+            a.file_num = ?
+            AND a.quiz_num = ?
+        `,
+        BASIS_ADVANCED_LINK:`
+          SELECT
+            a.id,
+            a.file_num,
+            a.quiz_num,
+            l.basis_quiz_id
+          FROM
+            advanced_quiz as a
+          INNER JOIN
+            quiz_basis_advanced_linkage as l
+          ON
+            a.id = l.advanced_quiz_id
+          WHERE
+            a.file_num = ?
+            AND a.quiz_num = ?
+        `
+      },
       RANDOM: {
         PRE: ` 
           SELECT 

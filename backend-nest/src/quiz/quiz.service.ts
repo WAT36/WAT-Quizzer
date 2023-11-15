@@ -14,6 +14,8 @@ import {
   GetQuizNumSqlResultDto,
   QuizDto,
   GetIdDto,
+  GetLinkedBasisIdDto,
+  QuizViewApiResponse,
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 
@@ -46,6 +48,9 @@ export class QuizService {
 
     try {
       let query: QueryType;
+      let linkedBasisId: string;
+      let ids: {basis_quiz_id: string}[]
+      let idArray: string[];
       switch (format) {
         case 'basic':
           query = { query: SQL.QUIZ.INFO, value: [file_num, quiz_num] };
@@ -58,7 +63,7 @@ export class QuizService {
           break;
         case '4choice':
           query = {
-            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET,
+            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.DUMMY_CHOICE,
             value: [file_num, quiz_num],
           };
           break;
@@ -68,7 +73,23 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(query.query, query.value);
+      const result: QuizViewApiResponse[] = await execQuery(query.query, query.value);
+
+      if(format === 'applied' || format === '4choice'){
+        // 関連基礎問題取得
+        ids = await execQuery(SQL.ADVANCED_QUIZ.BASIC_LINKAGE.GET,[file_num,quiz_num])
+        idArray = []
+        for(let i=0;i<ids.length;i++){
+          idArray.push(ids[i].basis_quiz_id)
+        }
+        linkedBasisId = idArray.length > 0 ? idArray.join(',') : undefined
+        if(linkedBasisId){
+          for(let i=0;i<result.length;i++){
+            result[i].matched_basic_quiz_id = linkedBasisId
+          }
+        }
+      }
+      return result
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -441,7 +462,7 @@ export class QuizService {
       if(format === '4choice'){
         // 問題番号を取得
         const res: GetQuizNumSqlResultDto[] = await execQuery(
-          SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET,
+          SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.DUMMY_CHOICE,
           [file_num,quiz_num],
         );
         const advanced_quiz_id: number =
@@ -465,6 +486,40 @@ export class QuizService {
             value: [dummyChoices[i],id],
           });
         }
+      }
+
+      // 応用問題の場合　関連基礎問題を編集する
+      if(matched_basic_quiz_id && (format === 'applied' || format === '4choice')){
+        //編集画面で入力した関連基礎問題番号取得・バリデーション(A)
+        const matched_basic_quiz_id_list: number[] = [];
+        const id_list = matched_basic_quiz_id.split(',');
+        for (let i = 0; i < id_list.length; i++) {
+          if (isNaN(+id_list[i])) {
+            throw new HttpException(
+              `入力した関連基礎問題番号でエラーが発生しました；("${id_list[i]}"は数値ではありません)`,
+              HttpStatus.BAD_REQUEST,
+            );
+          } else {
+            matched_basic_quiz_id_list.push(+id_list[i]);
+          }
+        }
+        console.log(`一旦確認、matched_basic_quiz_id_list:${matched_basic_quiz_id_list}`)
+
+        //指定した応用問題の番号　から　応用問題テーブルでの問題IDを取得
+        //指定応用問題IDから、今登録されている関連基礎問題のデータを取得(B)（↑と一緒にできる？）
+        const registered_basic_quiz_id_list: number[] = [];
+        const res: GetLinkedBasisIdDto[] = await execQuery(
+          SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.BASIS_ADVANCED_LINK,
+          [file_num,quiz_num],
+        );
+        for(let i=0;i<res.length;i++){
+          registered_basic_quiz_id_list.push(res[i].basis_quiz_id)
+        }
+        console.log(`一旦確認、registered_basic_quiz_id_list:${registered_basic_quiz_id_list}`)
+
+        //(A)と(B)を比較
+        //(A)だけにしかないもの→関連基礎問題関連付テーブルにデータを新規追加する
+        //(B)だけにしかないもの→関連基礎問題関連付テーブルからデータを削除する
       }
 
       // 編集した問題の解答ログ削除

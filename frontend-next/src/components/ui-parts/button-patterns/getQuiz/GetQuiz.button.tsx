@@ -82,10 +82,10 @@ const getQuizAPI = ({
             answer: res[0].answer,
             category: res[0].category,
             img_file: res[0].img_file,
-            // matched_basic_quiz_id: res[0].matched_basic_quiz_id,
+            matched_basic_quiz_id: res[0].matched_basic_quiz_id,
             dummy1: res[0].dummy_choice_sentense, //四択問題のダミー選択肢１
-            dummy2: res[1].dummy_choice_sentense, //四択問題のダミー選択肢２
-            dummy3: res[2].dummy_choice_sentense //四択問題のダミー選択肢３
+            dummy2: res[1] ? res[1].dummy_choice_sentense : undefined, //四択問題のダミー選択肢２
+            dummy3: res[2] ? res[2].dummy_choice_sentense : undefined //四択問題のダミー選択肢３
           }));
         }
         setMessageStater({
