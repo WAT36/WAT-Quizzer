@@ -18,6 +18,7 @@ import {
   QuizViewApiResponse,
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
+import { getDifferenceArray } from 'lib/array';
 
 export interface QueryType {
   query: string;
@@ -490,6 +491,12 @@ export class QuizService {
 
       // 応用問題の場合　関連基礎問題を編集する
       if(matched_basic_quiz_id && (format === 'applied' || format === '4choice')){
+        //入力した問題番号のadvanced_quiz_idでの問題IDを取得
+        const advanced_quiz_id = (await execQuery(
+          SQL.ADVANCED_QUIZ.INFO,
+          [file_num,quiz_num],
+        ))[0]["id"] as number;
+
         //編集画面で入力した関連基礎問題番号取得・バリデーション(A)
         const matched_basic_quiz_id_list: number[] = [];
         const id_list = matched_basic_quiz_id.split(',');
@@ -503,10 +510,9 @@ export class QuizService {
             matched_basic_quiz_id_list.push(+id_list[i]);
           }
         }
-        console.log(`一旦確認、matched_basic_quiz_id_list:${matched_basic_quiz_id_list}`)
 
         //指定した応用問題の番号　から　応用問題テーブルでの問題IDを取得
-        //指定応用問題IDから、今登録されている関連基礎問題のデータを取得(B)（↑と一緒にできる？）
+        //指定応用問題IDから、今登録されている関連基礎問題のデータを取得(B)
         const registered_basic_quiz_id_list: number[] = [];
         const res: GetLinkedBasisIdDto[] = await execQuery(
           SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.BASIS_ADVANCED_LINK,
@@ -515,11 +521,32 @@ export class QuizService {
         for(let i=0;i<res.length;i++){
           registered_basic_quiz_id_list.push(res[i].basis_quiz_id)
         }
-        console.log(`一旦確認、registered_basic_quiz_id_list:${registered_basic_quiz_id_list}`)
 
         //(A)と(B)を比較
         //(A)だけにしかないもの→関連基礎問題関連付テーブルにデータを新規追加する
+        const onlyAvalueArray = getDifferenceArray(matched_basic_quiz_id_list,registered_basic_quiz_id_list)
+        for(let i=0;i<onlyAvalueArray.length;i++){
+          transactionQuery.push({
+            query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.ADD,
+            value: [
+              file_num,
+              onlyAvalueArray[i],
+              advanced_quiz_id
+            ],
+          });
+        }
         //(B)だけにしかないもの→関連基礎問題関連付テーブルからデータを削除する
+        const onlyBvalueArray = getDifferenceArray(registered_basic_quiz_id_list,matched_basic_quiz_id_list)
+        for(let i=0;i<onlyBvalueArray.length;i++){
+          transactionQuery.push({
+            query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.DELETE,
+            value: [
+              file_num,
+              onlyBvalueArray[i],
+              advanced_quiz_id
+            ],
+          });
+        }
       }
 
       // 編集した問題の解答ログ削除

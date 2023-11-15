@@ -591,6 +591,15 @@ export const SQL = {
           quiz_basis_advanced_linkage(file_num, basis_quiz_id, advanced_quiz_id)
       VALUES (?,?,?) ;
     `,
+    DELETE: `
+      DELETE FROM
+        quiz_basis_advanced_linkage
+      WHERE
+        file_num = ?
+        AND basis_quiz_id = ?
+        AND advanced_quiz_id = ?
+      ;
+    `, // TODO DELETEでなくdeleted_atに設定する形にしたい
   },
   ENGLISH: {
     PARTOFSPEECH: {
