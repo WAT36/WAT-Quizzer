@@ -22,8 +22,9 @@ export const AddQuiz: Story = {
   args: {
     filelistoption: [],
     value: -1,
-    queryOfAddQuizState: {
-      fileNum: -1
+    queryOfPutQuizState: {
+      fileNum: -1,
+      quizNum: -1
     }
   }
 };
@@ -32,8 +33,9 @@ export const BasisPanel: Story = {
   args: {
     filelistoption: [],
     value: 0,
-    queryOfAddQuizState: {
-      fileNum: -1
+    queryOfPutQuizState: {
+      fileNum: -1,
+      quizNum: -1
     }
   }
 };
@@ -42,8 +44,9 @@ export const AppliedPanel: Story = {
   args: {
     filelistoption: [],
     value: 1,
-    queryOfAddQuizState: {
-      fileNum: -1
+    queryOfPutQuizState: {
+      fileNum: -1,
+      quizNum: -1
     }
   }
 };
@@ -52,8 +55,9 @@ export const FourChoicePanel: Story = {
   args: {
     filelistoption: [],
     value: 2,
-    queryOfAddQuizState: {
-      fileNum: -1
+    queryOfPutQuizState: {
+      fileNum: -1,
+      quizNum: -1
     }
   }
 };
