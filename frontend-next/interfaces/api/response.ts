@@ -76,6 +76,14 @@ export interface EnglishWordByIdApiResponse extends ApiResponse {
   source_name: string;
 }
 
+// 英単語の出典（単語IDで）取得APIの返り値
+export interface EnglishWordSourceByIdApiResponse extends ApiResponse {
+  word_id: number;
+  word_name: string;
+  source_id: number;
+  source_name: string;
+}
+
 /// 以下、格言(saying)系
 
 export interface GetRandomSayingResponse extends ApiResponse {

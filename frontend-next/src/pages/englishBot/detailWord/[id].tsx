@@ -16,7 +16,11 @@ import {
 import { messageBoxStyle } from '../../../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get, getApiAndGetValue, patch } from '@/common/API';
-import { EnglishWordByIdApiResponse, ProcessingApiReponse } from '../../../../interfaces/api/response';
+import {
+  EnglishWordByIdApiResponse,
+  EnglishWordSourceByIdApiResponse,
+  ProcessingApiReponse
+} from '../../../../interfaces/api/response';
 import { PartofSpeechApiResponse, SourceApiResponse, WordApiResponse } from '../../../../interfaces/db';
 import { GetStaticPropsContext } from 'next';
 import { Layout } from '@/components/templates/layout/Layout';
@@ -31,6 +35,13 @@ type wordMeanData = {
   wordmeanId: number;
   meanId: number;
   mean: string;
+  sourceId: number;
+  sourceName: string;
+};
+
+type wordSourceData = {
+  wordId: number;
+  wordName: string;
   sourceId: number;
   sourceName: string;
 };
@@ -66,7 +77,9 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [wordName, setWordName] = useState<string>();
   const [meanData, setMeanData] = useState<wordMeanData[]>([]);
+  const [wordSourceData, setWordSourceData] = useState<wordSourceData[]>([]);
   const [open, setOpen] = useState(false);
+  const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [posList, setPosList] = useState<JSX.Element[]>([]);
   const [sourceList, setSourceList] = useState<JSX.Element[]>([]);
   const [inputEditData, setInputEditData] = useState<editWordMeanData | undefined>();
@@ -87,6 +100,12 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const handleClose = () => {
     setOpen(false);
     setInputEditData(undefined);
+  };
+  const handleSourceModalOpen = () => {
+    setSourceModalOpen(true);
+  };
+  const handleSourceModalClose = () => {
+    setSourceModalOpen(false);
   };
 
   useEffect(() => {
@@ -111,6 +130,29 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
             });
             setWordName(result[0].name || '(null)');
             setMeanData(wordmeans);
+          } else {
+            setMessage({
+              message: 'エラー:外部APIとの連携に失敗しました',
+              messageColor: 'error'
+            });
+          }
+        },
+        {}
+      ),
+      get(
+        '/english/word/source/' + id,
+        (data: ProcessingApiReponse) => {
+          if (data.status === 200) {
+            const result: EnglishWordSourceByIdApiResponse[] = data.body as EnglishWordSourceByIdApiResponse[];
+            const wordsources: wordSourceData[] = result.map((x: EnglishWordSourceByIdApiResponse) => {
+              return {
+                wordId: x.word_id,
+                wordName: x.word_name,
+                sourceId: x.source_id,
+                sourceName: x.source_name
+              };
+            });
+            setWordSourceData(wordsources);
           } else {
             setMessage({
               message: 'エラー:外部APIとの連携に失敗しました',
@@ -346,6 +388,74 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
     );
   };
 
+  const makeSourceStack = () => {
+    return (
+      <Card>
+        <Typography align="left" variant="h4" component="p">
+          {'出典'}
+        </Typography>
+        <Box sx={{ width: '100%', padding: '4px' }}>
+          <Stack spacing={2}>
+            {wordSourceData.map((x) => {
+              return (
+                // eslint-disable-next-line react/jsx-key
+                <Item key={x.wordId}>
+                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography component="div">
+                      <Typography align="left" variant="h5" component="p">
+                        {x.sourceName}
+                      </Typography>
+                    </Typography>
+                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
+                      <Button variant="outlined" onClick={(e) => handleSourceModalOpen()}>
+                        編集
+                      </Button>
+                    </Typography>
+                  </Typography>
+                  <Modal
+                    open={sourceModalOpen}
+                    onClose={handleSourceModalClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Box sx={mordalStyle}>
+                      <Typography id="modal-modal-title" variant="h4" component="h4">
+                        出典編集
+                      </Typography>
+                      {/* <Typography sx={{ mt: 2 }}>
+                        品詞：
+                        {displayPosInput(1)}
+                      </Typography>
+                      <Typography sx={{ mt: 2 }}>
+                        意味：
+                        <TextField
+                          variant="outlined"
+                          defaultValue={x.mean}
+                          onChange={(e) => {
+                            const inputtedData = Object.assign({}, inputEditData);
+                            inputtedData.mean = e.target.value;
+                            setInputEditData(inputtedData);
+                          }}
+                        />
+                      </Typography>
+                      <Typography sx={{ mt: 2 }}>
+                        出典：
+                        {displaySourceInput(3)}
+                      </Typography>
+                      <Button variant="contained" onClick={(e) => editSubmit(x.meanId)}>
+                        更新
+                      </Button> */}
+                    </Box>
+                  </Modal>
+                </Item>
+              );
+            })}
+          </Stack>
+        </Box>
+      </Card>
+    );
+  };
+
   const contents = () => {
     return (
       <Container>
@@ -363,6 +473,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
         </Typography>
 
         {makeMeaningStack()}
+        {makeSourceStack()}
       </Container>
     );
   };
