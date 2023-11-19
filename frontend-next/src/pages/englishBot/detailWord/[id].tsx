@@ -277,67 +277,72 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
 
   const makeMeaningStack = () => {
     return (
-      <Box sx={{ width: '100%' }}>
-        <Stack spacing={2}>
-          {meanData.map((x) => {
-            return (
-              // eslint-disable-next-line react/jsx-key
-              <Item key={x.wordmeanId}>
-                <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography component="div">
-                    <Typography align="left" sx={{ fontSize: 14 }} color="text.secondary" component="p">
-                      {`[${x.partofspeechName}]`}
+      <Card>
+        <Typography align="left" variant="h4" component="p">
+          {'意味'}
+        </Typography>
+        <Box sx={{ width: '100%', padding: '4px' }}>
+          <Stack spacing={2}>
+            {meanData.map((x) => {
+              return (
+                // eslint-disable-next-line react/jsx-key
+                <Item key={x.wordmeanId}>
+                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography component="div">
+                      <Typography align="left" sx={{ fontSize: 14 }} color="text.secondary" component="p">
+                        {`[${x.partofspeechName}]`}
+                      </Typography>
+                      <Typography align="left" variant="h5" component="p">
+                        {x.mean}
+                      </Typography>
                     </Typography>
-                    <Typography align="left" variant="h5" component="p">
-                      {x.mean}
+                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
+                      <Button variant="outlined" onClick={(e) => handleOpen(x)}>
+                        編集
+                      </Button>
                     </Typography>
                   </Typography>
-                  <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                    <Button variant="outlined" onClick={(e) => handleOpen(x)}>
-                      編集
-                    </Button>
-                  </Typography>
-                </Typography>
-                <Modal
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
-                >
-                  <Box sx={mordalStyle}>
-                    <Typography id="modal-modal-title" variant="h4" component="h4">
-                      意味編集
-                    </Typography>
-                    <Typography sx={{ mt: 2 }}>
-                      品詞：
-                      {displayPosInput(1)}
-                    </Typography>
-                    <Typography sx={{ mt: 2 }}>
-                      意味：
-                      <TextField
-                        variant="outlined"
-                        defaultValue={x.mean}
-                        onChange={(e) => {
-                          const inputtedData = Object.assign({}, inputEditData);
-                          inputtedData.mean = e.target.value;
-                          setInputEditData(inputtedData);
-                        }}
-                      />
-                    </Typography>
-                    <Typography sx={{ mt: 2 }}>
-                      出典：
-                      {displaySourceInput(3)}
-                    </Typography>
-                    <Button variant="contained" onClick={(e) => editSubmit(x.meanId)}>
-                      更新
-                    </Button>
-                  </Box>
-                </Modal>
-              </Item>
-            );
-          })}
-        </Stack>
-      </Box>
+                  <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Box sx={mordalStyle}>
+                      <Typography id="modal-modal-title" variant="h4" component="h4">
+                        意味編集
+                      </Typography>
+                      <Typography sx={{ mt: 2 }}>
+                        品詞：
+                        {displayPosInput(1)}
+                      </Typography>
+                      <Typography sx={{ mt: 2 }}>
+                        意味：
+                        <TextField
+                          variant="outlined"
+                          defaultValue={x.mean}
+                          onChange={(e) => {
+                            const inputtedData = Object.assign({}, inputEditData);
+                            inputtedData.mean = e.target.value;
+                            setInputEditData(inputtedData);
+                          }}
+                        />
+                      </Typography>
+                      <Typography sx={{ mt: 2 }}>
+                        出典：
+                        {displaySourceInput(3)}
+                      </Typography>
+                      <Button variant="contained" onClick={(e) => editSubmit(x.meanId)}>
+                        更新
+                      </Button>
+                    </Box>
+                  </Modal>
+                </Item>
+              );
+            })}
+          </Stack>
+        </Box>
+      </Card>
     );
   };
 
