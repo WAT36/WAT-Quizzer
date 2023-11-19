@@ -170,6 +170,20 @@ export class EnglishService {
     }
   }
 
+  // 単語IDから出典情報取得
+  async getSourceOfWordById(id: number) {
+    try {
+      return await execQuery(SQL.ENGLISH.WORD.GET.SOURCE, [id]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
   // IDから単語情報取得
   async getWordByIdService(id: number) {
     try {

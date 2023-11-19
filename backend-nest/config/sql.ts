@@ -791,6 +791,31 @@ export const SQL = {
           w.id = random_word.word_id;
         `;
         },
+        SOURCE: `
+          SELECT DISTINCT
+            word.id as word_id,
+            word.name as word_name,
+            source.id as source_id,
+            source.name as source_name
+          FROM 
+            word
+          INNER JOIN
+            mean
+          ON
+            word.id = mean.word_id
+          INNER JOIN
+            mean_source
+          ON
+            mean.id = mean_source.mean_id
+          INNER JOIN
+            source
+          ON
+            mean_source.source_id = source.id
+          WHERE
+            word.id = ?
+            AND word.deleted_at IS NULL
+          ;
+        `
       },
     },
     MEAN: {

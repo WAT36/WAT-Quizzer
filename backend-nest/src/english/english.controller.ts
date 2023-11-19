@@ -76,6 +76,11 @@ export class EnglishController {
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
+  @Get('/word/source/:id')
+  async getSourceOfWordById(@Param('id') id: string) {
+    return await this.englishService.getSourceOfWordById(+id);
+  }
+
   @Get('/word/:id')
   async getWordById(@Param('id') id: string) {
     return await this.englishService.getWordByIdService(+id);
