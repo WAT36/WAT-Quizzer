@@ -283,12 +283,21 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
             return (
               // eslint-disable-next-line react/jsx-key
               <Item key={x.wordmeanId}>
-                {`[${x.partofspeechName}]`}
-                {x.mean}
-                {'  '}
-                <Button variant="outlined" onClick={(e) => handleOpen(x)}>
-                  編集
-                </Button>
+                <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography component="div">
+                    <Typography align="left" sx={{ fontSize: 14 }} color="text.secondary" component="p">
+                      {`[${x.partofspeechName}]`}
+                    </Typography>
+                    <Typography align="left" variant="h5" component="p">
+                      {x.mean}
+                    </Typography>
+                  </Typography>
+                  <Typography component="div" sx={{ marginLeft: 'auto' }}>
+                    <Button variant="outlined" onClick={(e) => handleOpen(x)}>
+                      編集
+                    </Button>
+                  </Typography>
+                </Typography>
                 <Modal
                   open={open}
                   onClose={handleClose}
