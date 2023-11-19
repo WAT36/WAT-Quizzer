@@ -50,7 +50,6 @@ const config: { [key: string]: LayoutConfig } = {
       { name: 'Top', link: '/englishBot' + urlEnd },
       { name: 'Add Words', link: '/englishBot/addWord' + urlEnd },
       { name: 'Dictionary', link: '/englishBot/dictionary' + urlEnd },
-      { name: 'Detail Word', link: '/englishBot/detailWord' + urlEnd },
       { name: 'Add Example', link: '/englishBot/addExample' + urlEnd },
       { name: 'Test Words', link: '/englishBot/testWord' + urlEnd }
     ]

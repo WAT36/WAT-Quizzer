@@ -1,4 +1,7 @@
-export const columns = [
+import { Link } from '@mui/material';
+import { GridRenderCellParams } from '@mui/x-data-grid';
+
+export const searchedDetailColumns = [
   {
     field: 'id',
     headerName: 'ID',
@@ -9,7 +12,16 @@ export const columns = [
     field: 'name',
     headerName: '単語',
     sortable: true,
-    width: 300
+    width: 300,
+    // TODO  undefinedで良いのか
+    renderCell: (params: GridRenderCellParams) => (
+      <Link
+        tabIndex={params.id as number}
+        href={'/englishBot/detailWord/' + params.id + process.env.NEXT_PUBLIC_URL_END}
+      >
+        {String(params.value)}
+      </Link>
+    )
   }
 ];
 
