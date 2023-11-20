@@ -137,7 +137,7 @@ export const getSourceList = (
   }
 };
 
-// englishbot用 出典リストをapi通信して取ってくる
+// イベントリストをapi通信して取ってくる
 export const getPopularEventList = async (
   setEventList: React.Dispatch<React.SetStateAction<GetPopularEventResponse[]>>
 ) => {

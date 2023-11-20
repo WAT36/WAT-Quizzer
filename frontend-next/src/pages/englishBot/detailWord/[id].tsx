@@ -24,6 +24,8 @@ import {
 import { PartofSpeechApiResponse, SourceApiResponse, WordApiResponse } from '../../../../interfaces/db';
 import { GetStaticPropsContext } from 'next';
 import { Layout } from '@/components/templates/layout/Layout';
+import { PullDownOptionState } from '../../../../interfaces/state';
+import { getSourceList } from '@/common/response';
 
 type EachWordPageProps = {
   id: string;
@@ -81,7 +83,8 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [open, setOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [posList, setPosList] = useState<JSX.Element[]>([]);
-  const [sourceList, setSourceList] = useState<JSX.Element[]>([]);
+  //const [sourceList, setSourceList] = useState<JSX.Element[]>([]);
+  const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
   const [inputEditData, setInputEditData] = useState<editWordMeanData | undefined>();
   const [message, setMessage] = useState({
     message: '　',
@@ -111,7 +114,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   useEffect(() => {
     Promise.all([
       getPartOfSpeechList(),
-      getSourceList(),
+      getSourceList(setMessage, setSourcelistoption),
       get(
         '/english/word/' + id,
         (data: ProcessingApiReponse) => {
@@ -201,42 +204,6 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
     });
   };
 
-  // 出典リスト取得
-  const getSourceList = async () => {
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get('/english/source', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const result: SourceApiResponse[] = data.body as SourceApiResponse[];
-        let gotSourceList = [];
-        for (var i = 0; i < result.length; i++) {
-          gotSourceList.push(
-            <MenuItem value={result[i].id} key={result[i].id}>
-              {result[i].name}
-            </MenuItem>
-          );
-        }
-        gotSourceList.push(
-          <MenuItem value={-2} key={-2}>
-            {'その他'}
-          </MenuItem>
-        );
-        setSourceList(gotSourceList);
-        setMessage({
-          message: '　',
-          messageColor: 'common.black'
-        });
-      } else {
-        setMessage({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        });
-      }
-    });
-  };
-
   // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
   const displayPosInput = (i: number) => {
     return (
@@ -283,7 +250,11 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
           <MenuItem value={-1} key={-1}>
             選択なし
           </MenuItem>
-          {sourceList}
+          {sourcelistoption.map((x) => (
+            <MenuItem value={x.value} key={x.value}>
+              {x.label}
+            </MenuItem>
+          ))}
         </Select>
       </>
     );
