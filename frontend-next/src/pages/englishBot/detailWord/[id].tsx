@@ -422,29 +422,8 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
                       <Typography id="modal-modal-title" variant="h4" component="h4">
                         出典編集
                       </Typography>
-                      {/* <Typography sx={{ mt: 2 }}>
-                        品詞：
-                        {displayPosInput(1)}
-                      </Typography>
-                      <Typography sx={{ mt: 2 }}>
-                        意味：
-                        <TextField
-                          variant="outlined"
-                          defaultValue={x.mean}
-                          onChange={(e) => {
-                            const inputtedData = Object.assign({}, inputEditData);
-                            inputtedData.mean = e.target.value;
-                            setInputEditData(inputtedData);
-                          }}
-                        />
-                      </Typography>
-                      <Typography sx={{ mt: 2 }}>
-                        出典：
-                        {displaySourceInput(3)}
-                      </Typography>
-                      <Button variant="contained" onClick={(e) => editSubmit(x.meanId)}>
-                        更新
-                      </Button> */}
+                      {/* <Typography sx={{ mt: 2 }}>{displaySourceInput(3)}</Typography>
+                      <Button variant="contained">更新</Button> */}
                     </Box>
                   </Modal>
                 </Item>
