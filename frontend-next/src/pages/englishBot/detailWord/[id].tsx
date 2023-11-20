@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
   Container,
   MenuItem,
   Modal,
@@ -13,7 +12,6 @@ import {
   Typography,
   styled
 } from '@mui/material';
-import { messageBoxStyle } from '../../../styles/Pages';
 import { useEffect, useState } from 'react';
 import { get, getApiAndGetValue, patch } from '@/common/API';
 import {
@@ -21,11 +19,12 @@ import {
   EnglishWordSourceByIdApiResponse,
   ProcessingApiReponse
 } from '../../../../interfaces/api/response';
-import { PartofSpeechApiResponse, SourceApiResponse, WordApiResponse } from '../../../../interfaces/db';
+import { WordApiResponse } from '../../../../interfaces/db';
 import { GetStaticPropsContext } from 'next';
 import { Layout } from '@/components/templates/layout/Layout';
-import { PullDownOptionState } from '../../../../interfaces/state';
+import { MessageState, PullDownOptionState } from '../../../../interfaces/state';
 import { getPartOfSpeechList, getSourceList } from '@/common/response';
+import { Title } from '@/components/ui-elements/title/Title';
 
 type EachWordPageProps = {
   id: string;
@@ -85,7 +84,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
   const [inputEditData, setInputEditData] = useState<editWordMeanData | undefined>();
-  const [message, setMessage] = useState({
+  const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black'
   });
@@ -376,14 +375,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const contents = () => {
     return (
       <Container>
-        <h1>Detail Word</h1>
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
+        <Title label="WAT Quizzer - englishBot"></Title>
 
         <Typography variant="h1" component="h1" color="common.black">
           {wordName}
@@ -397,7 +389,13 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
 
   return (
     <>
-      <Layout mode="englishBot" contents={contents()} title={'各単語詳細'} />
+      <Layout
+        mode="englishBot"
+        contents={contents()}
+        title={'各単語詳細'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
