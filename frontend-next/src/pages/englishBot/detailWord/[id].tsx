@@ -1,19 +1,6 @@
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  MenuItem,
-  Modal,
-  Paper,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-  styled
-} from '@mui/material';
+import { Box, Button, Card, Container, Modal, Paper, Stack, Typography, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { get, getApiAndGetValue, patch } from '@/common/API';
+import { get, getApiAndGetValue } from '@/common/API';
 import {
   EnglishWordByIdApiResponse,
   EnglishWordSourceByIdApiResponse,
@@ -22,22 +9,13 @@ import {
 import { WordApiResponse } from '../../../../interfaces/db';
 import { GetStaticPropsContext } from 'next';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState, PullDownOptionState } from '../../../../interfaces/state';
+import { EditWordMeanData, MessageState, PullDownOptionState, WordMeanData } from '../../../../interfaces/state';
 import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { Title } from '@/components/ui-elements/title/Title';
+import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
 
 type EachWordPageProps = {
   id: string;
-};
-
-type wordMeanData = {
-  partofspeechId: number;
-  partofspeechName: string;
-  wordmeanId: number;
-  meanId: number;
-  mean: string;
-  sourceId: number;
-  sourceName: string;
 };
 
 type wordSourceData = {
@@ -45,14 +23,6 @@ type wordSourceData = {
   wordName: string;
   sourceId: number;
   sourceName: string;
-};
-
-type editWordMeanData = {
-  wordId: number;
-  wordmeanId: number;
-  partofspeechId: number;
-  mean: string;
-  sourceId: number;
 };
 
 const mordalStyle = {
@@ -77,31 +47,18 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [wordName, setWordName] = useState<string>();
-  const [meanData, setMeanData] = useState<wordMeanData[]>([]);
+  const [meanData, setMeanData] = useState<WordMeanData[]>([]);
   const [wordSourceData, setWordSourceData] = useState<wordSourceData[]>([]);
   const [open, setOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
-  const [inputEditData, setInputEditData] = useState<editWordMeanData | undefined>();
+  const [inputEditData, setInputEditData] = useState<EditWordMeanData | undefined>();
   const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black'
   });
-  const handleOpen = (x: wordMeanData) => {
-    setOpen(true);
-    setInputEditData({
-      wordId: +id,
-      wordmeanId: x.wordmeanId,
-      partofspeechId: x.partofspeechId,
-      mean: x.mean,
-      sourceId: x.sourceId
-    });
-  };
-  const handleClose = () => {
-    setOpen(false);
-    setInputEditData(undefined);
-  };
+
   const handleSourceModalOpen = () => {
     setSourceModalOpen(true);
   };
@@ -118,7 +75,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
         (data: ProcessingApiReponse) => {
           if (data.status === 200) {
             const result: EnglishWordByIdApiResponse[] = data.body as EnglishWordByIdApiResponse[];
-            const wordmeans: wordMeanData[] = result.map((x: EnglishWordByIdApiResponse) => {
+            const wordmeans: WordMeanData[] = result.map((x: EnglishWordByIdApiResponse) => {
               return {
                 partofspeechId: x.partsofspeech_id,
                 partofspeechName: x.partsofspeech,
@@ -165,165 +122,6 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
       )
     ]);
   }, [id]);
-
-  // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
-  const displayPosInput = (i: number) => {
-    return (
-      <>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          defaultValue={inputEditData?.partofspeechId || -1}
-          label="partOfSpeech"
-          key={i}
-          sx={{ width: 1 }}
-          onChange={(e) => {
-            const inputtedData = Object.assign({}, inputEditData);
-            inputtedData.partofspeechId = Number(e.target.value);
-            setInputEditData(inputtedData);
-          }}
-        >
-          <MenuItem value={-1} key={-1}>
-            選択なし
-          </MenuItem>
-          {posList.map((x) => (
-            <MenuItem value={x.value} key={x.value}>
-              {x.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </>
-    );
-  };
-
-  // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
-  const displaySourceInput = (i: number) => {
-    return (
-      <>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          defaultValue={inputEditData?.sourceId || -1}
-          label="source"
-          key={i}
-          sx={{ width: 1 }}
-          onChange={(e) => {
-            const inputtedData = Object.assign({}, inputEditData);
-            inputtedData.sourceId = Number(e.target.value);
-            setInputEditData(inputtedData);
-          }}
-        >
-          <MenuItem value={-1} key={-1}>
-            選択なし
-          </MenuItem>
-          {sourcelistoption.map((x) => (
-            <MenuItem value={x.value} key={x.value}>
-              {x.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </>
-    );
-  };
-
-  const editSubmit = (meanId: number) => {
-    patch(
-      '/english/word/' + String(inputEditData?.wordId),
-      {
-        wordId: inputEditData?.wordId,
-        wordMeanId: inputEditData?.wordmeanId,
-        meanId,
-        partofspeechId: inputEditData?.partofspeechId,
-        meaning: inputEditData?.mean,
-        sourceId: inputEditData?.sourceId
-      },
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200 || data.status === 201) {
-          setMessage({
-            message: 'Success!! 編集に成功しました',
-            messageColor: 'success.light'
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      }
-    );
-    handleClose();
-  };
-
-  const makeMeaningStack = () => {
-    return (
-      <Card>
-        <Typography align="left" variant="h4" component="p">
-          {'意味'}
-        </Typography>
-        <Box sx={{ width: '100%', padding: '4px' }}>
-          <Stack spacing={2}>
-            {meanData.map((x) => {
-              return (
-                // eslint-disable-next-line react/jsx-key
-                <Item key={x.wordmeanId}>
-                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography component="div">
-                      <Typography align="left" sx={{ fontSize: 14 }} color="text.secondary" component="p">
-                        {`[${x.partofspeechName}]`}
-                      </Typography>
-                      <Typography align="left" variant="h5" component="p">
-                        {x.mean}
-                      </Typography>
-                    </Typography>
-                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                      <Button variant="outlined" onClick={(e) => handleOpen(x)}>
-                        編集
-                      </Button>
-                    </Typography>
-                  </Typography>
-                  <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                  >
-                    <Box sx={mordalStyle}>
-                      <Typography id="modal-modal-title" variant="h4" component="h4">
-                        意味編集
-                      </Typography>
-                      <Typography sx={{ mt: 2 }}>
-                        品詞：
-                        {displayPosInput(1)}
-                      </Typography>
-                      <Typography sx={{ mt: 2 }}>
-                        意味：
-                        <TextField
-                          variant="outlined"
-                          defaultValue={x.mean}
-                          onChange={(e) => {
-                            const inputtedData = Object.assign({}, inputEditData);
-                            inputtedData.mean = e.target.value;
-                            setInputEditData(inputtedData);
-                          }}
-                        />
-                      </Typography>
-                      <Typography sx={{ mt: 2 }}>
-                        出典：
-                        {displaySourceInput(3)}
-                      </Typography>
-                      <Button variant="contained" onClick={(e) => editSubmit(x.meanId)}>
-                        更新
-                      </Button>
-                    </Box>
-                  </Modal>
-                </Item>
-              );
-            })}
-          </Stack>
-        </Box>
-      </Card>
-    );
-  };
 
   const makeSourceStack = () => {
     return (
@@ -381,7 +179,17 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
           {wordName}
         </Typography>
 
-        {makeMeaningStack()}
+        <MeaningStack
+          id={id}
+          posList={posList}
+          sourceList={sourcelistoption}
+          meanData={meanData}
+          modalIsOpen={open}
+          inputEditData={inputEditData}
+          setMessage={setMessage}
+          setModalIsOpen={setOpen}
+          setInputEditData={setInputEditData}
+        />
         {makeSourceStack()}
       </Container>
     );

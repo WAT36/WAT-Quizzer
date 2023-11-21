@@ -67,6 +67,25 @@ export interface DisplayWordTestState {
   };
 }
 
+export interface WordMeanData {
+  partofspeechId: number;
+  partofspeechName: string;
+  wordmeanId: number;
+  meanId: number;
+  mean: string;
+  sourceId: number;
+  sourceName: string;
+}
+
+export interface EditWordMeanData {
+  wordId: number;
+  wordmeanId: number;
+  meanId: number;
+  partofspeechId: number;
+  mean: string;
+  sourceId: number;
+}
+
 export interface SayingState {
   saying: string;
   color: string;
