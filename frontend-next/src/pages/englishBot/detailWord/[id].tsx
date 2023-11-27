@@ -1,28 +1,23 @@
 import { Box, Button, Card, Container, Modal, Paper, Stack, Typography, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { get, getApiAndGetValue } from '@/common/API';
-import {
-  EnglishWordByIdApiResponse,
-  EnglishWordSourceByIdApiResponse,
-  ProcessingApiReponse
-} from '../../../../interfaces/api/response';
+import { getApiAndGetValue } from '@/common/API';
 import { WordApiResponse } from '../../../../interfaces/db';
 import { GetStaticPropsContext } from 'next';
 import { Layout } from '@/components/templates/layout/Layout';
-import { EditWordMeanData, MessageState, PullDownOptionState, WordMeanData } from '../../../../interfaces/state';
+import {
+  EditWordMeanData,
+  MessageState,
+  PullDownOptionState,
+  WordMeanData,
+  WordSourceData
+} from '../../../../interfaces/state';
 import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
+import { getWordDetail, getWordSource } from '@/pages/api/english';
 
 type EachWordPageProps = {
   id: string;
-};
-
-type wordSourceData = {
-  wordId: number;
-  wordName: string;
-  sourceId: number;
-  sourceName: string;
 };
 
 const mordalStyle = {
@@ -46,9 +41,9 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
-  const [wordName, setWordName] = useState<string>();
+  const [wordName, setWordName] = useState<string>('');
   const [meanData, setMeanData] = useState<WordMeanData[]>([]);
-  const [wordSourceData, setWordSourceData] = useState<wordSourceData[]>([]);
+  const [wordSourceData, setWordSourceData] = useState<WordSourceData[]>([]);
   const [open, setOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
@@ -70,56 +65,8 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
     Promise.all([
       getPartOfSpeechList(setMessage, setPosList),
       getSourceList(setMessage, setSourcelistoption),
-      get(
-        '/english/word/' + id,
-        (data: ProcessingApiReponse) => {
-          if (data.status === 200) {
-            const result: EnglishWordByIdApiResponse[] = data.body as EnglishWordByIdApiResponse[];
-            const wordmeans: WordMeanData[] = result.map((x: EnglishWordByIdApiResponse) => {
-              return {
-                partofspeechId: x.partsofspeech_id,
-                partofspeechName: x.partsofspeech,
-                wordmeanId: x.wordmean_id,
-                meanId: x.mean_id,
-                mean: x.meaning,
-                sourceId: x.source_id,
-                sourceName: x.source_name
-              };
-            });
-            setWordName(result[0].name || '(null)');
-            setMeanData(wordmeans);
-          } else {
-            setMessage({
-              message: 'エラー:外部APIとの連携に失敗しました',
-              messageColor: 'error'
-            });
-          }
-        },
-        {}
-      ),
-      get(
-        '/english/word/source/' + id,
-        (data: ProcessingApiReponse) => {
-          if (data.status === 200) {
-            const result: EnglishWordSourceByIdApiResponse[] = data.body as EnglishWordSourceByIdApiResponse[];
-            const wordsources: wordSourceData[] = result.map((x: EnglishWordSourceByIdApiResponse) => {
-              return {
-                wordId: x.word_id,
-                wordName: x.word_name,
-                sourceId: x.source_id,
-                sourceName: x.source_name
-              };
-            });
-            setWordSourceData(wordsources);
-          } else {
-            setMessage({
-              message: 'エラー:外部APIとの連携に失敗しました',
-              messageColor: 'error'
-            });
-          }
-        },
-        {}
-      )
+      getWordDetail(id, setMessage, setWordName, setMeanData),
+      getWordSource(id, setMessage, setWordSourceData)
     ]);
   }, [id]);
 

@@ -86,6 +86,13 @@ export interface EditWordMeanData {
   sourceId: number;
 }
 
+export interface WordSourceData {
+  wordId: number;
+  wordName: string;
+  sourceId: number;
+  sourceName: string;
+}
+
 export interface SayingState {
   saying: string;
   color: string;
