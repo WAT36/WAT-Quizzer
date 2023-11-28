@@ -1,4 +1,4 @@
-import { Box, Button, Card, Container, Modal, Paper, Stack, Typography, styled } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getApiAndGetValue } from '@/common/API';
 import { WordApiResponse } from '../../../../interfaces/db';
@@ -15,30 +15,11 @@ import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
 import { getWordDetail, getWordSource } from '@/pages/api/english';
+import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceStack/SourceStack';
 
 type EachWordPageProps = {
   id: string;
 };
-
-const mordalStyle = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4
-};
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary
-}));
 
 export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [wordName, setWordName] = useState<string>('');
@@ -54,13 +35,6 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
     messageColor: 'common.black'
   });
 
-  const handleSourceModalOpen = () => {
-    setSourceModalOpen(true);
-  };
-  const handleSourceModalClose = () => {
-    setSourceModalOpen(false);
-  };
-
   useEffect(() => {
     Promise.all([
       getPartOfSpeechList(setMessage, setPosList),
@@ -69,53 +43,6 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
       getWordSource(id, setMessage, setWordSourceData)
     ]);
   }, [id]);
-
-  const makeSourceStack = () => {
-    return (
-      <Card>
-        <Typography align="left" variant="h4" component="p">
-          {'出典'}
-        </Typography>
-        <Box sx={{ width: '100%', padding: '4px' }}>
-          <Stack spacing={2}>
-            {wordSourceData.map((x) => {
-              return (
-                // eslint-disable-next-line react/jsx-key
-                <Item key={x.wordId}>
-                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography component="div">
-                      <Typography align="left" variant="h5" component="p">
-                        {x.sourceName}
-                      </Typography>
-                    </Typography>
-                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                      <Button variant="outlined" onClick={(e) => handleSourceModalOpen()}>
-                        編集
-                      </Button>
-                    </Typography>
-                  </Typography>
-                  <Modal
-                    open={sourceModalOpen}
-                    onClose={handleSourceModalClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                  >
-                    <Box sx={mordalStyle}>
-                      <Typography id="modal-modal-title" variant="h4" component="h4">
-                        出典編集
-                      </Typography>
-                      {/* <Typography sx={{ mt: 2 }}>{displaySourceInput(3)}</Typography>
-                      <Button variant="contained">更新</Button> */}
-                    </Box>
-                  </Modal>
-                </Item>
-              );
-            })}
-          </Stack>
-        </Box>
-      </Card>
-    );
-  };
 
   const contents = () => {
     return (
@@ -137,7 +64,11 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
           setModalIsOpen={setOpen}
           setInputEditData={setInputEditData}
         />
-        {makeSourceStack()}
+        <SourceStack
+          wordSourceData={wordSourceData}
+          modalIsOpen={sourceModalOpen}
+          setModalIsOpen={setSourceModalOpen}
+        />
       </Container>
     );
   };

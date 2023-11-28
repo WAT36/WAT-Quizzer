@@ -2,7 +2,7 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Box, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
-import styles from './MeaningStack.module.css';
+import styles from '../Stack.module.css';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { EditWordMeanData, MessageState, PullDownOptionState, WordMeanData } from '../../../../../../interfaces/state';
 import { EditEnglishWordMeanButton } from '@/components/ui-parts/button-patterns/editEnglishWordMean/EditEnglishWordMean.button';
