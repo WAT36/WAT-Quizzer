@@ -7,9 +7,14 @@ import { EditWordMeanData, MessageState } from '../../../../../interfaces/state'
 interface EditEnglishWordMeanButtonProps {
   inputEditData?: EditWordMeanData;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const editEnglishWordMeanAPI = ({ inputEditData, setMessage }: EditEnglishWordMeanButtonProps) => {
+const editEnglishWordMeanAPI = ({ inputEditData, setMessage, setModalIsOpen }: EditEnglishWordMeanButtonProps) => {
+  if (setModalIsOpen) {
+    setModalIsOpen(false);
+  }
+
   patch(
     '/english/word/' + String(inputEditData?.wordId),
     {
@@ -38,14 +43,18 @@ const editEnglishWordMeanAPI = ({ inputEditData, setMessage }: EditEnglishWordMe
   );
 };
 
-export const EditEnglishWordMeanButton = ({ inputEditData, setMessage }: EditEnglishWordMeanButtonProps) => {
+export const EditEnglishWordMeanButton = ({
+  inputEditData,
+  setMessage,
+  setModalIsOpen
+}: EditEnglishWordMeanButtonProps) => {
   return (
     <>
       <Button
         label={'更新'}
         variant="contained"
         color="primary"
-        onClick={(e) => editEnglishWordMeanAPI({ inputEditData, setMessage })}
+        onClick={(e) => editEnglishWordMeanAPI({ inputEditData, setMessage, setModalIsOpen })}
       />
     </>
   );

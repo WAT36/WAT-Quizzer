@@ -2,10 +2,10 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Box, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
-import styles from '../Stack.module.css';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { EditWordMeanData, MessageState, PullDownOptionState, WordMeanData } from '../../../../../../interfaces/state';
 import { EditEnglishWordMeanButton } from '@/components/ui-parts/button-patterns/editEnglishWordMean/EditEnglishWordMean.button';
+import { style } from '../Stack.style';
 
 interface MeaningStackProps {
   id: string;
@@ -148,7 +148,7 @@ export const MeaningStack = ({
               );
             })}
             <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
-              <Box className={styles.mordalBox}>
+              <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h4" component="h4">
                   意味編集
                 </Typography>
@@ -160,7 +160,7 @@ export const MeaningStack = ({
                   意味：
                   <TextField
                     variant="outlined"
-                    defaultValue={inputEditData!.mean}
+                    defaultValue={inputEditData?.mean || ''}
                     onChange={(e) => {
                       const inputtedData = Object.assign({}, inputEditData);
                       inputtedData.mean = e.target.value;
@@ -177,7 +177,8 @@ export const MeaningStack = ({
                 <EditEnglishWordMeanButton
                   inputEditData={inputEditData}
                   setMessage={setMessage}
-                ></EditEnglishWordMeanButton>
+                  setModalIsOpen={setModalIsOpen}
+                />
               </Box>
             </Modal>
           </Stack>

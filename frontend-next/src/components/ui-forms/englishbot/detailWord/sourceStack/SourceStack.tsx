@@ -3,8 +3,8 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { Box, Stack, Typography } from '@mui/material';
-import styles from '../Stack.module.css';
 import { WordSourceData } from '../../../../../../interfaces/state';
+import { style } from '../Stack.style';
 
 interface SourceStackProps {
   wordSourceData: WordSourceData[];
@@ -44,7 +44,7 @@ export const SourceStack = ({ wordSourceData, modalIsOpen, setModalIsOpen }: Sou
               );
             })}
             <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
-              <Box className={styles.mordalBox}>
+              <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h4" component="h4">
                   出典編集
                 </Typography>
