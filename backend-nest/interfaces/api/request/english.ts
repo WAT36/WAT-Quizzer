@@ -18,7 +18,6 @@ export interface EditWordMeanDto {
   meanId: number;
   partofspeechId: number;
   meaning: string;
-  sourceId: number;
 }
 
 export interface AddExampleDto {

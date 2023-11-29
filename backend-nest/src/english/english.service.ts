@@ -215,7 +215,7 @@ export class EnglishService {
   // 単語の意味などを更新
   async editWordMeanService(req: EditWordMeanDto) {
     try {
-      const { wordId, wordMeanId, meanId, partofspeechId, meaning, sourceId } =
+      const { wordId, wordMeanId, meanId, partofspeechId, meaning } =
         req;
 
       //トランザクション実行準備
@@ -226,11 +226,11 @@ export class EnglishService {
         query: SQL.ENGLISH.MEAN.EDIT,
         value: [partofspeechId, meaning, wordId, wordMeanId],
       });
-      // 意味出典紐付け編集
-      transactionQuery.push({
-        query: SQL.ENGLISH.MEAN.SOURCE.EDIT,
-        value: [sourceId, meanId],
-      });
+      // // 意味出典紐付け編集
+      // transactionQuery.push({
+      //   query: SQL.ENGLISH.MEAN.SOURCE.EDIT,
+      //   value: [sourceId, meanId],
+      // });
       //トランザクション実行
       const result = await execTransaction(transactionQuery);
       return { result };
