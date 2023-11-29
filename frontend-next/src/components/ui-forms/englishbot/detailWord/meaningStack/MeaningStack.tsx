@@ -56,47 +56,9 @@ const displayPosInput = (
   );
 };
 
-// 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
-const displaySourceInput = (
-  i: number,
-  sourceList: PullDownOptionState[],
-  inputEditData?: EditWordMeanData,
-  setInputEditData?: React.Dispatch<React.SetStateAction<EditWordMeanData | undefined>>
-) => {
-  return (
-    <>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        defaultValue={inputEditData?.sourceId || -1}
-        label="source"
-        key={i}
-        sx={{ width: 1 }}
-        onChange={(e) => {
-          const inputtedData = Object.assign({}, inputEditData);
-          inputtedData.sourceId = Number(e.target.value);
-          if (setInputEditData) {
-            setInputEditData(inputtedData);
-          }
-        }}
-      >
-        <MenuItem value={-1} key={-1}>
-          選択なし
-        </MenuItem>
-        {sourceList.map((x) => (
-          <MenuItem value={x.value} key={x.value}>
-            {x.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </>
-  );
-};
-
 export const MeaningStack = ({
   id,
   posList,
-  sourceList,
   meanData,
   modalIsOpen,
   inputEditData,
@@ -169,10 +131,6 @@ export const MeaningStack = ({
                       }
                     }}
                   />
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  出典：
-                  {displaySourceInput(3, sourceList, inputEditData, setInputEditData)}
                 </Typography>
                 <EditEnglishWordMeanButton
                   inputEditData={inputEditData}

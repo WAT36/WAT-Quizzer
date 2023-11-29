@@ -1,4 +1,4 @@
-import { Container, Typography } from '@mui/material';
+import { Box, Button, Card, Container, Modal, Paper, Stack, Typography, styled } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getApiAndGetValue } from '@/common/API';
 import { WordApiResponse } from '../../../../interfaces/db';
