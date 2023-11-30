@@ -19,13 +19,13 @@ export const getWordDetail = async (
         const result: EnglishWordByIdApiResponse[] = data.body as EnglishWordByIdApiResponse[];
         const wordmeans: WordMeanData[] = result.map((x: EnglishWordByIdApiResponse) => {
           return {
-            partofspeechId: x.partsofspeech_id,
-            partofspeechName: x.partsofspeech,
+            wordId: +x.word_id,
+            wordName: x.name,
             wordmeanId: x.wordmean_id,
             meanId: x.mean_id,
             mean: x.meaning,
-            sourceId: x.source_id,
-            sourceName: x.source_name
+            partofspeechId: x.partsofspeech_id,
+            partofspeechName: x.partsofspeech
           };
         });
         setWordName(result[0].name || '(null)');

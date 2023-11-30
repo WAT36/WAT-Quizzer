@@ -68,22 +68,13 @@ export interface DisplayWordTestState {
 }
 
 export interface WordMeanData {
+  wordId: number;
+  wordName: string;
+  wordmeanId: number;
+  meanId: number;
+  mean: string;
   partofspeechId: number;
   partofspeechName: string;
-  wordmeanId: number;
-  meanId: number;
-  mean: string;
-  sourceId: number;
-  sourceName: string;
-}
-
-export interface EditWordMeanData {
-  wordId: number;
-  wordmeanId: number;
-  meanId: number;
-  partofspeechId: number;
-  mean: string;
-  sourceId: number;
 }
 
 export interface WordSourceData {

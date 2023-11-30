@@ -2,15 +2,30 @@ import React from 'react';
 import { Button } from '@/components/ui-elements/button/Button';
 import { ProcessingApiReponse } from '../../../../../interfaces/api/response';
 import { patch } from '@/common/API';
-import { EditWordMeanData, MessageState } from '../../../../../interfaces/state';
+import { MessageState, WordMeanData } from '../../../../../interfaces/state';
 
 interface EditEnglishWordMeanButtonProps {
-  inputEditData?: EditWordMeanData;
+  meanData: WordMeanData[];
+  meanDataIndex: number;
+  inputEditData: WordMeanData;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setMeanDataIndex?: React.Dispatch<React.SetStateAction<number>>;
+  setInputEditData?: React.Dispatch<React.SetStateAction<WordMeanData>>;
+  setMeanData?: React.Dispatch<React.SetStateAction<WordMeanData[]>>;
 }
 
-const editEnglishWordMeanAPI = ({ inputEditData, setMessage, setModalIsOpen }: EditEnglishWordMeanButtonProps) => {
+// TODO ここのAPI部分は分けたい
+const editEnglishWordMeanAPI = ({
+  meanData,
+  meanDataIndex,
+  inputEditData,
+  setMessage,
+  setModalIsOpen,
+  setMeanDataIndex,
+  setInputEditData,
+  setMeanData
+}: EditEnglishWordMeanButtonProps) => {
   if (setModalIsOpen) {
     setModalIsOpen(false);
   }
@@ -22,31 +37,56 @@ const editEnglishWordMeanAPI = ({ inputEditData, setMessage, setModalIsOpen }: E
       wordMeanId: inputEditData?.wordmeanId,
       meanId: inputEditData?.meanId,
       partofspeechId: inputEditData?.partofspeechId,
-      meaning: inputEditData?.mean,
-      sourceId: inputEditData?.sourceId
+      meaning: inputEditData?.mean
     },
     (data: ProcessingApiReponse) => {
-      if (setMessage) {
-        if (data.status === 200 || data.status === 201) {
+      if (data.status === 200 || data.status === 201) {
+        if (setMessage) {
           setMessage({
             message: 'Success!! 編集に成功しました',
             messageColor: 'success.light'
           });
-        } else {
+        }
+        const editedMeanData = meanData;
+        editedMeanData[meanDataIndex] = inputEditData;
+        if (setMeanData) {
+          setMeanData(editedMeanData);
+        }
+      } else {
+        if (setMessage) {
           setMessage({
             message: 'エラー:外部APIとの連携に失敗しました',
             messageColor: 'error'
           });
         }
       }
+      if (setMeanDataIndex) {
+        setMeanDataIndex(-1);
+      }
+      if (setInputEditData) {
+        setInputEditData({
+          wordId: -1,
+          wordName: '',
+          wordmeanId: -1,
+          meanId: -1,
+          mean: '',
+          partofspeechId: -1,
+          partofspeechName: ''
+        });
+      }
     }
   );
 };
 
 export const EditEnglishWordMeanButton = ({
+  meanData,
+  meanDataIndex,
   inputEditData,
   setMessage,
-  setModalIsOpen
+  setModalIsOpen,
+  setMeanDataIndex,
+  setInputEditData,
+  setMeanData
 }: EditEnglishWordMeanButtonProps) => {
   return (
     <>
@@ -54,7 +94,18 @@ export const EditEnglishWordMeanButton = ({
         label={'更新'}
         variant="contained"
         color="primary"
-        onClick={(e) => editEnglishWordMeanAPI({ inputEditData, setMessage, setModalIsOpen })}
+        onClick={(e) =>
+          editEnglishWordMeanAPI({
+            meanData,
+            meanDataIndex,
+            inputEditData,
+            setMessage,
+            setModalIsOpen,
+            setMeanDataIndex,
+            setInputEditData,
+            setMeanData
+          })
+        }
       />
     </>
   );

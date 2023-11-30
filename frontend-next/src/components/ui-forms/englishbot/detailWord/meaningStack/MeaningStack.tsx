@@ -3,9 +3,10 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Box, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { Modal } from '@/components/ui-elements/modal/Modal';
-import { EditWordMeanData, MessageState, PullDownOptionState, WordMeanData } from '../../../../../../interfaces/state';
+import { MessageState, PullDownOptionState, WordMeanData } from '../../../../../../interfaces/state';
 import { EditEnglishWordMeanButton } from '@/components/ui-parts/button-patterns/editEnglishWordMean/EditEnglishWordMean.button';
 import { style } from '../Stack.style';
+import { useState } from 'react';
 
 interface MeaningStackProps {
   id: string;
@@ -13,18 +14,17 @@ interface MeaningStackProps {
   sourceList: PullDownOptionState[];
   meanData: WordMeanData[];
   modalIsOpen: boolean;
-  inputEditData?: EditWordMeanData;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  setInputEditData?: React.Dispatch<React.SetStateAction<EditWordMeanData | undefined>>;
+  setMeanData?: React.Dispatch<React.SetStateAction<WordMeanData[]>>;
 }
 
 // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
 const displayPosInput = (
   i: number,
   posList: PullDownOptionState[],
-  inputEditData?: EditWordMeanData,
-  setInputEditData?: React.Dispatch<React.SetStateAction<EditWordMeanData | undefined>>
+  inputEditData: WordMeanData,
+  setInputEditData?: React.Dispatch<React.SetStateAction<WordMeanData>>
 ) => {
   return (
     <>
@@ -37,7 +37,16 @@ const displayPosInput = (
         sx={{ width: 1 }}
         onChange={(e) => {
           const inputtedData = Object.assign({}, inputEditData);
-          inputtedData.partofspeechId = Number(e.target.value);
+          inputtedData.partofspeechId = +e.target.value;
+          // TODO データ構造から見直す必要ありか
+          let posName = '';
+          for (let i = 0; i < posList.length; i++) {
+            if (+posList[i].value === +e.target.value) {
+              posName = posList[i].label;
+              break;
+            }
+          }
+          inputtedData.partofspeechName = posName;
           if (setInputEditData) {
             setInputEditData(inputtedData);
           }
@@ -61,25 +70,27 @@ export const MeaningStack = ({
   posList,
   meanData,
   modalIsOpen,
-  inputEditData,
   setMessage,
   setModalIsOpen,
-  setInputEditData
+  setMeanData
 }: MeaningStackProps) => {
-  const handleOpen = (x: WordMeanData) => {
+  const [inputEditData, setInputEditData] = useState<WordMeanData>({
+    wordId: -1,
+    wordName: '',
+    wordmeanId: -1,
+    meanId: -1,
+    mean: '',
+    partofspeechId: -1,
+    partofspeechName: ''
+  });
+  const [meanDataIndex, setMeanDataIndex] = useState<number>(-1);
+
+  const handleOpen = (x: WordMeanData, index: number) => {
+    setMeanDataIndex(index);
     if (setModalIsOpen) {
       setModalIsOpen(true);
     }
-    if (setInputEditData) {
-      setInputEditData({
-        wordId: +id,
-        wordmeanId: x.wordmeanId,
-        meanId: x.meanId,
-        partofspeechId: x.partofspeechId,
-        mean: x.mean,
-        sourceId: x.sourceId
-      });
-    }
+    setInputEditData(x);
   };
   return (
     <>
@@ -89,7 +100,7 @@ export const MeaningStack = ({
         </Typography>
         <Box sx={{ width: '100%', padding: '4px' }}>
           <Stack spacing={2}>
-            {meanData.map((x) => {
+            {meanData.map((x, index) => {
               return (
                 // eslint-disable-next-line react/jsx-key
                 <Item key={x.wordmeanId}>
@@ -103,7 +114,7 @@ export const MeaningStack = ({
                       </Typography>
                     </Typography>
                     <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x)}></Button>
+                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x, index)}></Button>
                     </Typography>
                   </Typography>
                 </Item>
@@ -133,9 +144,14 @@ export const MeaningStack = ({
                   />
                 </Typography>
                 <EditEnglishWordMeanButton
+                  meanData={meanData}
+                  meanDataIndex={meanDataIndex}
                   inputEditData={inputEditData}
                   setMessage={setMessage}
                   setModalIsOpen={setModalIsOpen}
+                  setMeanDataIndex={setMeanDataIndex}
+                  setInputEditData={setInputEditData}
+                  setMeanData={setMeanData}
                 />
               </Box>
             </Modal>

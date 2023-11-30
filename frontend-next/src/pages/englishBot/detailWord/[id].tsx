@@ -4,13 +4,7 @@ import { getApiAndGetValue } from '@/common/API';
 import { WordApiResponse } from '../../../../interfaces/db';
 import { GetStaticPropsContext } from 'next';
 import { Layout } from '@/components/templates/layout/Layout';
-import {
-  EditWordMeanData,
-  MessageState,
-  PullDownOptionState,
-  WordMeanData,
-  WordSourceData
-} from '../../../../interfaces/state';
+import { MessageState, PullDownOptionState, WordMeanData, WordSourceData } from '../../../../interfaces/state';
 import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
@@ -29,7 +23,6 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
-  const [inputEditData, setInputEditData] = useState<EditWordMeanData | undefined>();
   const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black'
@@ -59,10 +52,9 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
           sourceList={sourcelistoption}
           meanData={meanData}
           modalIsOpen={open}
-          inputEditData={inputEditData}
           setMessage={setMessage}
           setModalIsOpen={setOpen}
-          setInputEditData={setInputEditData}
+          setMeanData={setMeanData}
         />
         <SourceStack
           wordSourceData={wordSourceData}
