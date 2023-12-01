@@ -75,7 +75,7 @@ export const SourceStack = ({
   };
   return (
     <>
-      <Card variant="outlined">
+      <Card variant="outlined" attr={'silver-card'}>
         <Typography align="left" variant="h4" component="p">
           {'出典'}
         </Typography>

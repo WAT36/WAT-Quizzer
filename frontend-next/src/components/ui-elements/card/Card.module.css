@@ -1,4 +1,9 @@
 .message-card {
   margin: 10px 0px 20px !important;
   border: none;
-};
+}
+
+.silver-card {
+  background-color: silver;
+  margin-bottom: 20px; 
+}
