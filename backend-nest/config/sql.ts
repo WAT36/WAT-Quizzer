@@ -890,6 +890,7 @@ export const SQL = {
             updated_at = NOW()
           WHERE
             mean_id = ?
+            AND source_id = ?
           ;
         `,
       },

@@ -6,6 +6,7 @@ import {
   AddExampleDto,
   AddWordTestLogDto,
   EditWordMeanDto,
+  EditWordSourceDto,
 } from '../../interfaces/api/request/english';
 import { TransactionQuery } from '../../interfaces/db';
 
@@ -361,6 +362,42 @@ export class EnglishService {
     try {
       const { wordId } = req;
       return await execQuery(SQL.ENGLISH.WORD_TEST.FAILED.INPUT, [wordId]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語の出典追加・更新
+  async editSourceOfWordById(req: EditWordSourceDto){
+    try {
+      const { meanId, oldSourceId, newSourceId } = req;
+      //トランザクション実行準備
+      const transactionQuery: TransactionQuery[] = [];
+
+      if(oldSourceId===-1){
+        // 出典追加
+        for(let i=0;i<meanId.length;i++){
+          transactionQuery.push({
+            query: SQL.ENGLISH.MEAN.SOURCE.ADD,
+            value: [meanId[i],newSourceId],
+          });
+        }
+      }else{
+        // 出典更新
+        for(let i=0;i<meanId.length;i++){
+          transactionQuery.push({
+            query: SQL.ENGLISH.MEAN.SOURCE.EDIT,
+            value: [newSourceId,meanId[i],oldSourceId],
+          });
+        }
+      }
+      //トランザクション実行
+      return await execTransaction(transactionQuery);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

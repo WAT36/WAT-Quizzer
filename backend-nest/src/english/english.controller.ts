@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { EnglishService } from './english.service';
@@ -13,6 +14,7 @@ import {
   AddExampleDto,
   AddWordTestLogDto,
   EditWordMeanDto,
+  EditWordSourceDto,
 } from '../../interfaces/api/request/english';
 
 @Controller('english')
@@ -73,6 +75,11 @@ export class EnglishController {
   @Post('/example')
   async addExample(@Body() req: AddExampleDto) {
     return await this.englishService.addExampleService(req);
+  }
+
+  @Put('/word/source')
+  async editSourceOfWordById(@Body() req: EditWordSourceDto) {
+    return await this.englishService.editSourceOfWordById(req);
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */

@@ -20,6 +20,12 @@ export interface EditWordMeanDto {
   meaning: string;
 }
 
+export interface EditWordSourceDto {
+  meanId: number[];
+  oldSourceId: number;
+  newSourceId: number;
+}
+
 export interface AddExampleDto {
   exampleEn: string;
   exampleJa: string;
