@@ -57,10 +57,13 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
           setMeanData={setMeanData}
         />
         <SourceStack
+          meanData={meanData}
           sourceList={sourcelistoption}
           wordSourceData={wordSourceData}
           modalIsOpen={sourceModalOpen}
           setModalIsOpen={setSourceModalOpen}
+          setMessage={setMessage}
+          setWordSourceData={setWordSourceData}
         />
       </Container>
     );
