@@ -29,12 +29,18 @@ const editEnglishWordSourceAPI = ({
   if (setModalIsOpen) {
     setModalIsOpen(false);
   }
+  if (inputSourceId === -1) {
+    if (setMessage) {
+      setMessage({ message: 'エラー:出典を選択して下さい', messageColor: 'error', isDisplay: true });
+    }
+    return;
+  }
 
   put(
     '/english/word/source',
     {
       meanId: meanData.map((x) => x.meanId),
-      oldSourceId: wordSourceData[selectedWordSourceIndex].sourceId,
+      oldSourceId: selectedWordSourceIndex === -1 ? -1 : wordSourceData[selectedWordSourceIndex].sourceId,
       newSourceId: inputSourceId
     },
     (data: ProcessingApiReponse) => {
@@ -46,13 +52,26 @@ const editEnglishWordSourceAPI = ({
           });
         }
         const editedWordSourceData = wordSourceData;
-        editedWordSourceData[selectedWordSourceIndex] = {
-          ...wordSourceData[selectedWordSourceIndex],
-          sourceId: inputSourceId,
-          sourceName: sourceList.reduce((previousValue, currentValue) => {
-            return +currentValue.value === inputSourceId ? previousValue + currentValue.label : previousValue;
-          }, '')
-        };
+        if (selectedWordSourceIndex === -1) {
+          editedWordSourceData.push({
+            // TODO  wordidは最悪いらない、ここの扱いをどうしようか・・
+            wordId: -1,
+            wordName: '',
+            sourceId: inputSourceId,
+            sourceName: sourceList.reduce((previousValue, currentValue) => {
+              return +currentValue.value === inputSourceId ? previousValue + currentValue.label : previousValue;
+            }, '')
+          });
+        } else {
+          editedWordSourceData[selectedWordSourceIndex] = {
+            ...wordSourceData[selectedWordSourceIndex],
+            sourceId: inputSourceId,
+            sourceName: sourceList.reduce((previousValue, currentValue) => {
+              return +currentValue.value === inputSourceId ? previousValue + currentValue.label : previousValue;
+            }, '')
+          };
+        }
+
         if (setWordSourceData) {
           setWordSourceData(editedWordSourceData);
         }

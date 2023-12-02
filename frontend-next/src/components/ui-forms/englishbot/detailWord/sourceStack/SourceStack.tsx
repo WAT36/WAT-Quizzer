@@ -2,13 +2,15 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Modal } from '@/components/ui-elements/modal/Modal';
-import { Box, MenuItem, Select, Stack, Typography } from '@mui/material';
+import { Box, IconButton, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { MessageState, PullDownOptionState, WordMeanData, WordSourceData } from '../../../../../../interfaces/state';
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import { EditEnglishWordSourceButton } from '@/components/ui-parts/button-patterns/editEnglishWordSource/EditEnglishWordSource.button';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 interface SourceStackProps {
+  id: string;
   meanData: WordMeanData[];
   sourceList: PullDownOptionState[];
   wordSourceData: WordSourceData[];
@@ -36,7 +38,6 @@ const displaySourceInput = (
         sx={{ width: 1 }}
         onChange={(e) => {
           if (setInputSourceId) {
-            console.log(`e.target.value:${e.target.value}`);
             setInputSourceId(+e.target.value);
           }
         }}
@@ -55,6 +56,7 @@ const displaySourceInput = (
 };
 
 export const SourceStack = ({
+  id,
   meanData,
   sourceList,
   wordSourceData,
@@ -98,6 +100,23 @@ export const SourceStack = ({
                 </Item>
               );
             })}
+            <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+              <IconButton
+                onClick={(e) =>
+                  handleOpen(
+                    {
+                      wordId: +id,
+                      wordName: '',
+                      sourceId: -1,
+                      sourceName: ''
+                    },
+                    -1
+                  )
+                }
+              >
+                <AddCircleOutlineIcon />
+              </IconButton>
+            </Stack>
             <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
               <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h4" component="h4">
