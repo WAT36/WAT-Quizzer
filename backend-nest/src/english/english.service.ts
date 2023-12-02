@@ -218,23 +218,13 @@ export class EnglishService {
     try {
       const { wordId, wordMeanId, meanId, partofspeechId, meaning } =
         req;
-
-      //トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-
-      //意味編集
-      transactionQuery.push({
-        query: SQL.ENGLISH.MEAN.EDIT,
-        value: [partofspeechId, meaning, wordId, wordMeanId],
-      });
-      // // 意味出典紐付け編集
-      // transactionQuery.push({
-      //   query: SQL.ENGLISH.MEAN.SOURCE.EDIT,
-      //   value: [sourceId, meanId],
-      // });
-      //トランザクション実行
-      const result = await execTransaction(transactionQuery);
-      return { result };
+      //意味編集及び追加
+      console.log(`req:${JSON.stringify(req)}`)
+      if(meanId === -1){
+        return await execQuery(SQL.ENGLISH.MEAN.ADD, [ wordId, wordMeanId, partofspeechId, meaning]);
+      }else{
+        return await execQuery(SQL.ENGLISH.MEAN.EDIT, [partofspeechId, meaning, wordId, wordMeanId]);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

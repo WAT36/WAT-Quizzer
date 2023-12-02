@@ -1,12 +1,13 @@
 import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
-import { Box, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { MessageState, PullDownOptionState, WordMeanData } from '../../../../../../interfaces/state';
 import { EditEnglishWordMeanButton } from '@/components/ui-parts/button-patterns/editEnglishWordMean/EditEnglishWordMean.button';
 import { style } from '../Stack.style';
 import { useState } from 'react';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 interface MeaningStackProps {
   id: string;
@@ -74,15 +75,16 @@ export const MeaningStack = ({
   setModalIsOpen,
   setMeanData
 }: MeaningStackProps) => {
-  const [inputEditData, setInputEditData] = useState<WordMeanData>({
-    wordId: -1,
+  const emptyWordMeanData = {
+    wordId: +id,
     wordName: '',
     wordmeanId: -1,
     meanId: -1,
     mean: '',
     partofspeechId: -1,
     partofspeechName: ''
-  });
+  };
+  const [inputEditData, setInputEditData] = useState<WordMeanData>(emptyWordMeanData);
   const [meanDataIndex, setMeanDataIndex] = useState<number>(-1);
 
   const handleOpen = (x: WordMeanData, index: number) => {
@@ -120,6 +122,25 @@ export const MeaningStack = ({
                 </Item>
               );
             })}
+            <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+              <IconButton
+                onClick={(e) =>
+                  handleOpen(
+                    {
+                      ...emptyWordMeanData,
+                      wordmeanId:
+                        meanData.reduce(
+                          (previousValue, currentValue) => Math.max(previousValue, currentValue.wordmeanId),
+                          -1
+                        ) + 1
+                    },
+                    -1
+                  )
+                }
+              >
+                <AddCircleOutlineIcon />
+              </IconButton>
+            </Stack>
             <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
               <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h4" component="h4">

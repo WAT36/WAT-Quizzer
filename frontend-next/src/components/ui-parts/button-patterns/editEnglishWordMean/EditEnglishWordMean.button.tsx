@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui-elements/button/Button';
-import { ProcessingApiReponse } from '../../../../../interfaces/api/response';
+import { AddDataApiResponse, ProcessingApiReponse } from '../../../../../interfaces/api/response';
 import { patch } from '@/common/API';
 import { MessageState, WordMeanData } from '../../../../../interfaces/state';
 
@@ -29,15 +29,21 @@ const editEnglishWordMeanAPI = ({
   if (setModalIsOpen) {
     setModalIsOpen(false);
   }
+  if (inputEditData.partofspeechId === -1) {
+    if (setMessage) {
+      setMessage({ message: 'エラー:品詞を選択して下さい', messageColor: 'error', isDisplay: true });
+    }
+    return;
+  }
 
   patch(
-    '/english/word/' + String(inputEditData?.wordId),
+    '/english/word/' + String(inputEditData.wordId),
     {
-      wordId: inputEditData?.wordId,
-      wordMeanId: inputEditData?.wordmeanId,
-      meanId: inputEditData?.meanId,
-      partofspeechId: inputEditData?.partofspeechId,
-      meaning: inputEditData?.mean
+      wordId: inputEditData.wordId,
+      wordMeanId: inputEditData.wordmeanId,
+      meanId: inputEditData.meanId,
+      partofspeechId: inputEditData.partofspeechId,
+      meaning: inputEditData.mean
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
@@ -47,8 +53,16 @@ const editEnglishWordMeanAPI = ({
             messageColor: 'success.light'
           });
         }
+        console.log(`data:${JSON.stringify(data)}`);
         const editedMeanData = meanData;
-        editedMeanData[meanDataIndex] = inputEditData;
+        if (inputEditData.meanId === -1) {
+          // 意味を新規追加時
+          const responseBody = data.body as AddDataApiResponse;
+          editedMeanData.push({ ...inputEditData, meanId: responseBody.insertId });
+        } else {
+          // 意味を編集時
+          editedMeanData[meanDataIndex] = inputEditData;
+        }
         if (setMeanData) {
           setMeanData(editedMeanData);
         }
@@ -65,7 +79,7 @@ const editEnglishWordMeanAPI = ({
       }
       if (setInputEditData) {
         setInputEditData({
-          wordId: -1,
+          wordId: inputEditData.wordId,
           wordName: '',
           wordmeanId: -1,
           meanId: -1,
