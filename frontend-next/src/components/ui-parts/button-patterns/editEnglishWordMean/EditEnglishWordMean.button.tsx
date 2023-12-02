@@ -53,7 +53,6 @@ const editEnglishWordMeanAPI = ({
             messageColor: 'success.light'
           });
         }
-        console.log(`data:${JSON.stringify(data)}`);
         const editedMeanData = meanData;
         if (inputEditData.meanId === -1) {
           // 意味を新規追加時
