@@ -67,11 +67,9 @@ const getWorstRateQuizAPI = ({
         setDisplayQuizStater({
           fileNum: res[0].file_num,
           quizNum: res[0].quiz_num,
-          quizSentense: generateQuizSentense(sendData.format, res),
-          quizAnswer: res[0].answer,
           checked: res[0].checked || false,
           expanded: false,
-          explanation: res[0].explanation
+          ...generateQuizSentense(sendData.format, res)
         });
         setMessageStater({
           message: '　',
