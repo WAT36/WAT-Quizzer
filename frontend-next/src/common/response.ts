@@ -65,15 +65,30 @@ export const generateQuizSentense = (format: string, res: QuizViewApiResponse[])
       choices.push(res[i].dummy_choice_sentense || '');
     }
     // 選択肢の配列をランダムに並び替える
-    choices.sort((a, b) => 0.5 - Math.random());
+    const choiceName = ['A', 'B', 'C', 'D'];
+    choiceName.sort((a, b) => 0.5 - Math.random());
 
-    return `[${res[0].file_num}-${res[0].quiz_num}]${res[0].quiz_sentense}
-        A: ${choices[0]}
-        B: ${choices[1]}
-        C: ${choices[2]}
-        D: ${choices[3]}`;
+    return {
+      quizSentense: `[${res[0].file_num}-${res[0].quiz_num}]${res[0].quiz_sentense}
+        A: ${choices[choiceName.indexOf('A')]}
+        B: ${choices[choiceName.indexOf('B')]}
+        C: ${choices[choiceName.indexOf('C')]}
+        D: ${choices[choiceName.indexOf('D')]}`,
+      quizAnswer: `${choiceName[0]}: ${res[0].answer}`,
+      explanation: res[0].explanation
+        ? res[0].explanation
+            .replace('{c}', choiceName[0])
+            .replace('{d1}', choiceName[1])
+            .replace('{d2}', choiceName[2])
+            .replace('{d3}', choiceName[3])
+        : ''
+    };
   } else {
-    return `[${res[0].file_num}-${res[0].quiz_num}]${res[0].quiz_sentense}`;
+    return {
+      quizSentense: `[${res[0].file_num}-${res[0].quiz_num}]${res[0].quiz_sentense}`,
+      quizAnswer: res[0].answer,
+      explanation: res[0].explanation
+    };
   }
 };
 

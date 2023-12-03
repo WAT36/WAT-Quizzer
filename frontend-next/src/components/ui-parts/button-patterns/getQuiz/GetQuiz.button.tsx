@@ -66,11 +66,9 @@ const getQuizAPI = ({
           setDisplayQuizStater({
             fileNum: res[0].file_num,
             quizNum: res[0].quiz_num,
-            quizSentense: generateQuizSentense(queryOfQuizState.format, res),
-            quizAnswer: res[0].answer,
             checked: res[0].checked || false,
             expanded: false,
-            explanation: res[0].explanation
+            ...generateQuizSentense(queryOfQuizState.format, res)
           });
         }
         if (setQueryofPutQuizStater) {
