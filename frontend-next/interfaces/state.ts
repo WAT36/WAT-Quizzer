@@ -42,6 +42,7 @@ export interface QueryOfPutQuizState {
   dummy1?: string; //四択問題のダミー選択肢１
   dummy2?: string; //四択問題のダミー選択肢２
   dummy3?: string; //四択問題のダミー選択肢３
+  explanation?: string; // 解説
 }
 
 export interface QueryOfEditQuizState {

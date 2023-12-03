@@ -158,6 +158,27 @@ export const FourChoiceTabPanel = ({
           }}
         />
       </Typography>
+
+      <Typography variant="h6" component="h6" className={styles.messageBox}>
+        解説：
+        <Input
+          fullWidth
+          maxRows={1}
+          value={queryOfPutQuizState.explanation || ''}
+          onChange={(e) => {
+            if (setQueryofPutQuizStater) {
+              setQueryofPutQuizStater((prev) => ({
+                ...prev,
+                ['explanation']: e.target.value
+              }));
+            }
+          }}
+        />
+        <p className={styles.notation}>
+          ※選択肢を示したいときは正解文を<b>{'{c}'}</b>、ダミー選択肢１、２、３をそれぞれ<b>{'{d1},{d2},{d3}'}</b>
+          で書くこと
+        </p>
+      </Typography>
     </CardContent>
   </TabPanel>
 );
