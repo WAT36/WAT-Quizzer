@@ -70,7 +70,8 @@ const getMinimumClearQuizAPI = ({
           quizSentense: generateQuizSentense(sendData.format, res),
           quizAnswer: res[0].answer,
           checked: res[0].checked || false,
-          expanded: false
+          expanded: false,
+          explanation: res[0].explanation
         });
         setMessageStater({
           message: '　',

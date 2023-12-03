@@ -16,6 +16,7 @@ export interface DisplayQuizState {
   quizAnswer: string;
   checked: boolean;
   expanded: boolean;
+  explanation?: string; // 解説
 }
 
 // TODO 名前変える　QueryOfGetQuizState
