@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui-elements/button/Button';
-import { AddDataApiResponse, ProcessingApiReponse } from '../../../../../interfaces/api/response';
+import { AddDataApiResponse, ProcessingAddApiReponse } from '../../../../../interfaces/api/response';
 import { patch } from '@/common/API';
 import { MessageState, WordMeanData } from '../../../../../interfaces/state';
 
@@ -45,7 +45,7 @@ const editEnglishWordMeanAPI = ({
       partofspeechId: inputEditData.partofspeechId,
       meaning: inputEditData.mean
     },
-    (data: ProcessingApiReponse) => {
+    (data: ProcessingAddApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         if (setMessage) {
           setMessage({

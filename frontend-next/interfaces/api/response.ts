@@ -10,7 +10,11 @@ export interface ApiResponse {}
 // APIから受け取ったデータを変換しフロント側で処理する型
 export interface ProcessingApiReponse {
   status: number;
-  body: ApiResponse[] | ApiResponse;
+  body: ApiResponse[];
+}
+export interface ProcessingAddApiReponse {
+  status: number;
+  body: ApiResponse;
 }
 
 // データ追加APIの返り値の型

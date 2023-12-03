@@ -20,6 +20,16 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const GetQuiz: Story = {
   args: {
-    meanId: -1
+    meanData: [],
+    meanDataIndex: -1,
+    inputEditData: {
+      wordId: -1,
+      wordName: '',
+      wordmeanId: -1,
+      meanId: -1,
+      mean: '',
+      partofspeechId: -1,
+      partofspeechName: ''
+    }
   }
 };

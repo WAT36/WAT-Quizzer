@@ -21,6 +21,7 @@ type Story = StoryObj<typeof meta>;
 export const GetQuiz: Story = {
   args: {
     meanData: [],
+    sourceList: [],
     wordSourceData: [],
     selectedWordSourceIndex: -1,
     inputSourceId: -1
