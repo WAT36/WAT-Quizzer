@@ -415,6 +415,7 @@ export class QuizService {
         dummy1,
         dummy2,
         dummy3,
+        explanation
       } = req;
 
       // クエリ用意
@@ -485,6 +486,14 @@ export class QuizService {
           transactionQuery.push({
             query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.DUMMY_CHOICE,
             value: [dummyChoices[i],id],
+          });
+        }
+
+        // 解説文を作成
+        if(explanation){
+          transactionQuery.push({
+            query: SQL.ADVANCED_QUIZ.EXPLANATION.UPSERT,
+            value: [advanced_quiz_id,explanation,explanation],
           });
         }
       }

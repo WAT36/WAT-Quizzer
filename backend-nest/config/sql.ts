@@ -365,6 +365,17 @@ export const SQL = {
         VALUES(?,?)
       `,
     },
+    EXPLANATION:{
+      UPSERT: `
+        INSERT INTO
+          advanced_quiz_explanation
+        (advanced_quiz_id,explanation)
+        VALUES (?,?)
+        ON DUPLICATE KEY UPDATE 
+        explanation = ?,updated_at = NOW()
+        ;
+      `
+    },
     BASIC_LINKAGE: {
       GET: `
         SELECT
@@ -393,13 +404,18 @@ export const SQL = {
             a.answer,
             a.img_file,
             a.checked,
-            d.dummy_choice_sentense
+            d.dummy_choice_sentense,
+            e.explanation
           FROM
             advanced_quiz as a
           INNER JOIN
             dummy_choice as d
           ON
             a.id = d.advanced_quiz_id
+          LEFT OUTER JOIN
+            advanced_quiz_explanation as e 
+          ON
+            a.id = e.advanced_quiz_id
           WHERE
             a.file_num = ?
             AND a.quiz_num = ?
@@ -544,7 +560,7 @@ export const SQL = {
           ORDER BY
               id
           LIMIT 1 OFFSET ?
-        `
+        `,
       },
     },
   },
