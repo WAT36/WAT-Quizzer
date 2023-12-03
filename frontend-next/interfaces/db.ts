@@ -57,6 +57,7 @@ export interface QuizViewApiResponse extends ApiResponse {
 
   matched_basic_quiz_id?: string;
   dummy_choice_sentense?: string; // TODO テーブルごとの型なので本当は望ましくない getQuiz専用のAPI返り値型を作るべき
+  explanation?: string;
 }
 
 // categoryからの取得結果

@@ -55,7 +55,8 @@ const editQuizAPI = ({
       matched_basic_quiz_id: queryOfEditQuizState.matched_basic_quiz_id,
       dummy1: queryOfEditQuizState.dummy1,
       dummy2: queryOfEditQuizState.dummy2,
-      dummy3: queryOfEditQuizState.dummy3
+      dummy3: queryOfEditQuizState.dummy3,
+      explanation: queryOfEditQuizState.explanation
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
