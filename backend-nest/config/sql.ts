@@ -510,7 +510,8 @@ export const SQL = {
             a.answer,
             a.img_file,
             a.checked,
-            d.dummy_choice_sentense
+            d.dummy_choice_sentense,
+            e.explanation
           FROM 
           ( SELECT * FROM 
             advanced_quiz_view 
@@ -523,6 +524,10 @@ export const SQL = {
             dummy_choice as d
           ON
             a.id = d.advanced_quiz_id
+          LEFT OUTER JOIN
+            advanced_quiz_explanation as e 
+          ON
+            a.id = e.advanced_quiz_id
         `,
       },
       CLEARED: `
