@@ -32,7 +32,7 @@ jobs:
 
     - name: Setup dependencies(backend)
       id: setup-dependencies-backend 
-      run: cd ./backend-nest && npm ci --production && node node_modules/puppeteer/install.mjs
+      run: cd ./backend-nest && npm ci --production
 
     - name: Setup dependencies(infra)
       id: setup-dependencies-infra 

@@ -1,11 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import puppeteer from 'puppeteer';
-
+import puppeteer from 'puppeteer-core';
+const chromium = require('@sparticuz/chromium');
 @Injectable()
 export class ScrapeService {
   async getBestEvent() {
     try {
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+        ignoreHTTPSErrors: true,
+      });
       const page = await browser.newPage();
       await page.goto(process.env.SCRAPE_TO_URL);
 
@@ -18,6 +24,7 @@ export class ScrapeService {
               : '',
         })),
       );
+      await browser.close();
       return titles.slice(0, 5);
     } catch (error: unknown) {
       if (error instanceof Error) {
