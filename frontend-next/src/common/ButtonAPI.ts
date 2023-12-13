@@ -1,8 +1,6 @@
-import React from 'react';
-import { Button } from '@/components/ui-elements/button/Button';
-import { AddQuizApiResponse, ProcessingApiReponse } from '../../../../../interfaces/api/response';
-import { post } from '@/common/API';
-import { MessageState, QueryOfPutQuizState } from '../../../../../interfaces/state';
+import { AddQuizApiResponse, ProcessingApiReponse } from '../../interfaces/api/response';
+import { MessageState, QueryOfPutQuizState } from '../../interfaces/state';
+import { post } from './API';
 
 interface AddQuizButtonProps {
   value: number;
@@ -12,7 +10,8 @@ interface AddQuizButtonProps {
   setQueryofAddQuizStater?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
 }
 
-const addQuizAPI = ({
+// 問題追加ボタンで利用するAPI
+export const addQuizAPI = ({
   value,
   queryOfAddQuizState,
   setAddLog,
@@ -97,26 +96,5 @@ const addQuizAPI = ({
         });
       }
     }
-  );
-};
-
-export const AddQuizButton = ({
-  value,
-  queryOfAddQuizState,
-  setAddLog,
-  setMessageStater,
-  setQueryofAddQuizStater
-}: AddQuizButtonProps) => {
-  return (
-    <>
-      <Button
-        label={'問題登録'}
-        variant="contained"
-        color="primary"
-        onClick={(e) =>
-          addQuizAPI({ value, queryOfAddQuizState, setAddLog, setMessageStater, setQueryofAddQuizStater })
-        }
-      />
-    </>
   );
 };
