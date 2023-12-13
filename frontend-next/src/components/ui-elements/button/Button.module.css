@@ -1,8 +1,10 @@
-.button {
+.separate {
   margin: 10px !important;
+  margin-top: 20px;
+  margin-bottom: 20px !important;
 }
 
-.separate {
+.button-array {
   margin: 10px !important;
 }
 

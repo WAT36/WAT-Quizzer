@@ -40,7 +40,7 @@ export default function AddQuizPage() {
 
         <Button
           label="問題登録"
-          attr="separate"
+          attr={'button-array'}
           variant="contained"
           color="primary"
           onClick={(e) =>
