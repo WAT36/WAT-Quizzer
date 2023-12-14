@@ -77,10 +77,10 @@ export const generateQuizSentense = (format: string, res: QuizViewApiResponse[])
       quizAnswer: `${choiceName[0]}: ${res[0].answer}`,
       explanation: res[0].explanation
         ? res[0].explanation
-            .replace('{c}', choiceName[0])
-            .replace('{d1}', choiceName[1])
-            .replace('{d2}', choiceName[2])
-            .replace('{d3}', choiceName[3])
+            .replaceAll('{c}', choiceName[0])
+            .replaceAll('{d1}', choiceName[1])
+            .replaceAll('{d2}', choiceName[2])
+            .replaceAll('{d3}', choiceName[3])
         : ''
     };
   } else {
