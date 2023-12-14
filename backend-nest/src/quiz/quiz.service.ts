@@ -50,7 +50,7 @@ export class QuizService {
     try {
       let query: QueryType;
       let linkedBasisId: string;
-      let ids: {basis_quiz_id: string}[]
+      let ids: { basis_quiz_id: string }[];
       let idArray: string[];
       switch (format) {
         case 'basic':
@@ -74,23 +74,29 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      const result: QuizViewApiResponse[] = await execQuery(query.query, query.value);
+      const result: QuizViewApiResponse[] = await execQuery(
+        query.query,
+        query.value,
+      );
 
-      if(format === 'applied' || format === '4choice'){
+      if (format === 'applied' || format === '4choice') {
         // 関連基礎問題取得
-        ids = await execQuery(SQL.ADVANCED_QUIZ.BASIC_LINKAGE.GET,[file_num,quiz_num])
-        idArray = []
-        for(let i=0;i<ids.length;i++){
-          idArray.push(ids[i].basis_quiz_id)
+        ids = await execQuery(SQL.ADVANCED_QUIZ.BASIC_LINKAGE.GET, [
+          file_num,
+          quiz_num,
+        ]);
+        idArray = [];
+        for (let i = 0; i < ids.length; i++) {
+          idArray.push(ids[i].basis_quiz_id);
         }
-        linkedBasisId = idArray.length > 0 ? idArray.join(',') : undefined
-        if(linkedBasisId){
-          for(let i=0;i<result.length;i++){
-            result[i].matched_basic_quiz_id = linkedBasisId
+        linkedBasisId = idArray.length > 0 ? idArray.join(',') : undefined;
+        if (linkedBasisId) {
+          for (let i = 0; i < result.length; i++) {
+            result[i].matched_basic_quiz_id = linkedBasisId;
           }
         }
       }
-      return result
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -415,7 +421,7 @@ export class QuizService {
         dummy1,
         dummy2,
         dummy3,
-        explanation
+        explanation,
       } = req;
 
       // クエリ用意
@@ -441,7 +447,7 @@ export class QuizService {
           deleteLogSqlValue = [2, file_num, quiz_num];
           break;
         case '4choice':
-          editSql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.ADVANCED_QUIZ
+          editSql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.ADVANCED_QUIZ;
           editSqlValue = [question, answer, img_file, file_num, quiz_num];
           deleteLogSqlValue = [2, file_num, quiz_num];
           break;
@@ -459,52 +465,57 @@ export class QuizService {
         query: editSql,
         value: editSqlValue,
       });
-      
+
       // 四択問題時 ダミー選択肢の編集
-      if(format === '4choice'){
+      if (format === '4choice') {
         // 問題番号を取得
         const res: GetQuizNumSqlResultDto[] = await execQuery(
           SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.DUMMY_CHOICE,
-          [file_num,quiz_num],
+          [file_num, quiz_num],
         );
         const advanced_quiz_id: number =
-          res && res.length > 0 ? res[0]['id'] : -1
-        ;
+          res && res.length > 0 ? res[0]['id'] : -1;
         // ダミー選択肢編集
-        const dummyChoices = [dummy1,dummy2,dummy3]
-        for(let i=0;i<dummyChoices.length;i++){
+        const dummyChoices = [dummy1, dummy2, dummy3];
+        for (let i = 0; i < dummyChoices.length; i++) {
           // 編集対象ダミー選択肢のID取得
           const res: GetIdDto[] = await execQuery(
-            SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.GET_DUMMY_CHOICE_ID,
-            [advanced_quiz_id,i],
+            SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.DUMMY_CHOICE.GET_DUMMY_CHOICE_ID,
+            [advanced_quiz_id, i],
           );
-          const id: number =
-            res && res.length > 0 ? res[0]['id'] : -1
-          ;
-
+          const id: number = res && res.length > 0 ? res[0]['id'] : -1;
           //編集対象ダミー選択肢の更新
-          transactionQuery.push({
-            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.DUMMY_CHOICE,
-            value: [dummyChoices[i],id],
-          });
+          if (id === -1) {
+            transactionQuery.push({
+              query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.DUMMY_CHOICE.INSERT,
+              value: [advanced_quiz_id, dummyChoices[i]],
+            });
+          } else {
+            transactionQuery.push({
+              query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.DUMMY_CHOICE.UPDATE,
+              value: [dummyChoices[i], id],
+            });
+          }
         }
 
         // 解説文を作成
-        if(explanation){
+        if (explanation) {
           transactionQuery.push({
             query: SQL.ADVANCED_QUIZ.EXPLANATION.UPSERT,
-            value: [advanced_quiz_id,explanation,explanation],
+            value: [advanced_quiz_id, explanation, explanation],
           });
         }
       }
 
       // 応用問題の場合　関連基礎問題を編集する
-      if(matched_basic_quiz_id && (format === 'applied' || format === '4choice')){
+      if (
+        matched_basic_quiz_id &&
+        (format === 'applied' || format === '4choice')
+      ) {
         //入力した問題番号のadvanced_quiz_idでの問題IDを取得
-        const advanced_quiz_id = (await execQuery(
-          SQL.ADVANCED_QUIZ.INFO,
-          [file_num,quiz_num],
-        ))[0]["id"] as number;
+        const advanced_quiz_id = (
+          await execQuery(SQL.ADVANCED_QUIZ.INFO, [file_num, quiz_num])
+        )[0]['id'] as number;
 
         //編集画面で入力した関連基礎問題番号取得・バリデーション(A)
         const matched_basic_quiz_id_list: number[] = [];
@@ -525,35 +536,33 @@ export class QuizService {
         const registered_basic_quiz_id_list: number[] = [];
         const res: GetLinkedBasisIdDto[] = await execQuery(
           SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.BASIS_ADVANCED_LINK,
-          [file_num,quiz_num],
+          [file_num, quiz_num],
         );
-        for(let i=0;i<res.length;i++){
-          registered_basic_quiz_id_list.push(res[i].basis_quiz_id)
+        for (let i = 0; i < res.length; i++) {
+          registered_basic_quiz_id_list.push(res[i].basis_quiz_id);
         }
 
         //(A)と(B)を比較
         //(A)だけにしかないもの→関連基礎問題関連付テーブルにデータを新規追加する
-        const onlyAvalueArray = getDifferenceArray(matched_basic_quiz_id_list,registered_basic_quiz_id_list)
-        for(let i=0;i<onlyAvalueArray.length;i++){
+        const onlyAvalueArray = getDifferenceArray(
+          matched_basic_quiz_id_list,
+          registered_basic_quiz_id_list,
+        );
+        for (let i = 0; i < onlyAvalueArray.length; i++) {
           transactionQuery.push({
             query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.ADD,
-            value: [
-              file_num,
-              onlyAvalueArray[i],
-              advanced_quiz_id
-            ],
+            value: [file_num, onlyAvalueArray[i], advanced_quiz_id],
           });
         }
         //(B)だけにしかないもの→関連基礎問題関連付テーブルからデータを削除する
-        const onlyBvalueArray = getDifferenceArray(registered_basic_quiz_id_list,matched_basic_quiz_id_list)
-        for(let i=0;i<onlyBvalueArray.length;i++){
+        const onlyBvalueArray = getDifferenceArray(
+          registered_basic_quiz_id_list,
+          matched_basic_quiz_id_list,
+        );
+        for (let i = 0; i < onlyBvalueArray.length; i++) {
           transactionQuery.push({
             query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.DELETE,
-            value: [
-              file_num,
-              onlyBvalueArray[i],
-              advanced_quiz_id
-            ],
+            value: [file_num, onlyBvalueArray[i], advanced_quiz_id],
           });
         }
       }

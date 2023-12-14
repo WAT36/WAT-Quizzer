@@ -365,7 +365,7 @@ export const SQL = {
         VALUES(?,?)
       `,
     },
-    EXPLANATION:{
+    EXPLANATION: {
       UPSERT: `
         INSERT INTO
           advanced_quiz_explanation
@@ -374,7 +374,7 @@ export const SQL = {
         ON DUPLICATE KEY UPDATE 
         explanation = ?,updated_at = NOW()
         ;
-      `
+      `,
     },
     BASIC_LINKAGE: {
       GET: `
@@ -391,11 +391,11 @@ export const SQL = {
           a.file_num = ?
           AND a.quiz_num = ?
         ;
-      `
+      `,
     },
     FOUR_CHOICE: {
       GET: {
-        DUMMY_CHOICE:`
+        DUMMY_CHOICE: `
           SELECT
             a.id,
             a.file_num,
@@ -408,7 +408,7 @@ export const SQL = {
             e.explanation
           FROM
             advanced_quiz as a
-          INNER JOIN
+          LEFT OUTER JOIN
             dummy_choice as d
           ON
             a.id = d.advanced_quiz_id
@@ -420,7 +420,7 @@ export const SQL = {
             a.file_num = ?
             AND a.quiz_num = ?
         `,
-        BASIS_ADVANCED_LINK:`
+        BASIS_ADVANCED_LINK: `
           SELECT
             a.id,
             a.file_num,
@@ -435,7 +435,7 @@ export const SQL = {
           WHERE
             a.file_num = ?
             AND a.quiz_num = ?
-        `
+        `,
       },
       RANDOM: {
         PRE: ` 
@@ -555,27 +555,36 @@ export const SQL = {
               AND advanced_quiz_type_id = 2
           ;
         `,
-        DUMMY_CHOICE: `
-          UPDATE
+        DUMMY_CHOICE: {
+          UPDATE: `
+            UPDATE
+                dummy_choice
+            SET
+                dummy_choice_sentense = ? ,
+                updated_at = NOW()
+            WHERE 
+                id = ?
+            ;
+          `,
+          INSERT: `
+            INSERT INTO
               dummy_choice
-          SET
-              dummy_choice_sentense = ? ,
-              updated_at = NOW()
-          WHERE 
-              id = ?
-          ;
-        `,
-        GET_DUMMY_CHOICE_ID: `
-          SELECT
-            id
-          FROM
-            dummy_choice
-          WHERE
-            advanced_quiz_id = ?
-          ORDER BY
+            (advanced_quiz_id,dummy_choice_sentense)
+            VALUES (?,?)
+            ;
+          `,
+          GET_DUMMY_CHOICE_ID: `
+            SELECT
               id
-          LIMIT 1 OFFSET ?
-        `,
+            FROM
+              dummy_choice
+            WHERE
+              advanced_quiz_id = ?
+            ORDER BY
+                id
+            LIMIT 1 OFFSET ?
+          `,
+        },
       },
     },
   },
@@ -846,7 +855,7 @@ export const SQL = {
             word.id = ?
             AND word.deleted_at IS NULL
           ;
-        `
+        `,
       },
     },
     MEAN: {
