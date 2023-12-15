@@ -1,7 +1,12 @@
 import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
-import { GetWorstRateQuizButton } from '@/components/ui-parts/button-patterns/getWorstRateQuiz/GetWorstRateQuiz.button';
-import { getImageOfQuizAPI, getMinimumClearQuizAPI, getQuizAPI, getRandomQuizAPI } from '@/common/ButtonAPI';
+import {
+  getImageOfQuizAPI,
+  getMinimumClearQuizAPI,
+  getQuizAPI,
+  getRandomQuizAPI,
+  getWorstRateQuizAPI
+} from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
 
 interface GetQuizButtonGroupProps {
@@ -35,11 +40,13 @@ export const GetQuizButtonGroup = ({
           getRandomQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
         }
       />
-      <GetWorstRateQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
-        setQueryofQuizStater={setQueryofQuizStater}
+      <Button
+        label={'最低正解率問出題'}
+        variant="contained"
+        color="secondary"
+        onClick={(e) =>
+          getWorstRateQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+        }
       />
       <Button
         label={'最小正解数問出題'}
