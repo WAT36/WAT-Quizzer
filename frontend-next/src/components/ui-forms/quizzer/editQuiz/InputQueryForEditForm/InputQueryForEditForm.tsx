@@ -9,7 +9,8 @@ import { FormControl, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
-import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/GetQuiz.button';
+import { getQuizAPI } from '@/common/ButtonAPI';
+import { Button } from '@/components/ui-elements/button/Button';
 
 interface InputQueryForEditFormProps {
   filelistoption: PullDownOptionState[];
@@ -112,10 +113,12 @@ export const InputQueryForEditForm = ({
         </FormControl>
       </FormGroup>
 
-      <GetQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setMessageStater={setMessageStater}
-        setQueryofPutQuizStater={setQueryOfEditQuizStater}
+      <Button
+        label={'問題取得'}
+        attr={'button-array'}
+        variant="contained"
+        color="primary"
+        onClick={(e) => getQuizAPI({ queryOfQuizState, setMessageStater, setQueryofPutQuiz: setQueryOfEditQuizStater })}
       />
     </>
   );

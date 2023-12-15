@@ -2,8 +2,7 @@ import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { GetRandomQuizButton } from '@/components/ui-parts/button-patterns/getRandomQuiz/GetRandomQuiz.button';
 import { GetWorstRateQuizButton } from '@/components/ui-parts/button-patterns/getWorstRateQuiz/GetWorstRateQuiz.button';
-import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/GetQuiz.button';
-import { getImageOfQuizAPI, getMinimumClearQuizAPI } from '@/common/ButtonAPI';
+import { getImageOfQuizAPI, getMinimumClearQuizAPI, getQuizAPI } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
 
 interface GetQuizButtonGroupProps {
@@ -21,10 +20,12 @@ export const GetQuizButtonGroup = ({
 }: GetQuizButtonGroupProps) => {
   return (
     <>
-      <GetQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
+      <Button
+        label={'出題'}
+        attr={'button-array'}
+        variant="contained"
+        color="primary"
+        onClick={(e) => getQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater })}
       />
       <GetRandomQuizButton
         queryOfQuizState={queryOfQuizState}
