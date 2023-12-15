@@ -1,8 +1,7 @@
 import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
-import { GetRandomQuizButton } from '@/components/ui-parts/button-patterns/getRandomQuiz/GetRandomQuiz.button';
 import { GetWorstRateQuizButton } from '@/components/ui-parts/button-patterns/getWorstRateQuiz/GetWorstRateQuiz.button';
-import { getImageOfQuizAPI, getMinimumClearQuizAPI, getQuizAPI } from '@/common/ButtonAPI';
+import { getImageOfQuizAPI, getMinimumClearQuizAPI, getQuizAPI, getRandomQuizAPI } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
 
 interface GetQuizButtonGroupProps {
@@ -27,11 +26,14 @@ export const GetQuizButtonGroup = ({
         color="primary"
         onClick={(e) => getQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater })}
       />
-      <GetRandomQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
-        setQueryofQuizStater={setQueryofQuizStater}
+      <Button
+        label={'ランダム出題'}
+        attr={'button-array'}
+        variant="contained"
+        color="secondary"
+        onClick={(e) =>
+          getRandomQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+        }
       />
       <GetWorstRateQuizButton
         queryOfQuizState={queryOfQuizState}
