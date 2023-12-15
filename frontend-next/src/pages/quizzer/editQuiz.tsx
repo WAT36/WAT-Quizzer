@@ -7,7 +7,8 @@ import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
 import { InputQueryForEditForm } from '@/components/ui-forms/quizzer/editQuiz/InputQueryForEditForm/InputQueryForEditForm';
 import { PutQuizForm } from '@/components/ui-forms/quizzer/forms/putQuizForm/PutQuizForm';
-import { EditQuizButton } from '@/components/ui-parts/button-patterns/editQuiz/EditQuiz.button';
+import { Button } from '@/components/ui-elements/button/Button';
+import { editQuizAPI } from '@/common/ButtonAPI';
 
 export default function EditQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
@@ -51,12 +52,12 @@ export default function EditQuizPage() {
           queryOfPutQuizState={queryOfEditQuiz}
           setQueryofPutQuizStater={setQueryOfEditQuiz}
         />
-
-        <EditQuizButton
-          value={queryOfEditQuiz.formatValue || 0}
-          queryOfEditQuizState={queryOfEditQuiz}
-          setMessageStater={setMessage}
-          setQueryofEditQuizStater={setQueryOfEditQuiz}
+        <Button
+          label={'更新'}
+          attr={'button-array'}
+          variant="contained"
+          color="primary"
+          onClick={(e) => editQuizAPI({ queryOfEditQuiz, setMessage, setQueryOfEditQuiz })}
         />
       </Container>
     );
