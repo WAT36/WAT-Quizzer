@@ -2,9 +2,8 @@ import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { GetRandomQuizButton } from '@/components/ui-parts/button-patterns/getRandomQuiz/GetRandomQuiz.button';
 import { GetWorstRateQuizButton } from '@/components/ui-parts/button-patterns/getWorstRateQuiz/GetWorstRateQuiz.button';
-import { GetMinimumClearQuizButton } from '@/components/ui-parts/button-patterns/getMinimumClearQuiz/GetMinimumClearQuiz.button';
 import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/GetQuiz.button';
-import { getImageOfQuizAPI } from '@/common/ButtonAPI';
+import { getImageOfQuizAPI, getMinimumClearQuizAPI } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
 
 interface GetQuizButtonGroupProps {
@@ -39,11 +38,14 @@ export const GetQuizButtonGroup = ({
         setMessageStater={setMessageStater}
         setQueryofQuizStater={setQueryofQuizStater}
       />
-      <GetMinimumClearQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
-        setQueryofQuizStater={setQueryofQuizStater}
+      <Button
+        label={'最小正解数問出題'}
+        attr={'button-array'}
+        variant="contained"
+        color="secondary"
+        onClick={(e) =>
+          getMinimumClearQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+        }
       />
       <Button
         label={'画像表示'}
