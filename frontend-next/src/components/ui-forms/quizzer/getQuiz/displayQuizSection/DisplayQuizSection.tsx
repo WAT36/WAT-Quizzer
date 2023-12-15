@@ -1,10 +1,9 @@
 import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { Button as MuiButton, CardActions, CardContent, Collapse, Typography } from '@mui/material';
-import { FailQuizButton } from '@/components/ui-parts/button-patterns/failQuiz/FailQuiz.button';
 import { ReverseCheckQuizButton } from '@/components/ui-parts/button-patterns/reverseCheckQuiz/reverseCheckQuiz.button';
 import { Card } from '@/components/ui-elements/card/Card';
-import { clearQuizAPI } from '@/common/ButtonAPI';
+import { clearQuizAPI, failQuizAPI } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
 
 interface DisplayQuizSectionProps {
@@ -71,11 +70,19 @@ export const DisplayQuizSection = ({
                 })
               }
             />
-            <FailQuizButton
-              queryOfQuizState={queryOfQuizState}
-              displayQuizState={displayQuizState}
-              setMessageStater={setMessageStater}
-              setDisplayQuizStater={setDisplayQuizStater}
+            <Button
+              label={'不正解...'}
+              attr={'button-array'}
+              variant="contained"
+              color="secondary"
+              onClick={(e) =>
+                failQuizAPI({
+                  queryOfQuizState,
+                  displayQuizState,
+                  setMessageStater,
+                  setDisplayQuizStater
+                })
+              }
             />
             <ReverseCheckQuizButton
               queryOfQuizState={queryOfQuizState}
