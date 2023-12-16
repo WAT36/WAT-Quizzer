@@ -1,9 +1,8 @@
 import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { Button as MuiButton, CardActions, CardContent, Collapse, Typography } from '@mui/material';
-import { ReverseCheckQuizButton } from '@/components/ui-parts/button-patterns/reverseCheckQuiz/reverseCheckQuiz.button';
 import { Card } from '@/components/ui-elements/card/Card';
-import { clearQuizAPI, failQuizAPI } from '@/common/ButtonAPI';
+import { clearQuizAPI, failQuizAPI, reverseCheckQuizAPI } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
 
 interface DisplayQuizSectionProps {
@@ -84,11 +83,18 @@ export const DisplayQuizSection = ({
                 })
               }
             />
-            <ReverseCheckQuizButton
-              queryOfQuizState={queryOfQuizState}
-              displayQuizState={displayQuizState}
-              setMessageStater={setMessageStater}
-              setDisplayQuizStater={setDisplayQuizStater}
+            <Button
+              label={'チェックつける/外す'}
+              variant="contained"
+              color="warning"
+              onClick={(e) =>
+                reverseCheckQuizAPI({
+                  queryOfQuizState,
+                  displayQuizState,
+                  setMessageStater,
+                  setDisplayQuizStater
+                })
+              }
             />
           </CardContent>
         </Collapse>
