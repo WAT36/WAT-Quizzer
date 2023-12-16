@@ -6,8 +6,8 @@ import { Box, IconButton, MenuItem, Select, Stack, Typography } from '@mui/mater
 import { MessageState, PullDownOptionState, WordMeanData, WordSourceData } from '../../../../../../interfaces/state';
 import { style } from '../Stack.style';
 import { useState } from 'react';
-import { EditEnglishWordSourceButton } from '@/components/ui-parts/button-patterns/editEnglishWordSource/EditEnglishWordSource.button';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { editEnglishWordSourceAPI } from '@/common/ButtonAPI';
 
 interface SourceStackProps {
   id: string;
@@ -126,15 +126,23 @@ export const SourceStack = ({
                   出典：
                   {displaySourceInput(3, sourceList, inputSourceId, setInputSourceId)}
                 </Typography>
-                <EditEnglishWordSourceButton
-                  meanData={meanData}
-                  sourceList={sourceList}
-                  wordSourceData={wordSourceData}
-                  selectedWordSourceIndex={selectedWordSourceIndex}
-                  inputSourceId={inputSourceId}
-                  setMessage={setMessage}
-                  setModalIsOpen={setModalIsOpen}
-                  setWordSourceData={setWordSourceData}
+                <Button
+                  label={'出典更新'}
+                  attr={'button-array'}
+                  variant="contained"
+                  color="primary"
+                  onClick={(e) =>
+                    editEnglishWordSourceAPI({
+                      meanData,
+                      sourceList,
+                      wordSourceData,
+                      selectedWordSourceIndex,
+                      inputSourceId,
+                      setMessage,
+                      setModalIsOpen,
+                      setWordSourceData
+                    })
+                  }
                 />
               </Box>
             </Modal>
