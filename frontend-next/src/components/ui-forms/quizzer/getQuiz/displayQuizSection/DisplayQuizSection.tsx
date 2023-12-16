@@ -85,6 +85,7 @@ export const DisplayQuizSection = ({
             />
             <Button
               label={'チェックつける/外す'}
+              attr={'button-array'}
               variant="contained"
               color="warning"
               onClick={(e) =>
