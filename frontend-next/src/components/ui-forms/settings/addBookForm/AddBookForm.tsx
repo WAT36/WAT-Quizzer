@@ -1,7 +1,8 @@
 import React from 'react';
 import { MessageState, PullDownOptionState } from '../../../../../interfaces/state';
 import { CardContent, CardHeader, TextField } from '@mui/material';
-import { AddBookButton } from '@/components/ui-parts/button-patterns/addBook/AddBook.button';
+import { Button } from '@/components/ui-elements/button/Button';
+import { addBookAPI } from '@/common/ButtonAPI';
 
 interface AddBookFormProps {
   bookName: string;
@@ -32,10 +33,11 @@ export const AddBookForm = ({ bookName, setBookName, setMessageStater, setBookli
             flex: 'auto'
           }}
         />
-        <AddBookButton
-          bookName={bookName}
-          setMessageStater={setMessageStater}
-          setBooklistoption={setBooklistoption}
+        <Button
+          label={'啓発本登録'}
+          variant="contained"
+          color="primary"
+          onClick={(e) => addBookAPI({ bookName, setMessageStater, setBooklistoption })}
           attr={'after-inline'}
         />
       </CardContent>
