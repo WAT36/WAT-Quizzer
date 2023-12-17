@@ -254,7 +254,8 @@ export const editQuizAPI = ({ queryOfEditQuiz, setMessage, setQueryOfEditQuiz }:
         });
         setQueryOfEditQuiz({
           fileNum: queryOfEditQuiz.fileNum,
-          quizNum: -1
+          quizNum: -1,
+          format: queryOfEditQuiz.format
         });
         //入力データをクリア
         const inputQuizField = document.getElementsByTagName('textarea').item(0) as HTMLTextAreaElement;
