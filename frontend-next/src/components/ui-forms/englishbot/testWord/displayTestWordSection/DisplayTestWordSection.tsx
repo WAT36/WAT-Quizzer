@@ -3,7 +3,6 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { DisplayWordTestState, MessageState } from '../../../../../../interfaces/state';
 import { EnglishBotTestFourChoiceResponse } from '../../../../../../interfaces/api/response';
 import { CardContent, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import { SubmitEnglishBotTestButton } from '@/components/ui-parts/button-patterns/submitEnglishBotTest/submitEnglishBotTest.button';
 import { Button } from '@/components/ui-elements/button/Button';
 import { submitEnglishBotTestAPI } from '@/common/ButtonAPI';
 
