@@ -1,8 +1,9 @@
 import React from 'react';
 import { MessageState, PullDownOptionState } from '../../../../../interfaces/state';
 import { CardContent, CardHeader, SelectChangeEvent, TextField } from '@mui/material';
-import { AddSayingButton } from '@/components/ui-parts/button-patterns/addSaying/AddSaying.button';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { Button } from '@/components/ui-elements/button/Button';
+import { addSayingAPI } from '@/common/ButtonAPI';
 
 interface AddSayingFormProps {
   inputSaying: string;
@@ -55,11 +56,11 @@ export const AddSayingForm = ({
             flex: 'auto'
           }}
         />
-        <AddSayingButton
-          selectedBookId={selectedBookId}
-          inputSaying={inputSaying}
-          setMessageStater={setMessageStater}
-          setBooklistoption={setBooklistoption}
+        <Button
+          label={'格言登録'}
+          variant="contained"
+          color="primary"
+          onClick={(e) => addSayingAPI({ selectedBookId, inputSaying, setMessageStater, setBooklistoption })}
           attr={'after-inline'}
         />
       </CardContent>

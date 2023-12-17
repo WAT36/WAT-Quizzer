@@ -6,8 +6,9 @@ import { MessageState, PullDownOptionState, QueryOfPutQuizState } from '../../..
 import { AddQuizLogSection } from '@/components/ui-forms/quizzer/addQuiz/addQuizLogSection/AddQuizLogSection';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
-import { AddQuizButton } from '@/components/ui-parts/button-patterns/addQuiz/AddQuiz.button';
 import { AddQuizForm } from '@/components/ui-forms/quizzer/addQuiz/addQuizForm/AddQuizForm';
+import { Button } from '@/components/ui-elements/button/Button';
+import { addQuizAPI } from '@/common/ButtonAPI';
 
 export default function AddQuizPage() {
   const [queryOfAddQuiz, setQueryOfAddQuiz] = useState<QueryOfPutQuizState>({
@@ -37,12 +38,20 @@ export default function AddQuizPage() {
           setQueryofPutQuizStater={setQueryOfAddQuiz}
         />
 
-        <AddQuizButton
-          value={value}
-          queryOfAddQuizState={queryOfAddQuiz}
-          setAddLog={setAddLog}
-          setMessageStater={setMessage}
-          setQueryofAddQuizStater={setQueryOfAddQuiz}
+        <Button
+          label="問題登録"
+          attr={'button-array'}
+          variant="contained"
+          color="primary"
+          onClick={(e) =>
+            addQuizAPI({
+              value,
+              queryOfAddQuizState: queryOfAddQuiz,
+              setAddLog,
+              setMessageStater: setMessage,
+              setQueryofAddQuizStater: setQueryOfAddQuiz
+            })
+          }
         />
 
         <AddQuizLogSection log={addLog} />

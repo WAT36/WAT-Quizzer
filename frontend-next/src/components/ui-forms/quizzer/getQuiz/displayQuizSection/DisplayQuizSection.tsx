@@ -1,10 +1,9 @@
 import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
-import { Button, CardActions, CardContent, Collapse, Typography } from '@mui/material';
-import { ClearQuizButton } from '@/components/ui-parts/button-patterns/clearQuiz/ClearQuiz.button';
-import { FailQuizButton } from '@/components/ui-parts/button-patterns/failQuiz/FailQuiz.button';
-import { ReverseCheckQuizButton } from '@/components/ui-parts/button-patterns/reverseCheckQuiz/reverseCheckQuiz.button';
+import { Button as MuiButton, CardActions, CardContent, Collapse, Typography } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
+import { clearQuizAPI, failQuizAPI, reverseCheckQuizAPI } from '@/common/ButtonAPI';
+import { Button } from '@/components/ui-elements/button/Button';
 
 interface DisplayQuizSectionProps {
   queryOfQuizState: QueryOfQuizState;
@@ -44,9 +43,9 @@ export const DisplayQuizSection = ({
         </CardContent>
 
         <CardActions>
-          <Button size="small" onClick={handleExpandClick} aria-expanded={displayQuizState.expanded}>
+          <MuiButton size="small" onClick={handleExpandClick} aria-expanded={displayQuizState.expanded}>
             答え
-          </Button>
+          </MuiButton>
         </CardActions>
         <Collapse in={displayQuizState.expanded} timeout="auto" unmountOnExit>
           <CardContent>
@@ -56,23 +55,47 @@ export const DisplayQuizSection = ({
             <Typography variant="subtitle2" component="h4">
               {'解説：' + displayQuizState.explanation}
             </Typography>
-            <ClearQuizButton
-              queryOfQuizState={queryOfQuizState}
-              displayQuizState={displayQuizState}
-              setMessageStater={setMessageStater}
-              setDisplayQuizStater={setDisplayQuizStater}
+            <Button
+              label={'正解!!'}
+              attr={'button-array'}
+              variant="contained"
+              color="primary"
+              onClick={(e) =>
+                clearQuizAPI({
+                  queryOfQuizState,
+                  displayQuizState,
+                  setMessageStater,
+                  setDisplayQuizStater
+                })
+              }
             />
-            <FailQuizButton
-              queryOfQuizState={queryOfQuizState}
-              displayQuizState={displayQuizState}
-              setMessageStater={setMessageStater}
-              setDisplayQuizStater={setDisplayQuizStater}
+            <Button
+              label={'不正解...'}
+              attr={'button-array'}
+              variant="contained"
+              color="secondary"
+              onClick={(e) =>
+                failQuizAPI({
+                  queryOfQuizState,
+                  displayQuizState,
+                  setMessageStater,
+                  setDisplayQuizStater
+                })
+              }
             />
-            <ReverseCheckQuizButton
-              queryOfQuizState={queryOfQuizState}
-              displayQuizState={displayQuizState}
-              setMessageStater={setMessageStater}
-              setDisplayQuizStater={setDisplayQuizStater}
+            <Button
+              label={'チェックつける/外す'}
+              attr={'button-array'}
+              variant="contained"
+              color="warning"
+              onClick={(e) =>
+                reverseCheckQuizAPI({
+                  queryOfQuizState,
+                  displayQuizState,
+                  setMessageStater,
+                  setDisplayQuizStater
+                })
+              }
             />
           </CardContent>
         </Collapse>

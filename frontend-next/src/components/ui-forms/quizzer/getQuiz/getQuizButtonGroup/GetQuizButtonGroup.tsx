@@ -1,10 +1,13 @@
 import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
-import { GetRandomQuizButton } from '@/components/ui-parts/button-patterns/getRandomQuiz/GetRandomQuiz.button';
-import { GetWorstRateQuizButton } from '@/components/ui-parts/button-patterns/getWorstRateQuiz/GetWorstRateQuiz.button';
-import { GetMinimumClearQuizButton } from '@/components/ui-parts/button-patterns/getMinimumClearQuiz/GetMinimumClearQuiz.button';
-import { GetImageOfQuizButton } from '@/components/ui-parts/button-patterns/getImageOfQuiz/GetImageOfQuiz.button';
-import { GetQuizButton } from '@/components/ui-parts/button-patterns/getQuiz/GetQuiz.button';
+import {
+  getImageOfQuizAPI,
+  getMinimumClearQuizAPI,
+  getQuizAPI,
+  getRandomQuizAPI,
+  getWorstRateQuizAPI
+} from '@/common/ButtonAPI';
+import { Button } from '@/components/ui-elements/button/Button';
 
 interface GetQuizButtonGroupProps {
   queryOfQuizState: QueryOfQuizState;
@@ -21,34 +24,48 @@ export const GetQuizButtonGroup = ({
 }: GetQuizButtonGroupProps) => {
   return (
     <>
-      <GetQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
+      <Button
+        label={'出題'}
+        attr={'button-array'}
+        variant="contained"
+        color="primary"
+        onClick={(e) => getQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater })}
       />
-      <GetRandomQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
-        setQueryofQuizStater={setQueryofQuizStater}
+      <Button
+        label={'ランダム出題'}
+        attr={'button-array'}
+        variant="contained"
+        color="secondary"
+        onClick={(e) =>
+          getRandomQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+        }
       />
-      <GetWorstRateQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
-        setQueryofQuizStater={setQueryofQuizStater}
+      <Button
+        label={'最低正解率問出題'}
+        variant="contained"
+        color="secondary"
+        onClick={(e) =>
+          getWorstRateQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+        }
       />
-      <GetMinimumClearQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
-        setQueryofQuizStater={setQueryofQuizStater}
+      <Button
+        label={'最小正解数問出題'}
+        attr={'button-array'}
+        variant="contained"
+        color="secondary"
+        onClick={(e) =>
+          getMinimumClearQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+        }
       />
-      <GetImageOfQuizButton
-        queryOfQuizState={queryOfQuizState}
-        setDisplayQuizStater={setDisplayQuizStater}
-        setMessageStater={setMessageStater}
-        setQueryofQuizStater={setQueryofQuizStater}
+      <Button
+        label={'画像表示'}
+        attr={'button-array'}
+        variant="contained"
+        color="info"
+        disabled={true}
+        onClick={(e) =>
+          getImageOfQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+        }
       />
     </>
   );

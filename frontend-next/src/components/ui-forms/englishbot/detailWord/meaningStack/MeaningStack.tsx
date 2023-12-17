@@ -4,10 +4,10 @@ import { Item } from '@/components/ui-elements/item/Item';
 import { Box, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { MessageState, PullDownOptionState, WordMeanData } from '../../../../../../interfaces/state';
-import { EditEnglishWordMeanButton } from '@/components/ui-parts/button-patterns/editEnglishWordMean/EditEnglishWordMean.button';
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { editEnglishWordMeanAPI } from '@/common/ButtonAPI';
 
 interface MeaningStackProps {
   id: string;
@@ -164,15 +164,23 @@ export const MeaningStack = ({
                     }}
                   />
                 </Typography>
-                <EditEnglishWordMeanButton
-                  meanData={meanData}
-                  meanDataIndex={meanDataIndex}
-                  inputEditData={inputEditData}
-                  setMessage={setMessage}
-                  setModalIsOpen={setModalIsOpen}
-                  setMeanDataIndex={setMeanDataIndex}
-                  setInputEditData={setInputEditData}
-                  setMeanData={setMeanData}
+                <Button
+                  label={'意味更新'}
+                  attr={'button-array'}
+                  variant="contained"
+                  color="primary"
+                  onClick={(e) =>
+                    editEnglishWordMeanAPI({
+                      meanData,
+                      meanDataIndex,
+                      inputEditData,
+                      setMessage,
+                      setModalIsOpen,
+                      setMeanDataIndex,
+                      setInputEditData,
+                      setMeanData
+                    })
+                  }
                 />
               </Box>
             </Modal>
