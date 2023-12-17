@@ -4,6 +4,8 @@ import { DisplayWordTestState, MessageState } from '../../../../../../interfaces
 import { EnglishBotTestFourChoiceResponse } from '../../../../../../interfaces/api/response';
 import { CardContent, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { SubmitEnglishBotTestButton } from '@/components/ui-parts/button-patterns/submitEnglishBotTest/submitEnglishBotTest.button';
+import { Button } from '@/components/ui-elements/button/Button';
+import { submitEnglishBotTestAPI } from '@/common/ButtonAPI';
 
 interface DisplayTestWordSectionProps {
   displayWordTest: DisplayWordTestState;
@@ -67,11 +69,19 @@ export const DisplayTestWordSection = ({
           )}
         </CardContent>
         <CardContent>
-          <SubmitEnglishBotTestButton
-            wordId={displayWordTest.wordId || NaN}
-            selectedValue={selectedValue}
-            setMessageStater={setMessageStater}
-            setDisplayWordTestState={setDisplayWordTestState}
+          <Button
+            label={'SUBMIT'}
+            variant="contained"
+            color="primary"
+            onClick={(e) =>
+              submitEnglishBotTestAPI({
+                wordId: displayWordTest.wordId || NaN,
+                selectedValue,
+                setMessageStater,
+                setDisplayWordTestState
+              })
+            }
+            disabled={isNaN(displayWordTest.wordId || NaN)}
           />
         </CardContent>
       </Card>
