@@ -199,6 +199,8 @@ export const getPopularEventList = async (
       if (data.status === 200) {
         const result: GetPopularEventResponse[] = data.body as GetPopularEventResponse[];
         setEventList(result);
+      } else {
+        setEventList([{ name: `Error:${data.status}`, link: '' }]);
       }
     });
   } else {
