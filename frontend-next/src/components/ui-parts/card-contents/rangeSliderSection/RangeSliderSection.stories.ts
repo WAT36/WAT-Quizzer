@@ -15,7 +15,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const rangeSliderSection: Story = {
+export const Default: Story = {
   args: {
     sectionTitle: '(タイトル)'
   }

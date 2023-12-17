@@ -18,6 +18,7 @@ export const GetWordButtonGroup = ({
     <>
       <Button
         label={'Random Word'}
+        attr={'button-array'}
         variant="contained"
         color="primary"
         onClick={(e) => getRandomWordAPI({ queryOfGetWordState, setMessageStater, setDisplayWordTest })}
