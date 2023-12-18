@@ -69,7 +69,9 @@ export const generateQuizSentense = (format: string, res: QuizViewApiResponse[])
     choiceName.sort((a, b) => 0.5 - Math.random());
 
     return {
-      quizSentense: `[${res[0].file_num}-${res[0].quiz_num}]${res[0].quiz_sentense}
+      quizSentense: `[${res[0].file_num}-${res[0].quiz_num}]${res[0].quiz_sentense}${
+        res[0].accuracy_rate ? '(正解率' + Number(res[0].accuracy_rate).toFixed(2) + '%)' : ''
+      }
         A: ${choices[choiceName.indexOf('A')]}
         B: ${choices[choiceName.indexOf('B')]}
         C: ${choices[choiceName.indexOf('C')]}
@@ -85,7 +87,9 @@ export const generateQuizSentense = (format: string, res: QuizViewApiResponse[])
     };
   } else {
     return {
-      quizSentense: `[${res[0].file_num}-${res[0].quiz_num}]${res[0].quiz_sentense}`,
+      quizSentense: `[${res[0].file_num}-${res[0].quiz_num}]${res[0].quiz_sentense}${
+        res[0].accuracy_rate ? '(正解率' + Number(res[0].accuracy_rate).toFixed(2) + '%)' : ''
+      }`,
       quizAnswer: res[0].answer,
       explanation: res[0].explanation
     };
