@@ -53,7 +53,7 @@ export const post = async (path: string, jsondata: object, func: (data: Processi
     }
   })
     .catch((error) => {
-      console.error('API Error.');
+      console.error('API Error1.');
       throw Error(error);
     })
     .then((response) =>

@@ -30,7 +30,7 @@ interface AddQuizButtonProps {
 }
 
 // 問題追加ボタンで利用するAPI
-export const addQuizAPI = ({
+export const addQuizAPI = async ({
   value,
   queryOfAddQuizState,
   setAddLog,
@@ -83,7 +83,7 @@ export const addQuizAPI = ({
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  post(
+  await post(
     apiPath,
     {
       file_num: queryOfAddQuizState.fileNum,
@@ -116,7 +116,7 @@ export const addQuizAPI = ({
       }
     }
   ).catch((err) => {
-    console.error(`API Error. ${JSON.stringify(err)}`);
+    console.error(`API Error2. ${JSON.stringify(err)}`);
     setMessageStater({
       message: 'エラー:外部APIとの連携に失敗しました',
       messageColor: 'error',
@@ -132,7 +132,7 @@ interface ClearQuizButtonProps {
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
 }
 
-export const clearQuizAPI = ({
+export const clearQuizAPI = async ({
   queryOfQuizState,
   displayQuizState,
   setMessageStater,
@@ -171,7 +171,7 @@ export const clearQuizAPI = ({
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  post(
+  await post(
     '/quiz/clear',
     {
       format: queryOfQuizState.format,
@@ -201,7 +201,7 @@ export const clearQuizAPI = ({
       }
     }
   ).catch((err) => {
-    console.error(`API Error. ${JSON.stringify(err)}`);
+    console.error(`API Error2. ${JSON.stringify(err)}`);
     setMessageStater({
       message: 'エラー:外部APIとの連携に失敗しました',
       messageColor: 'error',
@@ -294,7 +294,7 @@ interface FailQuizButtonProps {
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
 }
 
-export const failQuizAPI = ({
+export const failQuizAPI = async ({
   queryOfQuizState,
   displayQuizState,
   setMessageStater,
@@ -333,7 +333,7 @@ export const failQuizAPI = ({
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  post(
+  await post(
     '/quiz/fail',
     {
       format: queryOfQuizState.format,
@@ -363,7 +363,7 @@ export const failQuizAPI = ({
       }
     }
   ).catch((err) => {
-    console.error(`API Error. ${JSON.stringify(err)}`);
+    console.error(`API Error2. ${JSON.stringify(err)}`);
     setMessageStater({
       message: 'エラー:外部APIとの連携に失敗しました',
       messageColor: 'error',
