@@ -115,7 +115,14 @@ export const addQuizAPI = ({
         });
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error. ${JSON.stringify(err)}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 interface ClearQuizButtonProps {
@@ -193,7 +200,14 @@ export const clearQuizAPI = ({
         });
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error. ${JSON.stringify(err)}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 interface EditQuizButtonProps {
@@ -348,7 +362,14 @@ export const failQuizAPI = ({
         });
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error. ${JSON.stringify(err)}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 interface GetImageOfQuizButtonProps {
