@@ -448,6 +448,7 @@ export const SQL = {
             a.answer,
             a.img_file,
             a.checked,
+            a.accuracy_rate,
             d.dummy_choice_sentense,
             e.explanation
           FROM 
@@ -481,6 +482,7 @@ export const SQL = {
             a.answer,
             a.img_file,
             a.checked,
+            a.accuracy_rate,
             d.dummy_choice_sentense,
             e.explanation
           FROM 
@@ -511,6 +513,7 @@ export const SQL = {
             a.answer,
             a.img_file,
             a.checked,
+            a.accuracy_rate,
             d.dummy_choice_sentense,
             e.explanation
           FROM 
