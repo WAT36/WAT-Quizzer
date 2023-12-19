@@ -404,10 +404,11 @@ export const SQL = {
             a.answer,
             a.img_file,
             a.checked,
+            a.accuracy_rate,
             d.dummy_choice_sentense,
             e.explanation
           FROM
-            advanced_quiz as a
+            advanced_quiz_view as a
           LEFT OUTER JOIN
             dummy_choice as d
           ON
