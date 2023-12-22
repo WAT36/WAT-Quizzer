@@ -257,7 +257,7 @@ export class QuizService {
         preSQL +
         categorySQL +
         checkedSQL +
-        ' ORDER BY (clear_count+fail_count) desc,fail_count desc LIMIT 1 ' +
+        ' ORDER BY (clear_count+fail_count),fail_count desc LIMIT 1 ' +
         postSQL +
         ';';
 
