@@ -217,6 +217,7 @@ export class QuizService {
   }
 
   // 最小正解数問題取得
+  // TODO 最小正解数ではなく最小回答数にした 関係事項は諸々修正
   async getMinimumAnsweredQuiz(
     file_num: number,
     category: string,
@@ -256,7 +257,7 @@ export class QuizService {
         preSQL +
         categorySQL +
         checkedSQL +
-        ' ORDER BY clear_count LIMIT 1 ' +
+        ' ORDER BY (clear_count+fail_count) desc,fail_count desc LIMIT 1 ' +
         postSQL +
         ';';
 

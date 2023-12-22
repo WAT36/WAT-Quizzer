@@ -49,7 +49,7 @@ export const GetQuizButtonGroup = ({
         }
       />
       <Button
-        label={'最小正解数問出題'}
+        label={'最小回答数問出題'}
         attr={'button-array'}
         variant="contained"
         color="secondary"
