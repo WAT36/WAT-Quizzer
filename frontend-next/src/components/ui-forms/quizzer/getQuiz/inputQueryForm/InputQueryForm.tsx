@@ -169,9 +169,9 @@ export const InputQueryForm = ({
             <Checkbox
               color="primary"
               onChange={(e) => {
-                if (setDisplayQuizStater) {
-                  setDisplayQuizStater({
-                    ...displayQuizState,
+                if (setQueryofQuizStater) {
+                  setQueryofQuizStater({
+                    ...queryOfQuizState,
                     checked: e.target.checked
                   });
                 }
