@@ -216,14 +216,22 @@ export class EnglishService {
   // 単語の意味などを更新
   async editWordMeanService(req: EditWordMeanDto) {
     try {
-      const { wordId, wordMeanId, meanId, partofspeechId, meaning } =
-        req;
+      const { wordId, wordMeanId, meanId, partofspeechId, meaning } = req;
       //意味編集及び追加
-      console.log(`req:${JSON.stringify(req)}`)
-      if(meanId === -1){
-        return await execQuery(SQL.ENGLISH.MEAN.ADD, [ wordId, wordMeanId, partofspeechId, meaning]);
-      }else{
-        return await execQuery(SQL.ENGLISH.MEAN.EDIT, [partofspeechId, meaning, wordId, wordMeanId]);
+      if (meanId === -1) {
+        return await execQuery(SQL.ENGLISH.MEAN.ADD, [
+          wordId,
+          wordMeanId,
+          partofspeechId,
+          meaning,
+        ]);
+      } else {
+        return await execQuery(SQL.ENGLISH.MEAN.EDIT, [
+          partofspeechId,
+          meaning,
+          wordId,
+          wordMeanId,
+        ]);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -363,26 +371,26 @@ export class EnglishService {
   }
 
   // 単語の出典追加・更新
-  async editSourceOfWordById(req: EditWordSourceDto){
+  async editSourceOfWordById(req: EditWordSourceDto) {
     try {
       const { meanId, oldSourceId, newSourceId } = req;
       //トランザクション実行準備
       const transactionQuery: TransactionQuery[] = [];
 
-      if(oldSourceId===-1){
+      if (oldSourceId === -1) {
         // 出典追加
-        for(let i=0;i<meanId.length;i++){
+        for (let i = 0; i < meanId.length; i++) {
           transactionQuery.push({
             query: SQL.ENGLISH.MEAN.SOURCE.ADD,
-            value: [meanId[i],newSourceId],
+            value: [meanId[i], newSourceId],
           });
         }
-      }else{
+      } else {
         // 出典更新
-        for(let i=0;i<meanId.length;i++){
+        for (let i = 0; i < meanId.length; i++) {
           transactionQuery.push({
             query: SQL.ENGLISH.MEAN.SOURCE.EDIT,
-            value: [newSourceId,meanId[i],oldSourceId],
+            value: [newSourceId, meanId[i], oldSourceId],
           });
         }
       }

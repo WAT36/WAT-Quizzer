@@ -754,9 +754,7 @@ export const SQL = {
             mean.wordmean_id,
             mean.meaning,
             partsofspeech.id as partsofspeech_id,
-            partsofspeech.name as partsofspeech,
-            source.id as source_id,
-            source.name as source_name
+            partsofspeech.name as partsofspeech
           FROM
             word
           INNER JOIN
@@ -767,14 +765,6 @@ export const SQL = {
             partsofspeech
           ON
             mean.partsofspeech_id = partsofspeech.id
-          LEFT OUTER JOIN
-            mean_source
-          ON
-            mean.id = mean_source.mean_id
-          LEFT OUTER JOIN
-            source
-          ON
-            mean_source.source_id = source.id
           WHERE
             word.id = ?
             AND word.deleted_at IS NULL
