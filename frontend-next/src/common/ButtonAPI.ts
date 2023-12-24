@@ -216,7 +216,7 @@ interface EditQuizButtonProps {
   setQueryOfEditQuiz?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
 }
 
-export const editQuizAPI = ({ queryOfEditQuiz, setMessage, setQueryOfEditQuiz }: EditQuizButtonProps) => {
+export const editQuizAPI = async ({ queryOfEditQuiz, setMessage, setQueryOfEditQuiz }: EditQuizButtonProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
   if (!setMessage || !setQueryOfEditQuiz) {
     return;
@@ -242,7 +242,7 @@ export const editQuizAPI = ({ queryOfEditQuiz, setMessage, setQueryOfEditQuiz }:
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  post(
+  await post(
     '/quiz/edit',
     {
       format: queryOfEditQuiz.format,
@@ -284,7 +284,14 @@ export const editQuizAPI = ({ queryOfEditQuiz, setMessage, setQueryOfEditQuiz }:
         });
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessage({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 interface FailQuizButtonProps {
@@ -427,7 +434,7 @@ interface GetMinimumClearQuizButtonProps {
   setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
 }
 
-export const getMinimumClearQuizAPI = ({
+export const getMinimumClearQuizAPI = async ({
   queryOfQuizState,
   setMessageStater,
   setDisplayQuizStater,
@@ -469,7 +476,7 @@ export const getMinimumClearQuizAPI = ({
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  get(
+  await get(
     '/quiz/minimum',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
@@ -505,7 +512,14 @@ export const getMinimumClearQuizAPI = ({
       }
     },
     sendData
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 interface GetQuizButtonProps {
@@ -515,7 +529,7 @@ interface GetQuizButtonProps {
   setQueryofPutQuiz?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
 }
 
-export const getQuizAPI = ({
+export const getQuizAPI = async ({
   queryOfQuizState,
   setMessageStater,
   setDisplayQuizStater,
@@ -553,7 +567,7 @@ export const getQuizAPI = ({
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  get(
+  await get(
     '/quiz',
     (data: ProcessingApiReponse) => {
       if (data.status === 404 || data.body?.length === 0) {
@@ -604,7 +618,14 @@ export const getQuizAPI = ({
       }
     },
     sendData
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 interface GetRandomQuizButtonProps {
@@ -614,7 +635,7 @@ interface GetRandomQuizButtonProps {
   setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
 }
 
-export const getRandomQuizAPI = ({
+export const getRandomQuizAPI = async ({
   queryOfQuizState,
   setMessageStater,
   setDisplayQuizStater,
@@ -656,7 +677,7 @@ export const getRandomQuizAPI = ({
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  get(
+  await get(
     '/quiz/random',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body.length > 0) {
@@ -692,7 +713,14 @@ export const getRandomQuizAPI = ({
       }
     },
     sendData
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 interface GetWorstRateQuizButtonProps {
@@ -702,7 +730,7 @@ interface GetWorstRateQuizButtonProps {
   setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
 }
 
-export const getWorstRateQuizAPI = ({
+export const getWorstRateQuizAPI = async ({
   queryOfQuizState,
   setMessageStater,
   setDisplayQuizStater,
@@ -744,7 +772,7 @@ export const getWorstRateQuizAPI = ({
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  get(
+  await get(
     '/quiz/worst',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
@@ -780,7 +808,14 @@ export const getWorstRateQuizAPI = ({
       }
     },
     sendData
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 interface ReverseCheckQuizButtonProps {
@@ -790,7 +825,7 @@ interface ReverseCheckQuizButtonProps {
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
 }
 
-export const reverseCheckQuizAPI = ({
+export const reverseCheckQuizAPI = async ({
   queryOfQuizState,
   displayQuizState,
   setMessageStater,
@@ -829,7 +864,7 @@ export const reverseCheckQuizAPI = ({
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  post(
+  await post(
     '/quiz/check',
     {
       format: queryOfQuizState.format,
@@ -856,7 +891,14 @@ export const reverseCheckQuizAPI = ({
         });
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 // 以下 EnglishBot系
@@ -873,7 +915,7 @@ interface EditEnglishWordMeanButtonProps {
 }
 
 // TODO ここのAPI部分は分けたい
-export const editEnglishWordMeanAPI = ({
+export const editEnglishWordMeanAPI = async ({
   meanData,
   meanDataIndex,
   inputEditData,
@@ -893,7 +935,7 @@ export const editEnglishWordMeanAPI = ({
     return;
   }
 
-  patch(
+  await patch(
     '/english/word/' + String(inputEditData.wordId),
     {
       wordId: inputEditData.wordId,
@@ -945,7 +987,16 @@ export const editEnglishWordMeanAPI = ({
         });
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    if (setMessage) {
+      setMessage({
+        message: 'エラー:外部APIとの連携に失敗しました',
+        messageColor: 'error',
+        isDisplay: true
+      });
+    }
+  });
 };
 
 interface EditEnglishWordSourceButtonProps {
@@ -960,7 +1011,7 @@ interface EditEnglishWordSourceButtonProps {
 }
 
 // TODO ここのAPI部分は分けたい
-export const editEnglishWordSourceAPI = ({
+export const editEnglishWordSourceAPI = async ({
   meanData,
   sourceList,
   wordSourceData,
@@ -980,7 +1031,7 @@ export const editEnglishWordSourceAPI = ({
     return;
   }
 
-  put(
+  await put(
     '/english/word/source',
     {
       meanId: meanData.map((x) => x.meanId),
@@ -1028,7 +1079,16 @@ export const editEnglishWordSourceAPI = ({
         }
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    if (setMessage) {
+      setMessage({
+        message: 'エラー:外部APIとの連携に失敗しました',
+        messageColor: 'error',
+        isDisplay: true
+      });
+    }
+  });
 };
 
 interface GetRandomWordButtonProps {
@@ -1090,7 +1150,15 @@ export const getRandomWordAPI = async ({
       }
     },
     sendData
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+    return;
+  });
 
   await get(
     '/english/word/fourchoice',
@@ -1127,7 +1195,14 @@ export const getRandomWordAPI = async ({
     {
       wordId: String(wordData.id)
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 interface SubmitEnglishBotTestButtonProps {
@@ -1137,7 +1212,7 @@ interface SubmitEnglishBotTestButtonProps {
   setDisplayWordTestState?: React.Dispatch<React.SetStateAction<DisplayWordTestState>>;
 }
 
-export const submitEnglishBotTestAPI = ({
+export const submitEnglishBotTestAPI = async ({
   wordId,
   selectedValue,
   setMessageStater,
@@ -1162,7 +1237,7 @@ export const submitEnglishBotTestAPI = ({
     messageColor: '#d3d3d3',
     isDisplay: true
   });
-  post(
+  await post(
     selectedValue ? '/english/word/test/clear' : '/english/word/test/fail',
     {
       wordId
@@ -1183,7 +1258,14 @@ export const submitEnglishBotTestAPI = ({
         });
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
 };
 
 // 啓発本と格言系
@@ -1195,7 +1277,7 @@ interface AddBookButtonProps {
   setBooklistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
 }
 
-export const addBookAPI = ({ bookName, setMessageStater, setBooklistoption }: AddBookButtonProps) => {
+export const addBookAPI = async ({ bookName, setMessageStater, setBooklistoption }: AddBookButtonProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
   if (!setMessageStater || !setBooklistoption) {
     return;
@@ -1206,7 +1288,7 @@ export const addBookAPI = ({ bookName, setMessageStater, setBooklistoption }: Ad
   }
 
   setMessageStater({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-  post(
+  await post(
     '/saying/book',
     {
       book_name: bookName
@@ -1222,7 +1304,14 @@ export const addBookAPI = ({ bookName, setMessageStater, setBooklistoption }: Ad
         setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error', isDisplay: true });
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
   getBook(setMessageStater, setBooklistoption);
 };
 
@@ -1234,7 +1323,7 @@ interface AddSayingButtonProps {
   setBooklistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
 }
 
-export const addSayingAPI = ({
+export const addSayingAPI = async ({
   selectedBookId,
   inputSaying,
   setMessageStater,
@@ -1254,7 +1343,7 @@ export const addSayingAPI = ({
   }
 
   setMessageStater({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-  post(
+  await post(
     '/saying',
     {
       book_id: selectedBookId,
@@ -1271,6 +1360,13 @@ export const addSayingAPI = ({
         setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error', isDisplay: true });
       }
     }
-  );
+  ).catch((err) => {
+    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
+    setMessageStater({
+      message: 'エラー:外部APIとの連携に失敗しました',
+      messageColor: 'error',
+      isDisplay: true
+    });
+  });
   getBook(setMessageStater, setBooklistoption);
 };
