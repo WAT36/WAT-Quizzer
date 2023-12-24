@@ -386,7 +386,7 @@ export default function EnglishBotAddWordPage() {
   };
 
   // 登録ボタン押下後。単語と意味をDBに登録
-  const addWord = () => {
+  const addWord = async () => {
     if (inputWord === '') {
       setMessage({
         message: 'エラー:単語が入力されておりません',
@@ -415,7 +415,7 @@ export default function EnglishBotAddWordPage() {
       message: '通信中...',
       messageColor: '#d3d3d3'
     });
-    post(
+    await post(
       '/english/word/add',
       {
         wordName: inputWord,
@@ -448,7 +448,14 @@ export default function EnglishBotAddWordPage() {
           });
         }
       }
-    );
+    ).catch((err) => {
+      console.error(`API Error2. ${JSON.stringify(err)}`);
+      setMessage({
+        message: 'エラー:外部APIとの連携に失敗しました',
+        messageColor: 'error',
+        isDisplay: true
+      });
+    });
   };
 
   // （単語の意味入力）テーブル描画
