@@ -20,12 +20,14 @@ export const execQuery = async (query: string, value: (string | number)[]) => {
         resolve(result);
       });
     });
-  } catch (error) {
-    result = error;
-  } finally {
     // 接続終了
     await connection.end();
     return result;
+  } catch (error) {
+    // 接続終了しエラーを出す
+    await connection.end();
+    throw error;
+  } finally {
   }
 };
 
