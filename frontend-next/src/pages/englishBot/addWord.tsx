@@ -449,7 +449,7 @@ export default function EnglishBotAddWordPage() {
         }
       }
     ).catch((err) => {
-      console.error(`API Error2. ${JSON.stringify(err)}`);
+      console.error(`API Error2. ${JSON.stringify(err)},err:${err}`);
       setMessage({
         message: 'エラー:外部APIとの連携に失敗しました',
         messageColor: 'error',
