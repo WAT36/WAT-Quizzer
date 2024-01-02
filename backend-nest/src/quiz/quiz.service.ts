@@ -272,6 +272,42 @@ export class QuizService {
     }
   }
 
+  // 最後に回答してから最も長い時間が経っている問題を取得
+  async getLRUQuiz(
+    file_num: number,
+    category: string,
+    checked: string,
+    format: string,
+  ) {
+    try {
+      let sql: string;
+      switch (format) {
+        case 'basic':
+          sql = SQL.QUIZ.LRU(file_num, category, checked);
+          break;
+        case 'applied':
+          sql = SQL.ADVANCED_QUIZ.LRU(2, file_num, checked);
+          break;
+        case '4choice':
+          sql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.LRU(file_num, checked);
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+      return await execQuery(sql, []);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
   // 正解登録
   async cleared(req: SelectQuizDto) {
     try {

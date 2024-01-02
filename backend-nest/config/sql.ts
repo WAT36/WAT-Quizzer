@@ -1,3 +1,5 @@
+import { parseStrToBool } from 'lib/str';
+
 export const SQL = {
   ANSWER_LOG: {
     RESET: `UPDATE answer_log SET deleted_at = NOW() WHERE quiz_format_id = ? AND file_num = ? AND quiz_num = ?; `,
@@ -49,6 +51,39 @@ export const SQL = {
               WHERE
                   file_num = ?
               AND deleted_at IS NULL `,
+    LRU: (file_num: number, category?: string, checked?: string) => {
+      return `
+        SELECT
+            *
+        FROM
+            quiz_view v
+        LEFT OUTER JOIN (
+          SELECT
+            quiz_format_id,
+            file_num,
+            quiz_num,
+            MAX(updated_at)  as updated_at
+          FROM answer_log al
+          WHERE quiz_format_id = 1
+          AND file_num = ${file_num}
+          GROUP BY              		
+            quiz_format_id,
+            file_num,
+            quiz_num
+        ) l
+        ON
+            l.quiz_format_id = 1
+          AND v.file_num = l.file_num              		
+          AND v.quiz_num = l.quiz_num
+        WHERE
+            v.file_num = ${file_num}
+        ${category ? ` AND category LIKE '%` + category + `%' ` : ''}
+        ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+        AND v.deleted_at IS NULL 
+        ORDER BY l.updated_at LIMIT 1
+        ;
+      `;
+    },
     CLEARED: {
       INPUT: `
         INSERT INTO 
@@ -264,6 +299,38 @@ export const SQL = {
       WHERE
         file_num = ?
       AND deleted_at IS NULL `,
+    LRU: (quiz_format_id: number, file_num: number, checked?: string) => {
+      return `
+        SELECT
+            *
+        FROM
+          advanced_quiz_view v
+        LEFT OUTER JOIN (
+          SELECT
+            quiz_format_id,
+            file_num,
+            quiz_num,
+            MAX(updated_at)  as updated_at
+          FROM answer_log al
+          WHERE quiz_format_id = ${quiz_format_id}
+          AND file_num = ${file_num}
+          GROUP BY              		
+            quiz_format_id,
+            file_num,
+            quiz_num
+        ) l
+        ON
+            l.quiz_format_id = ${quiz_format_id}
+          AND v.file_num = l.file_num              		
+          AND v.quiz_num = l.quiz_num
+        WHERE
+            v.file_num = ${file_num}
+        ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+        AND v.deleted_at IS NULL 
+        ORDER BY l.updated_at LIMIT 1
+        ;
+      `;
+    },
     CLEARED: {
       INPUT: `
         INSERT INTO 
@@ -533,6 +600,65 @@ export const SQL = {
           ON
             a.id = e.advanced_quiz_id
         `,
+      },
+      LRU: (file_num: number, checked?: string) => {
+        return `
+          SELECT 
+            a.id,
+            a.file_num,
+            a.quiz_num,
+            a.quiz_sentense,
+            a.answer,
+            a.img_file,
+            a.checked,
+            a.accuracy_rate,
+            d.dummy_choice_sentense,
+            e.explanation
+          FROM 
+          ( SELECT
+              aqv.id,
+              aqv.file_num,
+              aqv.quiz_num,
+              aqv.quiz_sentense,
+              aqv.answer,
+              aqv.img_file,
+              aqv.checked,
+              aqv.accuracy_rate 
+            FROM 
+            advanced_quiz_view aqv
+            LEFT OUTER JOIN (
+              SELECT
+                quiz_format_id,
+                file_num,
+                quiz_num,
+                MAX(updated_at)  as updated_at
+              FROM answer_log al
+              WHERE quiz_format_id = 3
+              AND file_num = ${file_num}
+              GROUP BY              		
+                quiz_format_id,
+                file_num,
+                quiz_num
+            ) l
+            ON
+              aqv.file_num = l.file_num              		
+              AND aqv.quiz_num = l.quiz_num
+            WHERE aqv.file_num = ${file_num}
+            AND aqv.advanced_quiz_type_id = 2 
+            ${parseStrToBool(checked) ? ` AND aqv.checked = 1 ` : ''}
+            AND aqv.deleted_at IS NULL
+            ORDER BY l.updated_at LIMIT 1
+          ) as a
+            INNER JOIN
+              dummy_choice as d
+            ON
+              a.id = d.advanced_quiz_id
+            LEFT OUTER JOIN
+              advanced_quiz_explanation as e 
+            ON
+              a.id = e.advanced_quiz_id
+          ;
+        `;
       },
       CLEARED: `
         INSERT INTO 

@@ -96,6 +96,21 @@ export class QuizController {
     );
   }
 
+  @Get('/lru')
+  async getLRUQuiz(
+    @Query('file_num') file_num: number,
+    @Query('category') category: string,
+    @Query('checked') checked: string,
+    @Query('format') format: string,
+  ) {
+    return await this.quizService.getLRUQuiz(
+      file_num,
+      category,
+      checked,
+      format,
+    );
+  }
+
   @Post('/clear')
   async cleared(@Body() req: SelectQuizDto) {
     return await this.quizService.cleared(req);
