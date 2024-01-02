@@ -2,6 +2,7 @@ import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import {
   getImageOfQuizAPI,
+  getLRUQuizAPI,
   getMinimumClearQuizAPI,
   getQuizAPI,
   getRandomQuizAPI,
@@ -55,6 +56,15 @@ export const GetQuizButtonGroup = ({
         color="secondary"
         onClick={(e) =>
           getMinimumClearQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+        }
+      />
+      <Button
+        label={'LRU問出題'}
+        attr={'button-array'}
+        variant="contained"
+        color="secondary"
+        onClick={(e) =>
+          getLRUQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
         }
       />
       <Button
