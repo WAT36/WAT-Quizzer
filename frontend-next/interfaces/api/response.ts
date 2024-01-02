@@ -12,6 +12,15 @@ export interface ProcessingApiReponse {
   status: number;
   body: ApiResponse[];
 }
+export interface ProcessingAddApiReponse {
+  status: number;
+  body: ApiResponse;
+}
+
+// データ追加APIの返り値の型
+export interface AddDataApiResponse extends ApiResponse {
+  insertId: number;
+}
 
 // 問題追加APIの返り値の型
 export interface AddQuizApiResponse extends ApiResponse {
@@ -76,6 +85,14 @@ export interface EnglishWordByIdApiResponse extends ApiResponse {
   source_name: string;
 }
 
+// 英単語の出典（単語IDで）取得APIの返り値
+export interface EnglishWordSourceByIdApiResponse extends ApiResponse {
+  word_id: number;
+  word_name: string;
+  source_id: number;
+  source_name: string;
+}
+
 /// 以下、格言(saying)系
 
 export interface GetRandomSayingResponse extends ApiResponse {
@@ -85,6 +102,12 @@ export interface GetRandomSayingResponse extends ApiResponse {
 export interface GetSelfHelpBookResponse extends ApiResponse {
   id: number;
   name: string;
+}
+
+// おすすめイベント取得APIの型
+export interface GetPopularEventResponse extends ApiResponse {
+  name: string;
+  link: string;
 }
 
 // 画面で利用するデータ型
@@ -125,4 +148,14 @@ export interface SendToAddWordApiData {
   meaning: string;
   partOfSpeechName?: string;
   sourceName?: string;
+}
+
+// 英単語テスト画面での四択選択肢をAPIから受け取るときのデータ型
+export interface EnglishBotTestFourChoiceResponse extends ApiResponse {
+  correct: {
+    mean: string;
+  };
+  dummy: {
+    mean: string;
+  }[];
 }

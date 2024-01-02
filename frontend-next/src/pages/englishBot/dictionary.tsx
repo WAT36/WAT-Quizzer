@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { get } from '../../common/API';
 import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
 import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField, Typography } from '@mui/material';
-import { columns } from '../../../utils/englishBot/SearchWordTable';
+import { searchedDetailColumns } from '../../../utils/englishBot/SearchWordTable';
 import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { WordApiResponse } from '../../../interfaces/db';
@@ -77,7 +77,7 @@ export default function EnglishBotDictionaryPage() {
         <div style={searchedTableStyle}>
           <DataGrid
             rows={searchResult}
-            columns={columns}
+            columns={searchedDetailColumns}
             pageSizeOptions={[15]}
             //checkboxSelection
             disableRowSelectionOnClick

@@ -4,7 +4,9 @@ import { execQuery, execTransaction } from '../../lib/db/dao';
 import {
   AddEnglishWordDto,
   AddExampleDto,
+  AddWordTestLogDto,
   EditWordMeanDto,
+  EditWordSourceDto,
 } from '../../interfaces/api/request/english';
 import { TransactionQuery } from '../../interfaces/db';
 
@@ -164,6 +166,20 @@ export class EnglishService {
     }
   }
 
+  // 単語IDから出典情報取得
+  async getSourceOfWordById(id: number) {
+    try {
+      return await execQuery(SQL.ENGLISH.WORD.GET.SOURCE, [id]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
   // IDから単語情報取得
   async getWordByIdService(id: number) {
     try {
@@ -195,25 +211,23 @@ export class EnglishService {
   // 単語の意味などを更新
   async editWordMeanService(req: EditWordMeanDto) {
     try {
-      const { wordId, wordMeanId, meanId, partofspeechId, meaning, sourceId } =
-        req;
-
-      //トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-
-      //意味編集
-      transactionQuery.push({
-        query: SQL.ENGLISH.MEAN.EDIT,
-        value: [partofspeechId, meaning, wordId, wordMeanId],
-      });
-      // 意味出典紐付け編集
-      transactionQuery.push({
-        query: SQL.ENGLISH.MEAN.SOURCE.EDIT,
-        value: [sourceId, meanId],
-      });
-      //トランザクション実行
-      const result = await execTransaction(transactionQuery);
-      return { result };
+      const { wordId, wordMeanId, meanId, partofspeechId, meaning } = req;
+      //意味編集及び追加
+      if (meanId === -1) {
+        return await execQuery(SQL.ENGLISH.MEAN.ADD, [
+          wordId,
+          wordMeanId,
+          partofspeechId,
+          meaning,
+        ]);
+      } else {
+        return await execQuery(SQL.ENGLISH.MEAN.EDIT, [
+          partofspeechId,
+          meaning,
+          wordId,
+          wordMeanId,
+        ]);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -248,6 +262,132 @@ export class EnglishService {
           query: SQL.ENGLISH.MEAN.EXAMPLE.ADD,
           value: [exampleWillId, meanId[i]],
         });
+      }
+      //トランザクション実行
+      return await execTransaction(transactionQuery);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語をランダムに取得
+  async getRandomWordService(sourceId: number) {
+    try {
+      const sourceIdSql = !sourceId
+        ? ''
+        : `
+      LEFT OUTER JOIN
+        mean_source ms 
+      ON
+        m.id = ms.mean_id 
+      WHERE ms.source_id = ${sourceId}
+      `;
+      // ランダムに英単語id,nameを返す
+      return await execQuery(SQL.ENGLISH.WORD.GET.RANDOM(sourceIdSql), []);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 指定した単語を出題するときの四択選択肢（正解選択肢1つとダミー選択肢3つ）を作る
+  async makeFourChoiceService(wordId: number) {
+    try {
+      if (isNaN(wordId)) {
+        throw new HttpException(
+          `単語IDが不正です:${wordId}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      // 指定単語idの意味を取得
+      const correctMeans = await execQuery(SQL.ENGLISH.MEAN.GET.BY_WORD_ID, [
+        wordId,
+      ]);
+      // ダミー選択肢用の意味を取得
+      const dummyMeans = await execQuery(SQL.ENGLISH.MEAN.GET.BY_NOT_WORD_ID, [
+        wordId,
+      ]);
+
+      return [
+        {
+          correct: { mean: correctMeans[0].meaning },
+          dummy: dummyMeans.map((x) => ({
+            mean: x.meaning,
+          })),
+        },
+      ];
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 正解登録
+  async wordTestClearedService(req: AddWordTestLogDto) {
+    try {
+      const { wordId } = req;
+      return await execQuery(SQL.ENGLISH.WORD_TEST.CLEARED.INPUT, [wordId]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 不正解登録
+  async wordTestFailedService(req: AddWordTestLogDto) {
+    try {
+      const { wordId } = req;
+      return await execQuery(SQL.ENGLISH.WORD_TEST.FAILED.INPUT, [wordId]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語の出典追加・更新
+  async editSourceOfWordById(req: EditWordSourceDto) {
+    try {
+      const { meanId, oldSourceId, newSourceId } = req;
+      //トランザクション実行準備
+      const transactionQuery: TransactionQuery[] = [];
+
+      if (oldSourceId === -1) {
+        // 出典追加
+        for (let i = 0; i < meanId.length; i++) {
+          transactionQuery.push({
+            query: SQL.ENGLISH.MEAN.SOURCE.ADD,
+            value: [meanId[i], newSourceId],
+          });
+        }
+      } else {
+        // 出典更新
+        for (let i = 0; i < meanId.length; i++) {
+          transactionQuery.push({
+            query: SQL.ENGLISH.MEAN.SOURCE.EDIT,
+            value: [newSourceId, meanId[i], oldSourceId],
+          });
+        }
       }
       //トランザクション実行
       return await execTransaction(transactionQuery);

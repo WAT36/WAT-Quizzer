@@ -55,7 +55,8 @@ export class BackendStack extends cdk.Stack {
         NODE_PATH: '$NODE_PATH:/opt',
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
         REGION: region,
-        DB_URL_ID: process.env.DB_URL_ID || ''
+        DB_URL_ID: process.env.DB_URL_ID || '',
+        SCRAPE_TO_URL: process.env.SCRAPE_TO_URL || ''
       },
       code: lambda.Code.fromAsset(
         path.join(__dirname, '../../../backend-nest/dist')

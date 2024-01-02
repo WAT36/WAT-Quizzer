@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "export": "next build && next export",
+    "serve": "next build && next export && npx serve ./out",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write 'src/**/*.(ts|tsx)'",
@@ -51,6 +52,7 @@
     "@storybook/react": "^7.4.2",
     "@storybook/testing-library": "^0.2.1",
     "eslint-plugin-storybook": "^0.6.13",
+    "serve": "^14.2.1",
     "storybook": "^7.4.2",
     "storybook-css-modules": "^1.0.8"
   }

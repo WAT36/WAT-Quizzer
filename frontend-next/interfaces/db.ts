@@ -55,7 +55,9 @@ export interface QuizViewApiResponse extends ApiResponse {
   deleted_at: string | undefined;
   accuracy_rate: number;
 
+  matched_basic_quiz_id?: string;
   dummy_choice_sentense?: string; // TODO テーブルごとの型なので本当は望ましくない getQuiz専用のAPI返り値型を作るべき
+  explanation?: string;
 }
 
 // categoryからの取得結果
@@ -91,8 +93,8 @@ export interface SourceApiResponse extends ApiResponse {
 export interface WordApiResponse extends ApiResponse {
   id: number;
   name: string;
-  pronounce: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | undefined;
+  pronounce?: string;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string;
 }

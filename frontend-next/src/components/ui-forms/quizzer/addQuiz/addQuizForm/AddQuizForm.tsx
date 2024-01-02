@@ -1,51 +1,30 @@
 import React from 'react';
-import { FormControl, FormGroup, SelectChangeEvent, Tab, Tabs } from '@mui/material';
-import { Card } from '@/components/ui-elements/card/Card';
-import { BasisTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQuiz/basisTabPanel/Basis.tabpanel';
-import { AppliedTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQuiz/appliedTabPanel/Applied.tabpanel';
-import { FourChoiceTabPanel } from '@/components/ui-parts/tabpanel-patterns/addQuiz/fourChoiceTabPanel/FourChoice.tabpanel';
+import { FormControl, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { PullDownOptionState, QueryOfAddQuizState } from '../../../../../../interfaces/state';
+import { PullDownOptionState, QueryOfPutQuizState } from '../../../../../../interfaces/state';
+import { PutQuizForm } from '../../forms/putQuizForm/PutQuizForm';
 
 interface AddQuizFormProps {
   filelistoption: PullDownOptionState[];
   value: number;
-  queryOfAddQuizState: QueryOfAddQuizState;
+  queryOfPutQuizState: QueryOfPutQuizState;
   setValue?: React.Dispatch<React.SetStateAction<number>>;
-  setQueryofAddQuizStater?: React.Dispatch<React.SetStateAction<QueryOfAddQuizState>>;
+  setQueryofPutQuizStater?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
 }
-
-// タブ内コンテンツの設定
-const a11yProps = (index: number) => {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`
-  };
-};
 
 export const AddQuizForm = ({
   filelistoption,
   value,
-  queryOfAddQuizState,
+  queryOfPutQuizState,
   setValue,
-  setQueryofAddQuizStater
+  setQueryofPutQuizStater
 }: AddQuizFormProps) => {
   // ファイル選択の切り替え
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (setQueryofAddQuizStater) {
-      setQueryofAddQuizStater((prev) => ({
+    if (setQueryofPutQuizStater) {
+      setQueryofPutQuizStater((prev) => ({
         ...prev,
         ['fileNum']: e.target.value as number
-      }));
-    }
-  };
-
-  // タブの切り替え
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    if (setValue && setQueryofAddQuizStater) {
-      setValue(newValue);
-      setQueryofAddQuizStater((prev) => ({
-        fileNum: queryOfAddQuizState.fileNum
       }));
     }
   };
@@ -57,31 +36,12 @@ export const AddQuizForm = ({
           <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
         </FormControl>
 
-        <Card variant="outlined">
-          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-            <Tab label="基礎問題" {...a11yProps(0)} />
-            <Tab label="応用問題" {...a11yProps(1)} />
-            <Tab label="四択問題" {...a11yProps(2)} />
-          </Tabs>
-          <BasisTabPanel
-            value={value}
-            index={0}
-            queryOfAddQuizState={queryOfAddQuizState}
-            setQueryofAddQuizStater={setQueryofAddQuizStater}
-          />
-          <AppliedTabPanel
-            value={value}
-            index={1}
-            queryOfAddQuizState={queryOfAddQuizState}
-            setQueryofAddQuizStater={setQueryofAddQuizStater}
-          />
-          <FourChoiceTabPanel
-            value={value}
-            index={2}
-            queryOfAddQuizState={queryOfAddQuizState}
-            setQueryofAddQuizStater={setQueryofAddQuizStater}
-          />
-        </Card>
+        <PutQuizForm
+          value={value}
+          queryOfPutQuizState={queryOfPutQuizState}
+          setValue={setValue}
+          setQueryofPutQuizStater={setQueryofPutQuizStater}
+        />
       </FormGroup>
     </>
   );

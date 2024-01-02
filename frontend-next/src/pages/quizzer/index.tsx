@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Title } from '@/components/ui-elements/title/Title';
 import { DisplayQuizState, MessageState, PullDownOptionState, QueryOfQuizState } from '../../../interfaces/state';
 import { GetQuizButtonGroup } from '@/components/ui-forms/quizzer/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
@@ -12,7 +11,11 @@ import { getFileList } from '@/common/response';
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionState[]>([]);
-  const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
+  const [message, setMessage] = useState<MessageState>({
+    message: '　',
+    messageColor: 'common.black',
+    isDisplay: false
+  });
   const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
     fileNum: -1,
     quizNum: -1,
@@ -36,8 +39,6 @@ export default function SelectQuizPage() {
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
-
-        <MessageCard messageState={message}></MessageCard>
 
         <InputQueryForm
           filelistoption={filelistoption}
@@ -69,7 +70,13 @@ export default function SelectQuizPage() {
 
   return (
     <>
-      <Layout mode="quizzer" contents={contents()} title={'問題出題'} />
+      <Layout
+        mode="quizzer"
+        contents={contents()}
+        title={'問題出題'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }

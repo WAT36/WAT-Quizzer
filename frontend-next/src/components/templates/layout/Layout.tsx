@@ -9,6 +9,8 @@ import { Footer } from '@/components/ui-parts/footer/Footer';
 import { useRecoilState } from 'recoil';
 import { isOpenState } from '@/atoms/SideBar';
 import { Button } from '@/components/ui-elements/button/Button';
+import { MessageState } from '../../../../interfaces/state';
+import { MessageBar } from '@/components/ui-elements/messageBar/MessageBar';
 
 interface LayoutConfig {
   bgColor: string;
@@ -22,6 +24,8 @@ interface LayoutProps {
   title?: string;
   contents: JSX.Element;
   mode: 'quizzer' | 'englishBot' | 'settings';
+  messageState?: MessageState;
+  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
 }
 
 const urlEnd = process.env.NEXT_PUBLIC_URL_END || '';
@@ -46,8 +50,8 @@ const config: { [key: string]: LayoutConfig } = {
       { name: 'Top', link: '/englishBot' + urlEnd },
       { name: 'Add Words', link: '/englishBot/addWord' + urlEnd },
       { name: 'Dictionary', link: '/englishBot/dictionary' + urlEnd },
-      { name: 'Detail Word', link: '/englishBot/detailWord' + urlEnd },
-      { name: 'Add Example', link: '/englishBot/addExample' + urlEnd }
+      { name: 'Add Example', link: '/englishBot/addExample' + urlEnd },
+      { name: 'Test Words', link: '/englishBot/testWord' + urlEnd }
     ]
   },
   settings: {
@@ -56,7 +60,7 @@ const config: { [key: string]: LayoutConfig } = {
   }
 };
 
-export const Layout = ({ title, contents, mode = 'quizzer' }: LayoutProps) => {
+export const Layout = ({ title, contents, mode = 'quizzer', messageState, setMessageStater }: LayoutProps) => {
   const [sidebarState, setSidebarState] = useRecoilState(isOpenState);
   const modeConfig = config[mode];
   return (
@@ -96,6 +100,10 @@ export const Layout = ({ title, contents, mode = 'quizzer' }: LayoutProps) => {
 
       {/*内容*/}
       {contents}
+      <MessageBar
+        messageState={messageState || { message: '', messageColor: 'common.black' }}
+        setMessageState={setMessageStater}
+      />
 
       {/*フッタとコンテンツ間の調整余白 */}
       <div className={styles.space}></div>

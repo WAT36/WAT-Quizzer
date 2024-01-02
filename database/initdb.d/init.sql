@@ -168,6 +168,20 @@ CREATE TABLE
         PRIMARY KEY(id),
     ) DEFAULT CHARACTER SET = utf8;
 
+# 応用問題の解説
+
+CREATE TABLE
+    IF NOT EXISTS advanced_quiz_explanation (
+        id INT NOT NULL AUTO_INCREMENT,
+        advanced_quiz_id INT NOT NULL,
+        explanation TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY(id),
+        UNIQUE (advanced_quiz_id)
+    ) DEFAULT CHARACTER SET = utf8;
+
 DROP VIEW IF EXISTS quiz_view;
 
 CREATE VIEW QUIZ_VIEW AS

@@ -21,8 +21,9 @@ export const BasisTab: Story = {
   args: {
     value: 0,
     index: 0,
-    queryOfAddQuizState: {
-      fileNum: -1
+    queryOfPutQuizState: {
+      fileNum: -1,
+      quizNum: -1
     }
   }
 };

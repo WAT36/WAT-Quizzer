@@ -3,13 +3,15 @@ import { Inter } from 'next/font/google';
 import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { get } from '@/common/API';
-import { GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
+import { GetPopularEventResponse, GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { dbHealthCheck } from '@/common/health';
 import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButtonGroup';
 import { SayingCard } from '@/components/ui-forms/top/sayingCard/SayingCard';
 import { DbHealthCheckState, SayingState } from '../../interfaces/state';
 import { DbHealthCheckCard } from '@/components/ui-forms/top/dbHealthCheckCard/DbHealthCheckCard';
+import { getPopularEventList } from '@/common/response';
+import { PopularEventList } from '@/components/ui-forms/top/popularEventList/popularEventList';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,6 +24,12 @@ export default function Top() {
     status: '(取得中...)',
     color: 'grey.200'
   });
+  const [eventList, setEventList] = useState<GetPopularEventResponse[]>([
+    {
+      name: '取得中...',
+      link: ''
+    }
+  ]);
 
   useEffect(() => {
     Promise.all([
@@ -34,7 +42,8 @@ export default function Top() {
           });
         }
       }),
-      executeDbHealthCheck()
+      executeDbHealthCheck(),
+      getPopularEventList(setEventList)
     ]);
   }, []);
 
@@ -57,6 +66,7 @@ export default function Top() {
         <TopButtonGroup />
         <SayingCard sayingState={saying} />
         <DbHealthCheckCard dbHealthCheckState={dbHealth} />
+        <PopularEventList eventList={eventList} />
       </Container>
     </>
   );

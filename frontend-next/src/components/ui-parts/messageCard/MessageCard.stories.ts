@@ -15,7 +15,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const messageCard: Story = {
+export const Card: Story = {
   args: {
     messageState: {
       message: '(メッセージ)',
@@ -24,7 +24,7 @@ export const messageCard: Story = {
   }
 };
 
-export const errorMessage: Story = {
+export const ErrorMessage: Story = {
   args: {
     messageState: {
       message: '(エラー)',
@@ -33,7 +33,7 @@ export const errorMessage: Story = {
   }
 };
 
-export const successMessage: Story = {
+export const SuccessMessage: Story = {
   args: {
     messageState: {
       message: '(成功！)',
@@ -42,7 +42,7 @@ export const successMessage: Story = {
   }
 };
 
-export const loadingMessage: Story = {
+export const LoadingMessage: Story = {
   args: {
     messageState: {
       message: '(通信中...)',
