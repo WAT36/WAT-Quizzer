@@ -6,6 +6,7 @@ import {
   getMinimumClearQuizAPI,
   getQuizAPI,
   getRandomQuizAPI,
+  getReviewQuizAPI,
   getWorstRateQuizAPI
 } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
@@ -65,6 +66,15 @@ export const GetQuizButtonGroup = ({
         color="secondary"
         onClick={(e) =>
           getLRUQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+        }
+      />
+      <Button
+        label={'昨日間違えた問題'}
+        attr={'button-array'}
+        variant="contained"
+        color="secondary"
+        onClick={(e) =>
+          getReviewQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
         }
       />
       <Button
