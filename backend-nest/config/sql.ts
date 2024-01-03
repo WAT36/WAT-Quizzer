@@ -1554,23 +1554,34 @@ export const SQL = {
       RANDOM: {
         ALL: `
           SELECT
-            saying
+            s.saying,
+            b.name
           FROM
-            saying
+            saying s
+          INNER JOIN
+            selfhelp_book b
+          ON
+            s.book_id = b.id
           WHERE
-            deleted_at IS NULL
+            s.deleted_at IS NULL
+          AND b.deleted_at IS NULL
           ORDER BY RAND()
           LIMIT 1
           ;
         `,
         BYBOOK: `
           SELECT
-            saying
+            s.saying,
+            b.name
           FROM
-            saying
+            saying s
+          INNER JOIN
+            selfhelp_book b
+          ON
+            s.book_id = b.id
           WHERE
-            book_id = ?
-            AND deleted_at IS NULL
+            s.deleted_at IS NULL
+            AND b.deleted_at IS NULL
           ORDER BY RAND()
           LIMIT 1
           ;
