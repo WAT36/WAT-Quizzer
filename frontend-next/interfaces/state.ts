@@ -88,6 +88,7 @@ export interface WordSourceData {
 
 export interface SayingState {
   saying: string;
+  name: string;
   color: string;
 }
 

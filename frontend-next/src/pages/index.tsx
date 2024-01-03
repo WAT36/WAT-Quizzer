@@ -18,6 +18,7 @@ const inter = Inter({ subsets: ['latin'] });
 export default function Top() {
   const [saying, setSaying] = useState<SayingState>({
     saying: '(取得中...)',
+    name: '(取得中...)',
     color: 'grey.200'
   });
   const [dbHealth, setDbHealth] = useState<DbHealthCheckState>({
@@ -38,6 +39,7 @@ export default function Top() {
           const result: GetRandomSayingResponse[] = data.body as GetRandomSayingResponse[];
           setSaying({
             saying: result[0].saying,
+            name: `出典：${result[0].name}`,
             color: 'common.black'
           });
         }

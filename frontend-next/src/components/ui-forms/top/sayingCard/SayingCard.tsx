@@ -19,7 +19,7 @@ export const SayingCard = ({ sayingState }: SayingCardProps) => {
             {sayingState.saying}
           </Typography>
           <Typography variant="subtitle1" component="p" color="grey.500">
-            出典
+            {sayingState.name}
           </Typography>
         </CardContent>
       </Card>
