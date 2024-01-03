@@ -1555,6 +1555,7 @@ export const SQL = {
         ALL: `
           SELECT
             s.saying,
+            s.explanation,
             b.name
           FROM
             saying s
@@ -1572,6 +1573,7 @@ export const SQL = {
         BYBOOK: `
           SELECT
             s.saying,
+            s.explanation,
             b.name
           FROM
             saying s
