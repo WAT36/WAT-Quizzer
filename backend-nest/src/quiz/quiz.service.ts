@@ -117,25 +117,16 @@ export class QuizService {
     format = 'basic',
   ) {
     try {
-      const categorySQL =
-        category && category !== ''
-          ? ` AND category LIKE '%` + category + `%' `
-          : '';
-
-      const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
-
-      let preSQL: string;
-      let postSQL = '';
+      let sql: string;
       switch (format) {
         case 'basic':
-          preSQL = SQL.QUIZ.RANDOM;
+          sql = SQL.QUIZ.RANDOM(category, checked);
           break;
         case 'applied':
-          preSQL = SQL.ADVANCED_QUIZ.RANDOM;
+          sql = SQL.ADVANCED_QUIZ.RANDOM(checked);
           break;
         case '4choice':
-          preSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.RANDOM.PRE;
-          postSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.RANDOM.POST;
+          sql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.RANDOM(checked);
           break;
         default:
           throw new HttpException(
@@ -143,13 +134,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      const sql =
-        preSQL +
-        categorySQL +
-        checkedSQL +
-        ' ORDER BY rand() LIMIT 1 ' +
-        postSQL +
-        ';';
       return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -169,18 +153,16 @@ export class QuizService {
     format: string,
   ) {
     try {
-      let preSQL: string;
-      let postSQL = '';
+      let sql: string;
       switch (format) {
         case 'basic':
-          preSQL = SQL.QUIZ.WORST;
+          sql = SQL.QUIZ.WORST(category, checked);
           break;
         case 'applied':
-          preSQL = SQL.ADVANCED_QUIZ.WORST;
+          sql = SQL.ADVANCED_QUIZ.WORST(checked);
           break;
         case '4choice':
-          preSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.WORST.PRE;
-          postSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.WORST.POST;
+          sql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.WORST(checked);
           break;
         default:
           throw new HttpException(
@@ -188,24 +170,7 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-
-      const categorySQL =
-        category && category !== ''
-          ? ` AND category LIKE '%` + category + `%' `
-          : '';
-
-      const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
-
-      // 最低正解率問題取得SQL作成
-      const getWorstRateQuizSQL =
-        preSQL +
-        categorySQL +
-        checkedSQL +
-        ' ORDER BY accuracy_rate LIMIT 1 ' +
-        postSQL +
-        ';';
-
-      return await execQuery(getWorstRateQuizSQL, [file_num]);
+      return await execQuery(sql, [file_num]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -225,18 +190,16 @@ export class QuizService {
     format: string,
   ) {
     try {
-      let preSQL: string;
-      let postSQL = '';
+      let sql: string;
       switch (format) {
         case 'basic':
-          preSQL = SQL.QUIZ.MINIMUM;
+          sql = SQL.QUIZ.MINIMUM(category, checked);
           break;
         case 'applied':
-          preSQL = SQL.ADVANCED_QUIZ.MINIMUM;
+          sql = SQL.ADVANCED_QUIZ.MINIMUM(checked);
           break;
         case '4choice':
-          preSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.MINIMUM.PRE;
-          postSQL = SQL.ADVANCED_QUIZ.FOUR_CHOICE.MINIMUM.POST;
+          sql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.MINIMUM(checked);
           break;
         default:
           throw new HttpException(
@@ -244,24 +207,7 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-
-      const categorySQL =
-        category && category !== ''
-          ? ` AND category LIKE '%` + category + `%' `
-          : '';
-
-      const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
-
-      // 最小正解数問題取得SQL作成
-      const getMinimumClearQuizSQL =
-        preSQL +
-        categorySQL +
-        checkedSQL +
-        ' ORDER BY (clear_count+fail_count),fail_count desc LIMIT 1 ' +
-        postSQL +
-        ';';
-
-      return await execQuery(getMinimumClearQuizSQL, [file_num]);
+      return await execQuery(sql, [file_num]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -636,13 +582,25 @@ export class QuizService {
     format: string,
   ) {
     try {
-      let preSQL: string;
+      let sql: string;
       switch (format) {
         case 'basic':
-          preSQL = SQL.QUIZ.SEARCH;
+          sql = SQL.QUIZ.SEARCH(
+            category,
+            checked,
+            query,
+            queryOnlyInSentense,
+            queryOnlyInAnswer,
+          );
           break;
         case 'applied':
-          preSQL = SQL.ADVANCED_QUIZ.SEARCH;
+          sql = SQL.ADVANCED_QUIZ.SEARCH(
+            category,
+            checked,
+            query,
+            queryOnlyInSentense,
+            queryOnlyInAnswer,
+          );
           break;
         default:
           throw new HttpException(
@@ -650,37 +608,7 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-
-      const categorySQL =
-        category && category !== ''
-          ? ` AND category LIKE '%` + category + `%' `
-          : '';
-
-      const checkedSQL = parseStrToBool(checked) ? ` AND checked = 1 ` : '';
-
-      let querySQL = '';
-      if (query && query !== '') {
-        const searchInOnlySentense = parseStrToBool(queryOnlyInSentense);
-        const searchInOnlyAnswer = parseStrToBool(queryOnlyInAnswer);
-        if (searchInOnlySentense && !searchInOnlyAnswer) {
-          querySQL += ` AND quiz_sentense LIKE '%${query || ''}%' `;
-        } else if (!searchInOnlySentense && searchInOnlyAnswer) {
-          querySQL += ` AND answer LIKE '%${query || ''}%' `;
-        } else {
-          querySQL += ` AND (quiz_sentense LIKE '%${
-            query || ''
-          }%' OR answer LIKE '%${query || ''}%') `;
-        }
-      }
-
-      // ランダム問題取得SQL作成
-      const searchQuizSQL =
-        preSQL + categorySQL + checkedSQL + querySQL + ' ORDER BY quiz_num; ';
-      return await execQuery(searchQuizSQL, [
-        file_num,
-        min_rate || 0,
-        max_rate || 100,
-      ]);
+      return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

@@ -16,45 +16,140 @@ export const SQL = {
     },
   },
   QUIZ_FILE: {
-    LIST: ` SELECT * FROM quiz_file ORDER BY file_num; `,
+    LIST: ` 
+      SELECT
+        file_num,
+        file_name,
+        file_nickname
+      FROM quiz_file
+      WHERE deleted_at IS NULL
+      ORDER BY file_num; 
+    `,
     ADD: ` INSERT INTO quiz_file (file_num, file_name, file_nickname) VALUES (?,?,?);`,
     COUNT: `SELECT MAX(file_num) as file_num FROM quiz_file;`,
     DELETE: `UPDATE quiz_file SET updated_at = NOW(), deleted_at = NOW() WHERE file_num = ?  `,
   },
   QUIZ: {
-    INFO: `SELECT 
-            * 
-          FROM 
-            quiz_view 
-          WHERE file_num = ? 
-          AND quiz_num = ? 
-          AND deleted_at IS NULL; `,
-    RANDOM: ` SELECT 
-                * 
-              FROM 
-                quiz_view 
-              WHERE file_num = ? 
-              AND accuracy_rate >= ? 
-              AND accuracy_rate <= ? 
-              AND deleted_at IS NULL `,
-    WORST: ` SELECT
-                *
-              FROM
-                  quiz_view
-              WHERE
-                  file_num = ?
-              AND deleted_at IS NULL `,
-    MINIMUM: ` SELECT
-                  *
-              FROM
-                  quiz_view
-              WHERE
-                  file_num = ?
-              AND deleted_at IS NULL `,
+    INFO: `
+      SELECT
+        id,
+        file_num,
+        quiz_num,
+        quiz_sentense,
+        answer,
+        category,
+        img_file,
+        checked,
+        clear_count,
+        fail_count,
+        accuracy_rate
+      FROM quiz_view
+      WHERE
+        file_num = ?
+        AND quiz_num = ?
+        AND deleted_at IS NULL;
+    `,
+    RANDOM: (category?: string, checked?: string) => {
+      return ` 
+      SELECT 
+        id,
+        file_num,
+        quiz_num,
+        quiz_sentense,
+        answer,
+        category,
+        img_file,
+        checked,
+        clear_count,
+        fail_count,
+        accuracy_rate
+      FROM 
+        quiz_view 
+      WHERE file_num = ? 
+      AND accuracy_rate >= ? 
+      AND accuracy_rate <= ? 
+      AND deleted_at IS NULL 
+      ${
+        category && category !== ''
+          ? ` AND category LIKE '%` + category + `%' `
+          : ''
+      }
+      ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+      ORDER BY rand() LIMIT 1 
+      ;`;
+    },
+    WORST: (category?: string, checked?: string) => {
+      return ` 
+        SELECT
+          id,
+          file_num,
+          quiz_num,
+          quiz_sentense,
+          answer,
+          category,
+          img_file,
+          checked,
+          clear_count,
+          fail_count,
+          accuracy_rate
+        FROM
+            quiz_view
+        WHERE
+            file_num = ?
+        AND deleted_at IS NULL 
+        ${
+          category && category !== ''
+            ? ` AND category LIKE '%` + category + `%' `
+            : ''
+        }
+        ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+        ORDER BY accuracy_rate LIMIT 1
+        ;
+    `;
+    },
+    MINIMUM: (category?: string, checked?: string) => {
+      return ` 
+        SELECT
+          id,
+          file_num,
+          quiz_num,
+          quiz_sentense,
+          answer,
+          category,
+          img_file,
+          checked,
+          clear_count,
+          fail_count,
+          accuracy_rate
+        FROM
+            quiz_view
+        WHERE
+            file_num = ?
+        AND deleted_at IS NULL 
+        ${
+          category && category !== ''
+            ? ` AND category LIKE '%` + category + `%' `
+            : ''
+        }
+        ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+        ORDER BY (clear_count+fail_count),fail_count desc LIMIT 1
+        ;
+      `;
+    },
     LRU: (file_num: number, category?: string, checked?: string) => {
       return `
         SELECT
-            *
+          v.id,
+          v.file_num,
+          v.quiz_num,
+          v.quiz_sentense,
+          v.answer,
+          v.category,
+          v.img_file,
+          v.checked,
+          v.clear_count,
+          v.fail_count,
+          v.accuracy_rate
         FROM
             quiz_view v
         LEFT OUTER JOIN (
@@ -86,16 +181,26 @@ export const SQL = {
     },
     CLEARED: {
       INPUT: `
-        INSERT INTO 
-          answer_log 
-        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (1,?,?,true);
+        INSERT INTO
+            answer_log (
+                quiz_format_id,
+                file_num,
+                quiz_num,
+                is_corrected
+            )
+        VALUES (1, ?, ?, true);
       `,
     },
     FAILED: {
       INPUT: `
-        INSERT INTO 
-          answer_log 
-        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (1,?,?,false);
+        INSERT INTO
+            answer_log (
+                quiz_format_id,
+                file_num,
+                quiz_num,
+                is_corrected
+            )
+        VALUES (1, ?, ?, false);
       `,
     },
     DELETED: {
@@ -110,12 +215,22 @@ export const SQL = {
         ORDER BY
             quiz_num
         LIMIT 1
+        ;
       `,
     },
     ADD: `
       INSERT INTO
-          quiz (file_num,quiz_num,quiz_sentense,answer,category,img_file,checked)
-      VALUES(?,?,?,?,?,?,false)
+          quiz (
+              file_num,
+              quiz_num,
+              quiz_sentense,
+              answer,
+              category,
+              img_file,
+              checked
+          )
+      VALUES
+      (?, ?, ?, ?, ?, ?, false)
       ;
     `,
     EDIT: `
@@ -141,6 +256,7 @@ export const SQL = {
       WHERE 
           file_num = ?
       AND deleted_at IS NULL
+      ;
     `,
     MAX_QUIZ_NUM: `
       SELECT 
@@ -151,8 +267,16 @@ export const SQL = {
           file_num = ?
       ORDER BY quiz_num DESC
       LIMIT 1
+      ;
     `,
-    SEARCH: `
+    SEARCH: (
+      category: string,
+      checked: string,
+      query: string,
+      queryOnlyInSentense: string,
+      queryOnlyInAnswer: string,
+    ) => {
+      return `
       SELECT
           file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, ROUND(accuracy_rate,1) AS accuracy_rate 
       FROM
@@ -162,7 +286,29 @@ export const SQL = {
       AND accuracy_rate >= ? 
       AND accuracy_rate <= ? 
       AND deleted_at IS NULL 
-    `,
+      ${
+        category && category !== ''
+          ? ` AND category LIKE '%` + category + `%' `
+          : ''
+      }
+      ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+      ${
+        query && query !== ''
+          ? parseStrToBool(queryOnlyInSentense) &&
+            !parseStrToBool(queryOnlyInAnswer)
+            ? ` AND quiz_sentense LIKE '%${query || ''}%' `
+            : !parseStrToBool(queryOnlyInSentense) &&
+              parseStrToBool(queryOnlyInAnswer)
+            ? ` AND answer LIKE '%${query || ''}%' `
+            : ` AND (quiz_sentense LIKE '%${query || ''}%' OR answer LIKE '%${
+                query || ''
+              }%') `
+          : ''
+      }
+      ORDER BY quiz_num
+      ; 
+    `;
+    },
     DELETE: `
       UPDATE
           quiz
@@ -265,44 +411,114 @@ export const SQL = {
   ADVANCED_QUIZ: {
     INFO: `
       SELECT 
-        * 
+        id,
+        file_num,
+        quiz_num,
+        advanced_quiz_type_id,
+        quiz_sentense,
+        answer,
+        img_file,
+        checked,
+        clear_count,
+        fail_count,
+        accuracy_rate
       FROM 
         advanced_quiz_view 
       WHERE file_num = ? 
       AND quiz_num = ? 
+      AND advanced_quiz_type_id = 1 
       AND deleted_at IS NULL
       ; 
     `,
-    RANDOM: ` 
+    RANDOM: (checked?: string) => {
+      return ` 
       SELECT 
-        * 
+        id,
+        file_num,
+        quiz_num,
+        advanced_quiz_type_id,
+        quiz_sentense,
+        answer,
+        img_file,
+        checked,
+        clear_count,
+        fail_count,
+        accuracy_rate
       FROM 
         advanced_quiz_view 
       WHERE file_num = ? 
       AND advanced_quiz_type_id = 1 
       AND accuracy_rate >= ? 
       AND accuracy_rate <= ? 
-      AND deleted_at IS NULL `,
-    WORST: ` 
-      SELECT
-        *
-      FROM
+      AND deleted_at IS NULL 
+      ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+      ORDER BY rand() LIMIT 1 
+      ;`;
+    },
+    WORST: (checked?: string) => {
+      return ` 
+        SELECT
+          id,
+          file_num,
+          quiz_num,
+          advanced_quiz_type_id,
+          quiz_sentense,
+          answer,
+          img_file,
+          checked,
+          clear_count,
+          fail_count,
+          accuracy_rate
+        FROM
+            advanced_quiz_view
+        WHERE
+            file_num = ?
+        AND advanced_quiz_type_id = 1 
+        AND deleted_at IS NULL 
+        ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+        ORDER BY accuracy_rate LIMIT 1
+      ;
+      `;
+    },
+    MINIMUM: (checked?: string) => {
+      return ` 
+        SELECT
+          id,
+          file_num,
+          quiz_num,
+          advanced_quiz_type_id,
+          quiz_sentense,
+          answer,
+          img_file,
+          checked,
+          clear_count,
+          fail_count,
+          accuracy_rate
+        FROM
           advanced_quiz_view
-      WHERE
+        WHERE
           file_num = ?
-      AND deleted_at IS NULL `,
-    MINIMUM: ` 
-      SELECT
-        *
-      FROM
-        advanced_quiz_view
-      WHERE
-        file_num = ?
-      AND deleted_at IS NULL `,
+        AND advanced_quiz_type_id = 1 
+        AND deleted_at IS NULL 
+        ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+        ORDER BY (clear_count+fail_count),fail_count desc LIMIT 1 
+        ;
+      `;
+    },
     LRU: (quiz_format_id: number, file_num: number, checked?: string) => {
       return `
         SELECT
-            *
+          v.id,
+          v.file_num,
+          v.quiz_num,
+          v.advanced_quiz_type_id,
+          v.quiz_sentense,
+          v.answer,
+          v.img_file,
+          v.checked,
+          v.clear_count,
+          v.fail_count,
+          v.accuracy_rate
         FROM
           advanced_quiz_view v
         LEFT OUTER JOIN (
@@ -333,23 +549,41 @@ export const SQL = {
     },
     CLEARED: {
       INPUT: `
-        INSERT INTO 
-          answer_log 
-        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (2,?,?,true);
+      INSERT INTO
+        answer_log (
+            quiz_format_id,
+            file_num,
+            quiz_num,
+            is_corrected
+        )
+      VALUES (2, ?, ?, true);
       `,
     },
     FAILED: {
       INPUT: `
-        INSERT INTO 
-          answer_log 
-        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (2,?,?,false);
+      INSERT INTO
+        answer_log (
+            quiz_format_id,
+            file_num,
+            quiz_num,
+            is_corrected
+        )
+      VALUES (2, ?, ?, false);
       `,
     },
     ADD: `
-      INSERT INTO
-          advanced_quiz (file_num,quiz_num,advanced_quiz_type_id,quiz_sentense,answer,img_file,checked)
-      VALUES(?,?,?,?,?,?,false)
-      ;
+    INSERT INTO
+        advanced_quiz (
+            file_num,
+            quiz_num,
+            advanced_quiz_type_id,
+            quiz_sentense,
+            answer,
+            img_file,
+            checked
+        )
+    VALUES
+    (?, ?, ?, ?, ?, ?, false);
     `,
     EDIT: `
       UPDATE
@@ -402,7 +636,14 @@ export const SQL = {
             advanced_quiz 
       `,
     },
-    SEARCH: `
+    SEARCH: (
+      category: string,
+      checked: string,
+      query: string,
+      queryOnlyInSentense: string,
+      queryOnlyInAnswer: string,
+    ) => {
+      return `
       SELECT
           file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, img_file, checked, ROUND(accuracy_rate,1) AS accuracy_rate 
       FROM
@@ -412,7 +653,29 @@ export const SQL = {
       AND accuracy_rate >= ? 
       AND accuracy_rate <= ? 
       AND deleted_at IS NULL 
-    `,
+      ${
+        category && category !== ''
+          ? ` AND category LIKE '%` + category + `%' `
+          : ''
+      }
+      ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+      ${
+        query && query !== ''
+          ? parseStrToBool(queryOnlyInSentense) &&
+            !parseStrToBool(queryOnlyInAnswer)
+            ? ` AND quiz_sentense LIKE '%${query || ''}%' `
+            : !parseStrToBool(queryOnlyInSentense) &&
+              parseStrToBool(queryOnlyInAnswer)
+            ? ` AND answer LIKE '%${query || ''}%' `
+            : ` AND (quiz_sentense LIKE '%${query || ''}%' OR answer LIKE '%${
+                query || ''
+              }%') `
+          : ''
+      }
+      ORDER BY quiz_num
+      ; 
+    `;
+    },
     DELETE: `
       UPDATE
           advanced_quiz
@@ -486,7 +749,8 @@ export const SQL = {
             a.id = e.advanced_quiz_id
           WHERE
             a.file_num = ?
-            AND a.quiz_num = ?
+            AND a.quiz_num = ? 
+            AND a.advanced_quiz_type_id = 2
         `,
         BASIS_ADVANCED_LINK: `
           SELECT
@@ -503,10 +767,11 @@ export const SQL = {
           WHERE
             a.file_num = ?
             AND a.quiz_num = ?
+            AND a.advanced_quiz_type_id = 2 
         `,
       },
-      RANDOM: {
-        PRE: ` 
+      RANDOM: (checked?: string) => {
+        return `
           SELECT 
             a.id,
             a.file_num,
@@ -519,28 +784,38 @@ export const SQL = {
             d.dummy_choice_sentense,
             e.explanation
           FROM 
-          ( SELECT * FROM 
+          ( SELECT 
+              id,
+              file_num,
+              quiz_num,
+              quiz_sentense,
+              answer,
+              img_file,
+              checked,
+              accuracy_rate
+            FROM 
             advanced_quiz_view 
           WHERE file_num = ? 
           AND advanced_quiz_type_id = 2 
           AND accuracy_rate >= ? 
           AND accuracy_rate <= ? 
           AND deleted_at IS NULL 
-        `,
-        POST: `
-        ) as a
-          INNER JOIN
-            dummy_choice as d
-          ON
-            a.id = d.advanced_quiz_id
-          LEFT OUTER JOIN
-            advanced_quiz_explanation as e 
-          ON
-            a.id = e.advanced_quiz_id
-        `,
+          ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+          ORDER BY rand() LIMIT 1 
+          ) as a
+            INNER JOIN
+              dummy_choice as d
+            ON
+              a.id = d.advanced_quiz_id
+            LEFT OUTER JOIN
+              advanced_quiz_explanation as e 
+            ON
+              a.id = e.advanced_quiz_id
+        ;
+      `;
       },
-      WORST: {
-        PRE: ` 
+      WORST: (checked?: string) => {
+        return `
           SELECT 
             a.id,
             a.file_num,
@@ -553,13 +828,23 @@ export const SQL = {
             d.dummy_choice_sentense,
             e.explanation
           FROM 
-          ( SELECT * FROM 
+          ( SELECT 
+              id,
+              file_num,
+              quiz_num,
+              quiz_sentense,
+              answer,
+              img_file,
+              checked,
+              accuracy_rate
+            FROM 
             advanced_quiz_view 
           WHERE file_num = ? 
           AND advanced_quiz_type_id = 2 
-          AND deleted_at IS NULL `,
-        POST: `
-        ) as a
+          AND deleted_at IS NULL 
+          ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+          ORDER BY accuracy_rate LIMIT 1 
+          ) as a
           INNER JOIN
             dummy_choice as d
           ON
@@ -568,10 +853,11 @@ export const SQL = {
             advanced_quiz_explanation as e 
           ON
             a.id = e.advanced_quiz_id
-        `,
+          ;
+        `;
       },
-      MINIMUM: {
-        PRE: ` 
+      MINIMUM: (checked?: string) => {
+        return `
           SELECT 
             a.id,
             a.file_num,
@@ -584,13 +870,23 @@ export const SQL = {
             d.dummy_choice_sentense,
             e.explanation
           FROM 
-          ( SELECT * FROM 
+          ( SELECT
+              id,
+              file_num,
+              quiz_num,
+              quiz_sentense,
+              answer,
+              img_file,
+              checked,
+              accuracy_rate
+            FROM 
             advanced_quiz_view 
           WHERE file_num = ? 
           AND advanced_quiz_type_id = 2 
-          AND deleted_at IS NULL `,
-        POST: `
-        ) as a
+          AND deleted_at IS NULL 
+          ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+          ORDER BY (clear_count+fail_count),fail_count desc LIMIT 1 
+          ) as a
           INNER JOIN
             dummy_choice as d
           ON
@@ -599,7 +895,8 @@ export const SQL = {
             advanced_quiz_explanation as e 
           ON
             a.id = e.advanced_quiz_id
-        `,
+          ;
+        `;
       },
       LRU: (file_num: number, checked?: string) => {
         return `
@@ -661,14 +958,24 @@ export const SQL = {
         `;
       },
       CLEARED: `
-        INSERT INTO 
-          answer_log 
-        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (3,?,?,true);
+        INSERT INTO
+          answer_log (
+              quiz_format_id,
+              file_num,
+              quiz_num,
+              is_corrected
+          )
+        VALUES (3, ?, ?, true);
       `,
       FAILED: `
-        INSERT INTO 
-          answer_log 
-        (quiz_format_id, file_num, quiz_num, is_corrected) VALUES (3,?,?,false);
+        INSERT INTO
+            answer_log (
+                quiz_format_id,
+                file_num,
+                quiz_num,
+                is_corrected
+            )
+        VALUES (3, ?, ?, false);
       `,
       EDIT: {
         ADVANCED_QUIZ: `
@@ -721,7 +1028,8 @@ export const SQL = {
   CATEGORY: {
     INFO: `
       SELECT
-          *
+          file_num,
+          category
       FROM
           category
       WHERE
@@ -758,8 +1066,12 @@ export const SQL = {
   QUIZ_BASIS_ADVANCED_LINKAGE: {
     ADD: `
       INSERT INTO
-          quiz_basis_advanced_linkage(file_num, basis_quiz_id, advanced_quiz_id)
-      VALUES (?,?,?) ;
+        quiz_basis_advanced_linkage(
+            file_num,
+            basis_quiz_id,
+            advanced_quiz_id
+        )
+      VALUES (?, ?, ?);
     `,
     DELETE: `
       DELETE FROM
@@ -776,7 +1088,7 @@ export const SQL = {
       GET: {
         ALL: `
               SELECT
-                  *
+                  id,name
               FROM
                   partsofspeech
               WHERE
@@ -787,7 +1099,7 @@ export const SQL = {
             `,
         BYNAME: `
             SELECT
-                *
+                id,name
             FROM
                 partsofspeech
             WHERE
@@ -807,7 +1119,7 @@ export const SQL = {
       GET: {
         ALL: `
             SELECT
-                *
+                id,name
             FROM
                 source
             WHERE
@@ -818,7 +1130,7 @@ export const SQL = {
         `,
         BYNAME: `
             SELECT
-                *
+                id,name
             FROM
                 source
             WHERE
@@ -843,7 +1155,7 @@ export const SQL = {
       `,
       SEARCH: `
         SELECT 
-          * 
+          id,name,pronounce
         FROM 
           word
         WHERE
@@ -857,7 +1169,7 @@ export const SQL = {
       GET: {
         ALL: `
           SELECT 
-            * 
+            id,name,pronounce
           FROM 
             word
           WHERE
@@ -933,22 +1245,22 @@ export const SQL = {
         `,
         RANDOM: (sourceTemplate: string) => {
           return `
-        SELECT
-          w.id,
-          w.name
-        FROM
-          word w 
-        INNER JOIN
-          (
-          SELECT 
-            word_id
-          FROM
-            mean m 
-          ${sourceTemplate}
-          GROUP BY word_id
-          ORDER BY RAND() LIMIT 1) as random_word
-        ON
-          w.id = random_word.word_id;
+            SELECT
+              w.id,
+              w.name
+            FROM
+              word w 
+            INNER JOIN
+              (
+              SELECT 
+                word_id
+              FROM
+                mean m 
+              ${sourceTemplate}
+              GROUP BY word_id
+              ORDER BY RAND() LIMIT 1) as random_word
+            ON
+              w.id = random_word.word_id;
         `;
         },
         SOURCE: `

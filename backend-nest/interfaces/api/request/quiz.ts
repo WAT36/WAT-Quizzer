@@ -77,7 +77,6 @@ export interface GetLinkedBasisIdDto {
   basis_quiz_id: number;
 }
 
-
 // 問題の詳細情報を取得した結果のDTO
 export type QuizDto = {
   id: number;
@@ -88,9 +87,9 @@ export type QuizDto = {
   category: string | undefined;
   img_file: string | undefined;
   checked: boolean | undefined;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | undefined;
+  clear_count: number;
+  fail_count: number;
+  accuracy_rate: number;
 };
 
 // quiz_viewからの取得結果(正解数、不正解数、正解率など)
