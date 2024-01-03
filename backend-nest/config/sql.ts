@@ -1547,8 +1547,8 @@ export const SQL = {
   SAYING: {
     ADD: `
       INSERT INTO
-        saying (book_id,book_saying_id,saying)
-      VALUES(?,?,?)
+        saying (book_id,book_saying_id,saying,explanation)
+      VALUES(?,?,?,?)
     `,
     GET: {
       RANDOM: {

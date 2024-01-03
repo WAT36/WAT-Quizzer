@@ -5,4 +5,5 @@ export interface AddBookDto {
 export interface AddSayingDto {
   book_id: number;
   saying: string;
+  explanation: string;
 }
