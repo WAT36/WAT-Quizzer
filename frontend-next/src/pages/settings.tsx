@@ -4,15 +4,18 @@ import { useEffect, useState } from 'react';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getBook } from '@/common/response';
-import { PullDownOptionState } from '../../interfaces/state';
+import { InputSayingState, PullDownOptionState } from '../../interfaces/state';
 import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookForm';
 import { AddSayingForm } from '@/components/ui-forms/settings/addSayingForm/AddSayingForm';
 
 export default function Settings() {
   const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
   const [bookName, setBookName] = useState<string>('');
-  const [selectedBookId, setSelectedBookId] = useState<number>(-1);
-  const [inputSaying, setInputSaying] = useState<string>('');
+  const [inputSaying, setInputSaying] = useState<InputSayingState>({
+    bookId: -1,
+    saying: '',
+    explanation: ''
+  });
   const [message, setMessage] = useState({
     message: '　',
     messageColor: 'common.black'
@@ -49,13 +52,13 @@ export default function Settings() {
                   setMessageStater={setMessage}
                   setBooklistoption={setBooklistoption}
                 />
+              </Card>
+              <Card variant="outlined">
                 <AddSayingForm
                   inputSaying={inputSaying}
-                  selectedBookId={selectedBookId}
                   booklistoption={booklistoption}
                   setInputSaying={setInputSaying}
                   setMessageStater={setMessage}
-                  setSelectedBookId={setSelectedBookId}
                   setBooklistoption={setBooklistoption}
                 />
               </Card>

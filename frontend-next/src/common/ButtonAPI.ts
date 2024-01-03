@@ -10,6 +10,7 @@ import { QuizViewApiResponse, WordApiResponse } from '../../interfaces/db';
 import {
   DisplayQuizState,
   DisplayWordTestState,
+  InputSayingState,
   MessageState,
   PullDownOptionState,
   QueryOfGetWordState,
@@ -1506,28 +1507,21 @@ export const addBookAPI = async ({ bookName, setMessageStater, setBooklistoption
 };
 
 interface AddSayingButtonProps {
-  selectedBookId: number;
-  inputSaying: string;
-  attr?: string;
+  inputSaying: InputSayingState;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setBooklistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
+  setInputSaying?: React.Dispatch<React.SetStateAction<InputSayingState>>;
 }
 
-export const addSayingAPI = async ({
-  selectedBookId,
-  inputSaying,
-  setMessageStater,
-  setBooklistoption
-}: AddSayingButtonProps) => {
+export const addSayingAPI = async ({ inputSaying, setMessageStater, setInputSaying }: AddSayingButtonProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
-  if (!setMessageStater || !setBooklistoption) {
+  if (!setMessageStater || !setInputSaying) {
     return;
   }
 
-  if (!selectedBookId) {
+  if (!inputSaying.bookId || inputSaying.bookId === -1) {
     setMessageStater({ message: 'エラー:本名を選択して下さい', messageColor: 'error', isDisplay: true });
     return;
-  } else if (!inputSaying || inputSaying === '') {
+  } else if (!inputSaying.saying || inputSaying.saying === '') {
     setMessageStater({ message: 'エラー:格言を入力して下さい', messageColor: 'error', isDisplay: true });
     return;
   }
@@ -1536,8 +1530,9 @@ export const addSayingAPI = async ({
   await post(
     '/saying',
     {
-      book_id: selectedBookId,
-      saying: inputSaying
+      book_id: inputSaying.bookId,
+      saying: inputSaying.saying,
+      explanation: inputSaying.explanation
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
@@ -1545,6 +1540,11 @@ export const addSayingAPI = async ({
           message: `新規格言「${inputSaying}」を追加しました`,
           messageColor: 'success.light',
           isDisplay: true
+        });
+        setInputSaying({
+          bookId: -1,
+          saying: '',
+          explanation: ''
         });
       } else {
         setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error', isDisplay: true });
@@ -1558,5 +1558,5 @@ export const addSayingAPI = async ({
       isDisplay: true
     });
   });
-  getBook(setMessageStater, setBooklistoption);
+  //getBook(setMessageStater, setBooklistoption);
 };
