@@ -111,6 +111,21 @@ export class QuizController {
     );
   }
 
+  @Get('/review')
+  async getReviewQuiz(
+    @Query('file_num') file_num: number,
+    @Query('category') category: string,
+    @Query('checked') checked: string,
+    @Query('format') format: string,
+  ) {
+    return await this.quizService.getReviewQuiz(
+      file_num,
+      category,
+      checked,
+      format,
+    );
+  }
+
   @Post('/clear')
   async cleared(@Body() req: SelectQuizDto) {
     return await this.quizService.cleared(req);

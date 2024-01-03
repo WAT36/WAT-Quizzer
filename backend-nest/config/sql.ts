@@ -179,6 +179,46 @@ export const SQL = {
         ;
       `;
     },
+    REVIEW: (file_num: number, category?: string, checked?: string) => {
+      return `
+        SELECT
+          v.id,
+          v.file_num,
+          v.quiz_num,
+          v.quiz_sentense,
+          v.answer,
+          v.category,
+          v.img_file,
+          v.checked,
+          v.clear_count,
+          v.fail_count,
+          v.accuracy_rate
+        FROM
+            quiz_view v
+        INNER JOIN (
+          SELECT DISTINCT
+            quiz_format_id,
+            file_num,
+            quiz_num
+          FROM answer_log al
+          WHERE quiz_format_id = 1
+          AND file_num = ${file_num}
+          AND is_corrected = 0
+          AND CAST(created_at AS DATE) = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+        ) l
+        ON
+            l.quiz_format_id = 1
+          AND v.file_num = l.file_num              		
+          AND v.quiz_num = l.quiz_num
+        WHERE
+            v.file_num = ${file_num}
+        ${category ? ` AND category LIKE '%` + category + `%' ` : ''}
+        ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+        AND v.deleted_at IS NULL 
+        ORDER BY rand() LIMIT 1
+        ;
+      `;
+    },
     CLEARED: {
       INPUT: `
         INSERT INTO
@@ -544,6 +584,45 @@ export const SQL = {
         ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
         AND v.deleted_at IS NULL 
         ORDER BY l.updated_at LIMIT 1
+        ;
+      `;
+    },
+    REVIEW: (quiz_format_id: number, file_num: number, checked?: string) => {
+      return `
+        SELECT
+          v.id,
+          v.file_num,
+          v.quiz_num,
+          v.advanced_quiz_type_id,
+          v.quiz_sentense,
+          v.answer,
+          v.img_file,
+          v.checked,
+          v.clear_count,
+          v.fail_count,
+          v.accuracy_rate
+        FROM
+          advanced_quiz_view v
+        INNER JOIN (
+          SELECT DISTINCT
+            quiz_format_id,
+            file_num,
+            quiz_num
+          FROM answer_log al
+          WHERE quiz_format_id = ${quiz_format_id}
+          AND file_num = ${file_num}
+          AND is_corrected = 0
+          AND CAST(created_at AS DATE) = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+        ) l
+        ON
+          l.quiz_format_id = ${quiz_format_id}
+          AND v.file_num = l.file_num              		
+          AND v.quiz_num = l.quiz_num
+        WHERE
+            v.file_num = ${file_num}
+        ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
+        AND v.deleted_at IS NULL 
+        ORDER BY rand() LIMIT 1
         ;
       `;
     },
@@ -945,6 +1024,62 @@ export const SQL = {
             ${parseStrToBool(checked) ? ` AND aqv.checked = 1 ` : ''}
             AND aqv.deleted_at IS NULL
             ORDER BY l.updated_at LIMIT 1
+          ) as a
+            INNER JOIN
+              dummy_choice as d
+            ON
+              a.id = d.advanced_quiz_id
+            LEFT OUTER JOIN
+              advanced_quiz_explanation as e 
+            ON
+              a.id = e.advanced_quiz_id
+          ;
+        `;
+      },
+      REVIEW: (file_num: number, checked?: string) => {
+        return `
+          SELECT 
+            a.id,
+            a.file_num,
+            a.quiz_num,
+            a.quiz_sentense,
+            a.answer,
+            a.img_file,
+            a.checked,
+            a.accuracy_rate,
+            d.dummy_choice_sentense,
+            e.explanation
+          FROM 
+          ( SELECT
+              aqv.id,
+              aqv.file_num,
+              aqv.quiz_num,
+              aqv.quiz_sentense,
+              aqv.answer,
+              aqv.img_file,
+              aqv.checked,
+              aqv.accuracy_rate 
+            FROM 
+            advanced_quiz_view aqv
+            INNER JOIN (
+              SELECT DISTINCT
+                quiz_format_id,
+                file_num,
+                quiz_num
+              FROM answer_log al
+              WHERE quiz_format_id = 3
+              AND file_num = ${file_num}
+              AND is_corrected = 0
+              AND CAST(created_at AS DATE) = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+            ) l
+            ON
+              aqv.file_num = l.file_num              		
+              AND aqv.quiz_num = l.quiz_num
+            WHERE aqv.file_num = ${file_num}
+            AND aqv.advanced_quiz_type_id = 2 
+            ${parseStrToBool(checked) ? ` AND aqv.checked = 1 ` : ''}
+            AND aqv.deleted_at IS NULL
+            ORDER BY rand() LIMIT 1
           ) as a
             INNER JOIN
               dummy_choice as d

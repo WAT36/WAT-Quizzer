@@ -254,6 +254,42 @@ export class QuizService {
     }
   }
 
+  // 昨日間違えた問題を取得
+  async getReviewQuiz(
+    file_num: number,
+    category: string,
+    checked: string,
+    format: string,
+  ) {
+    try {
+      let sql: string;
+      switch (format) {
+        case 'basic':
+          sql = SQL.QUIZ.REVIEW(file_num, category, checked);
+          break;
+        case 'applied':
+          sql = SQL.ADVANCED_QUIZ.REVIEW(2, file_num, checked);
+          break;
+        case '4choice':
+          sql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.REVIEW(file_num, checked);
+          break;
+        default:
+          throw new HttpException(
+            `入力された問題形式が不正です`,
+            HttpStatus.BAD_REQUEST,
+          );
+      }
+      return await execQuery(sql, []);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
   // 正解登録
   async cleared(req: SelectQuizDto) {
     try {
