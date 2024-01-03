@@ -318,3 +318,59 @@ FROM advanced_quiz
             quiz_num
     ) as incorrected_data ON advanced_quiz.file_num = incorrected_data.file_num
     AND advanced_quiz.quiz_num = incorrected_data.quiz_num;
+
+DROP VIEW IF EXISTS quiz_file_view;
+
+CREATE VIEW quiz_file_view AS
+SELECT
+    qf.file_num as file_num,
+    qf.file_name as file_name,
+    qf.file_nickname as file_nickname,
+    COALESCE(q.count, 0) as basic_quiz_count,
+    COALESCE(q.clear, 0) as basic_clear,
+    COALESCE(q.fail, 0) as basic_fail,
+    CASE
+        WHEN (
+            COALESCE(q.clear, 0) + COALESCE(q.fail, 0) = 0
+        ) THEN 0
+        ELSE 100 * COALESCE(q.clear, 0) / (
+            COALESCE(q.clear, 0) + COALESCE(q.fail, 0)
+        )
+    END AS basic_accuracy_rate,
+    COALESCE(aq.count, 0) as advanced_quiz_count,
+    COALESCE(aq.clear, 0) as advanced_clear,
+    COALESCE(aq.fail, 0) as advanced_fail,
+    CASE
+        WHEN (
+            COALESCE(aq.clear, 0) + COALESCE(aq.fail, 0) = 0
+        ) THEN 0
+        ELSE 100 * COALESCE(aq.clear, 0) / (
+            COALESCE(aq.clear, 0) + COALESCE(aq.fail, 0)
+        )
+    END AS advanced_accuracy_rate
+FROM quiz_file qf
+    LEFT OUTER JOIN (
+        SELECT
+            file_num,
+            count(*) as count,
+            SUM(clear_count) as clear,
+            SUM(fail_count) as fail
+        FROM quiz_view
+        WHERE
+            deleted_at IS NULL
+        GROUP BY
+            file_num
+    ) as q ON qf.file_num = q.file_num
+    LEFT OUTER JOIN (
+        SELECT
+            file_num,
+            count(*) as count,
+            SUM(clear_count) as clear,
+            SUM(fail_count) as fail
+        FROM
+            advanced_quiz_view aqv
+        WHERE
+            deleted_at IS NULL
+        GROUP BY
+            file_num
+    ) as aq ON qf.file_num = aq.file_num;
