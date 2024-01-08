@@ -27,12 +27,18 @@ export default function EnglishBotDictionaryPage() {
     get(
       '/english/word/search',
       (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
+        if (data.status === 200 && data.body?.length > 0) {
           const result: WordApiResponse[] = data.body as WordApiResponse[];
           setSearchResult(result || []);
           setMessage({
             message: 'Success!!' + result.length + '問の問題を取得しました',
             messageColor: 'success.light'
+          });
+        } else if (data.status === 404 || data.body?.length === 0) {
+          setSearchResult([]);
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
           });
         } else {
           setMessage({
