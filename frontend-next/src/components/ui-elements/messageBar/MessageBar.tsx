@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Snackbar } from '@mui/material';
+import { CircularProgress, Snackbar } from '@mui/material';
 import { MessageState } from '../../../../interfaces/state';
 
 interface MessageBarProps {
@@ -17,7 +17,16 @@ export const MessageBar = ({ messageState, setMessageState }: MessageBarProps) =
           setMessageState({ ...messageState, isDisplay: false });
         }
       }}
-      message={messageState.message}
+      message={
+        messageState.message === '通信中...' ? (
+          <>
+            <CircularProgress />
+            {messageState.message}
+          </>
+        ) : (
+          messageState.message
+        )
+      }
     />
   );
 };
