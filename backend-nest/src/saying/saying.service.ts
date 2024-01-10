@@ -54,14 +54,19 @@ export class SayingService {
 
   // 格言追加
   async addSayingService(req: AddSayingDto) {
-    const { book_id, saying } = req;
+    const { book_id, saying, explanation } = req;
     try {
       // 格言の新規ID計算
       const result = await execQuery(SQL.SAYING.GET.ID.BYBOOK, [book_id]);
       const sayingWillId =
         result.length > 0 ? +result[0]['book_saying_id'] + 1 : 1;
       // 格言追加
-      return await execQuery(SQL.SAYING.ADD, [book_id, sayingWillId, saying]);
+      return await execQuery(SQL.SAYING.ADD, [
+        book_id,
+        sayingWillId,
+        saying,
+        explanation,
+      ]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

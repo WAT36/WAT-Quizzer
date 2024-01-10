@@ -1,17 +1,15 @@
 import React from 'react';
-import { MessageState, PullDownOptionState } from '../../../../../interfaces/state';
+import { InputSayingState, MessageState, PullDownOptionState } from '../../../../../interfaces/state';
 import { CardContent, CardHeader, SelectChangeEvent, TextField } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Button } from '@/components/ui-elements/button/Button';
 import { addSayingAPI } from '@/common/ButtonAPI';
 
 interface AddSayingFormProps {
-  inputSaying: string;
-  selectedBookId: number;
+  inputSaying: InputSayingState;
   booklistoption: PullDownOptionState[];
-  setInputSaying?: React.Dispatch<React.SetStateAction<string>>;
+  setInputSaying?: React.Dispatch<React.SetStateAction<InputSayingState>>;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setSelectedBookId?: React.Dispatch<React.SetStateAction<number>>;
   setBooklistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
 }
 
@@ -22,11 +20,9 @@ const cardContentStyle = {
 
 export const AddSayingForm = ({
   inputSaying,
-  selectedBookId,
   booklistoption,
   setInputSaying,
   setMessageStater,
-  setSelectedBookId,
   setBooklistoption
 }: AddSayingFormProps) => {
   return (
@@ -37,8 +33,11 @@ export const AddSayingForm = ({
           label={''}
           optionList={booklistoption}
           onChange={(e: SelectChangeEvent<number>) => {
-            if (setSelectedBookId) {
-              setSelectedBookId(+e.target.value);
+            if (setInputSaying) {
+              setInputSaying({
+                ...inputSaying,
+                bookId: +e.target.value
+              });
             }
           }}
         />
@@ -49,7 +48,27 @@ export const AddSayingForm = ({
           variant="outlined"
           onChange={(e) => {
             if (setInputSaying) {
-              setInputSaying(e.target.value);
+              setInputSaying({
+                ...inputSaying,
+                saying: e.target.value
+              });
+            }
+          }}
+          style={{
+            flex: 'auto'
+          }}
+        />
+      </CardContent>
+      <CardContent style={cardContentStyle}>
+        <TextField
+          label="格言の説明"
+          variant="outlined"
+          onChange={(e) => {
+            if (setInputSaying) {
+              setInputSaying({
+                ...inputSaying,
+                explanation: e.target.value
+              });
             }
           }}
           style={{
@@ -60,7 +79,7 @@ export const AddSayingForm = ({
           label={'格言登録'}
           variant="contained"
           color="primary"
-          onClick={(e) => addSayingAPI({ selectedBookId, inputSaying, setMessageStater, setBooklistoption })}
+          onClick={(e) => addSayingAPI({ inputSaying, setMessageStater, setInputSaying })}
           attr={'after-inline'}
         />
       </CardContent>

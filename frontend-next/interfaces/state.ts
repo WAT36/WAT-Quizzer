@@ -88,7 +88,16 @@ export interface WordSourceData {
 
 export interface SayingState {
   saying: string;
+  explanation: string;
+  name: string;
   color: string;
+}
+
+// 追加する格言のステート型
+export interface InputSayingState {
+  bookId: number;
+  saying: string;
+  explanation: string;
 }
 
 export interface DbHealthCheckState {

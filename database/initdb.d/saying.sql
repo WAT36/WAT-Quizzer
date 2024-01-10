@@ -14,6 +14,7 @@ CREATE TABLE
         book_id INT NOT NULL,
         book_saying_id INT NOT NULL,
         saying VARCHAR(256) NOT NULL UNIQUE,
+        explanation TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,

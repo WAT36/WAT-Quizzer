@@ -22,7 +22,9 @@ export const Saying: Story = {
   args: {
     sayingState: {
       saying: '格言',
-      color: 'black'
+      color: 'black',
+      explanation: '説明',
+      name: '本の名前'
     }
   }
 };

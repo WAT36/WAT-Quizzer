@@ -97,6 +97,8 @@ export interface EnglishWordSourceByIdApiResponse extends ApiResponse {
 
 export interface GetRandomSayingResponse extends ApiResponse {
   saying: string;
+  explanation: string;
+  name: string;
 }
 
 export interface GetSelfHelpBookResponse extends ApiResponse {
