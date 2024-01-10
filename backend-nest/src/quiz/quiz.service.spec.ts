@@ -172,4 +172,25 @@ describe('QuizService', () => {
       await quizService.getWorstRateQuiz(1, 'カテゴリテスト', 'true', 'basic'),
     ).toEqual(testResult);
   });
+
+  // 最低正解率問題取得 異常系１
+  it('getWorstRateQuiz - NG1', async () => {
+    await expect(
+      quizService.getWorstRateQuiz(1, 'カテゴリテスト', 'true', 'xxxxxxxxxx'),
+    ).rejects.toMatchObject({
+      message: '入力された問題形式が不正です',
+    });
+  });
+
+  // 最低正解率問題取得 異常系２
+  it('getWorstRateQuiz - NG2', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      quizService.getWorstRateQuiz(1, 'カテゴリテスト', 'true', 'basic'),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
