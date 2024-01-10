@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
-import { parseStrToBool } from '../../lib/str';
 import {
   UpdateCategoryOfQuizDto,
   SelectQuizDto,
@@ -18,7 +17,7 @@ import {
   QuizViewApiResponse,
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
-import { getDifferenceArray } from 'lib/array';
+import { getDifferenceArray } from '../../lib/array';
 
 export interface QueryType {
   query: string;
