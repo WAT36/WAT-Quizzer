@@ -224,4 +224,30 @@ describe('QuizService', () => {
       ),
     ).toEqual(testResult);
   });
+
+  // 最小正解数問題取得 異常系１
+  it('getMinimumAnsweredQuiz - NG1', async () => {
+    await expect(
+      quizService.getMinimumAnsweredQuiz(
+        1,
+        'カテゴリテスト',
+        'true',
+        'xxxxxxxxxx',
+      ),
+    ).rejects.toMatchObject({
+      message: '入力された問題形式が不正です',
+    });
+  });
+
+  // 最小正解数問題取得 異常系２
+  it('getMinimumAnsweredQuiz - NG2', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      quizService.getMinimumAnsweredQuiz(1, 'カテゴリテスト', 'true', 'basic'),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
