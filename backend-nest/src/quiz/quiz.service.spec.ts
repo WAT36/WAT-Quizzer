@@ -250,4 +250,30 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 最後に回答してから最も長い時間が経っている問題を取得 正常系
+  it('getLRUQuiz - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        id: 0,
+        file_num: 0,
+        quiz_num: 0,
+        quiz_sentense: '品詞テスト',
+        answer: '品詞テスト',
+        category: 'カテゴリ',
+        img_file: 'img',
+        checked: 0,
+        clear_count: 0,
+        fail_count: 0,
+        created_at: '2000-01-01 00:00:00',
+        updated_at: '2000-01-01 00:00:00',
+        deleted_at: null,
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
+    expect(
+      await quizService.getLRUQuiz(1, 'カテゴリテスト', 'true', 'basic'),
+    ).toEqual(testResult);
+  });
 });
