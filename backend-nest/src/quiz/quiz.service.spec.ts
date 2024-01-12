@@ -276,4 +276,25 @@ describe('QuizService', () => {
       await quizService.getLRUQuiz(1, 'カテゴリテスト', 'true', 'basic'),
     ).toEqual(testResult);
   });
+
+  // 最後に回答してから最も長い時間が経っている問題を取得 異常系１
+  it('getLRUQuiz - NG1', async () => {
+    await expect(
+      quizService.getLRUQuiz(1, 'カテゴリテスト', 'true', 'xxxxxxxxxx'),
+    ).rejects.toMatchObject({
+      message: '入力された問題形式が不正です',
+    });
+  });
+
+  // 最後に回答してから最も長い時間が経っている問題を取得 異常系２
+  it('getLRUQuiz - NG2', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      quizService.getLRUQuiz(1, 'カテゴリテスト', 'true', 'basic'),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
