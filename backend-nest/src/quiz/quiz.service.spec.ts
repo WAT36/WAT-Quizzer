@@ -323,4 +323,25 @@ describe('QuizService', () => {
       await quizService.getReviewQuiz(1, 'カテゴリテスト', 'true', 'basic'),
     ).toEqual(testResult);
   });
+
+  // 昨日間違えた問題を取得 異常系１
+  it('getReviewQuiz - NG1', async () => {
+    await expect(
+      quizService.getReviewQuiz(1, 'カテゴリテスト', 'true', 'xxxxxxxxxx'),
+    ).rejects.toMatchObject({
+      message: '入力された問題形式が不正です',
+    });
+  });
+
+  // 昨日間違えた問題を取得 異常系２
+  it('getReviewQuiz - NG2', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      quizService.getReviewQuiz(1, 'カテゴリテスト', 'true', 'basic'),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
