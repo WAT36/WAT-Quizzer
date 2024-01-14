@@ -28,7 +28,9 @@ import {
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { CategoryApiResponse, QuizFileApiResponse, QuizViewApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState } from '../../../interfaces/state';
+import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import { getFileList } from '@/common/response';
+import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 
 export default function SearchQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -44,40 +46,14 @@ export default function SearchQuizPage() {
   const [selected_category, setSelectedCategory] = useState<string>();
   const [cond_question, setCondQuestion] = useState<boolean>();
   const [cond_answer, setCondAnswer] = useState<boolean>();
-  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<JSX.Element[]>();
   const [checkedIdList, setCheckedIdList] = useState<number[]>([] as number[]);
   const [changedCategory, setChangedCategory] = useState<string>('');
   const [format, setFormat] = useState<string>('basic');
 
   useEffect(() => {
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get('/quiz/file', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
-        let filelist = [];
-        for (var i = 0; i < res.length; i++) {
-          filelist.push(
-            <MenuItem value={res[i].file_num} key={res[i].file_num}>
-              {res[i].file_nickname}
-            </MenuItem>
-          );
-        }
-        setFilelistoption(filelist);
-        setMessage({
-          message: '　',
-          messageColor: 'commmon.black'
-        });
-      } else {
-        setMessage({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        });
-      }
-    });
+    getFileList(setMessage, setFilelistoption);
   }, []);
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
@@ -444,19 +420,7 @@ export default function SearchQuizPage() {
 
         <FormGroup>
           <FormControl>
-            <InputLabel id="quiz-file-input">問題ファイル</InputLabel>
-            <Select
-              labelId="quiz-file-name"
-              id="quiz-file-id"
-              defaultValue={-1}
-              // value={age}
-              onChange={(e) => selectedFileChange(e)}
-            >
-              <MenuItem value={-1} key={-1}>
-                選択なし
-              </MenuItem>
-              {filelistoption}
-            </Select>
+            <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
           </FormControl>
 
           <FormControl>
