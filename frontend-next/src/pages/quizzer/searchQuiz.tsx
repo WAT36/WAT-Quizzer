@@ -28,13 +28,17 @@ import {
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { CategoryApiResponse, QuizFileApiResponse, QuizViewApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
+import { MessageState } from '../../../interfaces/state';
 
 export default function SearchQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
   const [value, setValue] = useState<number[] | number>([0, 100]);
   const [checked, setChecked] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<string>('common.black');
+  const [message, setMessage] = useState<MessageState>({
+    message: '　',
+    messageColor: 'common.black',
+    isDisplay: false
+  });
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
   const [query, setQuery] = useState<string>();
   const [selected_category, setSelectedCategory] = useState<string>();
@@ -47,8 +51,10 @@ export default function SearchQuizPage() {
   const [format, setFormat] = useState<string>('basic');
 
   useEffect(() => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
@@ -61,18 +67,24 @@ export default function SearchQuizPage() {
           );
         }
         setFilelistoption(filelist);
-        setMessage('　');
-        setMessageColor('commmon.black');
+        setMessage({
+          message: '　',
+          messageColor: 'commmon.black'
+        });
       } else {
-        setMessage('エラー:外部APIとの連携に失敗しました');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
       }
     });
   }, []);
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get(
       '/category',
       (data: ProcessingApiReponse) => {
@@ -88,11 +100,15 @@ export default function SearchQuizPage() {
           }
           setFileNum(e.target.value as number);
           setCategorylistoption(categorylist);
-          setMessage('　');
-          setMessageColor('common.black');
+          setMessage({
+            message: '　',
+            messageColor: 'commmon.black'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       },
       {
@@ -118,27 +134,37 @@ export default function SearchQuizPage() {
 
   const searchQuiz = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get(
       '/quiz/search',
       (data: ProcessingApiReponse) => {
         if ((String(data.status)[0] === '2' || String(data.status)[0] === '3') && data.body?.length > 0) {
           const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
           setSearchResult(res);
-          setMessage('Success!! ' + res.length + '問の問題を取得しました');
-          setMessageColor('success.light');
+          setMessage({
+            message: 'Success!! ' + res.length + '問の問題を取得しました',
+            messageColor: 'success.light'
+          });
         } else if (data.status === 404 || data.body?.length === 0) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       },
       {
@@ -163,18 +189,24 @@ export default function SearchQuizPage() {
   // チェックした問題に指定カテゴリを一括登録する
   const registerCategoryToChecked = async () => {
     if (checkedIdList.length === 0) {
-      setMessage('エラー:チェックされた問題がありません');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:チェックされた問題がありません',
+        messageColor: 'error'
+      });
       return;
     } else if (changedCategory === '') {
-      setMessage('エラー:一括登録するカテゴリ名を入力して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:一括登録するカテゴリ名を入力して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
     // チェックした問題にカテゴリを登録
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     const addCategoriesToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
@@ -211,25 +243,33 @@ export default function SearchQuizPage() {
     // 終わったらチェック全て外す、入力カテゴリも消す
     setCheckedIdList([]);
     setChangedCategory('');
-    setMessage(message);
-    setMessageColor(messageColor);
+    setMessage({
+      message,
+      messageColor
+    });
   };
 
   // チェックした問題から指定カテゴリを一括削除する
   const removeCategoryFromChecked = async () => {
     if (checkedIdList.length === 0) {
-      setMessage('エラー:チェックされた問題がありません');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:チェックされた問題がありません',
+        messageColor: 'error'
+      });
       return;
     } else if (changedCategory === '') {
-      setMessage('エラー:一括削除するカテゴリ名を入力して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:一括削除するカテゴリ名を入力して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
     // チェックした問題からカテゴリを削除
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     const removeCategories = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
@@ -266,21 +306,27 @@ export default function SearchQuizPage() {
     // 終わったらチェック全て外す、入力カテゴリも消す
     setCheckedIdList([]);
     setChangedCategory('');
-    setMessage(message);
-    setMessageColor(messageColor);
+    setMessage({
+      message,
+      messageColor
+    });
   };
 
   // 選択した問題全てにチェックをつける
   const checkedToSelectedQuiz = async () => {
     if (checkedIdList.length === 0) {
-      setMessage('エラー:選択された問題がありません');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:選択された問題がありません',
+        messageColor: 'error'
+      });
       return;
     }
 
     // 選択した問題にチェック
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     const checkToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
@@ -316,21 +362,27 @@ export default function SearchQuizPage() {
     // 終わったらチェック全て外す、入力カテゴリも消す
     setCheckedIdList([]);
     setChangedCategory('');
-    setMessage(message);
-    setMessageColor(messageColor);
+    setMessage({
+      message,
+      messageColor
+    });
   };
 
   // 選択した問題全てにチェックを外す
   const uncheckedToSelectedQuiz = async () => {
     if (checkedIdList.length === 0) {
-      setMessage('エラー:選択された問題がありません');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:選択された問題がありません',
+        messageColor: 'error'
+      });
       return;
     }
 
     // 選択した問題にチェック
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     const uncheckToQuiz = async (idList: number[]) => {
       const failureIdList: number[] = [];
       for (const checkedId of idList) {
@@ -366,8 +418,10 @@ export default function SearchQuizPage() {
     // 終わったらチェック全て外す、入力カテゴリも消す
     setCheckedIdList([]);
     setChangedCategory('');
-    setMessage(message);
-    setMessageColor(messageColor);
+    setMessage({
+      message,
+      messageColor
+    });
   };
 
   // ラジオボタンの選択変更時の処理
@@ -382,8 +436,8 @@ export default function SearchQuizPage() {
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography variant="h6" component="h6" color={messageColor}>
-              {message}
+            <Typography variant="h6" component="h6" color={message.messageColor}>
+              {message.message}
             </Typography>
           </CardContent>
         </Card>
