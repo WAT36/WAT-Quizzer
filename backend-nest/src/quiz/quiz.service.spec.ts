@@ -344,4 +344,22 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 正解登録 正常系
+  it('cleared - OK', async () => {
+    // テストデータ
+    const req = {
+      format: 'basic',
+      file_num: 0,
+      quiz_num: 0,
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'OK',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
+    expect(await quizService.cleared(req)).toEqual(testResult);
+  });
 });
