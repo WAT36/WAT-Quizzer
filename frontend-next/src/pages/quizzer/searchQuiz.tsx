@@ -31,6 +31,7 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { getFileList } from '@/common/response';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export default function SearchQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -408,15 +409,7 @@ export default function SearchQuizPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>WAT Quizzer</h1>
-
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
+        <Title label="WAT Quizzer"></Title>
 
         <FormGroup>
           <FormControl>
@@ -585,7 +578,13 @@ export default function SearchQuizPage() {
 
   return (
     <>
-      <Layout mode="quizzer" contents={contents()} title={'問題検索'} />
+      <Layout
+        mode="quizzer"
+        contents={contents()}
+        title={'問題検索'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
