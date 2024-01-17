@@ -362,4 +362,33 @@ describe('QuizService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
     expect(await quizService.cleared(req)).toEqual(testResult);
   });
+
+  // 正解登録 異常系１
+  it('cleared - NG1', async () => {
+    // テストデータ
+    const req = {
+      format: 'xxxxxxxxxx',
+      file_num: 0,
+      quiz_num: 0,
+    };
+    await expect(quizService.cleared(req)).rejects.toMatchObject({
+      message: '入力された問題形式が不正です',
+    });
+  });
+
+  // 正解登録 異常系２
+  it('cleared - NG2', async () => {
+    // テストデータ
+    const req = {
+      format: 'basic',
+      file_num: 0,
+      quiz_num: 0,
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.cleared(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
