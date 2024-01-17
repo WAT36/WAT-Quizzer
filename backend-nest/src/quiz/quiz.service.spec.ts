@@ -391,4 +391,22 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 不正解登録 正常系
+  it('failed - OK', async () => {
+    // テストデータ
+    const req = {
+      format: 'basic',
+      file_num: 0,
+      quiz_num: 0,
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'OK',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
+    expect(await quizService.failed(req)).toEqual(testResult);
+  });
 });
