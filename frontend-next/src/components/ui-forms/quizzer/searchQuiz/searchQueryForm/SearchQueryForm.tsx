@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  DisplayQuizState,
-  MessageState,
-  PullDownOptionState,
-  QueryOfQuizState
-} from '../../../../../../interfaces/state';
+import { MessageState, PullDownOptionState, QueryOfSearchQuizState } from '../../../../../../interfaces/state';
 import { Checkbox, FormControl, FormControlLabel, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
@@ -14,36 +9,31 @@ import { ProcessingApiReponse } from '../../../../../../interfaces/api/response'
 import { get } from '@/common/API';
 import { CategoryApiResponse } from '../../../../../../interfaces/db';
 
-interface InputQueryFormProps {
+interface SearchQueryFormProps {
   filelistoption: PullDownOptionState[];
   categorylistoption: PullDownOptionState[];
-  queryOfQuizState: QueryOfQuizState;
-  displayQuizState: DisplayQuizState;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
+  queryOfSearchQuizState: QueryOfSearchQuizState;
+  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setCategorylistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
-  setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
-  setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
+  setQueryofSearchQuizState?: React.Dispatch<React.SetStateAction<QueryOfSearchQuizState>>;
 }
 
-export const InputQueryForm = ({
+export const SearchQueryForm = ({
   filelistoption,
   categorylistoption,
-  queryOfQuizState,
-  displayQuizState,
-  setMessageStater,
+  queryOfSearchQuizState,
+  setMessage,
   setCategorylistoption,
-  setQueryofQuizStater,
-  setDisplayQuizStater
-}: InputQueryFormProps) => {
+  setQueryofSearchQuizState
+}: SearchQueryFormProps) => {
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (!setMessageStater || !setCategorylistoption || !setDisplayQuizStater || !setQueryofQuizStater) {
+    if (!setMessage || !setCategorylistoption || !setQueryofSearchQuizState) {
       return;
     }
 
-    setMessageStater({
+    setMessage({
       message: '通信中...',
-      messageColor: '#d3d3d3',
-      isDisplay: true
+      messageColor: '#d3d3d3'
     });
     get(
       '/category',
@@ -57,21 +47,19 @@ export const InputQueryForm = ({
               label: res[i].category
             });
           }
-          setQueryofQuizStater({
-            ...queryOfQuizState,
-            fileNum: e.target.value as number
+          setQueryofSearchQuizState({
+            ...queryOfSearchQuizState,
+            fileNum: +e.target.value
           });
           setCategorylistoption(categorylist);
-          setMessageStater({
+          setMessage({
             message: '　',
-            messageColor: 'common.black',
-            isDisplay: false
+            messageColor: 'commmon.black'
           });
         } else {
-          setMessageStater({
+          setMessage({
             message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
+            messageColor: 'error'
           });
         }
       },
@@ -89,26 +77,68 @@ export const InputQueryForm = ({
 
       <FormControl>
         <TextField
-          label="問題番号"
-          setStater={(value: string) => {
-            if (setQueryofQuizStater) {
-              setQueryofQuizStater({
-                ...queryOfQuizState,
-                quizNum: +value
+          label="検索語句"
+          onChange={(e) => {
+            if (setQueryofSearchQuizState) {
+              setQueryofSearchQuizState({
+                ...queryOfSearchQuizState,
+                query: e.target.value
               });
             }
           }}
         />
       </FormControl>
 
+      <FormGroup row>
+        検索対象：
+        <FormControlLabel
+          control={
+            <Checkbox
+              onChange={(e) => {
+                if (setQueryofSearchQuizState) {
+                  setQueryofSearchQuizState({
+                    ...queryOfSearchQuizState,
+                    cond: {
+                      ...queryOfSearchQuizState.cond,
+                      question: e.target.checked
+                    }
+                  });
+                }
+              }}
+              name="checkedA"
+            />
+          }
+          label="問題"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              onChange={(e) => {
+                if (setQueryofSearchQuizState) {
+                  setQueryofSearchQuizState({
+                    ...queryOfSearchQuizState,
+                    cond: {
+                      ...queryOfSearchQuizState.cond,
+                      answer: e.target.checked
+                    }
+                  });
+                }
+              }}
+              name="checkedB"
+            />
+          }
+          label="答え"
+        />
+      </FormGroup>
+
       <FormControl>
         <PullDown
           label={'カテゴリ'}
           optionList={categorylistoption}
           onChange={(e) => {
-            if (setQueryofQuizStater) {
-              setQueryofQuizStater({
-                ...queryOfQuizState,
+            if (setQueryofSearchQuizState) {
+              setQueryofSearchQuizState({
+                ...queryOfSearchQuizState,
                 category: String(e.target.value)
               });
             }
@@ -120,9 +150,9 @@ export const InputQueryForm = ({
         <RangeSliderSection
           sectionTitle={'正解率(%)指定'}
           setStater={(value: number[] | number) => {
-            if (setQueryofQuizStater) {
-              setQueryofQuizStater({
-                ...queryOfQuizState,
+            if (setQueryofSearchQuizState) {
+              setQueryofSearchQuizState({
+                ...queryOfSearchQuizState,
                 minRate: Array.isArray(value) ? value[0] : value,
                 maxRate: Array.isArray(value) ? value[1] : value
               });
@@ -143,17 +173,13 @@ export const InputQueryForm = ({
               {
                 value: 'applied',
                 label: '応用問題'
-              },
-              {
-                value: '4choice',
-                label: '四択問題'
               }
             ],
             defaultValue: 'basic',
             setQueryofQuizStater: (value: string) => {
-              if (setQueryofQuizStater) {
-                setQueryofQuizStater({
-                  ...queryOfQuizState,
+              if (setQueryofSearchQuizState) {
+                setQueryofSearchQuizState({
+                  ...queryOfSearchQuizState,
                   format: value
                 });
               }
@@ -169,16 +195,16 @@ export const InputQueryForm = ({
             <Checkbox
               color="primary"
               onChange={(e) => {
-                if (setQueryofQuizStater) {
-                  setQueryofQuizStater({
-                    ...queryOfQuizState,
+                if (setQueryofSearchQuizState) {
+                  setQueryofSearchQuizState({
+                    ...queryOfSearchQuizState,
                     checked: e.target.checked
                   });
                 }
               }}
             />
           }
-          label="チェック済から出題"
+          label="チェック済のみ検索"
           labelPlacement="start"
         />
       </FormControl>

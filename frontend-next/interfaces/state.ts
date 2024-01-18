@@ -30,6 +30,20 @@ export interface QueryOfQuizState {
   checked?: boolean;
 }
 
+export interface QueryOfSearchQuizState {
+  fileNum: number;
+  query: string;
+  format: string;
+  minRate?: number;
+  maxRate?: number;
+  category?: string;
+  checked?: boolean;
+  cond?: {
+    question?: boolean;
+    answer?: boolean;
+  };
+}
+
 export interface QueryOfPutQuizState {
   fileNum: number;
   quizNum: number;
