@@ -438,4 +438,36 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 問題を１問追加 正常系
+  it('add - OK', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      input_data: {
+        question: '問題文',
+        answer: '答え',
+        category: 'カテゴリ',
+        img_file: '画像ファイル',
+        matched_basic_quiz_id: '1,2,3',
+        dummy1: 'ダミー選択肢１', //四択問題のダミー選択肢１
+        dummy2: 'ダミー選択肢２', //四択問題のダミー選択肢２
+        dummy3: 'ダミー選択肢３', //四択問題のダミー選択肢３
+      },
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        quiz_num: 1,
+      },
+    ];
+    // 正解データ
+    const correctData = [
+      {
+        result: `Added!! [0-2]:問題文,答え`,
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await quizService.add(req)).toEqual(correctData);
+  });
 });
