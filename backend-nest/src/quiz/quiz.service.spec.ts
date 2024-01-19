@@ -470,4 +470,44 @@ describe('QuizService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
     expect(await quizService.add(req)).toEqual(correctData);
   });
+
+  // 問題を１問追加 異常系１
+  it('add - NG1', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      input_data: {
+        question: '問題文',
+        answer: '答え',
+        category: 'カテゴリ',
+        img_file: '画像ファイル',
+        matched_basic_quiz_id: '1,2,3',
+        dummy1: 'ダミー選択肢１', //四択問題のダミー選択肢１
+        dummy2: 'ダミー選択肢２', //四択問題のダミー選択肢２
+        dummy3: 'ダミー選択肢３', //四択問題のダミー選択肢３
+      },
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.add(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
+
+  // 問題を１問追加 異常系２
+  it('add - NG2', async () => {
+    // テストデータ
+    const req = {
+      file_num: undefined,
+      input_data: undefined,
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.add(req)).rejects.toMatchObject({
+      message:
+        'ファイル番号または問題文が入力されていません。(file_num:undefined,input_data:undefined)',
+    });
+  });
 });
