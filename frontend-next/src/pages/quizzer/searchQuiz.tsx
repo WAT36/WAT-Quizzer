@@ -3,114 +3,40 @@ import React, { useEffect, useState } from 'react';
 import { DataGrid, GridRowsProp, GridRowSelectionModel } from '@mui/x-data-grid';
 
 import { get, post, put } from '../../common/API';
-import { buttonStyle, groupStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
+import { buttonStyle, groupStyle, searchedTableStyle } from '../../styles/Pages';
 import { columns } from '../../../utils/quizzer/SearchTable';
-import {
-  Button,
-  Card,
-  CardContent,
-  Checkbox,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Slider,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Button, Container, FormControl, FormGroup, TextField } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
-import { CategoryApiResponse, QuizFileApiResponse, QuizViewApiResponse } from '../../../interfaces/db';
+import { QuizViewApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import { MessageState, PullDownOptionState, QueryOfSearchQuizState } from '../../../interfaces/state';
 import { getFileList } from '@/common/response';
-import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Title } from '@/components/ui-elements/title/Title';
+import { SearchQueryForm } from '@/components/ui-forms/quizzer/searchQuiz/searchQueryForm/SearchQueryForm';
 
 export default function SearchQuizPage() {
-  const [file_num, setFileNum] = useState<number>(-1);
-  const [value, setValue] = useState<number[] | number>([0, 100]);
-  const [checked, setChecked] = useState<boolean>(false);
+  const [queryOfSearchQuizState, setQueryOfSearchQuizState] = useState<QueryOfSearchQuizState>({
+    fileNum: -1,
+    query: '',
+    format: ''
+  });
   const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black',
     isDisplay: false
   });
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
-  const [query, setQuery] = useState<string>();
-  const [selected_category, setSelectedCategory] = useState<string>();
-  const [cond_question, setCondQuestion] = useState<boolean>();
-  const [cond_answer, setCondAnswer] = useState<boolean>();
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
-  const [categorylistoption, setCategorylistoption] = useState<JSX.Element[]>();
+  const [categorylistoption, setCategorylistoption] = useState<PullDownOptionState[]>([]);
   const [checkedIdList, setCheckedIdList] = useState<number[]>([] as number[]);
   const [changedCategory, setChangedCategory] = useState<string>('');
-  const [format, setFormat] = useState<string>('basic');
 
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
   }, []);
 
-  const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get(
-      '/category',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
-          const res: CategoryApiResponse[] = data.body as CategoryApiResponse[];
-          let categorylist = [];
-          for (var i = 0; i < res.length; i++) {
-            categorylist.push(
-              <MenuItem value={res[i].category} key={i}>
-                {res[i].category}
-              </MenuItem>
-            );
-          }
-          setFileNum(e.target.value as number);
-          setCategorylistoption(categorylist);
-          setMessage({
-            message: '　',
-            messageColor: 'commmon.black'
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      },
-      {
-        file_num: String(e.target.value)
-      }
-    );
-  };
-
-  const rangeSlider = () => {
-    const handleChange = (event: Event, newValue: number[] | number) => {
-      setValue(newValue);
-    };
-
-    return (
-      <>
-        <Typography id="range-slider" gutterBottom>
-          正解率(%)指定
-        </Typography>
-        <Slider value={value} onChange={handleChange} valueLabelDisplay="auto" aria-labelledby="range-slider" />
-      </>
-    );
-  };
-
   const searchQuiz = () => {
-    if (file_num === -1) {
+    if (queryOfSearchQuizState.fileNum === -1) {
       setMessage({
         message: 'エラー:問題ファイルを選択して下さい',
         messageColor: 'error'
@@ -145,15 +71,15 @@ export default function SearchQuizPage() {
         }
       },
       {
-        file_num: String(file_num),
-        query: query || '',
-        category: selected_category || '',
-        min_rate: String(Array.isArray(value) ? value[0] : value),
-        max_rate: String(Array.isArray(value) ? value[1] : value),
-        searchInOnlySentense: String(cond_question || ''),
-        searchInOnlyAnswer: String(cond_answer || ''),
-        checked: String(checked),
-        format
+        file_num: String(queryOfSearchQuizState.fileNum),
+        query: queryOfSearchQuizState.query || '',
+        category: queryOfSearchQuizState.category || '',
+        min_rate: queryOfSearchQuizState.minRate ? String(queryOfSearchQuizState.minRate) : '0',
+        max_rate: queryOfSearchQuizState.maxRate ? String(queryOfSearchQuizState.maxRate) : '100',
+        searchInOnlySentense: String(queryOfSearchQuizState.cond?.question || ''),
+        searchInOnlyAnswer: String(queryOfSearchQuizState.cond?.answer || ''),
+        checked: String(queryOfSearchQuizState.checked),
+        format: queryOfSearchQuizState.format
       }
     );
   };
@@ -190,7 +116,7 @@ export default function SearchQuizPage() {
         await post(
           '/quiz/category',
           {
-            file_num: file_num,
+            file_num: queryOfSearchQuizState.fileNum,
             quiz_num: checkedId,
             category: changedCategory
           },
@@ -253,7 +179,7 @@ export default function SearchQuizPage() {
         await put(
           '/quiz/category',
           {
-            file_num: file_num,
+            file_num: queryOfSearchQuizState.fileNum,
             quiz_num: checkedId,
             category: changedCategory
           },
@@ -310,7 +236,7 @@ export default function SearchQuizPage() {
         await put(
           '/quiz/check',
           {
-            file_num: file_num,
+            file_num: queryOfSearchQuizState.fileNum,
             quiz_num: checkedId
           },
           (data: ProcessingApiReponse) => {
@@ -366,7 +292,7 @@ export default function SearchQuizPage() {
         await put(
           '/quiz/uncheck',
           {
-            file_num: file_num,
+            file_num: queryOfSearchQuizState.fileNum,
             quiz_num: checkedId
           },
           (data: ProcessingApiReponse) => {
@@ -401,98 +327,19 @@ export default function SearchQuizPage() {
     });
   };
 
-  // ラジオボタンの選択変更時の処理
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormat((event.target as HTMLInputElement).value);
-  };
-
   const contents = () => {
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <FormGroup>
-          <FormControl>
-            <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
-          </FormControl>
-
-          <FormControl>
-            <TextField
-              label="検索語句"
-              onChange={(e) => {
-                setQuery(e.target.value);
-              }}
-            />
-          </FormControl>
-
-          <FormGroup row>
-            検索対象：
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(e) => {
-                    setCondQuestion(e.target.checked);
-                  }}
-                  name="checkedA"
-                />
-              }
-              label="問題"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(e) => {
-                    setCondAnswer(e.target.checked);
-                  }}
-                  name="checkedB"
-                />
-              }
-              label="答え"
-            />
-          </FormGroup>
-
-          <FormControl>
-            <InputLabel id="demo-simple-select-label">カテゴリ</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              defaultValue={-1}
-              // value={age}
-              onChange={(e) => {
-                setSelectedCategory(String(e.target.value));
-              }}
-            >
-              <MenuItem value={-1}>選択なし</MenuItem>
-              {categorylistoption}
-            </Select>
-          </FormControl>
-
-          <FormControl>{rangeSlider()}</FormControl>
-
-          <FormControl>
-            <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-              value={format}
-              defaultValue="basic"
-              onChange={handleRadioChange}
-            >
-              <FormControlLabel value="basic" control={<Radio />} label="基礎問題" />
-              <FormControlLabel value="applied" control={<Radio />} label="応用問題" />
-            </RadioGroup>
-          </FormControl>
-
-          <FormControl>
-            <FormControlLabel
-              value="only-checked"
-              control={<Checkbox color="primary" onChange={(e) => setChecked(e.target.checked)} />}
-              label="チェック済のみ検索"
-              labelPlacement="start"
-            />
-          </FormControl>
-        </FormGroup>
+        <SearchQueryForm
+          filelistoption={filelistoption}
+          categorylistoption={categorylistoption}
+          queryOfSearchQuizState={queryOfSearchQuizState}
+          setMessage={setMessage}
+          setCategorylistoption={setCategorylistoption}
+          setQueryofSearchQuizState={setQueryOfSearchQuizState}
+        />
 
         <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => searchQuiz()}>
           検索
@@ -526,7 +373,7 @@ export default function SearchQuizPage() {
               style={buttonStyle}
               variant="contained"
               color="primary"
-              disabled={format !== 'basic'}
+              disabled={queryOfSearchQuizState.format !== 'basic'}
               onClick={async (e) => await registerCategoryToChecked()}
             >
               一括カテゴリ登録
@@ -538,7 +385,7 @@ export default function SearchQuizPage() {
               style={buttonStyle}
               variant="contained"
               color="primary"
-              disabled={format !== 'basic'}
+              disabled={queryOfSearchQuizState.format !== 'basic'}
               onClick={async (e) => await removeCategoryFromChecked()}
             >
               一括カテゴリ削除
@@ -553,7 +400,7 @@ export default function SearchQuizPage() {
               style={buttonStyle}
               variant="contained"
               color="primary"
-              disabled={format !== 'basic'} // TODO 応用問題検索結果からチェック機能つける
+              disabled={queryOfSearchQuizState.format !== 'basic'} // TODO 応用問題検索結果からチェック機能つける
               onClick={async (e) => await checkedToSelectedQuiz()}
             >
               ✅をつける
@@ -565,7 +412,7 @@ export default function SearchQuizPage() {
               style={buttonStyle}
               variant="contained"
               color="primary"
-              disabled={format !== 'basic'}
+              disabled={queryOfSearchQuizState.format !== 'basic'}
               onClick={async (e) => await uncheckedToSelectedQuiz()}
             >
               ✅を外す
