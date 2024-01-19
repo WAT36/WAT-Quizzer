@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import { DataGrid, GridRowsProp, GridRowSelectionModel } from '@mui/x-data-grid';
 
-import { get, post, put } from '../../common/API';
+import { post, put } from '../../common/API';
 import { buttonStyle, groupStyle, searchedTableStyle } from '../../styles/Pages';
 import { columns } from '../../../utils/quizzer/SearchTable';
 import { Button as MuiButton, Container, FormControl, FormGroup, TextField } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
-import { QuizViewApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState, PullDownOptionState, QueryOfSearchQuizState } from '../../../interfaces/state';
 import { getFileList } from '@/common/response';
