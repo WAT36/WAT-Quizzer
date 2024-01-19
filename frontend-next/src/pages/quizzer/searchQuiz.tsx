@@ -5,7 +5,7 @@ import { DataGrid, GridRowsProp, GridRowSelectionModel } from '@mui/x-data-grid'
 import { get, post, put } from '../../common/API';
 import { buttonStyle, groupStyle, searchedTableStyle } from '../../styles/Pages';
 import { columns } from '../../../utils/quizzer/SearchTable';
-import { Button, Container, FormControl, FormGroup, TextField } from '@mui/material';
+import { Button as MuiButton, Container, FormControl, FormGroup, TextField } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizViewApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
@@ -13,6 +13,8 @@ import { MessageState, PullDownOptionState, QueryOfSearchQuizState } from '../..
 import { getFileList } from '@/common/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { SearchQueryForm } from '@/components/ui-forms/quizzer/searchQuiz/searchQueryForm/SearchQueryForm';
+import { searchQuizAPI } from '@/common/ButtonAPI';
+import { Button } from '@/components/ui-elements/button/Button';
 
 export default function SearchQuizPage() {
   const [queryOfSearchQuizState, setQueryOfSearchQuizState] = useState<QueryOfSearchQuizState>({
@@ -34,55 +36,6 @@ export default function SearchQuizPage() {
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
   }, []);
-
-  const searchQuiz = () => {
-    if (queryOfSearchQuizState.fileNum === -1) {
-      setMessage({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      });
-      return;
-    }
-
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get(
-      '/quiz/search',
-      (data: ProcessingApiReponse) => {
-        if ((String(data.status)[0] === '2' || String(data.status)[0] === '3') && data.body?.length > 0) {
-          const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
-          setSearchResult(res);
-          setMessage({
-            message: 'Success!! ' + res.length + '問の問題を取得しました',
-            messageColor: 'success.light'
-          });
-        } else if (data.status === 404 || data.body?.length === 0) {
-          setMessage({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      },
-      {
-        file_num: String(queryOfSearchQuizState.fileNum),
-        query: queryOfSearchQuizState.query || '',
-        category: queryOfSearchQuizState.category || '',
-        min_rate: queryOfSearchQuizState.minRate ? String(queryOfSearchQuizState.minRate) : '0',
-        max_rate: queryOfSearchQuizState.maxRate ? String(queryOfSearchQuizState.maxRate) : '100',
-        searchInOnlySentense: String(queryOfSearchQuizState.cond?.question || ''),
-        searchInOnlyAnswer: String(queryOfSearchQuizState.cond?.answer || ''),
-        checked: String(queryOfSearchQuizState.checked),
-        format: queryOfSearchQuizState.format
-      }
-    );
-  };
 
   // チェックした問題のIDをステートに登録
   const registerCheckedIdList = (selectionModel: GridRowSelectionModel) => {
@@ -341,9 +294,13 @@ export default function SearchQuizPage() {
           setQueryofSearchQuizState={setQueryOfSearchQuizState}
         />
 
-        <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => searchQuiz()}>
-          検索
-        </Button>
+        <Button
+          label={'検索'}
+          attr={'button-array'}
+          variant="contained"
+          color="primary"
+          onClick={(e) => searchQuizAPI({ queryOfSearchQuizState, setMessage, setSearchResult })}
+        />
 
         <div style={searchedTableStyle}>
           <DataGrid
@@ -369,7 +326,7 @@ export default function SearchQuizPage() {
           </FormControl>
           」を
           <FormControl>
-            <Button
+            <MuiButton
               style={buttonStyle}
               variant="contained"
               color="primary"
@@ -377,11 +334,11 @@ export default function SearchQuizPage() {
               onClick={async (e) => await registerCategoryToChecked()}
             >
               一括カテゴリ登録
-            </Button>
+            </MuiButton>
           </FormControl>
           or
           <FormControl>
-            <Button
+            <MuiButton
               style={buttonStyle}
               variant="contained"
               color="primary"
@@ -389,14 +346,14 @@ export default function SearchQuizPage() {
               onClick={async (e) => await removeCategoryFromChecked()}
             >
               一括カテゴリ削除
-            </Button>
+            </MuiButton>
           </FormControl>
         </FormGroup>
 
         <FormGroup style={groupStyle} row>
           チェックした問題全てに
           <FormControl>
-            <Button
+            <MuiButton
               style={buttonStyle}
               variant="contained"
               color="primary"
@@ -404,11 +361,11 @@ export default function SearchQuizPage() {
               onClick={async (e) => await checkedToSelectedQuiz()}
             >
               ✅をつける
-            </Button>
+            </MuiButton>
           </FormControl>
           or
           <FormControl>
-            <Button
+            <MuiButton
               style={buttonStyle}
               variant="contained"
               color="primary"
@@ -416,7 +373,7 @@ export default function SearchQuizPage() {
               onClick={async (e) => await uncheckedToSelectedQuiz()}
             >
               ✅を外す
-            </Button>
+            </MuiButton>
           </FormControl>
         </FormGroup>
       </Container>
