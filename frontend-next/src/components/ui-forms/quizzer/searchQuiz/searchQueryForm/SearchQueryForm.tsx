@@ -78,11 +78,11 @@ export const SearchQueryForm = ({
       <FormControl>
         <TextField
           label="検索語句"
-          onChange={(e) => {
+          setStater={(value: string) => {
             if (setQueryofSearchQuizState) {
               setQueryofSearchQuizState({
                 ...queryOfSearchQuizState,
-                query: e.target.value
+                query: value
               });
             }
           }}
