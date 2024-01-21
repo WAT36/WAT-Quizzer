@@ -1,0 +1,11 @@
+.form {
+    border: 'solid thin lightgray';
+    border-radius: '5px';
+    margin: '10px 0px';
+    padding: '0px 5px';
+    align-items: 'center';
+};
+
+.button {
+    margin: '10px';
+}
