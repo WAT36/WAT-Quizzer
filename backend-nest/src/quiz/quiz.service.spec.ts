@@ -510,4 +510,31 @@ describe('QuizService', () => {
         'ファイル番号または問題文が入力されていません。(file_num:undefined,input_data:undefined)',
     });
   });
+
+  // 問題編集 正常系1
+  it('edit - OK', async () => {
+    // テストデータ
+    const req = {
+      format: 'basic',
+      file_num: 0,
+      quiz_num: 0,
+      question: '問題文',
+      answer: '答え',
+      category: 'カテゴリ',
+      img_file: '画像ファイル',
+      matched_basic_quiz_id: '1,2,3',
+      dummy1: 'ダミー選択肢１', //四択問題のダミー選択肢１
+      dummy2: 'ダミー選択肢２', //四択問題のダミー選択肢２
+      dummy3: 'ダミー選択肢３', //四択問題のダミー選択肢３
+      explanation: '説明',
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        quiz_num: 1,
+      },
+    ];
+    jest.spyOn(Dao, 'execTransaction').mockResolvedValue(testResult);
+    expect(await quizService.edit(req)).toEqual({ result: testResult });
+  });
 });
