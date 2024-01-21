@@ -537,4 +537,29 @@ describe('QuizService', () => {
     jest.spyOn(Dao, 'execTransaction').mockResolvedValue(testResult);
     expect(await quizService.edit(req)).toEqual({ result: testResult });
   });
+
+  // 問題編集 異常系１
+  it('edit - NG1', async () => {
+    // テストデータ
+    const req = {
+      format: 'basic',
+      file_num: 0,
+      quiz_num: 0,
+      question: '問題文',
+      answer: '答え',
+      category: 'カテゴリ',
+      img_file: '画像ファイル',
+      matched_basic_quiz_id: '1,2,3',
+      dummy1: 'ダミー選択肢１', //四択問題のダミー選択肢１
+      dummy2: 'ダミー選択肢２', //四択問題のダミー選択肢２
+      dummy3: 'ダミー選択肢３', //四択問題のダミー選択肢３
+      explanation: '説明',
+    };
+    jest.spyOn(Dao, 'execTransaction').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.edit(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
