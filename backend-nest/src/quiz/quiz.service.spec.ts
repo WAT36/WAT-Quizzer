@@ -586,4 +586,26 @@ describe('QuizService', () => {
       ),
     ).toEqual(testResult);
   });
+
+  // 問題検索 異常系1
+  it('search - NG1', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(
+      quizService.search(
+        0,
+        0,
+        100,
+        'カテゴリ',
+        'true',
+        'クエリ',
+        'true',
+        'true',
+        'basic',
+      ),
+    ).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
