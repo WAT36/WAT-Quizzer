@@ -562,4 +562,28 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 問題検索 正常系1
+  it('search - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'OK',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(
+      await quizService.search(
+        0,
+        0,
+        100,
+        'カテゴリ',
+        'true',
+        'クエリ',
+        'true',
+        'true',
+        'basic',
+      ),
+    ).toEqual(testResult);
+  });
 });
