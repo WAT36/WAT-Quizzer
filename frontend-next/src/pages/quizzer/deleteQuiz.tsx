@@ -33,7 +33,6 @@ export default function DeleteQuizPage() {
     messageColor: 'common.black',
     isDisplay: false
   });
-  const [messageColor, setMessageColor] = useState<string>('common.black');
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
   const [quiz_num, setQuizNum] = useState<number>();
   const [get_file_num, setGetFileNum] = useState<number | null>();
