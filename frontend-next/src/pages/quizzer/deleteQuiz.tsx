@@ -23,6 +23,7 @@ import {
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizApiResponse, QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export default function DeleteQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -244,7 +245,7 @@ export default function DeleteQuizPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>WAT Quizzer</h1>
+        <Title label="WAT Quizzer"></Title>
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
