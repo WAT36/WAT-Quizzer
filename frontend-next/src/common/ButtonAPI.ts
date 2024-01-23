@@ -1148,7 +1148,7 @@ export const searchQuizAPI = ({ queryOfSearchQuizState, setMessage, setSearchRes
       max_rate: queryOfSearchQuizState.maxRate ? String(queryOfSearchQuizState.maxRate) : '100',
       searchInOnlySentense: String(queryOfSearchQuizState.cond?.question || ''),
       searchInOnlyAnswer: String(queryOfSearchQuizState.cond?.answer || ''),
-      checked: String(queryOfSearchQuizState.checked),
+      checked: queryOfSearchQuizState.checked ? String(queryOfSearchQuizState.checked) : 'false',
       format: queryOfSearchQuizState.format
     }
   );
