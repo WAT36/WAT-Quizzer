@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './EditSearchResultForm.module.css';
 import { FormControl, FormGroup, TextField } from '@mui/material';
-import { groupStyle } from '@/styles/Pages';
 import { Button } from '@/components/ui-elements/button/Button';
 import { MessageState, QueryOfSearchQuizState } from '../../../../../../interfaces/state';
 import { post, put } from '@/common/API';
@@ -313,7 +312,7 @@ export const EditSearchResultForm = ({
         </FormControl>
       </FormGroup>
 
-      <FormGroup style={groupStyle} row>
+      <FormGroup className={styles.group} row>
         チェックした問題全てに
         <FormControl>
           <Button
