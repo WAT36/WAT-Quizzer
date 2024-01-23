@@ -24,10 +24,15 @@ import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizApiResponse, QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
+import { MessageState } from '../../../interfaces/state';
 
 export default function DeleteQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
-  const [message, setMessage] = useState<string>('　');
+  const [message, setMessage] = useState<MessageState>({
+    message: '　',
+    messageColor: 'common.black',
+    isDisplay: false
+  });
   const [messageColor, setMessageColor] = useState<string>('common.black');
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
   const [quiz_num, setQuizNum] = useState<number>();
@@ -45,8 +50,10 @@ export default function DeleteQuizPage() {
   const [format, setFormat] = useState<string>('basic');
 
   useEffect(() => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
@@ -59,28 +66,38 @@ export default function DeleteQuizPage() {
           );
         }
         setFilelistoption(filelist);
-        setMessage('　');
-        setMessageColor('common.black');
+        setMessage({
+          message: '　',
+          messageColor: 'commmon.black'
+        });
       } else {
-        setMessage('エラー:外部APIとの連携に失敗しました');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
       }
     });
   }, []);
 
   const getQuiz = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error'
+      });
       return;
     } else if (!quiz_num) {
-      setMessage('エラー:問題番号を入力して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題番号を入力して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get(
       '/quiz',
       (data: ProcessingApiReponse) => {
@@ -92,14 +109,20 @@ export default function DeleteQuizPage() {
           setAnswer(res[0].answer);
           setCategory(res[0].category);
           setImage(res[0].img_file);
-          setMessage('　');
-          setMessageColor('success.light');
+          setMessage({
+            message: '　',
+            messageColor: 'commmon.black'
+          });
         } else if (data.status === 404 || data.body?.length === 0) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       },
       {
@@ -112,17 +135,23 @@ export default function DeleteQuizPage() {
 
   const getIntegrateToQuiz = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error'
+      });
       return;
     } else if (!integrate_to_quiz_num) {
-      setMessage('エラー:問題番号を入力して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題番号を入力して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get(
       '/quiz',
       (data: ProcessingApiReponse) => {
@@ -133,14 +162,20 @@ export default function DeleteQuizPage() {
           setIntegrateToAnswer(res[0].answer);
           setIntegrateToCategory(res[0].category);
           setIntegrateToImage(res[0].img_file);
-          setMessage('　');
-          setMessageColor('success.light');
+          setMessage({
+            message: '　',
+            messageColor: 'commmon.black'
+          });
         } else if (data.status === 404 || data.body?.length === 0) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       },
       {
@@ -153,13 +188,17 @@ export default function DeleteQuizPage() {
 
   const deleteQuiz = () => {
     if (get_file_num == null || get_quiz_num == null) {
-      setMessage('エラー:削除する問題を取得して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:削除する問題を取得して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     del(
       '/quiz',
       {
@@ -170,8 +209,10 @@ export default function DeleteQuizPage() {
       (data: ProcessingApiReponse) => {
         if (data.status === 200) {
           let quiz_num = '[' + get_file_num + '-' + get_quiz_num + ']';
-          setMessage('Success! 削除に成功しました' + quiz_num);
-          setMessageColor('success.light');
+          setMessage({
+            message: 'Success! 削除に成功しました' + quiz_num,
+            messageColor: 'success.light'
+          });
           setGetFileNum(null);
           setGetQuizNum(null);
           setQuestion('');
@@ -179,11 +220,15 @@ export default function DeleteQuizPage() {
           setCategory('');
           setImage('');
         } else if (data.status === 404) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       }
     );
@@ -191,17 +236,23 @@ export default function DeleteQuizPage() {
 
   const integrateQuiz = () => {
     if (get_file_num == null || get_quiz_num == null) {
-      setMessage('エラー:統合元(左)の問題を取得して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:統合元(左)の問題を取得して下さい',
+        messageColor: 'error'
+      });
       return;
     } else if (get_file_num == null || integrate_to_quiz_num == null) {
-      setMessage('エラー:統合元(右)の問題を取得して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:統合元(右)の問題を取得して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     post(
       '/quiz/integrate',
       {
@@ -213,8 +264,10 @@ export default function DeleteQuizPage() {
       (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
           let quiz_num = '[' + get_file_num + ':' + get_quiz_num + '->' + integrate_to_quiz_num + ']';
-          setMessage('Success! 統合に成功しました' + quiz_num);
-          setMessageColor('success.light');
+          setMessage({
+            message: 'Success! 統合に成功しました' + quiz_num,
+            messageColor: 'success.light'
+          });
           setGetFileNum(null);
           setGetQuizNum(null);
           setQuestion('');
@@ -227,11 +280,15 @@ export default function DeleteQuizPage() {
           setIntegrateToCategory('');
           setIntegrateToImage('');
         } else if (data.status === 404) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       }
     );
@@ -246,14 +303,6 @@ export default function DeleteQuizPage() {
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
-
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={messageColor}>
-              {message}
-            </Typography>
-          </CardContent>
-        </Card>
 
         <Paper variant="outlined" style={paperStyle}>
           <Card variant="outlined">
@@ -442,7 +491,13 @@ export default function DeleteQuizPage() {
 
   return (
     <>
-      <Layout mode="quizzer" contents={contents()} title={'問題削除'} />
+      <Layout
+        mode="quizzer"
+        contents={contents()}
+        title={'問題削除'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
