@@ -11,20 +11,19 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel,
-  InputLabel,
-  MenuItem,
   Paper,
   Radio,
   RadioGroup,
-  Select,
   TextField,
   Typography
 } from '@mui/material';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
-import { QuizApiResponse, QuizFileApiResponse } from '../../../interfaces/db';
+import { QuizApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
-import { MessageState } from '../../../interfaces/state';
+import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import { getFileList } from '@/common/response';
+import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 
 export default function DeleteQuizPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -33,7 +32,7 @@ export default function DeleteQuizPage() {
     messageColor: 'common.black',
     isDisplay: false
   });
-  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [quiz_num, setQuizNum] = useState<number>();
   const [get_file_num, setGetFileNum] = useState<number | null>();
   const [get_quiz_num, setGetQuizNum] = useState<number | null>();
@@ -49,33 +48,7 @@ export default function DeleteQuizPage() {
   const [format, setFormat] = useState<string>('basic');
 
   useEffect(() => {
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get('/quiz/file', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
-        let filelist = [];
-        for (var i = 0; i < res.length; i++) {
-          filelist.push(
-            <MenuItem value={res[i].file_num} key={res[i].file_num}>
-              {res[i].file_nickname}
-            </MenuItem>
-          );
-        }
-        setFilelistoption(filelist);
-        setMessage({
-          message: '　',
-          messageColor: 'commmon.black'
-        });
-      } else {
-        setMessage({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        });
-      }
-    });
+    getFileList(setMessage, setFilelistoption);
   }, []);
 
   const getQuiz = () => {
@@ -312,21 +285,13 @@ export default function DeleteQuizPage() {
 
               <FormGroup>
                 <FormControl>
-                  <InputLabel id="quiz-file-input">問題ファイル</InputLabel>
-                  <Select
-                    labelId="quiz-file-name"
-                    id="quiz-file-id"
-                    defaultValue={-1}
-                    // value={age}
+                  <PullDown
+                    label={'問題ファイル'}
+                    optionList={filelistoption}
                     onChange={(e) => {
                       setFileNum(Number(e.target.value));
                     }}
-                  >
-                    <MenuItem value={-1} key={-1}>
-                      選択なし
-                    </MenuItem>
-                    {filelistoption}
-                  </Select>
+                  />
                 </FormControl>
 
                 <FormControl>
@@ -397,20 +362,14 @@ export default function DeleteQuizPage() {
               </Typography>
 
               <FormGroup>
-                <FormControl disabled>
-                  <InputLabel id="quiz-file-input">問題ファイル</InputLabel>
-                  <Select
-                    labelId="quiz-file-name"
-                    id="quiz-file-id"
-                    defaultValue={file_num || -1}
-                    // value={age}
-                    //onChange={(e) => {this.setState({file_num: e.target.value});}}
-                  >
-                    <MenuItem value={-1} key={-1}>
-                      同左
-                    </MenuItem>
-                    {filelistoption}
-                  </Select>
+                <FormControl>
+                  <PullDown
+                    label={'問題ファイル'}
+                    optionList={filelistoption}
+                    onChange={(e) => {
+                      setFileNum(Number(e.target.value));
+                    }}
+                  />
                 </FormControl>
 
                 <FormControl>
