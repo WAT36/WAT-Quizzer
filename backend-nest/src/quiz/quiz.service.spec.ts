@@ -642,4 +642,32 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 問題統合 正常系1
+  it('integrate - OK', async () => {
+    // テストデータ
+    const req = {
+      pre_file_num: 0,
+      pre_quiz_num: 0,
+      post_file_num: 0,
+      post_quiz_num: 0,
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        category: 'カテゴリ',
+      },
+    ];
+    // テストデータ 正常時の返り値
+    const testTransactionResult = [
+      {
+        quiz_num: 1,
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    jest.spyOn(Dao, 'execTransaction').mockResolvedValue(testTransactionResult);
+    expect(await quizService.integrate(req)).toEqual({
+      result: testTransactionResult,
+    });
+  });
 });
