@@ -670,4 +670,21 @@ describe('QuizService', () => {
       result: testTransactionResult,
     });
   });
+
+  // 問題統合 異常系1
+  it('integrate - NG1', async () => {
+    // テストデータ
+    const req = {
+      pre_file_num: 0,
+      pre_quiz_num: 0,
+      post_file_num: 0,
+      post_quiz_num: 0,
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.integrate(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
