@@ -687,4 +687,22 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 問題にカテゴリ追加 正常系1
+  it('addCategoryToQuiz - OK', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      quiz_num: 0,
+      category: 'カテゴリ1',
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        category: 'カテゴリ2',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await quizService.addCategoryToQuiz(req)).toEqual(testResult);
+  });
 });
