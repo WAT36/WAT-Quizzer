@@ -705,4 +705,20 @@ describe('QuizService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
     expect(await quizService.addCategoryToQuiz(req)).toEqual(testResult);
   });
+
+  // 問題にカテゴリ追加 異常系1
+  it('addCategoryToQuiz - NG1', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      quiz_num: 0,
+      category: 'カテゴリ1',
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.addCategoryToQuiz(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
