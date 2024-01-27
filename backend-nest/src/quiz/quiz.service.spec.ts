@@ -721,4 +721,24 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 問題からカテゴリ削除 正常系1
+  it('removeCategoryFromQuiz - OK', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      quiz_num: 0,
+      category: 'カテゴリ1',
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        category: 'カテゴリ2',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await quizService.removeCategoryFromQuiz(req)).toEqual({
+      result: null,
+    });
+  });
 });
