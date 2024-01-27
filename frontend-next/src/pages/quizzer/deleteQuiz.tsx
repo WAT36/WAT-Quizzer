@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { del, get, post } from '../../common/API';
+import { get, post } from '../../common/API';
 import { buttonStyle, messageBoxStyle, paperStyle } from '../../styles/Pages';
 import {
   Button,
@@ -21,11 +21,23 @@ import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
-import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import {
+  DeleteQuizInfoState,
+  MessageState,
+  PullDownOptionState,
+  QueryOfDeleteQuizState
+} from '../../../interfaces/state';
 import { getFileList } from '@/common/response';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { DeleteQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/deleteQuizForm/deleteQuizForm';
 
 export default function DeleteQuizPage() {
+  const [queryOfDeleteQuizState, setQueryOfDeleteQuizState] = useState<QueryOfDeleteQuizState>({
+    fileNum: -1,
+    quizNum: -1,
+    format: 'basic'
+  });
+  const [deleteQuizInfoState, setDeleteQuizInfoState] = useState<DeleteQuizInfoState>({});
   const [file_num, setFileNum] = useState<number>(-1);
   const [message, setMessage] = useState<MessageState>({
     message: '　',
@@ -36,10 +48,6 @@ export default function DeleteQuizPage() {
   const [quiz_num, setQuizNum] = useState<number>();
   const [get_file_num, setGetFileNum] = useState<number | null>();
   const [get_quiz_num, setGetQuizNum] = useState<number | null>();
-  const [question, setQuestion] = useState<string>();
-  const [answer, setAnswer] = useState<string>();
-  const [category, setCategory] = useState<string>();
-  const [image, setImage] = useState<string>();
   const [integrate_to_quiz_num, setIntegrateToQuizNum] = useState<number | null>();
   const [integrate_to_question, setIntegrateToQuestion] = useState<string>();
   const [integrate_to_answer, setIntegrateToAnswer] = useState<string>();
@@ -50,60 +58,6 @@ export default function DeleteQuizPage() {
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
   }, []);
-
-  const getQuiz = () => {
-    if (file_num === -1) {
-      setMessage({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      });
-      return;
-    } else if (!quiz_num) {
-      setMessage({
-        message: 'エラー:問題番号を入力して下さい',
-        messageColor: 'error'
-      });
-      return;
-    }
-
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get(
-      '/quiz',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200 && data.body?.length > 0) {
-          const res: QuizApiResponse[] = data.body as QuizApiResponse[];
-          setGetFileNum(res[0].file_num);
-          setGetQuizNum(res[0].quiz_num);
-          setQuestion(res[0].quiz_sentense);
-          setAnswer(res[0].answer);
-          setCategory(res[0].category);
-          setImage(res[0].img_file);
-          setMessage({
-            message: '　',
-            messageColor: 'commmon.black'
-          });
-        } else if (data.status === 404 || data.body?.length === 0) {
-          setMessage({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      },
-      {
-        file_num: String(file_num),
-        quiz_num: String(quiz_num),
-        format
-      }
-    );
-  };
 
   const getIntegrateToQuiz = () => {
     if (file_num === -1) {
@@ -158,54 +112,6 @@ export default function DeleteQuizPage() {
     );
   };
 
-  const deleteQuiz = () => {
-    if (get_file_num == null || get_quiz_num == null) {
-      setMessage({
-        message: 'エラー:削除する問題を取得して下さい',
-        messageColor: 'error'
-      });
-      return;
-    }
-
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    del(
-      '/quiz',
-      {
-        file_num: get_file_num,
-        quiz_num: get_quiz_num,
-        format
-      },
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
-          let quiz_num = '[' + get_file_num + '-' + get_quiz_num + ']';
-          setMessage({
-            message: 'Success! 削除に成功しました' + quiz_num,
-            messageColor: 'success.light'
-          });
-          setGetFileNum(null);
-          setGetQuizNum(null);
-          setQuestion('');
-          setAnswer('');
-          setCategory('');
-          setImage('');
-        } else if (data.status === 404) {
-          setMessage({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      }
-    );
-  };
-
   const integrateQuiz = () => {
     if (get_file_num == null || get_quiz_num == null) {
       setMessage({
@@ -242,10 +148,10 @@ export default function DeleteQuizPage() {
           });
           setGetFileNum(null);
           setGetQuizNum(null);
-          setQuestion('');
-          setAnswer('');
-          setCategory('');
-          setImage('');
+          // setQuestion('');
+          // setAnswer('');
+          // setCategory('');
+          // setImage('');
           setIntegrateToQuizNum(null);
           setIntegrateToQuestion('');
           setIntegrateToAnswer('');
@@ -266,93 +172,19 @@ export default function DeleteQuizPage() {
     );
   };
 
-  // ラジオボタンの選択変更時の処理
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormat((event.target as HTMLInputElement).value);
-  };
-
   const contents = () => {
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <Paper variant="outlined" style={paperStyle}>
-          <Card variant="outlined">
-            <CardContent>
-              <Typography variant="h6" component="h6">
-                削除する(統合元の)問題
-              </Typography>
-
-              <FormGroup>
-                <FormControl>
-                  <PullDown
-                    label={'問題ファイル'}
-                    optionList={filelistoption}
-                    onChange={(e) => {
-                      setFileNum(Number(e.target.value));
-                    }}
-                  />
-                </FormControl>
-
-                <FormControl>
-                  <TextField
-                    label="問題番号"
-                    onChange={(e) => {
-                      setQuizNum(Number(e.target.value));
-                    }}
-                  />
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="row-radio-buttons-group"
-                    value={format}
-                    defaultValue="basic"
-                    onChange={handleRadioChange}
-                  >
-                    <FormControlLabel value="basic" control={<Radio />} label="基礎問題" />
-                    <FormControlLabel value="applied" control={<Radio />} label="応用問題" />
-                  </RadioGroup>
-                </FormControl>
-              </FormGroup>
-
-              <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => getQuiz()}>
-                問題取得
-              </Button>
-
-              <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                ファイル：{get_file_num}
-              </Typography>
-
-              <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                問題番号：{get_quiz_num}
-              </Typography>
-
-              <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                問題　　：{question}
-              </Typography>
-
-              <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                答え　　：{answer}
-              </Typography>
-
-              <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                カテゴリ：{category}
-              </Typography>
-
-              <Typography variant="h6" component="h6" style={messageBoxStyle}>
-                画像　　：{image}
-              </Typography>
-            </CardContent>
-          </Card>
-
-          <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => deleteQuiz()}>
-            削除
-          </Button>
-        </Paper>
+        <DeleteQuizForm
+          queryOfDeleteQuizState={queryOfDeleteQuizState}
+          deleteQuizInfoState={deleteQuizInfoState}
+          filelistoption={filelistoption}
+          setMessage={setMessage}
+          setQueryOfDeleteQuizState={setQueryOfDeleteQuizState}
+          setDeleteQuizInfoState={setDeleteQuizInfoState}
+        />
 
         <Paper variant="outlined" style={paperStyle}>
           <Card variant="outlined">
