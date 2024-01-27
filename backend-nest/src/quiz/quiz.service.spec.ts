@@ -741,4 +741,22 @@ describe('QuizService', () => {
       result: null,
     });
   });
+
+  // 問題からカテゴリ削除 異常系1
+  it('removeCategoryFromQuiz - NG1', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      quiz_num: 0,
+      category: 'カテゴリ1',
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.removeCategoryFromQuiz(req)).rejects.toMatchObject(
+      {
+        message: 'error test by jest.',
+      },
+    );
+  });
 });
