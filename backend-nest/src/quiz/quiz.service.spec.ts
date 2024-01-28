@@ -793,4 +793,22 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 問題にチェック外す 正常系1
+  it('uncheck - OK', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      quiz_num: 0,
+      format: 'basic',
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'OK',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await quizService.uncheck(req)).toEqual(testResult);
+  });
 });
