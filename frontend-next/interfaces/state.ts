@@ -72,7 +72,22 @@ export interface QueryOfDeleteQuizState {
   format?: string;
 }
 
+export interface QueryOfIntegrateToQuizState {
+  fileNum: number;
+  quizNum: number;
+  format?: string;
+}
+
 export interface DeleteQuizInfoState {
+  fileNum?: number;
+  quizNum?: number;
+  sentense?: string;
+  answer?: string;
+  category?: string;
+  image?: string;
+}
+
+export interface IntegrateToQuizInfoState {
   fileNum?: number;
   quizNum?: number;
   sentense?: string;

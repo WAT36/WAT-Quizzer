@@ -13,10 +13,12 @@ import {
   DisplayQuizState,
   DisplayWordTestState,
   InputSayingState,
+  IntegrateToQuizInfoState,
   MessageState,
   PullDownOptionState,
   QueryOfDeleteQuizState,
   QueryOfGetWordState,
+  QueryOfIntegrateToQuizState,
   QueryOfPutQuizState,
   QueryOfQuizState,
   QueryOfSearchQuizState,
@@ -1272,6 +1274,141 @@ export const deleteQuiz = ({
         });
         setDeleteQuizInfoState({});
         setQueryOfDeleteQuizState({
+          fileNum: -1,
+          quizNum: -1,
+          format: 'basic'
+        });
+      } else if (data.status === 404) {
+        setMessage({
+          message: 'エラー:条件に合致するデータはありません',
+          messageColor: 'error'
+        });
+      } else {
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
+      }
+    }
+  );
+};
+
+interface GetIntegrateToQuizButtonProps {
+  queryOfIntegrateToQuizState: QueryOfIntegrateToQuizState;
+  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setIntegrateToQuizInfoState?: React.Dispatch<React.SetStateAction<DeleteQuizInfoState>>;
+}
+// TODO getQuizと統合したい
+export const getIntegrateToQuiz = ({
+  queryOfIntegrateToQuizState,
+  setMessage,
+  setIntegrateToQuizInfoState
+}: GetIntegrateToQuizButtonProps) => {
+  // 設定ステートない場合はreturn(storybook表示用に設定)
+  if (!setMessage || !setIntegrateToQuizInfoState) {
+    return;
+  }
+
+  if (queryOfIntegrateToQuizState.fileNum === -1) {
+    setMessage({
+      message: 'エラー:問題ファイルを選択して下さい',
+      messageColor: 'error'
+    });
+    return;
+  } else if (!queryOfIntegrateToQuizState.quizNum) {
+    setMessage({
+      message: 'エラー:問題番号を入力して下さい',
+      messageColor: 'error'
+    });
+    return;
+  }
+
+  setMessage({
+    message: '通信中...',
+    messageColor: '#d3d3d3'
+  });
+  get(
+    '/quiz',
+    (data: ProcessingApiReponse) => {
+      if (data.status === 200 && data.body?.length > 0) {
+        const res: QuizApiResponse[] = data.body as QuizApiResponse[];
+        setIntegrateToQuizInfoState({
+          fileNum: res[0].file_num,
+          quizNum: res[0].quiz_num,
+          sentense: res[0].quiz_sentense,
+          answer: res[0].answer,
+          category: res[0].category,
+          image: res[0].img_file
+        });
+        setMessage({
+          message: '　',
+          messageColor: 'commmon.black'
+        });
+      } else if (data.status === 404 || data.body?.length === 0) {
+        setMessage({
+          message: 'エラー:条件に合致するデータはありません',
+          messageColor: 'error'
+        });
+      } else {
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
+      }
+    },
+    {
+      file_num: String(queryOfIntegrateToQuizState.fileNum),
+      quiz_num: String(queryOfIntegrateToQuizState.quizNum),
+      format: queryOfIntegrateToQuizState.format || ''
+    }
+  );
+};
+
+interface IntegrateQuizButtonProps {
+  queryOfIntegrateToQuizState: QueryOfIntegrateToQuizState;
+  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setQueryOfIntegrateToQuizState?: React.Dispatch<React.SetStateAction<QueryOfIntegrateToQuizState>>;
+  setIntegrateToQuizInfoState?: React.Dispatch<React.SetStateAction<IntegrateToQuizInfoState>>;
+}
+export const integrateQuiz = ({
+  queryOfIntegrateToQuizState,
+  setMessage,
+  setQueryOfIntegrateToQuizState,
+  setIntegrateToQuizInfoState
+}: IntegrateQuizButtonProps) => {
+  // 設定ステートない場合はreturn(storybook表示用に設定)
+  if (!setMessage || !setIntegrateToQuizInfoState || !setQueryOfIntegrateToQuizState) {
+    return;
+  }
+
+  if (!queryOfIntegrateToQuizState.fileNum || !queryOfIntegrateToQuizState.quizNum) {
+    setMessage({
+      message: 'エラー:削除する問題を取得して下さい',
+      messageColor: 'error'
+    });
+    return;
+  }
+
+  setMessage({
+    message: '通信中...',
+    messageColor: '#d3d3d3'
+  });
+  del(
+    '/quiz',
+    {
+      file_num: queryOfIntegrateToQuizState.fileNum,
+      quiz_num: queryOfIntegrateToQuizState.quizNum,
+      format: queryOfIntegrateToQuizState.format
+    },
+    (data: ProcessingApiReponse) => {
+      if (data.status === 200) {
+        let quiz_num = '[' + queryOfIntegrateToQuizState.fileNum + '-' + queryOfIntegrateToQuizState.quizNum + ']';
+        setMessage({
+          message: 'Success! 削除に成功しました' + quiz_num,
+          messageColor: 'success.light'
+        });
+        setIntegrateToQuizInfoState({});
+        setQueryOfIntegrateToQuizState({
           fileNum: -1,
           quizNum: -1,
           format: 'basic'
