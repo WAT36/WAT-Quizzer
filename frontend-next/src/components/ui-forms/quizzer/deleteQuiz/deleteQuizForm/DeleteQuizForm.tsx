@@ -1,5 +1,4 @@
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { paperStyle } from '@/styles/Pages';
 import {
   Card,
   CardContent,
@@ -21,7 +20,7 @@ import {
 } from '../../../../../../interfaces/state';
 import { Button } from '@/components/ui-elements/button/Button';
 import { deleteQuiz, getDeletingQuiz } from '@/common/ButtonAPI';
-import styles from './EditSearchResultForm.module.css';
+import styles from '../DeleteQuizForm.module.css';
 
 interface DeleteQuizFormProps {
   queryOfDeleteQuizState: QueryOfDeleteQuizState;
@@ -50,7 +49,7 @@ export const DeleteQuizForm = ({
   };
 
   return (
-    <Paper variant="outlined" style={paperStyle}>
+    <Paper variant="outlined" className={styles.form}>
       <Card variant="outlined">
         <CardContent>
           <Typography variant="h6" component="h6">
