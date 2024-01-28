@@ -759,4 +759,22 @@ describe('QuizService', () => {
       },
     );
   });
+
+  // 問題にチェック追加 正常系1
+  it('check - OK', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      quiz_num: 0,
+      format: 'basic',
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        result: 'OK',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await quizService.check(req)).toEqual(testResult);
+  });
 });
