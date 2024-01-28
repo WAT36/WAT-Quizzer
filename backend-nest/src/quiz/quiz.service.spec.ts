@@ -811,4 +811,20 @@ describe('QuizService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
     expect(await quizService.uncheck(req)).toEqual(testResult);
   });
+
+  // 問題にチェック外す 異常系1
+  it('uncheck - NG1', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      quiz_num: 0,
+      format: 'basic',
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.uncheck(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
