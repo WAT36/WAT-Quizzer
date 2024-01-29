@@ -139,6 +139,7 @@ export const IntegrateToQuizForm = ({
 
       <Button
         label={'統合'}
+        attr={'button-array'}
         variant="contained"
         color="primary"
         disabled={queryOfIntegrateToQuizState.format !== 'basic'}

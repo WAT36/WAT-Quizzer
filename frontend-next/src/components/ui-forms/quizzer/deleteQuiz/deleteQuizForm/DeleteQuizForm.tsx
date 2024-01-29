@@ -136,6 +136,7 @@ export const DeleteQuizForm = ({
 
       <Button
         label={'削除'}
+        attr={'button-array'}
         variant="contained"
         color="primary"
         onClick={(e) =>
