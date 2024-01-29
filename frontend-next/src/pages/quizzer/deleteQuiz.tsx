@@ -44,18 +44,22 @@ export default function DeleteQuizPage() {
         <Title label="WAT Quizzer"></Title>
         <DeleteQuizForm
           queryOfDeleteQuizState={queryOfDeleteQuizState}
+          queryOfIntegrateToQuizState={queryOfIntegrateToQuizState}
           deleteQuizInfoState={deleteQuizInfoState}
           filelistoption={filelistoption}
           setMessage={setMessage}
           setQueryOfDeleteQuizState={setQueryOfDeleteQuizState}
           setDeleteQuizInfoState={setDeleteQuizInfoState}
+          setQueryOfIntegrateToQuizState={setQueryOfIntegrateToQuizState}
         />
         <IntegrateToQuizForm
+          queryOfDeleteQuizState={queryOfDeleteQuizState}
           queryOfIntegrateToQuizState={queryOfIntegrateToQuizState}
           integrateToQuizInfoState={integrateToQuizInfoState}
-          filelistoption={filelistoption}
           setMessage={setMessage}
+          setQueryOfDeleteQuizState={setQueryOfDeleteQuizState}
           setQueryOfIntegrateToQuizState={setQueryOfIntegrateToQuizState}
+          setDeleteQuizInfoState={setDeleteQuizInfoState}
           setIntegrateToQuizInfoState={setIntegrateToQuizInfoState}
         />
       </Container>

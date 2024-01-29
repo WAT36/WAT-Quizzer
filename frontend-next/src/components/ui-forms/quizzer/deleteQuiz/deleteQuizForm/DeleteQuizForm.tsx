@@ -16,7 +16,8 @@ import {
   DeleteQuizInfoState,
   MessageState,
   PullDownOptionState,
-  QueryOfDeleteQuizState
+  QueryOfDeleteQuizState,
+  QueryOfIntegrateToQuizState
 } from '../../../../../../interfaces/state';
 import { Button } from '@/components/ui-elements/button/Button';
 import { deleteQuiz, getDeletingQuiz } from '@/common/ButtonAPI';
@@ -24,26 +25,35 @@ import styles from '../DeleteQuizForm.module.css';
 
 interface DeleteQuizFormProps {
   queryOfDeleteQuizState: QueryOfDeleteQuizState;
+  queryOfIntegrateToQuizState: QueryOfIntegrateToQuizState;
   deleteQuizInfoState: DeleteQuizInfoState;
   filelistoption: PullDownOptionState[];
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setQueryOfDeleteQuizState?: React.Dispatch<React.SetStateAction<QueryOfDeleteQuizState>>;
   setDeleteQuizInfoState?: React.Dispatch<React.SetStateAction<DeleteQuizInfoState>>;
+  setQueryOfIntegrateToQuizState?: React.Dispatch<React.SetStateAction<QueryOfIntegrateToQuizState>>;
 }
 
 export const DeleteQuizForm = ({
   queryOfDeleteQuizState,
+  queryOfIntegrateToQuizState,
   deleteQuizInfoState,
   filelistoption,
   setMessage,
   setQueryOfDeleteQuizState,
-  setDeleteQuizInfoState
+  setDeleteQuizInfoState,
+  setQueryOfIntegrateToQuizState
 }: DeleteQuizFormProps) => {
   // ラジオボタンの選択変更時の処理
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQueryOfDeleteQuizState &&
       setQueryOfDeleteQuizState({
         ...queryOfDeleteQuizState,
+        format: (event.target as HTMLInputElement).value
+      });
+    setQueryOfIntegrateToQuizState &&
+      setQueryOfIntegrateToQuizState({
+        ...queryOfIntegrateToQuizState,
         format: (event.target as HTMLInputElement).value
       });
   };
@@ -66,6 +76,12 @@ export const DeleteQuizForm = ({
                     setQueryOfDeleteQuizState({
                       ...queryOfDeleteQuizState,
                       fileNum: Number(e.target.value)
+                    });
+                  setQueryOfIntegrateToQuizState &&
+                    setQueryOfIntegrateToQuizState({
+                      ...queryOfIntegrateToQuizState,
+                      fileNum: Number(e.target.value),
+                      quizNum: -1
                     });
                 }}
               />

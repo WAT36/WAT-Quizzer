@@ -15,39 +15,35 @@ import styles from '../DeleteQuizForm.module.css';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Button } from '@/components/ui-elements/button/Button';
 import {
+  DeleteQuizInfoState,
   IntegrateToQuizInfoState,
   MessageState,
-  PullDownOptionState,
+  QueryOfDeleteQuizState,
   QueryOfIntegrateToQuizState
 } from '../../../../../../interfaces/state';
 import { getIntegrateToQuiz, integrateQuiz } from '@/common/ButtonAPI';
 
 interface IntegrateToQuizFormProps {
+  queryOfDeleteQuizState: QueryOfDeleteQuizState;
   queryOfIntegrateToQuizState: QueryOfIntegrateToQuizState;
   integrateToQuizInfoState: IntegrateToQuizInfoState;
-  filelistoption: PullDownOptionState[];
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setQueryOfDeleteQuizState?: React.Dispatch<React.SetStateAction<QueryOfDeleteQuizState>>;
   setQueryOfIntegrateToQuizState?: React.Dispatch<React.SetStateAction<QueryOfIntegrateToQuizState>>;
+  setDeleteQuizInfoState?: React.Dispatch<React.SetStateAction<DeleteQuizInfoState>>;
   setIntegrateToQuizInfoState?: React.Dispatch<React.SetStateAction<IntegrateToQuizInfoState>>;
 }
 
 export const IntegrateToQuizForm = ({
+  queryOfDeleteQuizState,
   queryOfIntegrateToQuizState,
   integrateToQuizInfoState,
-  filelistoption,
   setMessage,
+  setQueryOfDeleteQuizState,
   setQueryOfIntegrateToQuizState,
+  setDeleteQuizInfoState,
   setIntegrateToQuizInfoState
 }: IntegrateToQuizFormProps) => {
-  // ラジオボタンの選択変更時の処理
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQueryOfIntegrateToQuizState &&
-      setQueryOfIntegrateToQuizState({
-        ...queryOfIntegrateToQuizState,
-        format: (event.target as HTMLInputElement).value
-      });
-  };
-
   return (
     <Paper variant="outlined" className={styles.form}>
       <Card variant="outlined">
@@ -57,18 +53,8 @@ export const IntegrateToQuizForm = ({
           </Typography>
 
           <FormGroup>
-            <FormControl>
-              <PullDown
-                label={'問題ファイル'}
-                optionList={filelistoption}
-                onChange={(e) => {
-                  setQueryOfIntegrateToQuizState &&
-                    setQueryOfIntegrateToQuizState({
-                      ...queryOfIntegrateToQuizState,
-                      fileNum: Number(e.target.value)
-                    });
-                }}
-              />
+            <FormControl disabled>
+              <PullDown label={'問題ファイル'} optionList={[{ value: -1, label: '同左' }]} onChange={(e) => {}} />
             </FormControl>
 
             <FormControl>
@@ -92,7 +78,6 @@ export const IntegrateToQuizForm = ({
                 name="row-radio-buttons-group"
                 value={queryOfIntegrateToQuizState.format}
                 defaultValue={queryOfIntegrateToQuizState.format}
-                onChange={handleRadioChange}
               >
                 <FormControlLabel disabled value="basic" control={<Radio />} label="基礎問題" />
                 <FormControlLabel disabled value="applied" control={<Radio />} label="応用問題" />
@@ -145,9 +130,12 @@ export const IntegrateToQuizForm = ({
         disabled={queryOfIntegrateToQuizState.format !== 'basic'}
         onClick={(e) =>
           integrateQuiz({
+            queryOfDeleteQuizState,
             queryOfIntegrateToQuizState,
             setMessage,
+            setQueryOfDeleteQuizState,
             setQueryOfIntegrateToQuizState,
+            setDeleteQuizInfoState,
             setIntegrateToQuizInfoState
           })
         }
