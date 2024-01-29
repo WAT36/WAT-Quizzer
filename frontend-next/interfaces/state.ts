@@ -30,6 +30,20 @@ export interface QueryOfQuizState {
   checked?: boolean;
 }
 
+export interface QueryOfSearchQuizState {
+  fileNum: number;
+  query: string;
+  format: string;
+  minRate?: number;
+  maxRate?: number;
+  category?: string;
+  checked?: boolean;
+  cond?: {
+    question?: boolean;
+    answer?: boolean;
+  };
+}
+
 export interface QueryOfPutQuizState {
   fileNum: number;
   quizNum: number;
@@ -50,6 +64,36 @@ export interface QueryOfEditQuizState {
   fileNum: number;
   quizNum: number;
   format?: string;
+}
+
+export interface QueryOfDeleteQuizState {
+  fileNum: number;
+  quizNum: number;
+  format?: string;
+}
+
+export interface QueryOfIntegrateToQuizState {
+  fileNum: number;
+  quizNum: number;
+  format?: string;
+}
+
+export interface DeleteQuizInfoState {
+  fileNum?: number;
+  quizNum?: number;
+  sentense?: string;
+  answer?: string;
+  category?: string;
+  image?: string;
+}
+
+export interface IntegrateToQuizInfoState {
+  fileNum?: number;
+  quizNum?: number;
+  sentense?: string;
+  answer?: string;
+  category?: string;
+  image?: string;
 }
 
 export interface QueryOfGetWordState {

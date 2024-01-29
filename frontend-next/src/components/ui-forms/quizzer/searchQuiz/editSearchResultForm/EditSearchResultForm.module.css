@@ -1,0 +1,19 @@
+.form {
+    border: solid thin lightgray;
+    border-radius: 5px;
+    margin: 10px 0px;
+    padding: 5px 5px;
+    align-items: center;
+};
+
+.button {
+    margin: 10px;
+}
+
+.group {
+    border: solid thin lightgray;
+    border-radius: 5px;
+    margin: 10px 0px;
+    padding: 5px 5px;
+    align-items: center;
+};

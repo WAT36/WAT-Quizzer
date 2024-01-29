@@ -1,0 +1,10 @@
+.form {
+    width: 40%;
+    float: left;
+    margin: 5px;
+};
+
+.questionInfo {
+    margin: 10px 0px 20px;
+    border-style: none;
+}
