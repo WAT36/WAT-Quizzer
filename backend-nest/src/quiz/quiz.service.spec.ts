@@ -850,4 +850,20 @@ describe('QuizService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
     expect(await quizService.reverseCheck(req)).toEqual(result);
   });
+
+  // 問題のチェック反転 異常系1
+  it('reverseCheck - NG1', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      quiz_num: 0,
+      format: 'basic',
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.reverseCheck(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
