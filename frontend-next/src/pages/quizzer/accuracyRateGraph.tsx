@@ -176,15 +176,6 @@ export default function AccuracyRateGraphPage() {
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
-
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
-
         <FormGroup>
           <FormControl>
             <PullDown
@@ -212,7 +203,13 @@ export default function AccuracyRateGraphPage() {
 
   return (
     <>
-      <Layout mode="quizzer" contents={contents()} title={'カテゴリ別正解率表示'} />
+      <Layout
+        mode="quizzer"
+        contents={contents()}
+        title={'カテゴリ別正解率表示'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
