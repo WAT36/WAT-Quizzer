@@ -3,24 +3,13 @@ import { Chart } from 'react-google-charts';
 
 import { get, post } from '../../common/API';
 import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
-import {
-  Button,
-  Card,
-  CardContent,
-  Container,
-  FormControl,
-  FormGroup,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography
-} from '@mui/material';
+import { Button, Card, CardContent, Container, FormControl, FormGroup, Typography } from '@mui/material';
 import { GetAccuracyRateByCategoryServiceDto, ProcessingApiReponse } from '../../../interfaces/api/response';
-import { QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { getFileList } from '@/common/response';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export default function AccuracyRateGraphPage() {
   const [file_num, setFileNum] = useState<number>(-1);
@@ -186,7 +175,7 @@ export default function AccuracyRateGraphPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>WAT Quizzer</h1>
+        <Title label="WAT Quizzer"></Title>
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
