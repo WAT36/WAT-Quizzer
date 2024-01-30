@@ -866,4 +866,21 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // ファイル追加 正常系1
+  it('addFile - OK', async () => {
+    // テストデータ
+    const req = {
+      file_name: 'ファイル名',
+      file_nickname: '通称',
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        file_num: 1,
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await quizService.addFile(req)).toEqual(testResult);
+  });
 });
