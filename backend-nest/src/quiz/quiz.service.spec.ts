@@ -883,4 +883,19 @@ describe('QuizService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
     expect(await quizService.addFile(req)).toEqual(testResult);
   });
+
+  // ファイル追加 異常系1
+  it('addFile - NG1', async () => {
+    // テストデータ
+    const req = {
+      file_name: 'ファイル名',
+      file_nickname: '通称',
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.addFile(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
