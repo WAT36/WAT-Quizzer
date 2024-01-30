@@ -18,61 +18,57 @@ import {
 import { GetAccuracyRateByCategoryServiceDto, ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
+import { getFileList } from '@/common/response';
+import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 
 export default function AccuracyRateGraphPage() {
   const [file_num, setFileNum] = useState<number>(-1);
-  const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<string>('common.black');
+  const [message, setMessage] = useState<MessageState>({
+    message: '　',
+    messageColor: 'common.black',
+    isDisplay: false
+  });
   const [accuracy_data, setAccuracyData] = useState<GetAccuracyRateByCategoryServiceDto>();
-  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
 
   useEffect(() => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
-    get('/quiz/file', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
-        let filelist = [];
-        for (var i = 0; i < res.length; i++) {
-          filelist.push(
-            <MenuItem value={res[i].file_num} key={res[i].file_num}>
-              {res[i].file_nickname}
-            </MenuItem>
-          );
-        }
-        setFilelistoption(filelist);
-        setMessage('　');
-        setMessageColor('common.black');
-      } else {
-        setMessage('エラー:外部APIとの連携に失敗しました');
-        setMessageColor('error');
-      }
-    });
+    getFileList(setMessage, setFilelistoption);
   }, []);
 
   const getAccuracy = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     get(
       '/category/rate',
       (data: ProcessingApiReponse) => {
         if (data.status === 200) {
           const res: GetAccuracyRateByCategoryServiceDto[] = data.body as GetAccuracyRateByCategoryServiceDto[];
           setAccuracyData(res[0]);
-          setMessage('　');
-          setMessageColor('success.light');
+          setMessage({
+            message: '　',
+            messageColor: 'commmon.black'
+          });
         } else if (data.status === 404) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       },
       {
@@ -83,13 +79,17 @@ export default function AccuracyRateGraphPage() {
 
   const updateCategory = () => {
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error'
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3'
+    });
     post(
       '/category',
       {
@@ -97,14 +97,20 @@ export default function AccuracyRateGraphPage() {
       },
       (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          setMessage('指定問題ファイルへのカテゴリ更新に成功しました');
-          setMessageColor('success.light');
+          setMessage({
+            message: '指定問題ファイルへのカテゴリ更新に成功しました',
+            messageColor: 'success.light'
+          });
         } else if (data.status === 404) {
-          setMessage('エラー:条件に合致するデータはありません');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:条件に合致するデータはありません',
+            messageColor: 'error'
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error'
+          });
         }
       }
     );
@@ -184,29 +190,21 @@ export default function AccuracyRateGraphPage() {
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography variant="h6" component="h6" color={messageColor}>
-              {message}
+            <Typography variant="h6" component="h6" color={message.messageColor}>
+              {message.message}
             </Typography>
           </CardContent>
         </Card>
 
         <FormGroup>
           <FormControl>
-            <InputLabel id="quiz-file-input">問題ファイル</InputLabel>
-            <Select
-              labelId="quiz-file-name"
-              id="quiz-file-id"
-              defaultValue={-1}
-              // value={age}
+            <PullDown
+              label={'問題ファイル'}
+              optionList={filelistoption}
               onChange={(e) => {
-                setFileNum(Number(e.target.value));
+                setFileNum(+e.target.value);
               }}
-            >
-              <MenuItem value={-1} key={-1}>
-                選択なし
-              </MenuItem>
-              {filelistoption}
-            </Select>
+            />
           </FormControl>
         </FormGroup>
 
