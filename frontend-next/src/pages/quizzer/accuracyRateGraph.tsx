@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
-
 import { get, post } from '../../common/API';
-import { buttonStyle, messageBoxStyle } from '../../styles/Pages';
-import { Button, Card, CardContent, Container, FormControl, FormGroup, Typography } from '@mui/material';
+import { buttonStyle } from '../../styles/Pages';
+import { Button, Container } from '@mui/material';
 import { GetAccuracyRateByCategoryServiceDto, ProcessingApiReponse } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
 import { getFileList } from '@/common/response';
-import { MessageState, PullDownOptionState } from '../../../interfaces/state';
-import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { MessageState, PullDownOptionState, QueryOfGetAccuracyState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
+import { GetFileForm } from '@/components/ui-forms/quizzer/accuracyRateGraph/getFileForm/GetFileForm';
 
 export default function AccuracyRateGraphPage() {
-  const [file_num, setFileNum] = useState<number>(-1);
+  const [queryOfGetAccuracy, setQueryOfGetAccuracy] = useState<QueryOfGetAccuracyState>({
+    fileNum: -1
+  });
   const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black',
@@ -26,7 +27,7 @@ export default function AccuracyRateGraphPage() {
   }, []);
 
   const getAccuracy = () => {
-    if (file_num === -1) {
+    if (queryOfGetAccuracy.fileNum === -1) {
       setMessage({
         message: 'エラー:問題ファイルを選択して下さい',
         messageColor: 'error'
@@ -61,13 +62,13 @@ export default function AccuracyRateGraphPage() {
         }
       },
       {
-        file_num: String(file_num)
+        file_num: String(queryOfGetAccuracy.fileNum)
       }
     );
   };
 
   const updateCategory = () => {
-    if (file_num === -1) {
+    if (queryOfGetAccuracy.fileNum === -1) {
       setMessage({
         message: 'エラー:問題ファイルを選択して下さい',
         messageColor: 'error'
@@ -82,7 +83,7 @@ export default function AccuracyRateGraphPage() {
     post(
       '/category',
       {
-        file_num: file_num
+        file_num: queryOfGetAccuracy.fileNum
       },
       (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
@@ -176,17 +177,11 @@ export default function AccuracyRateGraphPage() {
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
-        <FormGroup>
-          <FormControl>
-            <PullDown
-              label={'問題ファイル'}
-              optionList={filelistoption}
-              onChange={(e) => {
-                setFileNum(+e.target.value);
-              }}
-            />
-          </FormControl>
-        </FormGroup>
+        <GetFileForm
+          filelistoption={filelistoption}
+          queryOfGetAccuracy={queryOfGetAccuracy}
+          setQueryOfGetAccuracy={setQueryOfGetAccuracy}
+        />
 
         <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => getAccuracy()}>
           正解率表示
