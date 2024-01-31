@@ -898,4 +898,20 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // ファイル削除 正常系1
+  it('deleteFile - OK', async () => {
+    // テストデータ
+    const req = {
+      file_id: 0,
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        file_num: 1,
+      },
+    ];
+    jest.spyOn(Dao, 'execTransaction').mockResolvedValue(testResult);
+    expect(await quizService.deleteFile(req)).toEqual({ result: testResult });
+  });
 });
