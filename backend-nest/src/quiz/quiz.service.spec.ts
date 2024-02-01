@@ -946,4 +946,18 @@ describe('QuizService', () => {
       result: testResult,
     });
   });
+
+  // 回答ログ削除 異常系1
+  it('deleteAnswerLogByFile - NG1', async () => {
+    // テストデータ
+    const req = {
+      file_id: 0,
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.deleteAnswerLogByFile(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
