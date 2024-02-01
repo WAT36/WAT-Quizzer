@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
-import { get, post } from '../../common/API';
-import { buttonStyle } from '../../styles/Pages';
-import { Button, Container } from '@mui/material';
-import { GetAccuracyRateByCategoryServiceDto, ProcessingApiReponse } from '../../../interfaces/api/response';
+import { Container } from '@mui/material';
+import { GetAccuracyRateByCategoryServiceDto } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
 import { getFileList } from '@/common/response';
 import { MessageState, PullDownOptionState, QueryOfGetAccuracyState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { GetFileForm } from '@/components/ui-forms/quizzer/accuracyRateGraph/getFileForm/GetFileForm';
+import { GetFileButtonGroup } from '@/components/ui-forms/quizzer/accuracyRateGraph/getFileButtonGroup/GetFileButtonGroup';
 
 export default function AccuracyRateGraphPage() {
   const [queryOfGetAccuracy, setQueryOfGetAccuracy] = useState<QueryOfGetAccuracyState>({
@@ -19,92 +18,15 @@ export default function AccuracyRateGraphPage() {
     messageColor: 'common.black',
     isDisplay: false
   });
-  const [accuracy_data, setAccuracyData] = useState<GetAccuracyRateByCategoryServiceDto>();
+  const [accuracy_data, setAccuracyData] = useState<GetAccuracyRateByCategoryServiceDto>({
+    result: [],
+    checked_result: []
+  });
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
 
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
   }, []);
-
-  const getAccuracy = () => {
-    if (queryOfGetAccuracy.fileNum === -1) {
-      setMessage({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      });
-      return;
-    }
-
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get(
-      '/category/rate',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
-          const res: GetAccuracyRateByCategoryServiceDto[] = data.body as GetAccuracyRateByCategoryServiceDto[];
-          setAccuracyData(res[0]);
-          setMessage({
-            message: '　',
-            messageColor: 'commmon.black'
-          });
-        } else if (data.status === 404) {
-          setMessage({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      },
-      {
-        file_num: String(queryOfGetAccuracy.fileNum)
-      }
-    );
-  };
-
-  const updateCategory = () => {
-    if (queryOfGetAccuracy.fileNum === -1) {
-      setMessage({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error'
-      });
-      return;
-    }
-
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    post(
-      '/category',
-      {
-        file_num: queryOfGetAccuracy.fileNum
-      },
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200 || data.status === 201) {
-          setMessage({
-            message: '指定問題ファイルへのカテゴリ更新に成功しました',
-            messageColor: 'success.light'
-          });
-        } else if (data.status === 404) {
-          setMessage({
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error'
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      }
-    );
-  };
 
   const displayChart = () => {
     const display_data = accuracy_data;
@@ -183,13 +105,11 @@ export default function AccuracyRateGraphPage() {
           setQueryOfGetAccuracy={setQueryOfGetAccuracy}
         />
 
-        <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => getAccuracy()}>
-          正解率表示
-        </Button>
-
-        <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => updateCategory()}>
-          カテゴリ更新
-        </Button>
+        <GetFileButtonGroup
+          queryOfGetAccuracy={queryOfGetAccuracy}
+          setMessage={setMessage}
+          setAccuracyData={setAccuracyData}
+        />
 
         {displayChart()}
       </Container>
