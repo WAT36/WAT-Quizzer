@@ -6,10 +6,8 @@ interface AccuracyChartProps {
 }
 
 export const AccuracyChart = ({ accuracyData }: AccuracyChartProps) => {
-  const display_data = accuracyData;
-
   // データがない場合は何もしない
-  if (!display_data) {
+  if (accuracyData.result.length === 0) {
     return <></>;
   }
 
@@ -23,25 +21,25 @@ export const AccuracyChart = ({ accuracyData }: AccuracyChartProps) => {
   );
 
   // チェック済データ追加
-  let checked_rate = display_data.checked_result;
+  let checked_rate = accuracyData.checked_result;
   for (let i = 0; i < checked_rate.length; i++) {
     let annotation_i =
       // String(Math.round(parseFloat(checked_rate[i].accuracy_rate) * 10) / 10) +
-      String(Math.round(checked_rate[i].accuracy_rate * 10) / 10) + '% / ' + String(checked_rate[i].count) + '問';
+      String(Math.round(+checked_rate[i].accuracy_rate * 10) / 10) + '% / ' + String(checked_rate[i].count) + '問';
     // visualized_data.push(['(チェック済問題)', parseFloat(checked_rate[i].accuracy_rate), '#32CD32', annotation_i]);
-    visualized_data.push(['(チェック済問題)', checked_rate[i].accuracy_rate, '#32CD32', annotation_i]);
+    visualized_data.push(['(チェック済問題)', +checked_rate[i].accuracy_rate, '#32CD32', annotation_i]);
   }
 
   // カテゴリ毎のデータ追加
-  let category_rate = display_data.result;
+  let category_rate = accuracyData.result;
   for (let i = 0; i < category_rate.length; i++) {
     let annotation_i =
       // String(Math.round(parseFloat(category_rate[i].accuracy_rate) * 10) / 10) +
-      String(Math.round(category_rate[i].accuracy_rate * 10) / 10) + '% / ' + String(category_rate[i].count) + '問';
+      String(Math.round(+category_rate[i].accuracy_rate * 10) / 10) + '% / ' + String(category_rate[i].count) + '問';
     visualized_data.push([
       category_rate[i].c_category,
       // parseFloat(category_rate[i].accuracy_rate),
-      category_rate[i].accuracy_rate,
+      +category_rate[i].accuracy_rate,
       '#76A7FA',
       annotation_i
     ]);
@@ -64,6 +62,5 @@ export const AccuracyChart = ({ accuracyData }: AccuracyChartProps) => {
       maxValue: 1
     }
   };
-
-  return <Chart chartType="BarChart" width="100%" height="400px" data={visualized_data} options={options} />;
+  return <Chart chartType="BarChart" width="100%" data={visualized_data} options={options} />;
 };
