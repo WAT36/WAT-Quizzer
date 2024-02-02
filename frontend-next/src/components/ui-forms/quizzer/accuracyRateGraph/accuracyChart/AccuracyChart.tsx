@@ -1,5 +1,6 @@
 import { GetAccuracyRateByCategoryServiceDto } from '../../../../../../interfaces/api/response';
 import { Chart } from 'react-google-charts';
+import styles from './AccuracyChart.module.css';
 
 interface AccuracyChartProps {
   accuracyData: GetAccuracyRateByCategoryServiceDto;
@@ -62,5 +63,14 @@ export const AccuracyChart = ({ accuracyData }: AccuracyChartProps) => {
       maxValue: 1
     }
   };
-  return <Chart chartType="BarChart" width="100%" data={visualized_data} options={options} />;
+  return (
+    <Chart
+      chartType="BarChart"
+      width="100%"
+      height="100%"
+      data={visualized_data}
+      options={options}
+      className={styles.chart}
+    />
+  );
 };
