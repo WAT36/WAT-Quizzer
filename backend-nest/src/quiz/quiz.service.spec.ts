@@ -986,4 +986,22 @@ describe('QuizService', () => {
       },
     ]);
   });
+
+  // 応用問題を１問追加 異常系1
+  it('addAdvancedQuiz - NG1', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      input_data: {
+        question: '問題',
+        answer: '答え',
+      },
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(quizService.addAdvancedQuiz(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
