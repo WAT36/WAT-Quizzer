@@ -1004,4 +1004,33 @@ describe('QuizService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 四択問題を１問追加 正常系1
+  it('addFourChoiceQuiz - OK', async () => {
+    // テストデータ
+    const req = {
+      file_num: 0,
+      input_data: {
+        question: '問題',
+        answer: '答え',
+        dummy1: 'ダミー1',
+        dummy2: 'ダミー2',
+        dummy3: 'ダミー3',
+      },
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        id: 1,
+        quiz_num: 1,
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    jest.spyOn(Dao, 'execTransaction').mockResolvedValue(testResult);
+    expect(await quizService.addFourChoiceQuiz(req)).toEqual([
+      {
+        result: 'Added!! [0-2]:問題,答え,関連基礎問題:[]',
+      },
+    ]);
+  });
 });
