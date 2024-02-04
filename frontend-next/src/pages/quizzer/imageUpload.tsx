@@ -6,30 +6,43 @@ import { messageBoxStyle, dropzoneStyle } from '../../styles/Pages';
 import { ImageUploadReturnValue } from '../../../interfaces/api/response';
 import { Card, CardContent, Container, Typography } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
+import { MessageState } from '../../../interfaces/state';
 
 export default function ImageUploadPage() {
-  const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<string>('common.black');
+  const [message, setMessage] = useState<MessageState>({
+    message: '　',
+    messageColor: 'common.black',
+    isDisplay: false
+  });
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [images, setImages] = useState<ImageUploadReturnValue[]>([]);
 
   const handleOnDrop = (files: File[]) => {
     setIsUploading(true);
-    setMessage('　');
-    setMessageColor('common.black');
+    setMessage({
+      message: '　',
+      messageColor: 'common.black',
+      isDisplay: false
+    });
 
     Promise.all(files.map((file) => uploadImage(file)))
       .then((image) => {
         setIsUploading(false);
         setImages(images.concat(image));
-        setMessage('アップロードが完了しました:' + image[0].name);
-        setMessageColor('success.light');
+        setMessage({
+          message: 'アップロードが完了しました:' + image[0].name,
+          messageColor: 'success.light',
+          isDisplay: true
+        });
       })
       .catch((e) => {
         console.error(e);
         setIsUploading(false);
-        setMessage('エラー：アップロードに失敗しました');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー：アップロードに失敗しました',
+          messageColor: 'error',
+          isDisplay: true
+        });
       });
   };
 
@@ -70,8 +83,8 @@ export default function ImageUploadPage() {
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography variant="h6" component="h6" color={messageColor}>
-              {message}
+            <Typography variant="h6" component="h6" color={message.messageColor}>
+              {message.message}
             </Typography>
           </CardContent>
         </Card>
