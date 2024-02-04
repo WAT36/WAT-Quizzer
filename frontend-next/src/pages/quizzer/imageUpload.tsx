@@ -7,6 +7,7 @@ import { ImageUploadReturnValue } from '../../../interfaces/api/response';
 import { Card, CardContent, Container, Typography } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState } from '../../../interfaces/state';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export default function ImageUploadPage() {
   const [message, setMessage] = useState<MessageState>({
@@ -79,7 +80,7 @@ export default function ImageUploadPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>WAT Quizzer</h1>
+        <Title label="WAT Quizzer"></Title>
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
