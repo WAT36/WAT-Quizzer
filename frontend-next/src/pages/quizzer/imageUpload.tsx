@@ -106,7 +106,13 @@ export default function ImageUploadPage() {
 
   return (
     <>
-      <Layout mode="quizzer" contents={contents()} title={'画像アップロード'} />
+      <Layout
+        mode="quizzer"
+        contents={contents()}
+        title={'画像アップロード'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
