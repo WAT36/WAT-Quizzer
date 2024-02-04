@@ -8,7 +8,7 @@ import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displa
 import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
 import { getFileList } from '@/common/response';
 
-export default function SelectQuizPage() {
+export default function GetQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionState[]>([]);
   const [message, setMessage] = useState<MessageState>({
