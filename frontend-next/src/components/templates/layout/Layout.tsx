@@ -33,7 +33,7 @@ const config: { [key: string]: LayoutConfig } = {
   quizzer: {
     bgColor: '#0077B6',
     sideBarContents: [
-      { name: 'トップ', link: urlEnd },
+      { name: 'トップ', link: '/quizzer' + urlEnd },
       { name: '問題出題', link: '/quizzer/getQuiz' + urlEnd },
       { name: '問題追加', link: '/quizzer/addQuiz' + urlEnd },
       { name: '問題編集', link: '/quizzer/editQuiz' + urlEnd },

@@ -10,7 +10,7 @@ export const TopButtonGroup = () => {
         variant="contained"
         size="large"
         color="primary"
-        href={'/quizzer/getQuiz' + process.env.NEXT_PUBLIC_URL_END}
+        href={'/quizzer' + process.env.NEXT_PUBLIC_URL_END}
       />
       <Button
         label={'English Quiz Bot'}
