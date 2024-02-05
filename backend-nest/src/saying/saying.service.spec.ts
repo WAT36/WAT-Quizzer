@@ -20,4 +20,14 @@ describe('SayingService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
     expect(await sayingService.getRandomSaying()).toEqual(testResult);
   });
+
+  // 格言ランダム取得 異常系
+  it('getRandomSaying - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(sayingService.getRandomSaying()).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
