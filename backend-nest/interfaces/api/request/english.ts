@@ -26,6 +26,11 @@ export interface EditWordSourceDto {
   newSourceId: number;
 }
 
+export interface AddWordSubSourceDto {
+  wordId: number;
+  subSource: string;
+}
+
 export interface AddExampleDto {
   exampleEn: string;
   exampleJa: string;

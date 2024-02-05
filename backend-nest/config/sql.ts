@@ -1424,6 +1424,14 @@ export const SQL = {
           ;
         `,
       },
+      SUBSOURCE: {
+        ADD: `
+          INSERT INTO
+            word_subsource (word_id,subsource)
+          VALUES(?,?)
+          ;
+        `,
+      },
     },
     MEAN: {
       GET: {

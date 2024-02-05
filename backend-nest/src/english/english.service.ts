@@ -4,6 +4,7 @@ import { execQuery, execTransaction } from 'lib/db/dao';
 import {
   AddEnglishWordDto,
   AddExampleDto,
+  AddWordSubSourceDto,
   AddWordTestLogDto,
   EditWordMeanDto,
   EditWordSourceDto,
@@ -396,6 +397,24 @@ export class EnglishService {
       }
       //トランザクション実行
       return await execTransaction(transactionQuery);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語のサブ出典追加・更新
+  async addSubSourceOfWordById(req: AddWordSubSourceDto) {
+    try {
+      const { wordId, subSource } = req;
+      return await execQuery(SQL.ENGLISH.WORD.SUBSOURCE.ADD, [
+        wordId,
+        subSource,
+      ]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

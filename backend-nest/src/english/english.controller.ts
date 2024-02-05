@@ -12,6 +12,7 @@ import { EnglishService } from './english.service';
 import {
   AddEnglishWordDto,
   AddExampleDto,
+  AddWordSubSourceDto,
   AddWordTestLogDto,
   EditWordMeanDto,
   EditWordSourceDto,
@@ -80,6 +81,11 @@ export class EnglishController {
   @Put('/word/source')
   async editSourceOfWordById(@Body() req: EditWordSourceDto) {
     return await this.englishService.editSourceOfWordById(req);
+  }
+
+  @Put('/word/subsource')
+  async editSubSourceOfWordById(@Body() req: AddWordSubSourceDto) {
+    return await this.englishService.addSubSourceOfWordById(req);
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
