@@ -8,6 +8,7 @@ import {
   AddWordTestLogDto,
   EditWordMeanDto,
   EditWordSourceDto,
+  GetWordSubSourceDto,
 } from '../../interfaces/api/request/english';
 import { TransactionQuery } from '../../interfaces/db';
 
@@ -407,7 +408,7 @@ export class EnglishService {
     }
   }
 
-  // 単語のサブ出典追加・更新
+  // 単語のサブ出典追加
   async addSubSourceOfWordById(req: AddWordSubSourceDto) {
     try {
       const { wordId, subSource } = req;
@@ -415,6 +416,21 @@ export class EnglishService {
         wordId,
         subSource,
       ]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語のサブ出典取得
+  async getSubSourceOfWordById(req: GetWordSubSourceDto) {
+    try {
+      const { wordId } = req;
+      return await execQuery(SQL.ENGLISH.WORD.SUBSOURCE.GET, [wordId]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

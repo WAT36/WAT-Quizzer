@@ -16,6 +16,7 @@ import {
   AddWordTestLogDto,
   EditWordMeanDto,
   EditWordSourceDto,
+  GetWordSubSourceDto,
 } from '../../interfaces/api/request/english';
 
 @Controller('english')
@@ -86,6 +87,11 @@ export class EnglishController {
   @Put('/word/subsource')
   async editSubSourceOfWordById(@Body() req: AddWordSubSourceDto) {
     return await this.englishService.addSubSourceOfWordById(req);
+  }
+
+  @Get('/word/subsource')
+  async getSubSourceOfWordById(@Body() req: GetWordSubSourceDto) {
+    return await this.englishService.getSubSourceOfWordById(req);
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */

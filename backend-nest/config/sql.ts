@@ -1431,6 +1431,16 @@ export const SQL = {
           VALUES(?,?)
           ;
         `,
+        GET: `
+          SELECT
+            subsource
+          FROM
+            word_subsource
+          WHERE
+            word_id = ?
+            AND deleted_at IS NULL
+          ;
+        `,
       },
     },
     MEAN: {

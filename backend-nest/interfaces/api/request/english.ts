@@ -31,6 +31,10 @@ export interface AddWordSubSourceDto {
   subSource: string;
 }
 
+export interface GetWordSubSourceDto {
+  wordId: number;
+}
+
 export interface AddExampleDto {
   exampleEn: string;
   exampleJa: string;
