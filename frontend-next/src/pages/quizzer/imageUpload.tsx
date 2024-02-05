@@ -82,14 +82,6 @@ export default function ImageUploadPage() {
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
-
         <Dropzone onDrop={handleOnDrop}>
           {({ getRootProps, getInputProps }) => (
             <section>
