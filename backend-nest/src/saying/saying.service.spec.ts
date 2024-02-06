@@ -46,4 +46,18 @@ describe('SayingService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
     expect(await sayingService.addBookService(req)).toEqual(testResult);
   });
+
+  // 啓発本追加 異常系
+  it('addBookService - NG', async () => {
+    // テストデータ
+    const req = {
+      book_name: '本の名前',
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(sayingService.addBookService(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
