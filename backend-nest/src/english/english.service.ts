@@ -427,10 +427,9 @@ export class EnglishService {
   }
 
   // 単語のサブ出典取得
-  async getSubSourceOfWordById(req: GetWordSubSourceDto) {
+  async getSubSourceOfWordById(id: number) {
     try {
-      const { wordId } = req;
-      return await execQuery(SQL.ENGLISH.WORD.SUBSOURCE.GET, [wordId]);
+      return await execQuery(SQL.ENGLISH.WORD.GET.SUBSOURCE, [id]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

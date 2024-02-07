@@ -85,19 +85,19 @@ export class EnglishController {
   }
 
   @Put('/word/subsource')
-  async editSubSourceOfWordById(@Body() req: AddWordSubSourceDto) {
+  async addSubSourceOfWordById(@Body() req: AddWordSubSourceDto) {
     return await this.englishService.addSubSourceOfWordById(req);
-  }
-
-  @Get('/word/subsource')
-  async getSubSourceOfWordById(@Body() req: GetWordSubSourceDto) {
-    return await this.englishService.getSubSourceOfWordById(req);
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
   @Get('/word/source/:id')
   async getSourceOfWordById(@Param('id') id: string) {
     return await this.englishService.getSourceOfWordById(+id);
+  }
+
+  @Get('/word/subsource/:id')
+  async getSubSourceOfWordById(@Param('id') id: string) {
+    return await this.englishService.getSubSourceOfWordById(+id);
   }
 
   @Get('/word/:id')
