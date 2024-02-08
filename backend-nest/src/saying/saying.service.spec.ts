@@ -60,4 +60,16 @@ describe('SayingService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 啓発本リスト取得 正常系
+  it('getBookListService - OK', async () => {
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        saying: '格言テスト',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
+    expect(await sayingService.getBookListService()).toEqual(testResult);
+  });
 });
