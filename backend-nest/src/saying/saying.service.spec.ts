@@ -101,4 +101,20 @@ describe('SayingService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
     expect(await sayingService.addSayingService(req)).toEqual(testResult);
   });
+
+  // 格言追加 異常系
+  it('addSayingService - NG', async () => {
+    // テストデータ
+    const req = {
+      book_id: 0,
+      saying: '格言',
+      explanation: '説明',
+    };
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(sayingService.addSayingService(req)).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
