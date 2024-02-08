@@ -82,4 +82,23 @@ describe('SayingService', () => {
       message: 'error test by jest.',
     });
   });
+
+  // 格言追加 正常系
+  it('addSayingService - OK', async () => {
+    // テストデータ
+    const req = {
+      book_id: 0,
+      saying: '格言',
+      explanation: '説明',
+    };
+    // テストデータ 正常時の返り値
+    const testResult = [
+      {
+        book_saying_id: 0,
+        saying: '格言テスト',
+      },
+    ];
+    jest.spyOn(Dao, 'execQuery').mockResolvedValue(testResult);
+    expect(await sayingService.addSayingService(req)).toEqual(testResult);
+  });
 });
