@@ -72,4 +72,14 @@ describe('SayingService', () => {
     jest.spyOn(Dao, 'execQuery').mockResolvedValueOnce(testResult);
     expect(await sayingService.getBookListService()).toEqual(testResult);
   });
+
+  // 啓発本リスト取得 異常系
+  it('getBookListService - NG', async () => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
+      throw Error('error test by jest.');
+    });
+    await expect(sayingService.getBookListService()).rejects.toMatchObject({
+      message: 'error test by jest.',
+    });
+  });
 });
