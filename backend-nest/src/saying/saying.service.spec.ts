@@ -102,7 +102,7 @@ describe('SayingService', () => {
     expect(await sayingService.addSayingService(req)).toEqual(testResult);
   });
 
-  // 格言追加 異常系
+  // 格言追加 異常系。
   it('addSayingService - NG', async () => {
     // テストデータ
     const req = {
