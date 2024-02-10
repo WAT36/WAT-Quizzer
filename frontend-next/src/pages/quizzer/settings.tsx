@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { del, get, patch, post } from '../../common/API';
+import { del, patch, post } from '../../common/API';
 import {
   Button,
   Card,
@@ -11,22 +11,19 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  MenuItem,
-  Select,
   SelectChangeEvent,
-  TextField,
-  Typography
+  TextField
 } from '@mui/material';
-import { messageBoxStyle } from '../../styles/Pages';
 import { getRandomStr } from '../../../lib/str';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
-import { QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState } from '../../../interfaces/state';
+import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
+import { getFileList } from '@/common/response';
+import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 
 export default function SelectQuizPage() {
-  const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black',
@@ -39,41 +36,8 @@ export default function SelectQuizPage() {
   const [deleteQuizFileAlertOpen, setDeleteQuizFileAlertOpen] = React.useState(false);
 
   useEffect(() => {
-    getFile();
+    getFileList(setMessage, setFilelistoption);
   }, []);
-
-  const getFile = () => {
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3',
-      isDisplay: true
-    });
-    get('/quiz/file', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
-        let filelist = [];
-        for (var i = 0; i < res.length; i++) {
-          filelist.push(
-            <MenuItem value={res[i].file_num} key={res[i].file_num}>
-              {res[i].file_nickname}
-            </MenuItem>
-          );
-        }
-        setFilelistoption(filelist);
-        setMessage({
-          message: '　',
-          messageColor: 'commmon.black',
-          isDisplay: false
-        });
-      } else {
-        setMessage({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error',
-          isDisplay: true
-        });
-      }
-    });
-  };
 
   const addFile = () => {
     setMessage({
@@ -103,7 +67,7 @@ export default function SelectQuizPage() {
         }
       }
     );
-    getFile();
+    getFileList(setMessage, setFilelistoption);
   };
 
   const cardStyle = {
@@ -125,7 +89,7 @@ export default function SelectQuizPage() {
   };
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    setFileNum(e.target.value as number);
+    setFileNum(+e.target.value);
   };
 
   const handleClickOpen = () => {
@@ -246,18 +210,7 @@ export default function SelectQuizPage() {
               </CardContent>
               <CardHeader subheader="ファイル削除" />
               <CardContent style={cardContentStyle}>
-                <Select
-                  labelId="quiz-file-name"
-                  id="quiz-file-id"
-                  defaultValue={-1}
-                  onChange={(e) => selectedFileChange(e)}
-                  style={inputTextBeforeButtonStyle}
-                >
-                  <MenuItem value={-1} key={-1}>
-                    選択なし
-                  </MenuItem>
-                  {filelistoption}
-                </Select>
+                <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
                 <Button variant="contained" style={buttonAfterInputTextStyle} onClick={(e) => handleClickOpen()}>
                   削除
                 </Button>
@@ -299,21 +252,13 @@ export default function SelectQuizPage() {
             <Card variant="outlined">
               <CardHeader subheader="ファイル新規追加" />
               <CardContent style={cardContentStyle}>
-                <Select
-                  labelId="quiz-file-name"
-                  id="quiz-file-id"
-                  defaultValue={-1}
-                  // value={age}
+                <PullDown
+                  label={'問題ファイル'}
+                  optionList={filelistoption}
                   onChange={(e) => {
-                    setDeleteQuizFileNum(Number(e.target.value));
+                    setDeleteQuizFileNum(+e.target.value);
                   }}
-                  style={inputTextBeforeButtonStyle}
-                >
-                  <MenuItem value={-1} key={-1}>
-                    選択なし
-                  </MenuItem>
-                  {filelistoption}
-                </Select>
+                />
                 <Button
                   variant="contained"
                   style={buttonAfterInputTextStyle}
