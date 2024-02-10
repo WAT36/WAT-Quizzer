@@ -23,6 +23,7 @@ import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState } from '../../../interfaces/state';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
@@ -223,7 +224,7 @@ export default function SelectQuizPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>WAT Quizzer - 諸々設定</h1>
+        <Title label="WAT Quizzer"></Title>
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
