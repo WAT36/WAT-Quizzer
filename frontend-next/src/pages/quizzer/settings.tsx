@@ -226,14 +226,6 @@ export default function SelectQuizPage() {
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
-
         <Card variant="outlined" style={cardStyle}>
           <CardHeader title="問題ファイル" />
           <CardContent>
@@ -366,7 +358,13 @@ export default function SelectQuizPage() {
 
   return (
     <>
-      <Layout mode="quizzer" contents={contents()} title={'設定'} />
+      <Layout
+        mode="quizzer"
+        contents={contents()}
+        title={'設定'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
