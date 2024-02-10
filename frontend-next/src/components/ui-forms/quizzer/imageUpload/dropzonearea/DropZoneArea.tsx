@@ -2,7 +2,7 @@ import Dropzone from 'react-dropzone';
 import { MessageState } from '../../../../../../interfaces/state';
 import { ImageUploadReturnValue } from '../../../../../../interfaces/api/response';
 import axios from 'axios';
-import styles from './AccuracyChart.module.css';
+import styles from './DropZoneArea.module.css';
 
 interface DropZoneAreaProps {
   images: ImageUploadReturnValue[];
