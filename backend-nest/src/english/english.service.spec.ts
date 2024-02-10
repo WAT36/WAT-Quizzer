@@ -211,14 +211,13 @@ describe('EnglishService', () => {
         meanId: 0,
         partofspeechId: 0,
         meaning: '意味テスト',
-        sourceId: 0,
       }),
-    ).toEqual({ result: testResult });
+    ).toEqual(testResult);
   });
 
   // 単語の意味などを更新 異常系
   it('editWordMeanService - NG', async () => {
-    jest.spyOn(Dao, 'execTransaction').mockImplementation(() => {
+    jest.spyOn(Dao, 'execQuery').mockImplementation(() => {
       throw Error('error test by jest.');
     });
     await expect(
@@ -228,7 +227,6 @@ describe('EnglishService', () => {
         meanId: 0,
         partofspeechId: 0,
         meaning: '意味テスト',
-        sourceId: 0,
       }),
     ).rejects.toMatchObject({
       message: 'error test by jest.',
