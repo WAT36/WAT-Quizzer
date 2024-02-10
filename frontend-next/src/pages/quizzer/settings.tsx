@@ -22,11 +22,15 @@ import { getRandomStr } from '../../../lib/str';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { QuizFileApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
+import { MessageState } from '../../../interfaces/state';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<JSX.Element[]>();
-  const [message, setMessage] = useState<string>('　');
-  const [messageColor, setMessageColor] = useState<string>('common.black');
+  const [message, setMessage] = useState<MessageState>({
+    message: '　',
+    messageColor: 'common.black',
+    isDisplay: false
+  });
   const [fileName, setFileName] = useState<string>();
   const [file_num, setFileNum] = useState<number>(-1);
   const [deleteQuizFileNum, setDeleteQuizFileNum] = useState<number>(-1);
@@ -38,8 +42,11 @@ export default function SelectQuizPage() {
   }, []);
 
   const getFile = () => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3',
+      isDisplay: true
+    });
     get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
@@ -52,18 +59,27 @@ export default function SelectQuizPage() {
           );
         }
         setFilelistoption(filelist);
-        setMessage('　');
-        setMessageColor('common.black');
+        setMessage({
+          message: '　',
+          messageColor: 'commmon.black',
+          isDisplay: false
+        });
       } else {
-        setMessage('エラー:外部APIとの連携に失敗しました');
-        setMessageColor('error');
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error',
+          isDisplay: true
+        });
       }
     });
   };
 
   const addFile = () => {
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3',
+      isDisplay: true
+    });
     post(
       '/quiz/file',
       {
@@ -72,11 +88,17 @@ export default function SelectQuizPage() {
       },
       (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          setMessage(`新規ファイル「${fileName}」を追加しました`);
-          setMessageColor('success.light');
+          setMessage({
+            message: `新規ファイル「${fileName}」を追加しました`,
+            messageColor: 'success.light',
+            isDisplay: true
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error',
+            isDisplay: true
+          });
         }
       }
     );
@@ -118,13 +140,19 @@ export default function SelectQuizPage() {
     handleClose();
 
     if (file_num === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error',
+        isDisplay: true
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3',
+      isDisplay: true
+    });
     del(
       '/quiz/file',
       {
@@ -132,11 +160,17 @@ export default function SelectQuizPage() {
       },
       (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          setMessage(`ファイルを削除しました(id:${file_num})`);
-          setMessageColor('success.light');
+          setMessage({
+            message: `ファイルを削除しました(id:${file_num})`,
+            messageColor: 'success.light',
+            isDisplay: true
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error',
+            isDisplay: true
+          });
         }
       }
     );
@@ -148,13 +182,19 @@ export default function SelectQuizPage() {
     setDeleteQuizFileAlertOpen(false);
 
     if (deleteQuizFileNum === -1) {
-      setMessage('エラー:問題ファイルを選択して下さい');
-      setMessageColor('error');
+      setMessage({
+        message: 'エラー:問題ファイルを選択して下さい',
+        messageColor: 'error',
+        isDisplay: true
+      });
       return;
     }
 
-    setMessage('通信中...');
-    setMessageColor('#d3d3d3');
+    setMessage({
+      message: '通信中...',
+      messageColor: '#d3d3d3',
+      isDisplay: true
+    });
     patch(
       '/quiz/answer_log/file',
       {
@@ -162,11 +202,17 @@ export default function SelectQuizPage() {
       },
       (data: ProcessingApiReponse) => {
         if (data.status === 200 || data.status === 201) {
-          setMessage(`回答ログを削除しました(id:${deleteQuizFileNum})`);
-          setMessageColor('success.light');
+          setMessage({
+            message: `回答ログを削除しました(id:${deleteQuizFileNum})`,
+            messageColor: 'success.light',
+            isDisplay: true
+          });
         } else {
-          setMessage('エラー:外部APIとの連携に失敗しました');
-          setMessageColor('error');
+          setMessage({
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error',
+            isDisplay: true
+          });
         }
       }
     );
@@ -181,8 +227,8 @@ export default function SelectQuizPage() {
 
         <Card variant="outlined" style={messageBoxStyle}>
           <CardContent>
-            <Typography variant="h6" component="h6" color={messageColor}>
-              {message}
+            <Typography variant="h6" component="h6" color={message.messageColor}>
+              {message.message}
             </Typography>
           </CardContent>
         </Card>
