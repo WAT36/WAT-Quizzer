@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SQL } from 'config/sql';
-import { execQuery, execTransaction } from 'lib/db/dao';
-import { parseStrToBool } from 'lib/str';
+import { SQL } from '../../config/sql';
+import { execQuery, execTransaction } from '../../lib/db/dao';
 import {
   UpdateCategoryOfQuizDto,
   SelectQuizDto,
@@ -18,7 +17,7 @@ import {
   QuizViewApiResponse,
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
-import { getDifferenceArray } from 'lib/array';
+import { getDifferenceArray } from '../../lib/array';
 
 export interface QueryType {
   query: string;
@@ -29,10 +28,6 @@ export type FormatType = 'basic' | 'applied';
 
 @Injectable()
 export class QuizService {
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   // ファイル名リスト取得
   async getFileList() {
     return await execQuery(SQL.QUIZ_FILE.LIST, []);
@@ -40,7 +35,7 @@ export class QuizService {
 
   // 問題取得
   async getQuiz(file_num: number, quiz_num: number, format = 'basic') {
-    if (!file_num && !quiz_num) {
+    if (file_num <= 0 || quiz_num <= 0) {
       throw new HttpException(
         `ファイル番号または問題番号が入力されていません`,
         HttpStatus.BAD_REQUEST,

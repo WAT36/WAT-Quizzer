@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SQL } from 'config/sql';
-import { execQuery, execTransaction } from 'lib/db/dao';
+import { SQL } from '../../config/sql';
+import { execQuery, execTransaction } from '../../lib/db/dao';
 import {
   AddEnglishWordDto,
   AddExampleDto,
@@ -12,10 +12,6 @@ import { TransactionQuery } from '../../interfaces/db';
 
 @Injectable()
 export class EnglishService {
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   // 品詞取得
   async getPartsofSpeechService() {
     try {
@@ -129,8 +125,7 @@ export class EnglishService {
       }
 
       //トランザクション実行
-      const result = await execTransaction(transactionQuery);
-      return { result };
+      return await execTransaction(transactionQuery);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

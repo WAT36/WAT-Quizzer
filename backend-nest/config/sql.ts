@@ -1,4 +1,4 @@
-import { parseStrToBool } from 'lib/str';
+import { parseStrToBool } from '../lib/str';
 
 export const SQL = {
   ANSWER_LOG: {

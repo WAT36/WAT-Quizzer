@@ -5,14 +5,13 @@ import { TransactionQuery } from '../../interfaces/db';
 
 // SQLを実行する
 export const execQuery = async (query: string, value: (string | number)[]) => {
-  let result;
   // DB接続
   const dbUrl = await getDbUrl();
   const connection = createConnection(dbUrl);
 
   try {
     // クエリ実行
-    result = await new Promise((resolve, reject) => {
+    const result: any = await new Promise((resolve, reject) => {
       connection.query(query, value, (error, result) => {
         if (error) {
           reject(error);
@@ -24,10 +23,9 @@ export const execQuery = async (query: string, value: (string | number)[]) => {
     await connection.end();
     return result;
   } catch (error) {
-    // 接続終了しエラーを出す
+    // 接続終了
     await connection.end();
     throw error;
-  } finally {
   }
 };
 
