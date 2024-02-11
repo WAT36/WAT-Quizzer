@@ -13,6 +13,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
+    "test-storybook:report": "test-storybook --json --outputFile test-result/a11y.json",
     "chromatic": "chromatic"
   },
   "dependencies": {
