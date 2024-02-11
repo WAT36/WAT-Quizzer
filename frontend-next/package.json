@@ -12,6 +12,7 @@
     "format": "prettier --write 'src/**/*.(ts|tsx)'",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "test-storybook": "test-storybook",
     "chromatic": "chromatic"
   },
   "dependencies": {
@@ -40,6 +41,7 @@
     "typescript": "5.0.2"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^7.6.14",
     "@storybook/addon-essentials": "^7.4.2",
     "@storybook/addon-interactions": "^7.4.2",
     "@storybook/addon-links": "^7.4.2",
@@ -47,7 +49,9 @@
     "@storybook/blocks": "^7.4.2",
     "@storybook/nextjs": "^7.4.2",
     "@storybook/react": "^7.4.2",
+    "@storybook/test-runner": "^0.16.0",
     "@storybook/testing-library": "^0.2.1",
+    "axe-playwright": "^2.0.1",
     "chromatic": "^10.9.3",
     "eslint-plugin-storybook": "^0.6.13",
     "serve": "^14.2.1",
