@@ -11,7 +11,8 @@
     "lint": "next lint",
     "format": "prettier --write 'src/**/*.(ts|tsx)'",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "chromatic"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.369.0",
@@ -47,6 +48,7 @@
     "@storybook/nextjs": "^7.4.2",
     "@storybook/react": "^7.4.2",
     "@storybook/testing-library": "^0.2.1",
+    "chromatic": "^10.9.3",
     "eslint-plugin-storybook": "^0.6.13",
     "serve": "^14.2.1",
     "storybook": "^7.4.2",
