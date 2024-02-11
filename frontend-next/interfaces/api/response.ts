@@ -93,6 +93,11 @@ export interface EnglishWordSourceByIdApiResponse extends ApiResponse {
   source_name: string;
 }
 
+// 英単語のサブ出典（単語IDで）取得APIの返り値
+export interface EnglishWordSubSourceByIdApiResponse extends ApiResponse {
+  subsource: string;
+}
+
 /// 以下、格言(saying)系
 
 export interface GetRandomSayingResponse extends ApiResponse {

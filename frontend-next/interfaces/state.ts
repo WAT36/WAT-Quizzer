@@ -134,6 +134,10 @@ export interface WordSourceData {
   sourceName: string;
 }
 
+export interface WordSubSourceData {
+  subSourceName: string;
+}
+
 export interface SayingState {
   saying: string;
   explanation: string;

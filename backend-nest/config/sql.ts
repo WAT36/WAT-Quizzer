@@ -1423,6 +1423,24 @@ export const SQL = {
             AND word.deleted_at IS NULL
           ;
         `,
+        SUBSOURCE: `
+          SELECT
+            subsource
+          FROM
+            word_subsource
+          WHERE
+            word_id = ?
+            AND deleted_at IS NULL
+          ;
+        `,
+      },
+      SUBSOURCE: {
+        ADD: `
+          INSERT INTO
+            word_subsource (word_id,subsource)
+          VALUES(?,?)
+          ;
+        `,
       },
     },
     MEAN: {

@@ -10,8 +10,10 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 CREATE TABLE
     IF NOT EXISTS partsofspeech (
@@ -20,8 +22,10 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 CREATE TABLE
     IF NOT EXISTS mean (
@@ -33,11 +37,13 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id),
+        PRIMARY KEY (id),
         UNIQUE wordmean_index (word_id, wordmean_id),
-        FOREIGN KEY word_id_foreign_key (word_id) REFERENCES word(id),
-        FOREIGN KEY partsofspeech_id_foreign_key (partsofspeech_id) REFERENCES partsofspeech(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        FOREIGN KEY word_id_foreign_key (word_id) REFERENCES word (id),
+        FOREIGN KEY partsofspeech_id_foreign_key (partsofspeech_id) REFERENCES partsofspeech (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 CREATE TABLE
     IF NOT EXISTS example (
@@ -47,8 +53,10 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 CREATE TABLE
     IF NOT EXISTS mean_example (
@@ -57,10 +65,12 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(example_sentense_id, mean_id),
-        FOREIGN KEY example_sentense_id_foreign_key (example_sentense_id) REFERENCES example(id),
-        FOREIGN KEY mean_id_foreign_key (mean_id) REFERENCES mean(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (example_sentense_id, mean_id),
+        FOREIGN KEY example_sentense_id_foreign_key (example_sentense_id) REFERENCES example (id),
+        FOREIGN KEY mean_id_foreign_key (mean_id) REFERENCES mean (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 CREATE TABLE
     IF NOT EXISTS mean_source (
@@ -69,8 +79,10 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(mean_id, source_id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (mean_id, source_id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 CREATE TABLE
     IF NOT EXISTS idiom (
@@ -80,9 +92,11 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id),
-        FOREIGN KEY word_id_foreign_key (word_id) REFERENCES word(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id),
+        FOREIGN KEY word_id_foreign_key (word_id) REFERENCES word (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 CREATE TABLE
     IF NOT EXISTS idiom_mean (
@@ -94,11 +108,13 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id),
+        PRIMARY KEY (id),
         UNIQUE idiommean_index (idiom_id, idiommean_id),
-        FOREIGN KEY idiom_id_foreign_key (idiom_id) REFERENCES idiom(id),
-        FOREIGN KEY partsofspeech_id_foreign_key (partsofspeech_id) REFERENCES partsofspeech(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        FOREIGN KEY idiom_id_foreign_key (idiom_id) REFERENCES idiom (id),
+        FOREIGN KEY partsofspeech_id_foreign_key (partsofspeech_id) REFERENCES partsofspeech (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 CREATE TABLE
     IF NOT EXISTS source (
@@ -107,11 +123,12 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 /* 類義語グループ */
-
 CREATE TABLE
     IF NOT EXISTS word_similarity_group (
         id INT NOT NULL AUTO_INCREMENT,
@@ -119,11 +136,12 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 /* 類義語 */
-
 CREATE TABLE
     IF NOT EXISTS word_similarity (
         id INT NOT NULL AUTO_INCREMENT,
@@ -132,15 +150,13 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id),
-        UNIQUE similarity_word_id_index (
-            word_similarity_group_id,
-            word_id
-        )
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id),
+        UNIQUE similarity_word_id_index (word_similarity_group_id, word_id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 /* 語源グループ */
-
 CREATE TABLE
     IF NOT EXISTS word_etymology_group (
         id INT NOT NULL AUTO_INCREMENT,
@@ -148,11 +164,12 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 /* 単語源 */
-
 CREATE TABLE
     IF NOT EXISTS word_etymology (
         id INT NOT NULL AUTO_INCREMENT,
@@ -161,15 +178,13 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id),
-        UNIQUE etymology_word_id_index (
-            word_etymology_group_id,
-            word_id
-        )
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id),
+        UNIQUE etymology_word_id_index (word_etymology_group_id, word_id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
 
 /* 単語テスト解答ログ*/
-
 CREATE TABLE
     IF NOT EXISTS englishbot_answer_log (
         id INT NOT NULL AUTO_INCREMENT,
@@ -178,5 +193,21 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         deleted_at TIMESTAMP,
-        PRIMARY KEY(id)
-    ) DEFAULT CHARACTER SET = utf8;
+        PRIMARY KEY (id)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;
+
+CREATE TABLE
+    IF NOT EXISTS word_subsource (
+        id INT NOT NULL AUTO_INCREMENT,
+        word_id INT NOT NULL,
+        subsource VARCHAR(256) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        deleted_at TIMESTAMP,
+        PRIMARY KEY (id),
+        UNIQUE etymology_word_id_index (word_id, subsource)
+    ) DEFAULT CHARACTER
+SET
+    = utf8;

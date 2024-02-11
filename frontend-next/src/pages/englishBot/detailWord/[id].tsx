@@ -1,15 +1,22 @@
-import { Box, Button, Card, Container, Modal, Paper, Stack, Typography, styled } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getApiAndGetValue } from '@/common/API';
 import { WordApiResponse } from '../../../../interfaces/db';
 import { GetStaticPropsContext } from 'next';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState, PullDownOptionState, WordMeanData, WordSourceData } from '../../../../interfaces/state';
+import {
+  MessageState,
+  PullDownOptionState,
+  WordMeanData,
+  WordSourceData,
+  WordSubSourceData
+} from '../../../../interfaces/state';
 import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
-import { getWordDetail, getWordSource } from '@/pages/api/english';
+import { getWordDetail, getWordSource, getWordSubSource } from '@/pages/api/english';
 import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceStack/SourceStack';
+import { SubSourceStack } from '@/components/ui-forms/englishbot/detailWord/subSourceStack/SubSourceStack';
 
 type EachWordPageProps = {
   id: string;
@@ -19,7 +26,9 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [wordName, setWordName] = useState<string>('');
   const [meanData, setMeanData] = useState<WordMeanData[]>([]);
   const [wordSourceData, setWordSourceData] = useState<WordSourceData[]>([]);
+  const [wordSubSourceData, setWordSubSourceData] = useState<WordSubSourceData[]>([]);
   const [open, setOpen] = useState(false);
+  const [subSourceModalOpen, setSubSourceModalOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
@@ -33,7 +42,8 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
       getPartOfSpeechList(setMessage, setPosList),
       getSourceList(setMessage, setSourcelistoption),
       getWordDetail(id, setMessage, setWordName, setMeanData),
-      getWordSource(id, setMessage, setWordSourceData)
+      getWordSource(id, setMessage, setWordSourceData),
+      getWordSubSource(id, setMessage, setWordSubSourceData)
     ]);
   }, [id]);
 
@@ -65,6 +75,14 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
           setModalIsOpen={setSourceModalOpen}
           setMessage={setMessage}
           setWordSourceData={setWordSourceData}
+        />
+        <SubSourceStack
+          id={id}
+          wordSubSourceData={wordSubSourceData}
+          modalIsOpen={subSourceModalOpen}
+          setModalIsOpen={setSubSourceModalOpen}
+          setMessage={setMessage}
+          setWordSubSourceData={setWordSubSourceData}
         />
       </Container>
     );

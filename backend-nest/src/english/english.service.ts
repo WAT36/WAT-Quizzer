@@ -4,9 +4,11 @@ import { execQuery, execTransaction } from '../../lib/db/dao';
 import {
   AddEnglishWordDto,
   AddExampleDto,
+  AddWordSubSourceDto,
   AddWordTestLogDto,
   EditWordMeanDto,
   EditWordSourceDto,
+  GetWordSubSourceDto,
 } from '../../interfaces/api/request/english';
 import { TransactionQuery } from '../../interfaces/db';
 
@@ -391,6 +393,38 @@ export class EnglishService {
       }
       //トランザクション実行
       return await execTransaction(transactionQuery);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語のサブ出典追加
+  async addSubSourceOfWordById(req: AddWordSubSourceDto) {
+    try {
+      const { wordId, subSource } = req;
+      return await execQuery(SQL.ENGLISH.WORD.SUBSOURCE.ADD, [
+        wordId,
+        subSource,
+      ]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語のサブ出典取得
+  async getSubSourceOfWordById(id: number) {
+    try {
+      return await execQuery(SQL.ENGLISH.WORD.GET.SUBSOURCE, [id]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

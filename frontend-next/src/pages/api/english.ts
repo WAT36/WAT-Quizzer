@@ -2,9 +2,10 @@ import { get } from '@/common/API';
 import {
   EnglishWordByIdApiResponse,
   EnglishWordSourceByIdApiResponse,
+  EnglishWordSubSourceByIdApiResponse,
   ProcessingApiReponse
 } from '../../../interfaces/api/response';
-import { MessageState, WordMeanData, WordSourceData } from '../../../interfaces/state';
+import { MessageState, WordMeanData, WordSourceData, WordSubSourceData } from '../../../interfaces/state';
 
 export const getWordDetail = async (
   id: string,
@@ -60,6 +61,33 @@ export const getWordSource = async (
           };
         });
         setWordSourceData(wordsources);
+      } else {
+        setMessageStater({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
+      }
+    },
+    {}
+  );
+};
+
+export const getWordSubSource = async (
+  id: string,
+  setMessageStater: React.Dispatch<React.SetStateAction<MessageState>>,
+  setWordSubSourceData: React.Dispatch<React.SetStateAction<WordSubSourceData[]>>
+) => {
+  get(
+    '/english/word/subsource/' + id,
+    (data: ProcessingApiReponse) => {
+      if (data.status === 200) {
+        const result: EnglishWordSubSourceByIdApiResponse[] = data.body as EnglishWordSubSourceByIdApiResponse[];
+        const wordsubsources: WordSubSourceData[] = result.map((x: EnglishWordSubSourceByIdApiResponse) => {
+          return {
+            subSourceName: x.subsource
+          };
+        });
+        setWordSubSourceData(wordsubsources);
       } else {
         setMessageStater({
           message: 'エラー:外部APIとの連携に失敗しました',
