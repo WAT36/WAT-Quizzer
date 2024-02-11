@@ -21,6 +21,7 @@ import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { AddFileSection } from '@/components/ui-forms/quizzer/settings/addFileSection/AddFileSection';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
@@ -29,7 +30,7 @@ export default function SelectQuizPage() {
     messageColor: 'common.black',
     isDisplay: false
   });
-  const [fileName, setFileName] = useState<string>();
+  const [fileName, setFileName] = useState<string>('');
   const [file_num, setFileNum] = useState<number>(-1);
   const [deleteQuizFileNum, setDeleteQuizFileNum] = useState<number>(-1);
   const [alertOpen, setAlertOpen] = React.useState(false);
@@ -194,20 +195,12 @@ export default function SelectQuizPage() {
           <CardHeader title="問題ファイル" />
           <CardContent>
             <Card variant="outlined">
-              <CardHeader subheader="ファイル新規追加" />
-              <CardContent style={cardContentStyle}>
-                <TextField
-                  label="新規ファイル名"
-                  variant="outlined"
-                  onChange={(e) => {
-                    setFileName(e.target.value);
-                  }}
-                  style={inputTextBeforeButtonStyle}
-                />
-                <Button variant="contained" style={buttonAfterInputTextStyle} onClick={(e) => addFile()}>
-                  追加
-                </Button>
-              </CardContent>
+              <AddFileSection
+                fileName={fileName}
+                setMessage={setMessage}
+                setFileName={setFileName}
+                setFilelistoption={setFilelistoption}
+              />
               <CardHeader subheader="ファイル削除" />
               <CardContent style={cardContentStyle}>
                 <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
