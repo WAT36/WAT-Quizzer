@@ -1442,6 +1442,15 @@ export const SQL = {
           ;
         `,
       },
+      SUMMARY: {
+        GET: `
+          SELECT
+            name,count
+          FROM
+            word_summarize
+          ;
+        `,
+      },
     },
     MEAN: {
       GET: {

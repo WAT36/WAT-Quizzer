@@ -89,6 +89,11 @@ export class EnglishController {
     return await this.englishService.addSubSourceOfWordById(req);
   }
 
+  @Get('/word/summary')
+  async getSummary() {
+    return await this.englishService.getSummary();
+  }
+
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
   @Get('/word/source/:id')
   async getSourceOfWordById(@Param('id') id: string) {
