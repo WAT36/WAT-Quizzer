@@ -1,4 +1,4 @@
-import styles from './AddFileSection.module.css';
+import styles from '../Settings.module.css';
 import { CardContent, CardHeader } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
