@@ -211,3 +211,23 @@ CREATE TABLE
     ) DEFAULT CHARACTER
 SET
     = utf8;
+
+
+/* 以下はビュー */
+DROP VIEW IF EXISTS word_summarize;
+
+CREATE VIEW word_summarize AS
+    SELECT 'all' as name, count(*) as count
+    FROM word w 
+    WHERE deleted_at is  null
+    UNION
+    SELECT 'vocabulary' as name, count(*) as count
+    FROM word w 
+    WHERE w.name not like '% %'
+    AND deleted_at is null
+    UNION
+    SELECT 'idiom' as name, count(*) as count
+    FROM word w 
+    WHERE w.name like '% %'
+    AND deleted_at is null
+;
