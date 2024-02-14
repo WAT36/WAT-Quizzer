@@ -18,8 +18,7 @@ import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { AddFileSection } from '@/components/ui-forms/quizzer/settings/addFileSection/AddFileSection';
-import { DeleteFileSection } from '@/components/ui-forms/quizzer/settings/deleteFileSection/DeleteFileSection';
+import { FileConfigSection } from '@/components/ui-forms/quizzer/settings/fileConfigSection/FileConfigSection';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
@@ -99,25 +98,15 @@ export default function SelectQuizPage() {
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <Card variant="outlined" style={cardStyle}>
-          <CardHeader title="問題ファイル" />
-          <CardContent>
-            <Card variant="outlined">
-              <AddFileSection
-                fileName={fileName}
-                setMessage={setMessage}
-                setFileName={setFileName}
-                setFilelistoption={setFilelistoption}
-              />
-              <DeleteFileSection
-                deleteFileNum={fileNum}
-                filelistoption={filelistoption}
-                setMessage={setMessage}
-                setDeleteFileNum={setFileNum}
-              />
-            </Card>
-          </CardContent>
-        </Card>
+        <FileConfigSection
+          fileName={fileName}
+          deleteFileNum={fileNum}
+          filelistoption={filelistoption}
+          setMessage={setMessage}
+          setDeleteFileNum={setFileNum}
+          setFileName={setFileName}
+          setFilelistoption={setFilelistoption}
+        />
 
         <Card variant="outlined" style={cardStyle}>
           <CardHeader title="解答データ削除" />
