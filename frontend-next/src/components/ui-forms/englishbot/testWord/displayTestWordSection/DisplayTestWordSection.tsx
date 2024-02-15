@@ -62,7 +62,7 @@ export const DisplayTestWordSection = ({
     <>
       <Card variant="outlined">
         <CardContent>
-          <h2>{displayWordTest.wordName}</h2>
+          <h2>{displayWordTest.wordName || '(null)'}</h2>
           {displayWordTest.choice && (
             <EnglishWordTestFourChoiceSentense res={displayWordTest.choice} setValue={setValue} />
           )}
