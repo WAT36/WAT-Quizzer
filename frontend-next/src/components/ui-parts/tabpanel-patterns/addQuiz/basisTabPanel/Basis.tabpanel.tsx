@@ -19,10 +19,11 @@ export const BasisTabPanel = ({ value, index, queryOfPutQuizState, setQueryofPut
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        問題文　：
+        <label htmlFor="question">問題文　：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="question"
           value={queryOfPutQuizState.question || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -36,10 +37,11 @@ export const BasisTabPanel = ({ value, index, queryOfPutQuizState, setQueryofPut
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        答え　　：
+        <label htmlFor="answer">答え　　：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="answer"
           value={queryOfPutQuizState.answer || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -53,10 +55,11 @@ export const BasisTabPanel = ({ value, index, queryOfPutQuizState, setQueryofPut
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        カテゴリ：
+        <label htmlFor="category">カテゴリ：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="category"
           value={queryOfPutQuizState.category || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -70,10 +73,11 @@ export const BasisTabPanel = ({ value, index, queryOfPutQuizState, setQueryofPut
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        画像ファイル名：
+        <label htmlFor="imgFile">画像ファイル名：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="imgFile"
           value={queryOfPutQuizState.img_file || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
