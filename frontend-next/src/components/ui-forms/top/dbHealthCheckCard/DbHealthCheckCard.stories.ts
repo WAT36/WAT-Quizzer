@@ -22,7 +22,7 @@ export const HealthOK: Story = {
   args: {
     dbHealthCheckState: {
       status: 'OK！！！',
-      color: 'success.light'
+      color: 'success.main'
     }
   }
 };

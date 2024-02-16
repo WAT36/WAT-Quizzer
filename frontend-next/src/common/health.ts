@@ -22,7 +22,7 @@ export const dbHealthCheck = async () => {
         status: `${status} - ${
           obj.body['ready'] && obj.body['ready'] === true ? 'OK ready状態' : 'NG ready状態でない'
         }`,
-        color: status < 300 ? 'success.light' : 'error'
+        color: status < 300 ? 'success.main' : 'error'
       };
     });
 };
