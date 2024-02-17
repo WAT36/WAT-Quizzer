@@ -98,3 +98,9 @@ export interface WordApiResponse extends ApiResponse {
   updated_at?: string;
   deleted_at?: string;
 }
+
+// word_summarizeからの取得結果
+export interface WordSummaryApiResponse extends ApiResponse {
+  name: string;
+  count: number;
+}
