@@ -3,22 +3,33 @@ import { InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import styles from './PullDown.module.css';
 
 interface PullDownProps {
-  label: string;
   optionList: {
     value: number | string;
     label: string;
   }[];
+  label?: string;
+  className?: string;
   onChange?: (e: SelectChangeEvent<number>) => void;
 }
 
-export const PullDown = ({ label, optionList, onChange }: PullDownProps) => {
+export const PullDown = ({ optionList, label, className, onChange }: PullDownProps) => {
   return (
     <>
-      <InputLabel id="quiz-file-input" className={styles.pulldown}>
-        {label}
-      </InputLabel>
+      {label && (
+        <InputLabel id="quiz-file-input" className={styles.pulldown}>
+          {label}
+        </InputLabel>
+      )}
       <Select
-        className={styles.pulldown}
+        className={[styles.pulldown]
+          .concat(
+            className
+              ? className.split(' ').map((x) => {
+                  return styles[x];
+                })
+              : []
+          )
+          .join(' ')}
         labelId="quiz-file-name"
         id="quiz-file-id"
         defaultValue={-1}
