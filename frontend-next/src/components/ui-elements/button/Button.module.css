@@ -26,3 +26,7 @@
   flex: none;
   margin: 10px !important;
 }
+
+.no-min-width {
+  min-width: 0px !important;
+}

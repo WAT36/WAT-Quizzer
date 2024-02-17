@@ -82,6 +82,7 @@ export const Layout = ({ title, contents, mode = 'quizzer', messageState, setMes
             {modeConfig.sideBarContents.map((value) => (
               <ListItem key={value.name}>
                 <Button
+                  attr={'no-min-width'}
                   variant="text"
                   href={value.link}
                   label={value.name}
