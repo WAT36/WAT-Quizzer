@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
 import { FileConfigSection } from '@/components/ui-forms/quizzer/settings/fileConfigSection/FileConfigSection';
-import { DeleteAnswerLogFileSection } from '@/components/ui-forms/quizzer/settings/deleteAnswerLogFileSection/DeleteAnswerLogFileSection';
+import { LogConfigSection } from '@/components/ui-forms/quizzer/settings/logConfigSection/LogConfigSection';
 
 export default function SelectQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
@@ -23,10 +23,6 @@ export default function SelectQuizPage() {
     getFileList(setMessage, setFilelistoption);
   }, []);
 
-  const cardStyle = {
-    margin: '10px 0'
-  };
-
   const contents = () => {
     return (
       <Container>
@@ -42,21 +38,14 @@ export default function SelectQuizPage() {
           setFilelistoption={setFilelistoption}
         />
 
-        <Card variant="outlined" style={cardStyle}>
-          <CardHeader title="解答データ削除" />
-          <CardContent>
-            <Card variant="outlined">
-              <DeleteAnswerLogFileSection
-                deleteLogOfFileNum={deleteLogOfFileNum}
-                deleteLogOfFileAlertOpen={deleteLogOfFileAlertOpen}
-                filelistoption={filelistoption}
-                setMessage={setMessage}
-                setDeleteLogOfFileNum={setDeleteLogOfFileNum}
-                setDeleteLogOfFileAlertOpen={setDeleteLogOfFileAlertOpen}
-              />
-            </Card>
-          </CardContent>
-        </Card>
+        <LogConfigSection
+          deleteLogOfFileNum={deleteLogOfFileNum}
+          deleteLogOfFileAlertOpen={deleteLogOfFileAlertOpen}
+          filelistoption={filelistoption}
+          setMessage={setMessage}
+          setDeleteLogOfFileNum={setDeleteLogOfFileNum}
+          setDeleteLogOfFileAlertOpen={setDeleteLogOfFileAlertOpen}
+        />
       </Container>
     );
   };
