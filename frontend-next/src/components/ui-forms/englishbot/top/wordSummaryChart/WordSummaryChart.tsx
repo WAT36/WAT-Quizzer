@@ -1,13 +1,13 @@
 import Chart from 'react-google-charts';
 import { WordSummaryApiResponse } from '../../../../../../interfaces/db';
-import styles from './Chart.module.css';
+import styles from '../Chart.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
 
 interface WordSummaryChartProps {
   wordSummaryData: WordSummaryApiResponse[];
 }
 
-export const AccuracyChart = ({ wordSummaryData }: WordSummaryChartProps) => {
+export const WordSummaryChart = ({ wordSummaryData }: WordSummaryChartProps) => {
   const data: [string, string | number][] = wordSummaryData
     .filter((x) => {
       return x.name !== 'all';
@@ -24,8 +24,8 @@ export const AccuracyChart = ({ wordSummaryData }: WordSummaryChartProps) => {
   };
 
   return (
-    <Card variant="outlined">
-      <Chart chartType="PieChart" width="400px" height="400px" data={data} options={options} className={styles.chart} />
+    <Card variant="outlined" attr="rect-400 margin-vertical">
+      <Chart chartType="PieChart" data={data} options={options} className={styles.chart} />
     </Card>
   );
 };
