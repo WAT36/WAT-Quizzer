@@ -90,7 +90,7 @@ export const DeleteFileSection = ({
       <CardHeader subheader="ファイル削除" />
       <CardContent className={styles.cardContent}>
         <PullDown
-          label={'問題ファイル'}
+          className={'cardContent'}
           optionList={filelistoption}
           onChange={(e) => {
             setDeleteFileNum && setDeleteFileNum(+e.target.value);

@@ -83,7 +83,7 @@ export const DeleteAnswerLogFileSection = ({
       <CardHeader subheader="ファイル選択" />
       <CardContent className={styles.cardContent}>
         <PullDown
-          label={'問題ファイル'}
+          className={'cardContent'}
           optionList={filelistoption}
           onChange={(e) => {
             setDeleteLogOfFileNum && setDeleteLogOfFileNum(+e.target.value);
