@@ -30,6 +30,7 @@ import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { PartofSpeechApiResponse, SourceApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState } from '../../../interfaces/state';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
@@ -479,16 +480,7 @@ export default function EnglishBotAddWordPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>Add Word</h1>
-
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
-
+        <Title label="Add Word"></Title>
         <Button variant="contained" style={buttonStyle} onClick={addWord}>
           登録
         </Button>
@@ -519,7 +511,13 @@ export default function EnglishBotAddWordPage() {
 
   return (
     <>
-      <Layout mode="englishBot" contents={contents()} title={'単語追加'} />
+      <Layout
+        mode="englishBot"
+        contents={contents()}
+        title={'単語追加'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
