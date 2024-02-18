@@ -1,6 +1,7 @@
 import React from 'react';
 import { InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import styles from './PullDown.module.css';
+import { getRandomStr } from '../../../../lib/str';
 
 interface PullDownProps {
   label: string;
@@ -14,13 +15,13 @@ interface PullDownProps {
 export const PullDown = ({ label, optionList, onChange }: PullDownProps) => {
   return (
     <>
-      <InputLabel id="quiz-file-input" className={styles.pulldown}>
+      <InputLabel id={`quiz-file-input-${getRandomStr()}`} className={styles.pulldown}>
         {label}
       </InputLabel>
       <Select
         className={styles.pulldown}
-        labelId="quiz-file-name"
-        id="quiz-file-id"
+        labelId={`quiz-file-name-${getRandomStr()}`}
+        id={`quiz-file-id-${getRandomStr()}`}
         defaultValue={-1}
         onChange={onChange}
       >
