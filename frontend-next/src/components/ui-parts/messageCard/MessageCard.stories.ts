@@ -46,7 +46,7 @@ export const LoadingMessage: Story = {
   args: {
     messageState: {
       message: '(通信中...)',
-      messageColor: '#d3d3d3'
+      messageColor: 'dimgray'
     }
   }
 };
