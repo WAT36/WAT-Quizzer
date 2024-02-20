@@ -1,0 +1,10 @@
+.datePicker {
+    display:inline;
+    max-width: 230px;
+}
+
+.row {
+    display:inline-flex;
+    flex-direction: row;
+    align-items: center;
+}
