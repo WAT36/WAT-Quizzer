@@ -37,7 +37,7 @@ export const SuccessMessage: Story = {
   args: {
     messageState: {
       message: '(成功！)',
-      messageColor: 'success.light'
+      messageColor: 'success.main'
     }
   }
 };
