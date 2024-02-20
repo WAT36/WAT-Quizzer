@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { get, post } from '../../common/API';
+import { post } from '../../common/API';
 import { buttonStyle } from '../../styles/Pages';
 import {
   Button,
@@ -24,63 +24,26 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { SendToAddWordApiData, meanOfAddWordDto } from '../../../interfaces/api/response';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
-import { SourceApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
-import { getPartOfSpeechList } from '@/common/response';
+import { getPartOfSpeechList, getSourceList } from '@/common/response';
 
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
-  const [sourceList, setSourceList] = useState<JSX.Element[]>([]);
+  const [sourceList, setSourceList] = useState<PullDownOptionState[]>([]);
   const [meanRowList, setMeanRowList] = useState<meanOfAddWordDto[]>([]);
   const [inputWord, setInputWord] = useState<string>('');
 
   useEffect(() => {
-    Promise.all([getPartOfSpeechList(setMessage, setPosList), , getSourceList()]);
+    Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceList(setMessage, setSourceList)]);
   }, []);
 
   const messeageClear = () => {
     setMessage({
       message: '　',
       messageColor: 'common.black'
-    });
-  };
-
-  // 出典リスト取得
-  const getSourceList = async () => {
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
-    get('/english/source', (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const result: SourceApiResponse[] = data.body as SourceApiResponse[];
-        let gotSourceList = [];
-        for (var i = 0; i < result.length; i++) {
-          gotSourceList.push(
-            <MenuItem value={result[i].id} key={result[i].id}>
-              {result[i].name}
-            </MenuItem>
-          );
-        }
-        gotSourceList.push(
-          <MenuItem value={-2} key={-2}>
-            {'その他'}
-          </MenuItem>
-        );
-        setSourceList(gotSourceList);
-        setMessage({
-          message: '　',
-          messageColor: 'common.black'
-        });
-      } else {
-        setMessage({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
-        });
-      }
     });
   };
 
@@ -191,7 +154,11 @@ export default function EnglishBotAddWordPage() {
           <MenuItem value={-1} key={-1}>
             選択なし
           </MenuItem>
-          {sourceList}
+          {sourceList.map((x) => (
+            <MenuItem value={x.value} key={x.value}>
+              {x.label}
+            </MenuItem>
+          ))}
         </Select>
         {sourceInput}
       </>
