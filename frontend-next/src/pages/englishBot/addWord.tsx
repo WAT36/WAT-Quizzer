@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import { post } from '../../common/API';
 import { buttonStyle } from '../../styles/Pages';
 import {
@@ -7,21 +6,8 @@ import {
   Container,
   FormControl,
   FormGroup,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField
 } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { SendToAddWordApiData, meanOfAddWordDto } from '../../../interfaces/api/response';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
