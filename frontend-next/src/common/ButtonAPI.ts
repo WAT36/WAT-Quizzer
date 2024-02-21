@@ -30,6 +30,7 @@ import {
 } from '../../interfaces/state';
 import { del, get, patch, post, put } from './API';
 import { generateQuizSentense, getBook } from './response';
+import { getDateForSqlString } from '../../lib/str';
 
 interface AddQuizButtonProps {
   value: number;
@@ -1882,7 +1883,13 @@ export const getRandomWordAPI = async ({
   // 送信データ作成
   const sendData: { [key: string]: string } = {};
   if (queryOfGetWordState.source) {
-    sendData.sourceId = String(queryOfGetWordState.source);
+    sendData.source = String(queryOfGetWordState.source);
+  }
+  if (queryOfGetWordState.subSource && queryOfGetWordState.subSource.startDate) {
+    sendData.startDate = getDateForSqlString(queryOfGetWordState.subSource.startDate);
+  }
+  if (queryOfGetWordState.subSource && queryOfGetWordState.subSource.endDate) {
+    sendData.endDate = getDateForSqlString(queryOfGetWordState.subSource.endDate);
   }
 
   setMessageStater({
