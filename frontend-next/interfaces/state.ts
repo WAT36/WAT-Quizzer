@@ -102,6 +102,10 @@ export interface IntegrateToQuizInfoState {
 
 export interface QueryOfGetWordState {
   source?: string;
+  subSource?: {
+    startDate?: Date;
+    endDate?: Date;
+  };
 }
 
 export interface DisplayWordTestState {

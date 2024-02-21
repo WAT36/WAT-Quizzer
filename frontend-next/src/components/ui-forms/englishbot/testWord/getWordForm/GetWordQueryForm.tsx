@@ -37,11 +37,37 @@ export const GetWordQueryForm = ({
       <FormControl className={styles.row}>
         登録日時指定：
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker label="Start Date" className={styles.datePicker} />
+          <DatePicker
+            label="Start Date"
+            className={styles.datePicker}
+            onChange={(newValue) => {
+              setQueryofWordStater &&
+                setQueryofWordStater({
+                  ...queryOfGetWordState,
+                  subSource: {
+                    ...queryOfGetWordState.subSource,
+                    startDate: newValue as Date
+                  }
+                });
+            }}
+          />
         </LocalizationProvider>
         〜
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker label="End Date" className={styles.datePicker} />
+          <DatePicker
+            label="End Date"
+            className={styles.datePicker}
+            onChange={(newValue) => {
+              setQueryofWordStater &&
+                setQueryofWordStater({
+                  ...queryOfGetWordState,
+                  subSource: {
+                    ...queryOfGetWordState.subSource,
+                    endDate: newValue as Date
+                  }
+                });
+            }}
+          />
         </LocalizationProvider>
       </FormControl>
     </FormGroup>
