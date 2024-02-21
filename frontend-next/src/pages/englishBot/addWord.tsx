@@ -21,11 +21,6 @@ export default function EnglishBotAddWordPage() {
     Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceList(setMessage, setSourceList)]);
   }, []);
 
-  // 入力した単語名の更新
-  const inputWordName = (value: string) => {
-    setInputWord(value);
-  };
-
   // 登録ボタン押下後。単語と意味をDBに登録
   const addWord = async () => {
     if (inputWord === '') {
@@ -113,7 +108,7 @@ export default function EnglishBotAddWordPage() {
               label="New Word"
               id="newWord"
               value={inputWord}
-              onChange={(e) => inputWordName(e.target.value)}
+              onChange={(e) => setInputWord(e.target.value)}
             />
           </FormControl>
 
