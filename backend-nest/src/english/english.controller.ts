@@ -17,6 +17,7 @@ import {
   EditWordMeanDto,
   EditWordSourceDto,
   GetWordSubSourceDto,
+  QueryOfGetWordDto,
 } from '../../interfaces/api/request/english';
 
 @Controller('english')
@@ -54,8 +55,8 @@ export class EnglishController {
   }
 
   @Get('/word/random')
-  async getRandomWord(@Query('sourceId') sourceId: number) {
-    return await this.englishService.getRandomWordService(+sourceId);
+  async getRandomWord(@Body() req: QueryOfGetWordDto) {
+    return await this.englishService.getRandomWordService(req);
   }
 
   // 指定した単語を出題するときの四択選択肢（正解選択肢1つとダミー選択肢3つ）を作る

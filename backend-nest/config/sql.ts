@@ -1378,7 +1378,7 @@ export const SQL = {
             AND word.deleted_at IS NULL
           ;
         `,
-        RANDOM: (sourceTemplate: string) => {
+        RANDOM: (sourceTemplate: string, subSourceTemplate: string) => {
           return `
             SELECT
               w.id,
@@ -1388,11 +1388,12 @@ export const SQL = {
             INNER JOIN
               (
               SELECT 
-                word_id
+                m.word_id
               FROM
                 mean m 
               ${sourceTemplate}
-              GROUP BY word_id
+              ${subSourceTemplate}
+              GROUP BY m.word_id
               ORDER BY RAND() LIMIT 1) as random_word
             ON
               w.id = random_word.word_id;
