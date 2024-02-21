@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { post } from '../../common/API';
 import { buttonStyle } from '../../styles/Pages';
-import {
-  Button,
-  Container,
-  FormControl,
-  FormGroup,
-  TextField
-} from '@mui/material';
+import { Button, Container, FormControl, FormGroup, TextField } from '@mui/material';
 import { SendToAddWordApiData, meanOfAddWordDto } from '../../../interfaces/api/response';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getPartOfSpeechList, getSourceList } from '@/common/response';
-import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanForm/AddMEanForm';
+import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanForm/AddMeanForm';
 
 export default function EnglishBotAddWordPage() {
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
@@ -27,16 +21,8 @@ export default function EnglishBotAddWordPage() {
     Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceList(setMessage, setSourceList)]);
   }, []);
 
-  const messeageClear = () => {
-    setMessage({
-      message: '　',
-      messageColor: 'common.black'
-    });
-  };
-
   // 入力した単語名の更新
   const inputWordName = (value: string) => {
-    messeageClear();
     setInputWord(value);
   };
 

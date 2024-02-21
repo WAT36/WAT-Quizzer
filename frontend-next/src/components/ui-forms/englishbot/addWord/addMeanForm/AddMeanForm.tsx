@@ -26,14 +26,6 @@ interface AddMeanFormProps {
 }
 
 export const AddMeanForm = ({ posList, sourceList, meanRowList, setMessage, setMeanRowList }: AddMeanFormProps) => {
-  const messeageClear = () => {
-    setMessage &&
-      setMessage({
-        message: '　',
-        messageColor: 'common.black'
-      });
-  };
-
   // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
   const displayPosInput = (i: number) => {
     const posInput =
@@ -260,13 +252,11 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMessage, setM
 
   // 列を追加
   const addRow = () => {
-    messeageClear();
     setTableRow();
   };
 
   // 列を削除
   const decrementRow = () => {
-    messeageClear();
     decrementTableRow();
   };
 
