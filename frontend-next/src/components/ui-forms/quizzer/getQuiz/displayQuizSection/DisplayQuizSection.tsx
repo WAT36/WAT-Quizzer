@@ -52,7 +52,7 @@ export const DisplayQuizSection = ({
             <Typography variant="subtitle1" component="h2">
               {displayQuizState.quizAnswer}
             </Typography>
-            <Typography variant="subtitle2" component="h4">
+            <Typography variant="subtitle2" component="h3">
               {'解説：' + displayQuizState.explanation}
             </Typography>
             <Button
