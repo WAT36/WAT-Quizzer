@@ -24,10 +24,11 @@ export const FourChoiceTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        問題文　：
+        <label htmlFor="question">問題文　：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="question"
           value={queryOfPutQuizState.question || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -41,10 +42,11 @@ export const FourChoiceTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        正解　　：
+        <label htmlFor="answer">正解　　：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="answer"
           value={queryOfPutQuizState.answer || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -58,10 +60,11 @@ export const FourChoiceTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" style={{ visibility: 'hidden' }}>
-        カテゴリ：
+        <label htmlFor="category">カテゴリ：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="category"
           value={queryOfPutQuizState.category || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -75,10 +78,11 @@ export const FourChoiceTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        画像ファイル名：
+        <label htmlFor="imgFile">画像ファイル名：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="imgFile"
           value={queryOfPutQuizState.img_file || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -92,10 +96,11 @@ export const FourChoiceTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        関連基礎問題番号(カンマ区切りで問題番号を指定)：
+        <label htmlFor="relatedBasisQuiz">関連基礎問題番号(カンマ区切りで問題番号を指定)：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="relatedBasisQuiz"
           value={queryOfPutQuizState.matched_basic_quiz_id || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -109,10 +114,11 @@ export const FourChoiceTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        ダミー選択肢1：
+        <label htmlFor="dummy1">ダミー選択肢1：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="dummy1"
           value={queryOfPutQuizState.dummy1 || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -126,10 +132,11 @@ export const FourChoiceTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        ダミー選択肢2：
+        <label htmlFor="dummy2">ダミー選択肢2：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="dummy2"
           value={queryOfPutQuizState.dummy2 || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -143,10 +150,11 @@ export const FourChoiceTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        ダミー選択肢3：
+        <label htmlFor="dummy3">ダミー選択肢3：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="dummy3"
           value={queryOfPutQuizState.dummy3 || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -160,10 +168,11 @@ export const FourChoiceTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        解説：
+        <label htmlFor="description">解説：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="description"
           value={queryOfPutQuizState.explanation || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {

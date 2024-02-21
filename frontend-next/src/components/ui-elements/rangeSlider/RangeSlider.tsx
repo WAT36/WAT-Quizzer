@@ -17,7 +17,13 @@ export const RangeSlider = ({ setStater }: RangeSliderProps) => {
 
   return (
     <>
-      <MuiSlider value={value} onChange={handleChange} valueLabelDisplay="auto" aria-labelledby="range-slider" />
+      <MuiSlider
+        value={value}
+        onChange={handleChange}
+        valueLabelDisplay="auto"
+        aria-label="range"
+        aria-labelledby="range-slider"
+      />
     </>
   );
 };

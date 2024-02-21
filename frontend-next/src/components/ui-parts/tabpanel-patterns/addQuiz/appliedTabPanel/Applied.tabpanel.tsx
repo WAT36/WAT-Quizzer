@@ -24,10 +24,11 @@ export const AppliedTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        応用問題文　：
+        <label htmlFor="question">応用問題文　：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="question"
           value={queryOfPutQuizState.question || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -41,10 +42,11 @@ export const AppliedTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        応用問題の答え　　：
+        <label htmlFor="answer">応用問題の答え　　：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="answer"
           value={queryOfPutQuizState.answer || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -58,10 +60,11 @@ export const AppliedTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" style={{ visibility: 'hidden' }}>
-        カテゴリ：
+        <label htmlFor="category">カテゴリ：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="category"
           value={queryOfPutQuizState.category || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -75,10 +78,11 @@ export const AppliedTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        画像ファイル名：
+        <label htmlFor="imgFile">画像ファイル名：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="imgFile"
           value={queryOfPutQuizState.img_file || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
@@ -92,10 +96,11 @@ export const AppliedTabPanel = ({
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
-        関連基礎問題番号(カンマ区切りで問題番号を指定)：
+        <label htmlFor="relatedBasisNum">関連基礎問題番号(カンマ区切りで問題番号を指定)：</label>
         <Input
           fullWidth
           maxRows={1}
+          id="relatedBasisNum"
           value={queryOfPutQuizState.matched_basic_quiz_id || ''}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {

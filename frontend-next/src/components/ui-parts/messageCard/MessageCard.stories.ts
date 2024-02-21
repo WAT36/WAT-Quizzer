@@ -37,7 +37,7 @@ export const SuccessMessage: Story = {
   args: {
     messageState: {
       message: '(成功！)',
-      messageColor: 'success.light'
+      messageColor: 'success.main'
     }
   }
 };
@@ -46,7 +46,7 @@ export const LoadingMessage: Story = {
   args: {
     messageState: {
       message: '(通信中...)',
-      messageColor: '#d3d3d3'
+      messageColor: 'dimgray'
     }
   }
 };

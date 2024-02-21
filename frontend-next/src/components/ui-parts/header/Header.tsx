@@ -15,7 +15,7 @@ export const Header = ({ bgColor = '#0077B6', onClick }: HeaderProps) => (
     <span className={styles.title}>WAT Quizzer</span>
     {onClick ? (
       <span className={styles.right}>
-        <IconButton onClick={onClick} size="small">
+        <IconButton onClick={onClick} size="small" aria-label="Side Bar">
           <MenuIcon style={{ color: 'white' }} />
         </IconButton>
       </span>

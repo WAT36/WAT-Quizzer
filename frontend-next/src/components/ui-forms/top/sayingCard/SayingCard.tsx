@@ -21,7 +21,7 @@ export const SayingCard = ({ sayingState }: SayingCardProps) => {
           <Typography variant="subtitle1" component="p" color="grey.800">
             {sayingState.explanation}
           </Typography>
-          <Typography variant="subtitle1" component="p" color="grey.500">
+          <Typography variant="subtitle1" component="p" color="grey.600">
             {sayingState.name}
           </Typography>
         </CardContent>
