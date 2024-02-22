@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
 
-// englishbot dynamic routing用
+// englishbot dynamic routing 用
 const redirectPath = /^\/englishBot\/detailWord\/.+/g;
 
 export default function Custom404() {
