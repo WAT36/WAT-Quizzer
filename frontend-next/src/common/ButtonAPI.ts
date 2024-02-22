@@ -2066,7 +2066,8 @@ export const addWordAPI = async ({
   if (inputWord === '') {
     setMessage({
       message: 'エラー:単語が入力されておりません',
-      messageColor: 'error'
+      messageColor: 'error',
+      isDisplay: true
     });
     return;
   }
@@ -2075,13 +2076,15 @@ export const addWordAPI = async ({
     if (meanRowList[i].pos.id === -1 || (meanRowList[i].pos.id === -2 && !meanRowList[i].pos.name)) {
       setMessage({
         message: `エラー:${i + 1}行目の品詞を入力してください`,
-        messageColor: 'error'
+        messageColor: 'error',
+        isDisplay: true
       });
       return;
     } else if (!meanRowList[i].mean || meanRowList[i].mean === '') {
       setMessage({
         message: `エラー:${i + 1}行目の意味を入力してください`,
-        messageColor: 'error'
+        messageColor: 'error',
+        isDisplay: true
       });
       return;
     }
@@ -2089,7 +2092,8 @@ export const addWordAPI = async ({
 
   setMessage({
     message: '通信中...',
-    messageColor: '#d3d3d3'
+    messageColor: '#d3d3d3',
+    isDisplay: true
   });
   await post(
     '/english/word/add',
@@ -2113,14 +2117,16 @@ export const addWordAPI = async ({
       if (data.status === 200 || data.status === 201) {
         setMessage({
           message: `単語「${inputWord}」を登録しました`,
-          messageColor: 'success.light'
+          messageColor: 'success.light',
+          isDisplay: true
         });
         setInputWord('');
         setMeanRowList([]);
       } else {
         setMessage({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     }
