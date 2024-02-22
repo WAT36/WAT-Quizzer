@@ -46,7 +46,6 @@ export default function EnglishBotAddWordPage() {
             posList={posList}
             sourceList={sourceList}
             meanRowList={meanRowList}
-            setMessage={setMessage}
             setMeanRowList={setMeanRowList}
           />
         </FormGroup>

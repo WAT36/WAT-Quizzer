@@ -21,11 +21,10 @@ interface AddMeanFormProps {
   posList: PullDownOptionState[];
   sourceList: PullDownOptionState[];
   meanRowList: meanOfAddWordDto[];
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setMeanRowList?: React.Dispatch<React.SetStateAction<meanOfAddWordDto[]>>;
 }
 
-export const AddMeanForm = ({ posList, sourceList, meanRowList, setMessage, setMeanRowList }: AddMeanFormProps) => {
+export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }: AddMeanFormProps) => {
   // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
   const displayPosInput = (i: number) => {
     const posInput =
