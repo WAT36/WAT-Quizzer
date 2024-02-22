@@ -9,7 +9,6 @@ import {
   EditWordMeanDto,
   EditWordSourceDto,
   GetWordSubSourceDto,
-  QueryOfGetWordDto,
 } from '../../interfaces/api/request/english';
 import { TransactionQuery } from '../../interfaces/db';
 import { getDateForSqlString } from 'lib/str';
@@ -280,13 +279,16 @@ export class EnglishService {
   }
 
   // 単語をランダムに取得
-  async getRandomWordService(req: QueryOfGetWordDto) {
+  async getRandomWordService(
+    source: string,
+    startDate: string,
+    endDate: string,
+  ) {
     try {
-      const { source, startDate, endDate } = req;
       const sourceIdSql = !source
         ? ''
         : `
-      LEFT OUTER JOIN
+      INNER JOIN
         mean_source ms 
       ON m.id = ms.mean_id 
       AND ms.source_id = ${source}
@@ -300,12 +302,12 @@ export class EnglishService {
         ON m.word_id = ws.word_id
         ${
           startDate
-            ? ` AND ws.created_at > '${getDateForSqlString(startDate)}' `
+            ? ` AND ws.created_at >= '${getDateForSqlString(startDate)}' `
             : ``
         }
         ${
           endDate
-            ? ` AND ws.created_at < '${getDateForSqlString(endDate)}' `
+            ? ` AND ws.created_at <= '${getDateForSqlString(endDate)}' `
             : ``
         }
       `;

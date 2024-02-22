@@ -44,9 +44,3 @@ export interface AddExampleDto {
 export interface AddWordTestLogDto {
   wordId: number;
 }
-
-export interface QueryOfGetWordDto {
-  source?: string;
-  startDate?: string;
-  endDate?: string;
-}
