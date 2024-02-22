@@ -11,6 +11,7 @@ import {
   GetWordSubSourceDto,
 } from '../../interfaces/api/request/english';
 import { TransactionQuery } from '../../interfaces/db';
+import { getDateForSqlString } from 'lib/str';
 
 @Injectable()
 export class EnglishService {
@@ -278,19 +279,43 @@ export class EnglishService {
   }
 
   // 単語をランダムに取得
-  async getRandomWordService(sourceId: number) {
+  async getRandomWordService(
+    source: string,
+    startDate: string,
+    endDate: string,
+  ) {
     try {
-      const sourceIdSql = !sourceId
+      const sourceIdSql = !source
         ? ''
         : `
-      LEFT OUTER JOIN
+      INNER JOIN
         mean_source ms 
-      ON
-        m.id = ms.mean_id 
-      WHERE ms.source_id = ${sourceId}
+      ON m.id = ms.mean_id 
+      AND ms.source_id = ${source}
+      `;
+      const subSourceSql =
+        !startDate && !endDate
+          ? ''
+          : `
+        INNER JOIN
+          word_subsource ws
+        ON m.word_id = ws.word_id
+        ${
+          startDate
+            ? ` AND ws.created_at >= '${getDateForSqlString(startDate)}' `
+            : ``
+        }
+        ${
+          endDate
+            ? ` AND ws.created_at <= '${getDateForSqlString(endDate)}' `
+            : ``
+        }
       `;
       // ランダムに英単語id,nameを返す
-      return await execQuery(SQL.ENGLISH.WORD.GET.RANDOM(sourceIdSql), []);
+      return await execQuery(
+        SQL.ENGLISH.WORD.GET.RANDOM(sourceIdSql, subSourceSql),
+        [],
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

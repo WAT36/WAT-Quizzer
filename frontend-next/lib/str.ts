@@ -6,3 +6,12 @@ export const getRandomStr = () => {
   }
   return rand_str;
 };
+
+export const getDateForSqlString = (date: Date) => {
+  const d = new Date(date);
+  const yyyy = d.getFullYear();
+  const mm = ('00' + (d.getMonth() + 1)).slice(-2);
+  const dd = ('00' + d.getDate()).slice(-2);
+
+  return `${yyyy}-${mm}-${dd}`;
+};
