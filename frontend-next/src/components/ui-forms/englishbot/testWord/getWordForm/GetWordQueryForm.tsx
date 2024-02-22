@@ -35,7 +35,7 @@ export const GetWordQueryForm = ({
         />
       </FormControl>
       <FormControl className={styles.row}>
-        登録日時指定：
+        サブ出典登録日時指定：
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             label="Start Date"
