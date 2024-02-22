@@ -226,8 +226,8 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMessage, setM
     setMeanRowList && setMeanRowList(copyMeanRowList);
   };
 
-  // 列をステートに追加
-  const setTableRow = () => {
+  // 列を(ステートに)追加
+  const addTableRow = () => {
     const copyMeanRowList = [...meanRowList];
     copyMeanRowList.push({
       pos: {
@@ -248,16 +248,6 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMessage, setM
     const copyMeanRowList = [...meanRowList];
     copyMeanRowList.pop();
     setMeanRowList && setMeanRowList(copyMeanRowList);
-  };
-
-  // 列を追加
-  const addRow = () => {
-    setTableRow();
-  };
-
-  // 列を削除
-  const decrementRow = () => {
-    decrementTableRow();
   };
 
   return (
@@ -302,10 +292,10 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMessage, setM
         </Table>
       </TableContainer>
       <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-        <IconButton onClick={addRow}>
+        <IconButton onClick={addTableRow}>
           <AddCircleOutlineIcon />
         </IconButton>
-        <IconButton onClick={decrementRow}>
+        <IconButton onClick={decrementTableRow}>
           <RemoveCircleOutlineIcon />
         </IconButton>
       </Stack>

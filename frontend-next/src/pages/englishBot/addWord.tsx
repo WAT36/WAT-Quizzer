@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { post } from '../../common/API';
 import { buttonStyle } from '../../styles/Pages';
 import { Button, Container, FormControl, FormGroup, TextField } from '@mui/material';
-import { SendToAddWordApiData, meanOfAddWordDto } from '../../../interfaces/api/response';
-import { ProcessingApiReponse } from '../../../interfaces/api/response';
+import { meanOfAddWordDto } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
