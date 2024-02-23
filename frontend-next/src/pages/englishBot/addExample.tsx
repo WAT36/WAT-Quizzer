@@ -7,6 +7,8 @@ import { DataGrid, GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid'
 import { meanColumns } from '../../../utils/englishBot/SearchWordTable';
 import { EnglishWordByNameApiResponse, ProcessingApiReponse } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
+import { Title } from '@/components/ui-elements/title/Title';
+import { MessageState } from '../../../interfaces/state';
 
 const cardContentStyle = {
   display: 'flex',
@@ -32,7 +34,7 @@ export default function EnglishBotAddExamplePage() {
   const [inputExampleData, setInputExampleData] = useState<InputExampleData>({});
   const [query, setQuery] = useState('');
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
-  const [message, setMessage] = useState({
+  const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black'
   });
@@ -52,12 +54,14 @@ export default function EnglishBotAddExamplePage() {
           setSearchResult(result || []);
           setMessage({
             message: 'Success!!取得しました',
-            messageColor: 'success.light'
+            messageColor: 'success.light',
+            isDisplay: true
           });
         } else {
           setMessage({
             message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
+            messageColor: 'error',
+            isDisplay: true
           });
         }
       },
@@ -81,19 +85,22 @@ export default function EnglishBotAddExamplePage() {
     if (!inputExampleData || !inputExampleData.exampleEn || inputExampleData.exampleEn === '') {
       setMessage({
         message: 'エラー:例文(英文)が入力されていません',
-        messageColor: 'error'
+        messageColor: 'error',
+        isDisplay: true
       });
       return;
     } else if (!inputExampleData.exampleJa || inputExampleData.exampleJa === '') {
       setMessage({
         message: 'エラー:例文(和文)が入力されていません',
-        messageColor: 'error'
+        messageColor: 'error',
+        isDisplay: true
       });
       return;
     } else if (!inputExampleData.meanId || inputExampleData.meanId.length === 0) {
       setMessage({
         message: 'エラー:単語または意味へのチェック指定がありません',
-        messageColor: 'error'
+        messageColor: 'error',
+        isDisplay: true
       });
       return;
     }
@@ -110,14 +117,16 @@ export default function EnglishBotAddExamplePage() {
         if (data.status === 200 || data.status === 201) {
           setMessage({
             message: '例文を登録しました',
-            messageColor: 'success.light'
+            messageColor: 'success.light',
+            isDisplay: true
           });
           setInputExampleData({});
           setQuery('');
         } else {
           setMessage({
             message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
+            messageColor: 'error',
+            isDisplay: true
           });
         }
       }
@@ -127,15 +136,7 @@ export default function EnglishBotAddExamplePage() {
   const contents = () => {
     return (
       <Container>
-        <h1>Add Example Sentense</h1>
-
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
+        <Title label="Add Example Sentense"></Title>
 
         <Card variant="outlined">
           <CardHeader title="例文追加" />
@@ -212,7 +213,13 @@ export default function EnglishBotAddExamplePage() {
 
   return (
     <>
-      <Layout mode="englishBot" contents={contents()} title={'例文追加'} />
+      <Layout
+        mode="englishBot"
+        contents={contents()}
+        title={'例文追加'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
