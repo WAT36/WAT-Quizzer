@@ -102,9 +102,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
 }
 
 export async function getAllWords() {
-  const words = await getApiAndGetValue('/english/word');
-  console.log('words:', words);
-  return words;
+  return await getApiAndGetValue('/english/word');
 }
 
 // getStaticPathsの返り値、各文書のファイルパス(dynamic routing([id])のためstring)
@@ -124,11 +122,8 @@ export async function getStaticProps({ params }: Params) {
 
 // 一番最初に実行される関数
 export async function getStaticPaths() {
-  console.log('getStaticPaths');
-  let words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
-  console.log('words.length:', words.length);
-  words = words.slice(0, 5);
-  console.log('sliced words:', words);
+  const words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
+  console.log('words num:', words.length);
   return {
     paths: words.map((word) => {
       return {
