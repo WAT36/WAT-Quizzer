@@ -106,10 +106,26 @@ export async function getAllWords() {
   return await words.json();
 }
 
+// getStaticPathsの返り値、各文書のファイルパス(dynamic routing([id])のためstring)
+type Params = {
+  params: {
+    id: string;
+  };
+};
+
+export async function getStaticProps({ params }: Params) {
+  return {
+    props: {
+      id: params.id
+    }
+  };
+}
+
+// 一番最初に実行される関数
 export async function getStaticPaths() {
   const words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
   return {
-    paths: Object.values(words).map((word: WordApiResponse) => {
+    paths: words.map((word) => {
       return {
         params: {
           id: String(word.id)
@@ -117,14 +133,5 @@ export async function getStaticPaths() {
       };
     }),
     fallback: false
-  };
-}
-
-export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const id = params!.id;
-  return {
-    props: {
-      id
-    }
   };
 }
