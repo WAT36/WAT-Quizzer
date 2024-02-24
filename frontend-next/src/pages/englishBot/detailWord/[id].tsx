@@ -123,7 +123,11 @@ export async function getStaticProps({ params }: Params) {
 
 // 一番最初に実行される関数
 export async function getStaticPaths() {
-  const words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
+  console.log('getStaticPaths');
+  let words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
+  console.log('words.length:', words.length);
+  words = words.slice(0, 5);
+  console.log('sliced words:', words);
   return {
     paths: words.map((word) => {
       return {
