@@ -103,6 +103,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
 
 export async function getAllWords() {
   const words = await getApiAndGetValue('/english/word');
+  console.log('words:', words);
   return await words.json();
 }
 
