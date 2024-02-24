@@ -41,10 +41,13 @@ jobs:
     - name: Setup dependencies(infra)
       id: setup-dependencies-infra 
       run: cd ./infra && npm ci
-      
+
     - name: nest build
       id: build-api
       run: cd ./backend-nest && npm run build
+
+    - name: Next.js Build and Export(Frontend)
+      run: cd ./frontend-next && npm run export
 
     - name: Deploy backend stack
       id: cdk-deploy-backend
@@ -53,9 +56,6 @@ jobs:
     - name: Deploy frontend stack
       id: cdk-deploy-frontend
       run: cd ./infra && npx cdk deploy FrontendStack --require-approval never
-
-    - name: Next.js Build and Export(Frontend)
-      run: cd ./frontend-next && npm run export
 
     - name: Frontend Deploy  # S3にデプロイ 
       run: 
