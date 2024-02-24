@@ -33,7 +33,7 @@ export const get = async (
 export const getApiAndGetValue = async (path: string, queryParam?: { [key: string]: string }) => {
   const key = await getApiKey();
   const query = queryParam ? `?${new URLSearchParams(queryParam)}` : '';
-
+  console.log(baseURL + path + query);
   return await fetch(baseURL + path + query, {
     method: 'GET',
     headers: {
