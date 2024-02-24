@@ -104,7 +104,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
 export async function getAllWords() {
   const words = await getApiAndGetValue('/english/word');
   console.log('words:', words);
-  return await words.json();
+  return words;
 }
 
 // getStaticPathsの返り値、各文書のファイルパス(dynamic routing([id])のためstring)
