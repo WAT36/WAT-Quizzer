@@ -14,7 +14,8 @@
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook",
     "test-storybook:report": "test-storybook --json --outputFile test-result/a11y.json",
-    "chromatic": "chromatic"
+    "chromatic": "chromatic",
+    "git:push": "git push && chromatic"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.369.0",
