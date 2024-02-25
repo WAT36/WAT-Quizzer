@@ -45,23 +45,18 @@ export default function Settings() {
           >
             <CardHeader title="格言設定" />
             <CardContent>
-              <Card variant="outlined">
-                <AddBookForm
-                  bookName={bookName}
-                  setBookName={setBookName}
-                  setMessageStater={setMessage}
-                  setBooklistoption={setBooklistoption}
-                />
-              </Card>
-              <Card variant="outlined">
-                <AddSayingForm
-                  inputSaying={inputSaying}
-                  booklistoption={booklistoption}
-                  setInputSaying={setInputSaying}
-                  setMessageStater={setMessage}
-                  setBooklistoption={setBooklistoption}
-                />
-              </Card>
+              <AddBookForm
+                bookName={bookName}
+                setBookName={setBookName}
+                setMessageStater={setMessage}
+                setBooklistoption={setBooklistoption}
+              />
+              <AddSayingForm
+                inputSaying={inputSaying}
+                booklistoption={booklistoption}
+                setInputSaying={setInputSaying}
+                setMessageStater={setMessage}
+              />
             </CardContent>
           </Card>
         </Container>
