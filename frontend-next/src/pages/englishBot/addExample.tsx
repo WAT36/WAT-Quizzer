@@ -9,6 +9,7 @@ import { EnglishWordByNameApiResponse, ProcessingApiReponse } from '../../../int
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MessageState } from '../../../interfaces/state';
+import { AddExampleSection } from '@/components/ui-forms/englishbot/addExample/addExampleSection/AddExampleSection';
 
 const cardContentStyle = {
   display: 'flex',
@@ -24,7 +25,7 @@ const buttonAfterInputTextStyle = {
   margin: '10px'
 };
 
-type InputExampleData = {
+export type InputExampleData = {
   exampleJa?: string;
   exampleEn?: string;
   meanId?: number[];
@@ -140,36 +141,7 @@ export default function EnglishBotAddExamplePage() {
 
         <Card variant="outlined">
           <CardHeader title="例文追加" />
-          <CardContent>
-            <Card variant="outlined">
-              <CardHeader subheader="例文(英文)" />
-              <CardContent style={cardContentStyle}>
-                <TextField
-                  label="例文(英語)"
-                  variant="outlined"
-                  onChange={(e) => {
-                    const copyInputData = Object.assign({}, inputExampleData);
-                    copyInputData.exampleEn = e.target.value;
-                    setInputExampleData(copyInputData);
-                  }}
-                  style={inputTextBeforeButtonStyle}
-                />
-              </CardContent>
-              <CardHeader subheader="例文(和訳)" />
-              <CardContent style={cardContentStyle}>
-                <TextField
-                  label="例文(和訳)"
-                  variant="outlined"
-                  onChange={(e) => {
-                    const copyInputData = Object.assign({}, inputExampleData);
-                    copyInputData.exampleJa = e.target.value;
-                    setInputExampleData(copyInputData);
-                  }}
-                  style={inputTextBeforeButtonStyle}
-                />
-              </CardContent>
-            </Card>
-          </CardContent>
+          <AddExampleSection inputExampleData={inputExampleData} setInputExampleData={setInputExampleData} />
 
           <CardContent>
             <Card variant="outlined">
