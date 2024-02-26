@@ -6,3 +6,13 @@
 .inputText {
     flex: auto;
 }
+
+.inlineButton {
+    flex: none;
+    margin: 10px;
+};
+
+.searchedTable {
+    height: 600;
+    width: 100%;
+};

@@ -1,29 +1,15 @@
 import React, { useState } from 'react';
 
-import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
-import { Button, Card, CardContent, CardHeader, Container, TextField, Typography } from '@mui/material';
-import { get, post } from '@/common/API';
-import { DataGrid, GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid';
-import { meanColumns } from '../../../utils/englishBot/SearchWordTable';
-import { EnglishWordByNameApiResponse, ProcessingApiReponse } from '../../../interfaces/api/response';
+import { buttonStyle } from '../../styles/Pages';
+import { Button, Card, CardHeader, Container } from '@mui/material';
+import { post } from '@/common/API';
+import { GridRowsProp } from '@mui/x-data-grid';
+import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MessageState } from '../../../interfaces/state';
 import { AddExampleSection } from '@/components/ui-forms/englishbot/addExample/addExampleSection/AddExampleSection';
-
-const cardContentStyle = {
-  display: 'flex',
-  width: '100%'
-};
-
-const inputTextBeforeButtonStyle = {
-  flex: 'auto'
-};
-
-const buttonAfterInputTextStyle = {
-  flex: 'none',
-  margin: '10px'
-};
+import { SearchRelatedWordSection } from '@/components/ui-forms/englishbot/addExample/searchRelatedWordSection/SearchRelatedWordSection';
 
 export type InputExampleData = {
   exampleJa?: string;
@@ -39,45 +25,6 @@ export default function EnglishBotAddExamplePage() {
     message: '　',
     messageColor: 'common.black'
   });
-
-  const searchWord = () => {
-    if (!query || query === '') {
-      setMessage({ message: 'エラー:検索語句を入力して下さい', messageColor: 'error' });
-      return;
-    }
-
-    setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
-    get(
-      '/english/word/byname',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
-          const result: EnglishWordByNameApiResponse[] = data.body as EnglishWordByNameApiResponse[];
-          setSearchResult(result || []);
-          setMessage({
-            message: 'Success!!取得しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          });
-        }
-      },
-      {
-        name: query
-      }
-    );
-  };
-
-  // チェックした問題のIDをステートに登録
-  const registerCheckedIdList = (selectionModel: GridRowSelectionModel) => {
-    const copyInputData = Object.assign({}, inputExampleData);
-    copyInputData.meanId = selectionModel as number[];
-    setInputExampleData(copyInputData);
-  };
 
   // 例文データ登録
   const submitExampleData = () => {
@@ -142,42 +89,16 @@ export default function EnglishBotAddExamplePage() {
         <Card variant="outlined">
           <CardHeader title="例文追加" />
           <AddExampleSection inputExampleData={inputExampleData} setInputExampleData={setInputExampleData} />
-
-          <CardContent>
-            <Card variant="outlined">
-              <CardHeader subheader="関連付け単語検索" />
-              <CardContent style={cardContentStyle}>
-                <TextField
-                  label="単語検索(完全一致)"
-                  variant="outlined"
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                  }}
-                  style={inputTextBeforeButtonStyle}
-                />
-                <Button variant="contained" style={buttonAfterInputTextStyle} onClick={(e) => searchWord()}>
-                  検索
-                </Button>
-              </CardContent>
-
-              <CardContent style={cardContentStyle}>
-                <div style={searchedTableStyle}>
-                  <DataGrid
-                    rows={searchResult}
-                    columns={meanColumns}
-                    pageSizeOptions={[15]}
-                    checkboxSelection
-                    disableRowSelectionOnClick
-                    onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel)}
-                  />
-                </div>
-              </CardContent>
-
-              <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => submitExampleData()}>
-                登録
-              </Button>
-            </Card>
-          </CardContent>
+          <SearchRelatedWordSection
+            searchResult={searchResult}
+            inputExampleData={inputExampleData}
+            setMessage={setMessage}
+            setSearchResult={setSearchResult}
+            setInputExampleData={setInputExampleData}
+          />
+          <Button style={buttonStyle} variant="contained" color="primary" onClick={(e) => submitExampleData()}>
+            登録
+          </Button>
         </Card>
       </Container>
     );
