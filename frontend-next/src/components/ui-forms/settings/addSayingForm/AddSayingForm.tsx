@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, SelectChangeEvent, TextField } from '@mu
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Button } from '@/components/ui-elements/button/Button';
 import { addSayingAPI } from '@/common/ButtonAPI';
+import styles from '../Settings.module.css';
 
 interface AddSayingFormProps {
   inputSaying: InputSayingState;
@@ -11,11 +12,6 @@ interface AddSayingFormProps {
   setInputSaying?: React.Dispatch<React.SetStateAction<InputSayingState>>;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
 }
-
-const cardContentStyle = {
-  display: 'flex',
-  width: '100%'
-};
 
 export const AddSayingForm = ({
   inputSaying,
@@ -27,7 +23,7 @@ export const AddSayingForm = ({
     <>
       <Card variant="outlined">
         <CardHeader subheader="格言追加" />
-        <CardContent style={cardContentStyle}>
+        <CardContent className={styles.cardContent}>
           <PullDown
             label={''}
             optionList={booklistoption}
@@ -41,7 +37,7 @@ export const AddSayingForm = ({
             }}
           />
         </CardContent>
-        <CardContent style={cardContentStyle}>
+        <CardContent className={styles.cardContent}>
           <TextField
             label="新規格言"
             variant="outlined"
@@ -58,7 +54,7 @@ export const AddSayingForm = ({
             }}
           />
         </CardContent>
-        <CardContent style={cardContentStyle}>
+        <CardContent className={styles.cardContent}>
           <TextField
             label="格言の説明"
             variant="outlined"

@@ -7,10 +7,13 @@ import { getBook } from '@/common/response';
 import { InputSayingState, PullDownOptionState } from '../../interfaces/state';
 import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookForm';
 import { AddSayingForm } from '@/components/ui-forms/settings/addSayingForm/AddSayingForm';
+import { SearchSayingSection } from '@/components/ui-forms/settings/searchSayingSection/SearchSayingSection';
 
 export default function Settings() {
   const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
   const [bookName, setBookName] = useState<string>('');
+  const [queryOfSaying, setQueryOfSaying] = useState<string>('');
+  const [checkedIdList, setCheckedIdList] = useState<number[]>([] as number[]);
   const [inputSaying, setInputSaying] = useState<InputSayingState>({
     bookId: -1,
     saying: '',
@@ -56,6 +59,12 @@ export default function Settings() {
                 booklistoption={booklistoption}
                 setInputSaying={setInputSaying}
                 setMessageStater={setMessage}
+              />
+              <SearchSayingSection
+                queryOfSaying={queryOfSaying}
+                setQueryOfSaying={setQueryOfSaying}
+                setMessageStater={setMessage}
+                setCheckedIdList={setCheckedIdList}
               />
             </CardContent>
           </Card>

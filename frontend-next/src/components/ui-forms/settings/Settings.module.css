@@ -1,0 +1,13 @@
+.cardContent {
+    display: flex;
+    width: 100%
+}
+
+.inlineInput {
+    flex: auto;
+}
+
+.inlineButton {
+    flex: none;
+    margin: 10px;
+}
