@@ -29,4 +29,10 @@ export class SayingController {
   async addSaying(@Body() req: AddSayingDto) {
     return await this.sayingService.addSayingService(req);
   }
+
+  // 格言検索
+  @Get('/search')
+  async searchSaying(@Query('saying') saying: string) {
+    return await this.sayingService.searchSayingService(saying);
+  }
 }

@@ -76,4 +76,18 @@ export class SayingService {
       }
     }
   }
+
+  // 格言検索
+  async searchSayingService(saying: string) {
+    try {
+      return await execQuery(SQL.SAYING.GET.SEARCH(saying), []);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }

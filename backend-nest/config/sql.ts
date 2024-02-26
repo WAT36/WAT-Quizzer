@@ -1630,6 +1630,26 @@ export const SQL = {
           ;
         `,
       },
+      SEARCH: (saying: string) => {
+        return `
+          SELECT
+            s.id,
+            s.saying,
+            s.explanation,
+            b.name
+          FROM
+            saying s
+          INNER JOIN
+            selfhelp_book b
+          ON
+            s.book_id = b.id
+          WHERE
+            s.saying LIKE '%${saying || ''}%'
+          AND s.deleted_at IS NULL
+          AND b.deleted_at IS NULL
+          ;
+        `;
+      },
     },
   },
   SELFHELP_BOOK: {
