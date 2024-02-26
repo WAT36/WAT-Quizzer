@@ -39,7 +39,12 @@ export const getApiAndGetValue = async (path: string, queryParam?: { [key: strin
     headers: {
       'x-api-key': key
     }
-  });
+  })
+    .catch((error) => {
+      console.error('API Error1.');
+      throw Error(error);
+    })
+    .then((response) => response.json());
 };
 
 export const post = async (path: string, jsondata: object, func: (data: ProcessingApiReponse) => void) => {

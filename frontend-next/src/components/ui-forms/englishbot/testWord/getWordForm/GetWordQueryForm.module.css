@@ -4,7 +4,7 @@
 }
 
 .row {
-    display:inline-flex;
-    flex-direction: row;
+    display:inline-flex !important;
+    flex-direction: row !important;
     align-items: center;
 }
