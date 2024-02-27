@@ -55,17 +55,15 @@ export const SearchRelatedWordSection = ({
             </Button>
           </CardContent>
 
-          <CardContent className={styles.content}>
-            <div className={styles.searchedTable}>
-              <DataGrid
-                rows={searchResult}
-                columns={meanColumns}
-                pageSizeOptions={[15]}
-                checkboxSelection
-                disableRowSelectionOnClick
-                onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel)}
-              />
-            </div>
+          <CardContent className={styles.searchedTable}>
+            <DataGrid
+              rows={searchResult}
+              columns={meanColumns}
+              pageSizeOptions={[15]}
+              checkboxSelection
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={(selectionModel, details) => registerCheckedIdList(selectionModel)}
+            />
           </CardContent>
         </Card>
       </CardContent>

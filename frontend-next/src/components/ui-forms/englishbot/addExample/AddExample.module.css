@@ -10,9 +10,10 @@
 .inlineButton {
     flex: none;
     margin: 10px;
-};
+}
 
 .searchedTable {
-    height: 600;
+    display: flex;
+    height: 600px;
     width: 100%;
-};
+}
