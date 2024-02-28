@@ -9,6 +9,7 @@ import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { WordApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState } from '../../../interfaces/state';
+import { Title } from '@/components/ui-elements/title/Title';
 
 export default function EnglishBotDictionaryPage() {
   const [query, setQuery] = useState('');
@@ -57,7 +58,7 @@ export default function EnglishBotDictionaryPage() {
   const contents = () => {
     return (
       <Container>
-        <h1>Dictionary</h1>
+        <Title label="WAT Quizzer - Dictionary"></Title>
 
         <FormGroup>
           <FormControl>
