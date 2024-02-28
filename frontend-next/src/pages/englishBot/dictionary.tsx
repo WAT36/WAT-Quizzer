@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 
 import { get } from '../../common/API';
-import { buttonStyle, messageBoxStyle, searchedTableStyle } from '../../styles/Pages';
-import { Button, Card, CardContent, Container, FormControl, FormGroup, TextField, Typography } from '@mui/material';
+import { buttonStyle, searchedTableStyle } from '../../styles/Pages';
+import { Button, Container, FormControl, FormGroup, TextField } from '@mui/material';
 import { searchedDetailColumns } from '../../../utils/englishBot/SearchWordTable';
 import { DataGrid, GridRowsProp } from '@mui/x-data-grid';
 import { ProcessingApiReponse } from '../../../interfaces/api/response';
 import { WordApiResponse } from '../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
+import { MessageState } from '../../../interfaces/state';
 
 export default function EnglishBotDictionaryPage() {
   const [query, setQuery] = useState('');
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
-  const [message, setMessage] = useState({
+  const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black'
   });
@@ -57,13 +58,6 @@ export default function EnglishBotDictionaryPage() {
     return (
       <Container>
         <h1>Dictionary</h1>
-        <Card variant="outlined" style={messageBoxStyle}>
-          <CardContent>
-            <Typography variant="h6" component="h6" color={message.messageColor}>
-              {message.message}
-            </Typography>
-          </CardContent>
-        </Card>
 
         <FormGroup>
           <FormControl>
@@ -96,7 +90,13 @@ export default function EnglishBotDictionaryPage() {
 
   return (
     <>
-      <Layout mode="englishBot" contents={contents()} title={'辞書'} />
+      <Layout
+        mode="englishBot"
+        contents={contents()}
+        title={'辞書'}
+        messageState={message}
+        setMessageStater={setMessage}
+      />
     </>
   );
 }
