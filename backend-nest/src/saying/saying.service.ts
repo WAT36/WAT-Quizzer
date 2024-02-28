@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery } from '../../lib/db/dao';
-import { AddBookDto, AddSayingDto } from '../../interfaces/api/request/saying';
+import {
+  AddBookDto,
+  AddSayingDto,
+  EditSayingDto,
+} from '../../interfaces/api/request/saying';
 
 @Injectable()
 export class SayingService {
@@ -81,6 +85,35 @@ export class SayingService {
   async searchSayingService(saying: string) {
     try {
       return await execQuery(SQL.SAYING.GET.SEARCH(saying), []);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 格言取得(ID指定)
+  async getSayingByIdService(id: number) {
+    try {
+      return await execQuery(SQL.SAYING.GET.BYID, [id]);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 格言編集
+  async editSayingService(req: EditSayingDto) {
+    try {
+      const { id, saying, explanation } = req;
+      return await execQuery(SQL.SAYING.EDIT, [saying, explanation, id]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

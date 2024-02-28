@@ -1630,6 +1630,17 @@ export const SQL = {
           ;
         `,
       },
+      BYID: `
+        SELECT
+          saying,
+          explanation
+        FROM
+          saying
+        WHERE
+          id = ?
+          AND deleted_at IS NULL
+        ;
+      `,
       SEARCH: (saying: string) => {
         return `
           SELECT
@@ -1651,6 +1662,16 @@ export const SQL = {
         `;
       },
     },
+    EDIT: `
+      UPDATE
+        saying
+      SET
+          saying = ?,
+          explanation = ?,
+          updated_at = NOW()
+      WHERE 
+          id = ? 
+    `,
   },
   SELFHELP_BOOK: {
     ADD: `

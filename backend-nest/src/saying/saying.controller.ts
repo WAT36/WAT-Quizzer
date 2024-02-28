@@ -1,6 +1,18 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { SayingService } from './saying.service';
-import { AddBookDto, AddSayingDto } from '../../interfaces/api/request/saying';
+import {
+  AddBookDto,
+  AddSayingDto,
+  EditSayingDto,
+} from '../../interfaces/api/request/saying';
 
 @Controller('saying')
 export class SayingController {
@@ -34,5 +46,17 @@ export class SayingController {
   @Get('/search')
   async searchSaying(@Query('saying') saying: string) {
     return await this.sayingService.searchSayingService(saying);
+  }
+
+  // 格言編集
+  @Patch()
+  async editSaying(@Body() req: EditSayingDto) {
+    return await this.sayingService.editSayingService(req);
+  }
+
+  // 格言取得(格言ID指定)
+  @Get('/:id')
+  async getSayingById(@Param('id') id: number) {
+    return await this.sayingService.getSayingByIdService(id);
   }
 }

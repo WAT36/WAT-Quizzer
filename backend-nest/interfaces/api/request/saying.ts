@@ -7,3 +7,9 @@ export interface AddSayingDto {
   saying: string;
   explanation: string;
 }
+
+export interface EditSayingDto {
+  id: number;
+  saying: string;
+  explanation?: string;
+}
