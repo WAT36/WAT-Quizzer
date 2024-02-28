@@ -8,6 +8,7 @@ import { InputSayingState, PullDownOptionState } from '../../interfaces/state';
 import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookForm';
 import { AddSayingForm } from '@/components/ui-forms/settings/addSayingForm/AddSayingForm';
 import { SearchSayingSection } from '@/components/ui-forms/settings/searchSayingSection/SearchSayingSection';
+import { EditSayingSection } from '@/components/ui-forms/settings/editSayingSection/EditSayingSection';
 
 export default function Settings() {
   const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
@@ -66,6 +67,7 @@ export default function Settings() {
                 setMessageStater={setMessage}
                 setCheckedIdList={setCheckedIdList}
               />
+              <EditSayingSection setMessageStater={setMessage} />
             </CardContent>
           </Card>
         </Container>

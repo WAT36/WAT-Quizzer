@@ -166,3 +166,9 @@ export interface EnglishBotTestFourChoiceResponse extends ApiResponse {
     mean: string;
   }[];
 }
+
+// 格言取得
+export interface GetSayingByIdResponse extends ApiResponse {
+  saying: string;
+  explanation?: string;
+}
