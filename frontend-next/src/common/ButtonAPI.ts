@@ -4,6 +4,7 @@ import {
   AddQuizApiResponse,
   CheckQuizApiResponse,
   EnglishBotTestFourChoiceResponse,
+  EnglishWordByNameApiResponse,
   GetAccuracyRateByCategoryServiceDto,
   GetSayingByIdResponse,
   ProcessingAddApiReponse,
@@ -35,6 +36,7 @@ import {
 import { del, get, patch, post, put } from './API';
 import { generateQuizSentense, getBook } from './response';
 import { getDateForSqlString } from '../../lib/str';
+import { InputExampleData } from '@/pages/englishBot/addExample';
 
 interface AddQuizButtonProps {
   value: number;
@@ -2147,6 +2149,117 @@ export const addWordAPI = async ({
       isDisplay: true
     });
   });
+};
+
+// 英単語検索
+interface SearchWordAPIProps {
+  query: string;
+  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setSearchResult?: React.Dispatch<React.SetStateAction<GridRowsProp>>;
+}
+
+export const searchWordAPI = ({ query, setMessage, setSearchResult }: SearchWordAPIProps) => {
+  // 設定ステートない場合はreturn(storybook表示用に設定)
+  if (!setMessage || !setSearchResult) {
+    return;
+  }
+
+  if (!query || query === '') {
+    setMessage({ message: 'エラー:検索語句を入力して下さい', messageColor: 'error' });
+    return;
+  }
+
+  setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
+  get(
+    '/english/word/byname',
+    (data: ProcessingApiReponse) => {
+      if (data.status === 200) {
+        const result: EnglishWordByNameApiResponse[] = data.body as EnglishWordByNameApiResponse[];
+        setSearchResult(result || []);
+        setMessage({
+          message: 'Success!!取得しました',
+          messageColor: 'success.light',
+          isDisplay: true
+        });
+      } else {
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error',
+          isDisplay: true
+        });
+      }
+    },
+    {
+      name: query
+    }
+  );
+};
+
+// 例文データ登録
+interface SubmitExampleSentenseAPIProps {
+  inputExampleData: InputExampleData;
+  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setInputExampleData?: React.Dispatch<React.SetStateAction<InputExampleData>>;
+}
+
+export const submitExampleSentenseAPI = ({
+  inputExampleData,
+  setMessage,
+  setInputExampleData
+}: SubmitExampleSentenseAPIProps) => {
+  // 設定ステートない場合はreturn(storybook表示用に設定)
+  if (!setMessage || !setInputExampleData) {
+    return;
+  }
+
+  if (!inputExampleData || !inputExampleData.exampleEn || inputExampleData.exampleEn === '') {
+    setMessage({
+      message: 'エラー:例文(英文)が入力されていません',
+      messageColor: 'error',
+      isDisplay: true
+    });
+    return;
+  } else if (!inputExampleData.exampleJa || inputExampleData.exampleJa === '') {
+    setMessage({
+      message: 'エラー:例文(和文)が入力されていません',
+      messageColor: 'error',
+      isDisplay: true
+    });
+    return;
+  } else if (!inputExampleData.meanId || inputExampleData.meanId.length === 0) {
+    setMessage({
+      message: 'エラー:単語または意味へのチェック指定がありません',
+      messageColor: 'error',
+      isDisplay: true
+    });
+    return;
+  }
+
+  setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
+  post(
+    '/english/example',
+    {
+      exampleEn: inputExampleData.exampleEn,
+      exampleJa: inputExampleData.exampleJa,
+      meanId: inputExampleData.meanId
+    },
+    (data: ProcessingApiReponse) => {
+      if (data.status === 200 || data.status === 201) {
+        setMessage({
+          message: '例文を登録しました',
+          messageColor: 'success.light',
+          isDisplay: true
+        });
+        setInputExampleData({});
+      } else {
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error',
+          isDisplay: true
+        });
+      }
+    }
+  );
 };
 
 // 啓発本と格言系

@@ -45,12 +45,6 @@ export const meanColumns = [
     width: 100
   },
   {
-    field: 'source_name',
-    headerName: '出典',
-    sortable: false,
-    width: 100
-  },
-  {
     field: 'meaning',
     headerName: '意味',
     sortable: false,

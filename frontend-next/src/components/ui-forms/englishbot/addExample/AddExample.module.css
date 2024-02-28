@@ -1,0 +1,19 @@
+.content {
+    display: flex;
+    width: 100%;
+}
+
+.inputText {
+    flex: auto;
+}
+
+.inlineButton {
+    flex: none;
+    margin: 10px;
+}
+
+.searchedTable {
+    display: flex;
+    height: 600px;
+    width: 100%;
+}
