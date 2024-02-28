@@ -2260,6 +2260,54 @@ export const submitExampleSentenseAPI = ({
   );
 };
 
+// 単語検索
+interface SearchWordForDictionaryAPIProps {
+  query: string;
+  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setSearchResult?: React.Dispatch<React.SetStateAction<GridRowsProp>>;
+}
+
+export const searchWordForDictionary = ({ query, setMessage, setSearchResult }: SearchWordForDictionaryAPIProps) => {
+  // 設定ステートない場合はreturn(storybook表示用に設定)
+  if (!setMessage || !setSearchResult) {
+    return;
+  }
+
+  if (!query || query === '') {
+    setMessage({ message: 'エラー:検索語句を入力して下さい', messageColor: 'error' });
+    return;
+  }
+
+  setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
+  get(
+    '/english/word/search',
+    (data: ProcessingApiReponse) => {
+      if (data.status === 200 && data.body?.length > 0) {
+        const result: WordApiResponse[] = data.body as WordApiResponse[];
+        setSearchResult(result || []);
+        setMessage({
+          message: 'Success!!' + result.length + '問の問題を取得しました',
+          messageColor: 'success.light'
+        });
+      } else if (data.status === 404 || data.body?.length === 0) {
+        setSearchResult([]);
+        setMessage({
+          message: 'エラー:条件に合致するデータはありません',
+          messageColor: 'error'
+        });
+      } else {
+        setMessage({
+          message: 'エラー:外部APIとの連携に失敗しました',
+          messageColor: 'error'
+        });
+      }
+    },
+    {
+      wordName: query
+    }
+  );
+};
+
 // 啓発本と格言系
 
 interface AddBookButtonProps {
