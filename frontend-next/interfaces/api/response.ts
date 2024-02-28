@@ -67,8 +67,6 @@ export interface EnglishWordByNameApiResponse extends ApiResponse {
   meaning: string;
   partsofspeech_id: number;
   partsofspeech: string; // partofspeech.name
-  source_id: number;
-  source_name: string;
 }
 
 // 英単語（単語IDで）取得APIの返り値
