@@ -2274,11 +2274,11 @@ export const searchWordForDictionary = ({ query, setMessage, setSearchResult }: 
   }
 
   if (!query || query === '') {
-    setMessage({ message: 'エラー:検索語句を入力して下さい', messageColor: 'error' });
+    setMessage({ message: 'エラー:検索語句を入力して下さい', messageColor: 'error', isDisplay: true });
     return;
   }
 
-  setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
+  setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
   get(
     '/english/word/search',
     (data: ProcessingApiReponse) => {
@@ -2287,18 +2287,21 @@ export const searchWordForDictionary = ({ query, setMessage, setSearchResult }: 
         setSearchResult(result || []);
         setMessage({
           message: 'Success!!' + result.length + '問の問題を取得しました',
-          messageColor: 'success.light'
+          messageColor: 'success.light',
+          isDisplay: true
         });
       } else if (data.status === 404 || data.body?.length === 0) {
         setSearchResult([]);
         setMessage({
           message: 'エラー:条件に合致するデータはありません',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       } else {
         setMessage({
           message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error'
+          messageColor: 'error',
+          isDisplay: true
         });
       }
     },
