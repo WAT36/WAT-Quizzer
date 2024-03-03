@@ -42,6 +42,7 @@
     "next-intercept-stdout": "^1.0.1",
     "npm": "^10.4.0",
     "prettier": "^2.8.5",
+    "quizzer-lib": "file:../quizzer-lib",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",

@@ -35,8 +35,8 @@ import {
 } from '../../interfaces/state';
 import { del, get, patch, post, put } from './API';
 import { generateQuizSentense, getBook } from './response';
-import { getDateForSqlString } from '../../lib/str';
 import { InputExampleData } from '@/pages/englishBot/addExample';
+import { getDateForSqlString } from 'quizzer-lib';
 
 interface AddQuizButtonProps {
   value: number;
