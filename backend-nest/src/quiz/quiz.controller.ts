@@ -17,6 +17,7 @@ import {
   EditQuizDto,
   DeleteFileDto,
 } from '../../interfaces/api/request/quiz';
+import { ClearQuizAPIRequestDto } from 'quizzer-lib';
 
 @Controller('quiz')
 export class QuizController {
@@ -111,7 +112,7 @@ export class QuizController {
   }
 
   @Post('/clear')
-  async cleared(@Body() req: SelectQuizDto) {
+  async cleared(@Body() req: ClearQuizAPIRequestDto) {
     return await this.quizService.cleared(req);
   }
 
