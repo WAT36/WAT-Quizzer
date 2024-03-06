@@ -42,3 +42,10 @@ export interface EditQuizAPIRequestDto {
   dummy3?: string //四択問題のダミー選択肢３
   explanation?: string //解説
 }
+
+// 問題削除APIリクエスト型
+export interface DeleteQuizAPIRequestDto {
+  format: string // TODO number, format_idを使いたい
+  file_num: number
+  quiz_num: number
+}

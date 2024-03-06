@@ -20,6 +20,7 @@ import {
   FailQuizAPIRequestDto,
   AddQuizAPIRequestDto,
   EditQuizAPIRequestDto,
+  DeleteQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -649,7 +650,7 @@ export class QuizService {
   }
 
   // 問題削除
-  async delete(req: SelectQuizDto) {
+  async delete(req: DeleteQuizAPIRequestDto) {
     try {
       const { format, file_num, quiz_num } = req;
 

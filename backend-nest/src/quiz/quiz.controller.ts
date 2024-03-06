@@ -21,6 +21,7 @@ import {
   FailQuizAPIRequestDto,
   AddQuizAPIRequestDto,
   EditQuizAPIRequestDto,
+  DeleteQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('quiz')
@@ -161,7 +162,7 @@ export class QuizController {
   }
 
   @Delete()
-  async delete(@Body() req: SelectQuizDto) {
+  async delete(@Body() req: DeleteQuizAPIRequestDto) {
     return await this.quizService.delete(req);
   }
 
