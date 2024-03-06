@@ -6,7 +6,6 @@ import {
   SelectQuizDto,
   AddQuizDto,
   IntegrateQuizDto,
-  EditQuizDto,
   DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
   QuizDto,
@@ -20,6 +19,7 @@ import {
   ClearQuizAPIRequestDto,
   FailQuizAPIRequestDto,
   AddQuizAPIRequestDto,
+  EditQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -419,7 +419,7 @@ export class QuizService {
   }
 
   // 問題編集
-  async edit(req: EditQuizDto) {
+  async edit(req: EditQuizAPIRequestDto) {
     try {
       const {
         format,

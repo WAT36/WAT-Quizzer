@@ -14,13 +14,13 @@ import {
   SelectQuizDto,
   AddQuizDto,
   IntegrateQuizDto,
-  EditQuizDto,
   DeleteFileDto,
 } from '../../interfaces/api/request/quiz';
 import {
   ClearQuizAPIRequestDto,
   FailQuizAPIRequestDto,
   AddQuizAPIRequestDto,
+  EditQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('quiz')
@@ -131,7 +131,7 @@ export class QuizController {
   }
 
   @Post('/edit')
-  async edit(@Body() req: EditQuizDto) {
+  async edit(@Body() req: EditQuizAPIRequestDto) {
     return await this.quizService.edit(req);
   }
 
