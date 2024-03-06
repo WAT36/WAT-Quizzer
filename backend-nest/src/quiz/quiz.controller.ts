@@ -17,7 +17,7 @@ import {
   EditQuizDto,
   DeleteFileDto,
 } from '../../interfaces/api/request/quiz';
-import { ClearQuizAPIRequestDto } from 'quizzer-lib';
+import { ClearQuizAPIRequestDto, FailQuizAPIRequestDto } from 'quizzer-lib';
 
 @Controller('quiz')
 export class QuizController {
@@ -117,7 +117,7 @@ export class QuizController {
   }
 
   @Post('/fail')
-  async failed(@Body() req: SelectQuizDto) {
+  async failed(@Body() req: FailQuizAPIRequestDto) {
     return await this.quizService.failed(req);
   }
 
