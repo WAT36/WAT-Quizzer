@@ -13,7 +13,6 @@ import {
   UpdateCategoryOfQuizDto,
   SelectQuizDto,
   AddQuizDto,
-  IntegrateQuizDto,
   DeleteFileDto,
 } from '../../interfaces/api/request/quiz';
 import {
@@ -22,6 +21,7 @@ import {
   AddQuizAPIRequestDto,
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
+  IntegrateQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('quiz')
@@ -167,7 +167,7 @@ export class QuizController {
   }
 
   @Post('/integrate')
-  async integrate(@Body() req: IntegrateQuizDto) {
+  async integrate(@Body() req: IntegrateQuizAPIRequestDto) {
     return await this.quizService.integrate(req);
   }
 

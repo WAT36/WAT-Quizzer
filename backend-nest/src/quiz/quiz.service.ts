@@ -5,7 +5,6 @@ import {
   UpdateCategoryOfQuizDto,
   SelectQuizDto,
   AddQuizDto,
-  IntegrateQuizDto,
   DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
   QuizDto,
@@ -21,6 +20,7 @@ import {
   AddQuizAPIRequestDto,
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
+  IntegrateQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -681,7 +681,7 @@ export class QuizService {
   }
 
   // 問題統合（とりあえず基礎問題のみ）
-  async integrate(req: IntegrateQuizDto) {
+  async integrate(req: IntegrateQuizAPIRequestDto) {
     try {
       const { pre_file_num, pre_quiz_num, post_file_num, post_quiz_num } = req;
       if (pre_file_num !== post_file_num) {

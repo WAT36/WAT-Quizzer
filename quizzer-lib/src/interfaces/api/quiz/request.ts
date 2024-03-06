@@ -49,3 +49,11 @@ export interface DeleteQuizAPIRequestDto {
   file_num: number
   quiz_num: number
 }
+
+// 問題統合APIリクエスト型
+export interface IntegrateQuizAPIRequestDto {
+  pre_file_num: number
+  pre_quiz_num: number
+  post_file_num: number
+  post_quiz_num: number
+}
