@@ -11,3 +11,18 @@ export interface FailQuizAPIRequestDto {
   file_num: number
   quiz_num: number
 }
+
+// 問題追加APIリクエスト型
+export interface AddQuizAPIRequestDto {
+  file_num: number
+  input_data: {
+    question?: string
+    answer?: string
+    category?: string
+    img_file?: string
+    matched_basic_quiz_id?: string
+    dummy1?: string //四択問題のダミー選択肢１
+    dummy2?: string //四択問題のダミー選択肢２
+    dummy3?: string //四択問題のダミー選択肢３
+  }
+}

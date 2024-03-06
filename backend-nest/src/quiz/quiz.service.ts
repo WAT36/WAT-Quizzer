@@ -16,7 +16,11 @@ import {
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 import { getDifferenceArray } from '../../lib/array';
-import { ClearQuizAPIRequestDto, FailQuizAPIRequestDto } from 'quizzer-lib';
+import {
+  ClearQuizAPIRequestDto,
+  FailQuizAPIRequestDto,
+  AddQuizAPIRequestDto,
+} from 'quizzer-lib';
 
 export interface QueryType {
   query: string;
@@ -362,7 +366,7 @@ export class QuizService {
   }
 
   // 問題を１問追加
-  async add(req: AddQuizDto) {
+  async add(req: AddQuizAPIRequestDto) {
     try {
       const { file_num, input_data } = req;
       if (!file_num && !input_data) {

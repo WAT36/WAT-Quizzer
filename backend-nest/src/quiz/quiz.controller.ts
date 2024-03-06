@@ -17,7 +17,11 @@ import {
   EditQuizDto,
   DeleteFileDto,
 } from '../../interfaces/api/request/quiz';
-import { ClearQuizAPIRequestDto, FailQuizAPIRequestDto } from 'quizzer-lib';
+import {
+  ClearQuizAPIRequestDto,
+  FailQuizAPIRequestDto,
+  AddQuizAPIRequestDto,
+} from 'quizzer-lib';
 
 @Controller('quiz')
 export class QuizController {
@@ -122,7 +126,7 @@ export class QuizController {
   }
 
   @Post('/add')
-  async add(@Body() req: AddQuizDto) {
+  async add(@Body() req: AddQuizAPIRequestDto) {
     return await this.quizService.add(req);
   }
 
