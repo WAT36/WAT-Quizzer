@@ -7,8 +7,6 @@ import {
   AddQuizDto,
   IntegrateQuizDto,
   EditQuizDto,
-  AddFileDto,
-  DeleteFileDto,
   DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
   QuizDto,
@@ -18,6 +16,7 @@ import {
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 import { getDifferenceArray } from '../../lib/array';
+import { ClearQuizAPIRequestDto, FailQuizAPIRequestDto } from 'quizzer-lib';
 
 export interface QueryType {
   query: string;
@@ -281,7 +280,7 @@ export class QuizService {
   }
 
   // 正解登録
-  async cleared(req: SelectQuizDto) {
+  async cleared(req: ClearQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
       let query: QueryType;
@@ -322,7 +321,7 @@ export class QuizService {
   }
 
   // 不正解登録
-  async failed(req: SelectQuizDto) {
+  async failed(req: FailQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
       let query: QueryType;
