@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
 import {
-  SelectQuizDto,
   AddQuizDto,
   DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
@@ -22,6 +21,7 @@ import {
   IntegrateQuizAPIRequestDto,
   UpdateCategoryOfQuizAPIRequestDto,
   RemoveCategoryOfQuizAPIRequestDto,
+  CheckQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -836,7 +836,7 @@ export class QuizService {
   }
 
   // 問題にチェック追加
-  async check(req: SelectQuizDto) {
+  async check(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num } = req;
       // 更新
@@ -847,7 +847,7 @@ export class QuizService {
   }
 
   // 問題にチェック外す
-  async uncheck(req: SelectQuizDto) {
+  async uncheck(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num } = req;
       // 更新
@@ -863,7 +863,7 @@ export class QuizService {
   }
 
   // 問題のチェック反転
-  async reverseCheck(req: SelectQuizDto) {
+  async reverseCheck(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
       let infoSql: string;

@@ -71,3 +71,10 @@ export interface RemoveCategoryOfQuizAPIRequestDto {
   quiz_num: number
   category: string
 }
+
+// 問題へのチェック操作系APIリクエスト型
+export interface CheckQuizAPIRequestDto {
+  format: string // TODO number, format_idを使いたい
+  file_num: number
+  quiz_num: number
+}

@@ -9,11 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
-import {
-  SelectQuizDto,
-  AddQuizDto,
-  DeleteFileDto,
-} from '../../interfaces/api/request/quiz';
+import { AddQuizDto, DeleteFileDto } from '../../interfaces/api/request/quiz';
 import {
   ClearQuizAPIRequestDto,
   FailQuizAPIRequestDto,
@@ -23,6 +19,7 @@ import {
   IntegrateQuizAPIRequestDto,
   UpdateCategoryOfQuizAPIRequestDto,
   RemoveCategoryOfQuizAPIRequestDto,
+  CheckQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('quiz')
@@ -185,17 +182,17 @@ export class QuizController {
   }
 
   @Put('/check')
-  async check(@Body() req: SelectQuizDto) {
+  async check(@Body() req: CheckQuizAPIRequestDto) {
     return await this.quizService.check(req);
   }
 
   @Put('/uncheck')
-  async uncheck(@Body() req: SelectQuizDto) {
+  async uncheck(@Body() req: CheckQuizAPIRequestDto) {
     return await this.quizService.uncheck(req);
   }
 
   @Post('/check')
-  async reverseCheck(@Body() req: SelectQuizDto) {
+  async reverseCheck(@Body() req: CheckQuizAPIRequestDto) {
     return await this.quizService.reverseCheck(req);
   }
 
