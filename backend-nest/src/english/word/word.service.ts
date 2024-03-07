@@ -108,11 +108,12 @@ export class EnglishWordService {
   }
 
   // 単語検索
-  async searchWordService(wordName: string) {
+  async searchWordService(wordName: string, subSourceName: string) {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.SEARCH, [
-        '%' + (wordName || '') + '%',
-      ]);
+      return await execQuery(
+        SQL.ENGLISH.WORD.SEARCH(wordName, subSourceName),
+        [],
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

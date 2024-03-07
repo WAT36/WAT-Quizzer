@@ -1288,19 +1288,28 @@ export const SQL = {
         VALUES(?,?)
         ;
       `,
-      SEARCH: `
-        SELECT 
-          id,name,pronounce
-        FROM 
-          word
-        WHERE
-          name LIKE ?
-          AND deleted_at IS NULL
-        ORDER BY
-          name, id
-        LIMIT 200
-        ;
-      `,
+      SEARCH: (wordName: string, subSourceName?: string) => {
+        return `
+          SELECT 
+            DISTINCT w.id,w.name,w.pronounce
+          FROM 
+            word w
+          LEFT OUTER JOIN
+            word_subsource ws
+          ON
+            w.id = ws.word_id
+          WHERE
+            w.name LIKE '%${wordName}%'
+            ${
+              subSourceName ? `AND ws.subsource LIKE '%${subSourceName}%' ` : ''
+            }
+            AND w.deleted_at IS NULL
+          ORDER BY
+            w.name, w.id
+          LIMIT 200
+          ;
+        `;
+      },
       GET: {
         ALL: `
           SELECT 
