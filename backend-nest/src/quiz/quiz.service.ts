@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
 import {
-  UpdateCategoryOfQuizDto,
   SelectQuizDto,
   AddQuizDto,
   DeleteAnswerLogByFile,
@@ -22,6 +21,7 @@ import {
   DeleteQuizAPIRequestDto,
   IntegrateQuizAPIRequestDto,
   UpdateCategoryOfQuizAPIRequestDto,
+  RemoveCategoryOfQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -786,7 +786,7 @@ export class QuizService {
   }
 
   // 問題からカテゴリ削除
-  async removeCategoryFromQuiz(body: UpdateCategoryOfQuizDto) {
+  async removeCategoryFromQuiz(body: RemoveCategoryOfQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, category } = body;
       // 現在のカテゴリ取得

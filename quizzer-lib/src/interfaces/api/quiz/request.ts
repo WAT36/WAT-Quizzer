@@ -64,3 +64,10 @@ export interface UpdateCategoryOfQuizAPIRequestDto {
   quiz_num: number
   category: string
 }
+
+// クイズからカテゴリを削除するAPIリクエスト型
+export interface RemoveCategoryOfQuizAPIRequestDto {
+  file_num: number
+  quiz_num: number
+  category: string
+}

@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 import {
-  UpdateCategoryOfQuizDto,
   SelectQuizDto,
   AddQuizDto,
   DeleteFileDto,
@@ -23,6 +22,7 @@ import {
   DeleteQuizAPIRequestDto,
   IntegrateQuizAPIRequestDto,
   UpdateCategoryOfQuizAPIRequestDto,
+  RemoveCategoryOfQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('quiz')
@@ -178,7 +178,9 @@ export class QuizController {
   }
 
   @Put('/category')
-  async removeCategoryFromQuiz(@Body() body: UpdateCategoryOfQuizDto) {
+  async removeCategoryFromQuiz(
+    @Body() body: RemoveCategoryOfQuizAPIRequestDto,
+  ) {
     return await this.quizService.removeCategoryFromQuiz(body);
   }
 
