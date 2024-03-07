@@ -57,3 +57,10 @@ export interface IntegrateQuizAPIRequestDto {
   post_file_num: number
   post_quiz_num: number
 }
+
+// クイズにカテゴリを追加するAPIリクエスト型
+export interface UpdateCategoryOfQuizAPIRequestDto {
+  file_num: number
+  quiz_num: number
+  category: string
+}

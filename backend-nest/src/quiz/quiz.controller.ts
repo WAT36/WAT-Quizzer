@@ -22,6 +22,7 @@ import {
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
   IntegrateQuizAPIRequestDto,
+  UpdateCategoryOfQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('quiz')
@@ -172,7 +173,7 @@ export class QuizController {
   }
 
   @Post('/category')
-  async addCategoryToQuiz(@Body() body: UpdateCategoryOfQuizDto) {
+  async addCategoryToQuiz(@Body() body: UpdateCategoryOfQuizAPIRequestDto) {
     return await this.quizService.addCategoryToQuiz(body);
   }
 

@@ -21,6 +21,7 @@ import {
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
   IntegrateQuizAPIRequestDto,
+  UpdateCategoryOfQuizAPIRequestDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -746,7 +747,7 @@ export class QuizService {
   }
 
   // 問題にカテゴリ追加
-  async addCategoryToQuiz(req: UpdateCategoryOfQuizDto) {
+  async addCategoryToQuiz(req: UpdateCategoryOfQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, category } = req;
       // 現在のカテゴリ取得
