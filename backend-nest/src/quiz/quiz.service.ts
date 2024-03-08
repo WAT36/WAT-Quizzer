@@ -2,12 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
 import {
-  AddQuizDto,
   GetQuizNumSqlResultDto,
   QuizDto,
   GetIdDto,
   GetLinkedBasisIdDto,
-  QuizViewApiResponse,
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 import { getDifferenceArray } from '../../lib/array';
@@ -22,6 +20,7 @@ import {
   RemoveCategoryOfQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
   DeleteQuizFileAPIRequestDto,
+  GetQuizApiResponseDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -69,7 +68,7 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      const result: QuizViewApiResponse[] = await execQuery(
+      const result: GetQuizApiResponseDto[] = await execQuery(
         query.query,
         query.value,
       );
