@@ -926,7 +926,7 @@ export class QuizService {
   }
 
   // 応用問題を１問追加
-  async addAdvancedQuiz(req: AddQuizDto) {
+  async addAdvancedQuiz(req: AddQuizAPIRequestDto) {
     try {
       const { file_num, input_data } = req;
       if (!file_num && !input_data) {
@@ -1010,7 +1010,7 @@ export class QuizService {
   }
 
   // 四択問題を１問追加
-  async addFourChoiceQuiz(req: AddQuizDto) {
+  async addFourChoiceQuiz(req: AddQuizAPIRequestDto) {
     try {
       const { file_num, input_data } = req;
       if (!file_num && !input_data) {

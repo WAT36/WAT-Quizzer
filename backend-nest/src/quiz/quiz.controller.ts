@@ -9,7 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
-import { AddQuizDto } from '../../interfaces/api/request/quiz';
 import {
   ClearQuizAPIRequestDto,
   FailQuizAPIRequestDto,
@@ -203,12 +202,12 @@ export class QuizController {
   }
 
   @Post('/advanced')
-  async addAdvanceQuiz(@Body() req: AddQuizDto) {
+  async addAdvanceQuiz(@Body() req: AddQuizAPIRequestDto) {
     return await this.quizService.addAdvancedQuiz(req);
   }
 
   @Post('/advanced/4choice')
-  async addFourChoiceQuiz(@Body() req: AddQuizDto) {
+  async addFourChoiceQuiz(@Body() req: AddQuizAPIRequestDto) {
     return await this.quizService.addFourChoiceQuiz(req);
   }
 }
