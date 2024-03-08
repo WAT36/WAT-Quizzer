@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
-import { AddQuizDto, DeleteFileDto } from '../../interfaces/api/request/quiz';
+import { AddQuizDto } from '../../interfaces/api/request/quiz';
 import {
   ClearQuizAPIRequestDto,
   FailQuizAPIRequestDto,
@@ -20,6 +20,7 @@ import {
   UpdateCategoryOfQuizAPIRequestDto,
   RemoveCategoryOfQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
+  DeleteQuizFileAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('quiz')
@@ -197,7 +198,7 @@ export class QuizController {
   }
 
   @Patch('/answer_log/file')
-  async deleteAnswerLogByFile(@Body() req: DeleteFileDto) {
+  async deleteAnswerLogByFile(@Body() req: DeleteQuizFileAPIRequestDto) {
     return await this.quizService.deleteAnswerLogByFile(req);
   }
 

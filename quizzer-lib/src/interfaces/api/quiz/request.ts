@@ -78,3 +78,8 @@ export interface CheckQuizAPIRequestDto {
   file_num: number
   quiz_num: number
 }
+
+// 問題ファイル削除系APIリクエスト型
+export interface DeleteQuizFileAPIRequestDto {
+  file_id: number
+}

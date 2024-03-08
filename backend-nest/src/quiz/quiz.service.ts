@@ -3,7 +3,6 @@ import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
 import {
   AddQuizDto,
-  DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
   QuizDto,
   GetIdDto,
@@ -22,6 +21,7 @@ import {
   UpdateCategoryOfQuizAPIRequestDto,
   RemoveCategoryOfQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
+  DeleteQuizFileAPIRequestDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -906,7 +906,7 @@ export class QuizService {
   }
 
   // 回答ログ削除(ファイル指定)
-  async deleteAnswerLogByFile(req: DeleteAnswerLogByFile) {
+  async deleteAnswerLogByFile(req: DeleteQuizFileAPIRequestDto) {
     try {
       const { file_id } = req;
       // 指定ファイルの回答ログ削除
