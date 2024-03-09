@@ -244,7 +244,8 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(sql, []);
+      const result: GetQuizApiResponseDto[] = await execQuery(sql, []);
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
