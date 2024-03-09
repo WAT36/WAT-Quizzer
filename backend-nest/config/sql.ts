@@ -318,7 +318,17 @@ export const SQL = {
     ) => {
       return `
       SELECT
-          file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, ROUND(accuracy_rate,1) AS accuracy_rate 
+          id, 
+          file_num, 
+          quiz_num, 
+          quiz_sentense, 
+          answer, 
+          clear_count, 
+          fail_count, 
+          category, 
+          img_file, 
+          checked, 
+          ROUND(accuracy_rate,1) AS accuracy_rate 
       FROM
           quiz_view
       WHERE
@@ -724,7 +734,16 @@ export const SQL = {
     ) => {
       return `
       SELECT
-          file_num, quiz_num AS id, quiz_sentense, answer, clear_count, fail_count, img_file, checked, ROUND(accuracy_rate,1) AS accuracy_rate 
+          id, 
+          file_num, 
+          quiz_num, 
+          quiz_sentense, 
+          answer, 
+          clear_count, 
+          fail_count, 
+          img_file, 
+          checked, 
+          ROUND(accuracy_rate,1) AS accuracy_rate 
       FROM
           advanced_quiz_view
       WHERE
