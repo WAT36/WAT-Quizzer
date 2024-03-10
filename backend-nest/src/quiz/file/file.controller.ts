@@ -1,10 +1,8 @@
 import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { QuizFileService } from './file.service';
 import {
-  DeleteFileDto,
-} from '../../../interfaces/api/request/quiz';
-import {
-  AddQuizFileAPIRequestDto
+  AddQuizFileAPIRequestDto,
+  DeleteQuizFileAPIRequestDto
 } from 'quizzer-lib';
 
 @Controller('quiz/file')
@@ -22,7 +20,7 @@ export class QuizFileController {
   }
 
   @Delete()
-  async deleteFile(@Body() req: DeleteFileDto) {
+  async deleteFile(@Body() req: DeleteQuizFileAPIRequestDto) {
     return await this.quizFileService.deleteFile(req);
   }
 }

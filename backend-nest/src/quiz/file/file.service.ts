@@ -1,12 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../../config/sql';
 import { execQuery, execTransaction } from '../../../lib/db/dao';
-import {
-  DeleteFileDto,
-} from '../../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../../interfaces/db';
 import {
-  AddQuizFileAPIRequestDto
+  AddQuizFileAPIRequestDto,
+  DeleteQuizFileAPIRequestDto
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -48,7 +46,7 @@ export class QuizFileService {
   }
 
   // ファイル削除（とりあえず基礎問題のみ）
-  async deleteFile(req: DeleteFileDto) {
+  async deleteFile(req: DeleteQuizFileAPIRequestDto) {
     try {
       const { file_id } = req;
 
