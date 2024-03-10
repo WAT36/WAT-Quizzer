@@ -2,10 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../../config/sql';
 import { execQuery, execTransaction } from '../../../lib/db/dao';
 import {
-  AddFileDto,
   DeleteFileDto,
 } from '../../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../../interfaces/db';
+import {
+  AddQuizFileAPIRequestDto
+} from 'quizzer-lib';
 
 export interface QueryType {
   query: string;
@@ -22,7 +24,7 @@ export class QuizFileService {
   }
 
   // ファイル追加
-  async addFile(req: AddFileDto) {
+  async addFile(req: AddQuizFileAPIRequestDto) {
     try {
       const { file_name, file_nickname } = req;
       // ファイル番号取得

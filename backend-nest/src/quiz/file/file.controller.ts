@@ -1,9 +1,11 @@
 import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { QuizFileService } from './file.service';
 import {
-  AddFileDto,
   DeleteFileDto,
 } from '../../../interfaces/api/request/quiz';
+import {
+  AddQuizFileAPIRequestDto
+} from 'quizzer-lib';
 
 @Controller('quiz/file')
 export class QuizFileController {
@@ -15,7 +17,7 @@ export class QuizFileController {
   }
 
   @Post()
-  async addFile(@Body() req: AddFileDto) {
+  async addFile(@Body() req: AddQuizFileAPIRequestDto) {
     return await this.quizFileService.addFile(req);
   }
 
