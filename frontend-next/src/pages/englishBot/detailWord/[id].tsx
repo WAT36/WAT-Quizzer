@@ -1,5 +1,8 @@
 import { Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { getApiAndGetValue } from '@/common/API';
+import { WordApiResponse } from '../../../../interfaces/db';
+import { GetStaticPropsContext } from 'next';
 import { Layout } from '@/components/templates/layout/Layout';
 import {
   MessageState,
@@ -14,23 +17,12 @@ import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meanin
 import { getWordDetail, getWordSource, getWordSubSource } from '@/pages/api/english';
 import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceStack/SourceStack';
 import { SubSourceStack } from '@/components/ui-forms/englishbot/detailWord/subSourceStack/SubSourceStack';
-import { GetServerSideProps } from 'next';
 
-type DetailWordPageProps = {
+type EachWordPageProps = {
   id: string;
 };
 
-export const getServerSideProps: GetServerSideProps<DetailWordPageProps> = async (context) => {
-  const { id } = context.query;
-
-  if (typeof id !== 'string') {
-    return { notFound: true };
-  }
-
-  return { props: { id } };
-};
-
-export default function EnglishBotEachWordPage(props: DetailWordPageProps) {
+export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [wordName, setWordName] = useState<string>('');
   const [meanData, setMeanData] = useState<WordMeanData[]>([]);
   const [wordSourceData, setWordSourceData] = useState<WordSourceData[]>([]);
@@ -44,8 +36,6 @@ export default function EnglishBotEachWordPage(props: DetailWordPageProps) {
     message: '　',
     messageColor: 'common.black'
   });
-
-  const id = props.id;
 
   useEffect(() => {
     Promise.all([
@@ -109,4 +99,39 @@ export default function EnglishBotEachWordPage(props: DetailWordPageProps) {
       />
     </>
   );
+}
+
+export async function getAllWords() {
+  return await getApiAndGetValue('/english/word');
+}
+
+// getStaticPathsの返り値、各文書のファイルパス(dynamic routing([id])のためstring)
+type Params = {
+  params: {
+    id: string;
+  };
+};
+
+export async function getStaticProps({ params }: Params) {
+  return {
+    props: {
+      id: params.id
+    }
+  };
+}
+
+// 一番最初に実行される関数
+export async function getStaticPaths() {
+  const words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
+  console.log('words num:', words.length);
+  return {
+    paths: words.map((word) => {
+      return {
+        params: {
+          id: String(word.id)
+        }
+      };
+    }),
+    fallback: false
+  };
 }
