@@ -12,12 +12,6 @@ import { editQuizAPI } from '@/common/ButtonAPI';
 
 export default function EditQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
-
-  const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
-    fileNum: -1,
-    quizNum: -1,
-    format: 'basic'
-  });
   const [queryOfEditQuiz, setQueryOfEditQuiz] = useState<QueryOfPutQuizState>({
     fileNum: -1,
     quizNum: -1,
@@ -41,9 +35,7 @@ export default function EditQuizPage() {
 
         <InputQueryForEditForm
           filelistoption={filelistoption}
-          queryOfQuizState={queryOfQuiz}
           setMessageStater={setMessage}
-          setQueryofQuizStater={setQueryOfQuiz}
           setQueryOfEditQuizStater={setQueryOfEditQuiz}
         />
 
