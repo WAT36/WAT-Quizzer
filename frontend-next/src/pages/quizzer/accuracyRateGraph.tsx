@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Chart } from 'react-google-charts';
 import { Container } from '@mui/material';
 import { GetAccuracyRateByCategoryServiceDto } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';

@@ -1,5 +1,4 @@
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageCard } from '@/components/ui-parts/messageCard/MessageCard';
 import { Container } from '@mui/material';
 import {
   DisplayWordTestState,
