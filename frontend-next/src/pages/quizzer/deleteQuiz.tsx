@@ -4,7 +4,6 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import {
   DeleteQuizInfoState,
-  IntegrateToQuizInfoState,
   MessageState,
   PullDownOptionState,
   QueryOfDeleteQuizState,
@@ -26,7 +25,6 @@ export default function DeleteQuizPage() {
     format: 'basic'
   });
   const [deleteQuizInfoState, setDeleteQuizInfoState] = useState<DeleteQuizInfoState>({});
-  const [integrateToQuizInfoState, setIntegrateToQuizInfoState] = useState<IntegrateToQuizInfoState>({});
   const [message, setMessage] = useState<MessageState>({
     message: '　',
     messageColor: 'common.black',
@@ -55,12 +53,10 @@ export default function DeleteQuizPage() {
         <IntegrateToQuizForm
           queryOfDeleteQuizState={queryOfDeleteQuizState}
           queryOfIntegrateToQuizState={queryOfIntegrateToQuizState}
-          integrateToQuizInfoState={integrateToQuizInfoState}
           setMessage={setMessage}
           setQueryOfDeleteQuizState={setQueryOfDeleteQuizState}
           setQueryOfIntegrateToQuizState={setQueryOfIntegrateToQuizState}
           setDeleteQuizInfoState={setDeleteQuizInfoState}
-          setIntegrateToQuizInfoState={setIntegrateToQuizInfoState}
         />
       </Container>
     );

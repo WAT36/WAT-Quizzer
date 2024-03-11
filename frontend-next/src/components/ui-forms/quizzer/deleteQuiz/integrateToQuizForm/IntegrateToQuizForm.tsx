@@ -22,28 +22,27 @@ import {
   QueryOfIntegrateToQuizState
 } from '../../../../../../interfaces/state';
 import { getIntegrateToQuiz, integrateQuiz } from '@/common/ButtonAPI';
+import { useState } from 'react';
 
 interface IntegrateToQuizFormProps {
   queryOfDeleteQuizState: QueryOfDeleteQuizState;
   queryOfIntegrateToQuizState: QueryOfIntegrateToQuizState;
-  integrateToQuizInfoState: IntegrateToQuizInfoState;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setQueryOfDeleteQuizState?: React.Dispatch<React.SetStateAction<QueryOfDeleteQuizState>>;
   setQueryOfIntegrateToQuizState?: React.Dispatch<React.SetStateAction<QueryOfIntegrateToQuizState>>;
   setDeleteQuizInfoState?: React.Dispatch<React.SetStateAction<DeleteQuizInfoState>>;
-  setIntegrateToQuizInfoState?: React.Dispatch<React.SetStateAction<IntegrateToQuizInfoState>>;
 }
 
 export const IntegrateToQuizForm = ({
   queryOfDeleteQuizState,
   queryOfIntegrateToQuizState,
-  integrateToQuizInfoState,
   setMessage,
   setQueryOfDeleteQuizState,
   setQueryOfIntegrateToQuizState,
-  setDeleteQuizInfoState,
-  setIntegrateToQuizInfoState
+  setDeleteQuizInfoState
 }: IntegrateToQuizFormProps) => {
+  const [integrateToQuizInfoState, setIntegrateToQuizInfoState] = useState<IntegrateToQuizInfoState>({});
+
   return (
     <Paper variant="outlined" className={styles.form}>
       <Card variant="outlined">
