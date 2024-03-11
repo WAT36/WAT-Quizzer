@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, FormControl, FormGroup, TextField } from '@mui/material';
-import { MessageState } from '../../../../../../interfaces/state';
+import { MessageState, QueryOfSearchWordState } from '../../../../../../interfaces/state';
 import styles from '../Dictionary.module.css';
 import { GridRowsProp } from '@mui/x-data-grid';
 import { searchWordForDictionary } from '@/common/ButtonAPI';
@@ -11,7 +11,7 @@ interface SearchInputSectionProps {
 }
 
 export const SearchInputSection = ({ setMessage, setSearchResult }: SearchInputSectionProps) => {
-  const [query, setQuery] = useState('');
+  const [queryOfSearchWord, setQueryOfSearchWord] = useState<QueryOfSearchWordState>({ query: '' });
   return (
     <>
       <FormGroup>
@@ -19,7 +19,26 @@ export const SearchInputSection = ({ setMessage, setSearchResult }: SearchInputS
           <TextField
             label="単語名検索"
             onChange={(e) => {
-              setQuery(e.target.value);
+              setQueryOfSearchWord({
+                ...queryOfSearchWord,
+                query: e.target.value
+              });
+            }}
+          />
+        </FormControl>
+
+        <FormControl className={styles.row}>
+          サブ出典：
+          <TextField
+            label="Sub Source"
+            onChange={(e) => {
+              setQueryOfSearchWord({
+                ...queryOfSearchWord,
+                subSource: {
+                  ...queryOfSearchWord.subSource,
+                  query: e.target.value
+                }
+              });
             }}
           />
         </FormControl>
@@ -29,7 +48,7 @@ export const SearchInputSection = ({ setMessage, setSearchResult }: SearchInputS
         className={styles.button}
         variant="contained"
         color="primary"
-        onClick={(e) => searchWordForDictionary({ query, setMessage, setSearchResult })}
+        onClick={(e) => searchWordForDictionary({ queryOfSearchWord, setMessage, setSearchResult })}
       >
         検索
       </Button>

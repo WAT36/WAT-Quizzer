@@ -12,7 +12,6 @@ import { editEnglishWordMeanAPI } from '@/common/ButtonAPI';
 interface MeaningStackProps {
   id: string;
   posList: PullDownOptionState[];
-  sourceList: PullDownOptionState[];
   meanData: WordMeanData[];
   modalIsOpen: boolean;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;

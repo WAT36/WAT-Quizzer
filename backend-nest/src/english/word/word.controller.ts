@@ -27,8 +27,14 @@ export class EnglishWordController {
   }
 
   @Get('search')
-  async searchWord(@Query('wordName') wordName: string) {
-    return await this.englishWordService.searchWordService(wordName);
+  async searchWord(
+    @Query('wordName') wordName: string,
+    @Query('subSourceName') subSourceName: string,
+  ) {
+    return await this.englishWordService.searchWordService(
+      wordName,
+      subSourceName,
+    );
   }
 
   @Get()
