@@ -55,7 +55,12 @@ export default function SearchQuizPage() {
           onClick={(e) => searchQuizAPI({ queryOfSearchQuizState, setMessage, setSearchResult })}
         />
 
-        <SearchResultTable searchResult={searchResult} columns={columns} setCheckedIdList={setCheckedIdList} />
+        <SearchResultTable
+          searchResult={searchResult}
+          columns={columns}
+          hasCheck={true}
+          setCheckedIdList={setCheckedIdList}
+        />
 
         <EditSearchResultForm
           changedCategory={changedCategory}
