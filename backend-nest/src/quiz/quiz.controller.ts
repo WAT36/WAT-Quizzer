@@ -19,7 +19,7 @@ import {
   UpdateCategoryOfQuizAPIRequestDto,
   RemoveCategoryOfQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
-  DeleteQuizFileAPIRequestDto,
+  DeleteAnswerLogAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('quiz')
@@ -197,7 +197,7 @@ export class QuizController {
   }
 
   @Patch('/answer_log/file')
-  async deleteAnswerLogByFile(@Body() req: DeleteQuizFileAPIRequestDto) {
+  async deleteAnswerLogByFile(@Body() req: DeleteAnswerLogAPIRequestDto) {
     return await this.quizService.deleteAnswerLogByFile(req);
   }
 

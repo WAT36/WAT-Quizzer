@@ -19,7 +19,7 @@ import {
   UpdateCategoryOfQuizAPIRequestDto,
   RemoveCategoryOfQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
-  DeleteQuizFileAPIRequestDto,
+  DeleteAnswerLogAPIRequestDto,
   GetQuizApiResponseDto,
 } from 'quizzer-lib';
 
@@ -919,7 +919,7 @@ export class QuizService {
   }
 
   // 回答ログ削除(ファイル指定)
-  async deleteAnswerLogByFile(req: DeleteQuizFileAPIRequestDto) {
+  async deleteAnswerLogByFile(req: DeleteAnswerLogAPIRequestDto) {
     try {
       const { file_id } = req;
       // 指定ファイルの回答ログ削除

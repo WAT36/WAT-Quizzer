@@ -80,6 +80,6 @@ export interface CheckQuizAPIRequestDto {
 }
 
 // 問題ファイル削除系APIリクエスト型
-export interface DeleteQuizFileAPIRequestDto {
+export interface DeleteAnswerLogAPIRequestDto {
   file_id: number
 }
