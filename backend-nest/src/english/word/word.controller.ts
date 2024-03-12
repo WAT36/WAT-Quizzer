@@ -10,19 +10,19 @@ import {
 } from '@nestjs/common';
 import { EnglishWordService } from './word.service';
 import {
-  AddEnglishWordDto,
   AddWordSubSourceDto,
   AddWordTestLogDto,
   EditWordMeanDto,
   EditWordSourceDto,
 } from '../../../interfaces/api/request/english';
+import { AddEnglishWordAPIRequestDto } from 'quizzer-lib';
 
 @Controller('english/word')
 export class EnglishWordController {
   constructor(private readonly englishWordService: EnglishWordService) {}
 
   @Post('add')
-  async addWord(@Body() req: AddEnglishWordDto) {
+  async addWord(@Body() req: AddEnglishWordAPIRequestDto) {
     return await this.englishWordService.addWordAndMeanService(req);
   }
 

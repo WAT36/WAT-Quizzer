@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../../config/sql';
 import { execQuery, execTransaction } from '../../../lib/db/dao';
 import {
-  AddEnglishWordDto,
   AddWordSubSourceDto,
   AddWordTestLogDto,
   EditWordMeanDto,
@@ -10,11 +9,12 @@ import {
 } from '../../../interfaces/api/request/english';
 import { TransactionQuery } from '../../../interfaces/db';
 import { getDateForSqlString } from 'lib/str';
+import { AddEnglishWordAPIRequestDto } from 'quizzer-lib';
 
 @Injectable()
 export class EnglishWordService {
   // 単語と意味追加
-  async addWordAndMeanService(req: AddEnglishWordDto) {
+  async addWordAndMeanService(req: AddEnglishWordAPIRequestDto) {
     const { wordName, pronounce, meanArrayData } = req;
     try {
       //トランザクション実行準備
