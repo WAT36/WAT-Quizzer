@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { AddQuizForm } from './AddQuizForm';
+import { quizFileMock } from '../../../../../../.storybook/mockData/quizFile';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -20,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const AddQuiz: Story = {
   args: {
-    filelistoption: [],
+    filelistoption: quizFileMock,
     value: -1,
     queryOfPutQuizState: {
       fileNum: -1,
@@ -31,7 +32,7 @@ export const AddQuiz: Story = {
 
 export const BasisPanel: Story = {
   args: {
-    filelistoption: [],
+    filelistoption: quizFileMock,
     value: 0,
     queryOfPutQuizState: {
       fileNum: -1,
@@ -42,7 +43,7 @@ export const BasisPanel: Story = {
 
 export const AppliedPanel: Story = {
   args: {
-    filelistoption: [],
+    filelistoption: quizFileMock,
     value: 1,
     queryOfPutQuizState: {
       fileNum: -1,
@@ -53,7 +54,7 @@ export const AppliedPanel: Story = {
 
 export const FourChoicePanel: Story = {
   args: {
-    filelistoption: [],
+    filelistoption: quizFileMock,
     value: 2,
     queryOfPutQuizState: {
       fileNum: -1,
