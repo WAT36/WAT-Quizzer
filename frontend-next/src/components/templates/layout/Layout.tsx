@@ -11,6 +11,7 @@ import { isOpenState } from '@/atoms/SideBar';
 import { Button } from '@/components/ui-elements/button/Button';
 import { MessageState } from '../../../../interfaces/state';
 import { MessageBar } from '@/components/ui-elements/messageBar/MessageBar';
+import { messageState } from '@/atoms/Message';
 
 interface LayoutConfig {
   bgColor: string;
@@ -60,8 +61,9 @@ const config: { [key: string]: LayoutConfig } = {
   }
 };
 
-export const Layout = ({ title, contents, mode = 'quizzer', messageState, setMessageStater }: LayoutProps) => {
+export const Layout = ({ title, contents, mode = 'quizzer' }: LayoutProps) => {
   const [sidebarState, setSidebarState] = useRecoilState(isOpenState);
+  const [message, setMessage] = useRecoilState(messageState);
   const modeConfig = config[mode];
   return (
     <>
@@ -102,8 +104,8 @@ export const Layout = ({ title, contents, mode = 'quizzer', messageState, setMes
       {/*内容*/}
       {contents}
       <MessageBar
-        messageState={messageState || { message: '', messageColor: 'common.black' }}
-        setMessageState={setMessageStater}
+        messageState={message || { message: '', messageColor: 'common.black' }}
+        setMessageState={setMessage}
       />
 
       {/*フッタとコンテンツ間の調整余白 */}
