@@ -10,7 +10,11 @@ import { PutQuizForm } from '@/components/ui-forms/quizzer/forms/putQuizForm/Put
 import { Button } from '@/components/ui-elements/button/Button';
 import { editQuizAPI } from '@/common/ButtonAPI';
 
-export default function EditQuizPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function EditQuizPage({ isMock }: Props) {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [queryOfEditQuiz, setQueryOfEditQuiz] = useState<QueryOfPutQuizState>({
     fileNum: -1,
@@ -25,7 +29,7 @@ export default function EditQuizPage() {
   });
 
   useEffect(() => {
-    getFileList(setMessage, setFilelistoption);
+    !isMock && getFileList(setMessage, setFilelistoption);
   }, []);
 
   const contents = () => {
