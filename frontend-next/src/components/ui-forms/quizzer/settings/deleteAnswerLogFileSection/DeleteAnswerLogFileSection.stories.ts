@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { DeleteAnswerLogFileSection } from './DeleteAnswerLogFileSection';
+import { quizFileMock } from '../../../../../../.storybook/mockData/quizFile';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Organisms/Settings/DeleteAnswerLogFileSection',
+  title: 'Organisms/Quizzer/Settings/DeleteAnswerLogFileSection',
   component: DeleteAnswerLogFileSection,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
@@ -22,6 +23,6 @@ export const Main: Story = {
   args: {
     deleteLogOfFileNum: -1,
     deleteLogOfFileAlertOpen: false,
-    filelistoption: []
+    filelistoption: quizFileMock
   }
 };

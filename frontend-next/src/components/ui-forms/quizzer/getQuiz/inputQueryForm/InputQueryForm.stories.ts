@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { InputQueryForm } from './InputQueryForm';
+import { quizFileMock } from '../../../../../../.storybook/mockData/quizFile';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -20,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const InputForm: Story = {
   args: {
-    filelistoption: [],
+    filelistoption: quizFileMock,
     categorylistoption: [],
     queryOfQuizState: {
       fileNum: 0,
