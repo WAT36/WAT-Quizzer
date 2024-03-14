@@ -12,7 +12,11 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { SearchResultTable } from '@/components/ui-elements/searchResultTable/SearchResultTable';
 import { EditSearchResultForm } from '@/components/ui-forms/quizzer/searchQuiz/editSearchResultForm/EditSearchResultForm';
 
-export default function SearchQuizPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function SearchQuizPage({ isMock }: Props) {
   const [queryOfSearchQuizState, setQueryOfSearchQuizState] = useState<QueryOfSearchQuizState>({
     fileNum: -1,
     query: '',
@@ -30,7 +34,7 @@ export default function SearchQuizPage() {
   const [changedCategory, setChangedCategory] = useState<string>('');
 
   useEffect(() => {
-    getFileList(setMessage, setFilelistoption);
+    !isMock && getFileList(setMessage, setFilelistoption);
   }, []);
 
   const contents = () => {
