@@ -13,7 +13,11 @@ import { getFileList } from '@/common/response';
 import { DeleteQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/deleteQuizForm/DeleteQuizForm';
 import { IntegrateToQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/integrateToQuizForm/IntegrateToQuizForm';
 
-export default function DeleteQuizPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function DeleteQuizPage({ isMock }: Props) {
   const [queryOfDeleteQuizState, setQueryOfDeleteQuizState] = useState<QueryOfDeleteQuizState>({
     fileNum: -1,
     quizNum: -1,
@@ -33,7 +37,7 @@ export default function DeleteQuizPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
 
   useEffect(() => {
-    getFileList(setMessage, setFilelistoption);
+    !isMock && getFileList(setMessage, setFilelistoption);
   }, []);
 
   const contents = () => {
