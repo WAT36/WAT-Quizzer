@@ -25,3 +25,9 @@ export interface EditWordSourceAPIRequestDto {
   oldSourceId: number
   newSourceId: number
 }
+
+// 英単語サブ出典追加APIリクエスト型
+export interface AddWordSubSourceAPIRequestDto {
+  wordId: number
+  subSource: string
+}

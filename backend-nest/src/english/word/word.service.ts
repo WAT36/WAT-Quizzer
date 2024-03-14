@@ -2,12 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../../config/sql';
 import { execQuery, execTransaction } from '../../../lib/db/dao';
 import {
-  AddWordSubSourceDto,
   EditWordMeanDto,
 } from '../../../interfaces/api/request/english';
 import { TransactionQuery } from '../../../interfaces/db';
 import { getDateForSqlString } from 'lib/str';
-import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto } from 'quizzer-lib';
+import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto, AddWordSubSourceAPIRequestDto } from 'quizzer-lib';
 
 @Injectable()
 export class EnglishWordService {
@@ -301,7 +300,7 @@ export class EnglishWordService {
   }
 
   // 単語のサブ出典追加
-  async addSubSourceOfWordById(req: AddWordSubSourceDto) {
+  async addSubSourceOfWordById(req: AddWordSubSourceAPIRequestDto) {
     try {
       const { wordId, subSource } = req;
       return await execQuery(SQL.ENGLISH.WORD.SUBSOURCE.ADD, [

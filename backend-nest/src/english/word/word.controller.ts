@@ -10,10 +10,9 @@ import {
 } from '@nestjs/common';
 import { EnglishWordService } from './word.service';
 import {
-  AddWordSubSourceDto,
   EditWordMeanDto,
 } from '../../../interfaces/api/request/english';
-import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto } from 'quizzer-lib';
+import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto, AddWordSubSourceAPIRequestDto } from 'quizzer-lib';
 
 @Controller('english/word')
 export class EnglishWordController {
@@ -80,7 +79,7 @@ export class EnglishWordController {
   }
 
   @Put('subsource')
-  async addSubSourceOfWordById(@Body() req: AddWordSubSourceDto) {
+  async addSubSourceOfWordById(@Body() req: AddWordSubSourceAPIRequestDto) {
     return await this.englishWordService.addSubSourceOfWordById(req);
   }
 
