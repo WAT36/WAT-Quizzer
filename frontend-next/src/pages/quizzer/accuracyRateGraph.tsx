@@ -9,7 +9,11 @@ import { GetFileForm } from '@/components/ui-forms/quizzer/accuracyRateGraph/get
 import { GetFileButtonGroup } from '@/components/ui-forms/quizzer/accuracyRateGraph/getFileButtonGroup/GetFileButtonGroup';
 import { AccuracyChart } from '@/components/ui-forms/quizzer/accuracyRateGraph/accuracyChart/AccuracyChart';
 
-export default function AccuracyRateGraphPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function AccuracyRateGraphPage({ isMock }: Props) {
   const [queryOfGetAccuracy, setQueryOfGetAccuracy] = useState<QueryOfGetAccuracyState>({
     fileNum: -1
   });
@@ -25,7 +29,7 @@ export default function AccuracyRateGraphPage() {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
 
   useEffect(() => {
-    getFileList(setMessage, setFilelistoption);
+    !isMock && getFileList(setMessage, setFilelistoption);
   }, []);
 
   const contents = () => {
