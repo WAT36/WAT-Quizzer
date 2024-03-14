@@ -3,13 +3,12 @@ import { SQL } from '../../../config/sql';
 import { execQuery, execTransaction } from '../../../lib/db/dao';
 import {
   AddWordSubSourceDto,
-  AddWordTestLogDto,
   EditWordMeanDto,
   EditWordSourceDto,
 } from '../../../interfaces/api/request/english';
 import { TransactionQuery } from '../../../interfaces/db';
 import { getDateForSqlString } from 'lib/str';
-import { AddEnglishWordAPIRequestDto } from 'quizzer-lib';
+import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto } from 'quizzer-lib';
 
 @Injectable()
 export class EnglishWordService {
@@ -237,7 +236,7 @@ export class EnglishWordService {
   }
 
   // 正解登録
-  async wordTestClearedService(req: AddWordTestLogDto) {
+  async wordTestClearedService(req: AddWordTestResultLogAPIRequestDto) {
     try {
       const { wordId } = req;
       return await execQuery(SQL.ENGLISH.WORD_TEST.CLEARED.INPUT, [wordId]);
@@ -252,7 +251,7 @@ export class EnglishWordService {
   }
 
   // 不正解登録
-  async wordTestFailedService(req: AddWordTestLogDto) {
+  async wordTestFailedService(req: AddWordTestResultLogAPIRequestDto) {
     try {
       const { wordId } = req;
       return await execQuery(SQL.ENGLISH.WORD_TEST.FAILED.INPUT, [wordId]);

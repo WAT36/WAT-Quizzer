@@ -13,3 +13,8 @@ export interface AddEnglishWordAPIRequestDto {
   pronounce: string
   meanArrayData: EnglishWordDataDto[]
 }
+
+//  英単語テスト結果追加リクエスト型
+export interface AddWordTestResultLogAPIRequestDto {
+  wordId: number;
+}

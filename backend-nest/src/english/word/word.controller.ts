@@ -11,11 +11,10 @@ import {
 import { EnglishWordService } from './word.service';
 import {
   AddWordSubSourceDto,
-  AddWordTestLogDto,
   EditWordMeanDto,
   EditWordSourceDto,
 } from '../../../interfaces/api/request/english';
-import { AddEnglishWordAPIRequestDto } from 'quizzer-lib';
+import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto } from 'quizzer-lib';
 
 @Controller('english/word')
 export class EnglishWordController {
@@ -67,12 +66,12 @@ export class EnglishWordController {
   }
 
   @Post('test/clear')
-  async wordTestCleared(@Body() req: AddWordTestLogDto) {
+  async wordTestCleared(@Body() req: AddWordTestResultLogAPIRequestDto) {
     return await this.englishWordService.wordTestClearedService(req);
   }
 
   @Post('test/fail')
-  async wordTestFailed(@Body() req: AddWordTestLogDto) {
+  async wordTestFailed(@Body() req: AddWordTestResultLogAPIRequestDto) {
     return await this.englishWordService.wordTestFailedService(req);
   }
 
