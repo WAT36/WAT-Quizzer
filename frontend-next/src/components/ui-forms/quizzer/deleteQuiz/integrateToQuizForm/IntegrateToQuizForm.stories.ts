@@ -4,11 +4,11 @@ import { IntegrateToQuizForm } from './IntegrateToQuizForm';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Organisms/DeleteQuiz/IntegrateToQuizForm',
+  title: 'Organisms/Quizzer/DeleteQuiz/IntegrateToQuizForm',
   component: IntegrateToQuizForm,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
-    layout: 'centered'
+    layout: 'fullscreen'
   },
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs']
@@ -27,7 +27,6 @@ export const Main: Story = {
     queryOfIntegrateToQuizState: {
       fileNum: -1,
       quizNum: -1
-    },
-    integrateToQuizInfoState: {}
+    }
   }
 };
