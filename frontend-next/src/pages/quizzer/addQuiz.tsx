@@ -9,7 +9,11 @@ import { AddQuizForm } from '@/components/ui-forms/quizzer/addQuiz/addQuizForm/A
 import { Button } from '@/components/ui-elements/button/Button';
 import { addQuizAPI } from '@/common/ButtonAPI';
 
-export default function AddQuizPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function AddQuizPage({ isMock }: Props) {
   const [queryOfAddQuiz, setQueryOfAddQuiz] = useState<QueryOfPutQuizState>({
     fileNum: -1,
     quizNum: -1
@@ -21,7 +25,7 @@ export default function AddQuizPage() {
 
   // 問題ファイルリスト取得
   useEffect(() => {
-    getFileList(setMessage, setFilelistoption);
+    !isMock && getFileList(setMessage, setFilelistoption);
   }, []);
 
   const contents = () => {
