@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { MessageState, PullDownOptionState, QueryOfPutQuizState } from '../../../interfaces/state';
