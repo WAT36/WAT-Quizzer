@@ -8,7 +8,11 @@ import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displa
 import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
 import { getFileList } from '@/common/response';
 
-export default function GetQuizPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function GetQuizPage({ isMock }: Props) {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionState[]>([]);
   const [message, setMessage] = useState<MessageState>({
@@ -32,7 +36,7 @@ export default function GetQuizPage() {
 
   // 問題ファイルリスト取得
   useEffect(() => {
-    getFileList(setMessage, setFilelistoption);
+    !isMock && getFileList(setMessage, setFilelistoption);
   }, []);
 
   const contents = () => {
