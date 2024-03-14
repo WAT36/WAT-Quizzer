@@ -4,11 +4,10 @@ import { execQuery, execTransaction } from '../../../lib/db/dao';
 import {
   AddWordSubSourceDto,
   EditWordMeanDto,
-  EditWordSourceDto,
 } from '../../../interfaces/api/request/english';
 import { TransactionQuery } from '../../../interfaces/db';
 import { getDateForSqlString } from 'lib/str';
-import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto } from 'quizzer-lib';
+import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto } from 'quizzer-lib';
 
 @Injectable()
 export class EnglishWordService {
@@ -266,7 +265,7 @@ export class EnglishWordService {
   }
 
   // 単語の出典追加・更新
-  async editSourceOfWordById(req: EditWordSourceDto) {
+  async editSourceOfWordById(req: EditWordSourceAPIRequestDto) {
     try {
       const { meanId, oldSourceId, newSourceId } = req;
       //トランザクション実行準備

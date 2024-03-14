@@ -12,9 +12,8 @@ import { EnglishWordService } from './word.service';
 import {
   AddWordSubSourceDto,
   EditWordMeanDto,
-  EditWordSourceDto,
 } from '../../../interfaces/api/request/english';
-import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto } from 'quizzer-lib';
+import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto } from 'quizzer-lib';
 
 @Controller('english/word')
 export class EnglishWordController {
@@ -76,7 +75,7 @@ export class EnglishWordController {
   }
 
   @Put('source')
-  async editSourceOfWordById(@Body() req: EditWordSourceDto) {
+  async editSourceOfWordById(@Body() req: EditWordSourceAPIRequestDto) {
     return await this.englishWordService.editSourceOfWordById(req);
   }
 
