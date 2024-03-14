@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { FileConfigSection } from './FileConfigSection';
+import { quizFileMock } from '../../../../../../.storybook/mockData/quizFile';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Organisms/Settings/FileConfigSection',
+  title: 'Organisms/Quizzer/Settings/FileConfigSection',
   component: FileConfigSection,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
@@ -22,6 +23,6 @@ export const Main: Story = {
   args: {
     fileName: '',
     deleteFileNum: -1,
-    filelistoption: []
+    filelistoption: quizFileMock
   }
 };
