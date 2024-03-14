@@ -7,7 +7,11 @@ import { getFileList } from '@/common/response';
 import { FileConfigSection } from '@/components/ui-forms/quizzer/settings/fileConfigSection/FileConfigSection';
 import { LogConfigSection } from '@/components/ui-forms/quizzer/settings/logConfigSection/LogConfigSection';
 
-export default function SelectQuizPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function QuizzerSettingPage({ isMock }: Props) {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [message, setMessage] = useState<MessageState>({
     message: '　',
@@ -20,7 +24,7 @@ export default function SelectQuizPage() {
   const [deleteLogOfFileAlertOpen, setDeleteLogOfFileAlertOpen] = React.useState(false);
 
   useEffect(() => {
-    getFileList(setMessage, setFilelistoption);
+    !isMock && getFileList(setMessage, setFilelistoption);
   }, []);
 
   const contents = () => {
