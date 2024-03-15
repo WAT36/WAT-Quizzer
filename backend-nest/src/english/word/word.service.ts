@@ -8,7 +8,8 @@ import { AddEnglishWordAPIRequestDto,
   EditWordSourceAPIRequestDto, 
   AddWordSubSourceAPIRequestDto, 
   EditWordMeanAPIRequestDto, 
-  WordSearchAPIResponseDto 
+  WordSearchAPIResponseDto,
+  GetWordAPIResponseDto
 } from 'quizzer-lib';
 
 @Injectable()
@@ -110,7 +111,7 @@ export class EnglishWordService {
   // 単語検索
   async searchWordService(wordName: string, subSourceName: string) {
     try {
-      const result: WordSearchAPIResponseDto = await execQuery(
+      const result: WordSearchAPIResponseDto[] = await execQuery(
         SQL.ENGLISH.WORD.SEARCH(wordName, subSourceName),
         [],
       );
@@ -128,7 +129,8 @@ export class EnglishWordService {
   // 単語全取得
   async getAllWordService() {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.GET.ALL, []);
+      const result: GetWordAPIResponseDto[] = await execQuery(SQL.ENGLISH.WORD.GET.ALL, []);
+      return result
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
