@@ -9,7 +9,11 @@ import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanForm/AddMeanForm';
 import { addWordAPI } from '@/common/ButtonAPI';
 
-export default function EnglishBotAddWordPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function EnglishBotAddWordPage({ isMock }: Props) {
   const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
   const [sourceList, setSourceList] = useState<PullDownOptionState[]>([]);
@@ -17,7 +21,7 @@ export default function EnglishBotAddWordPage() {
   const [inputWord, setInputWord] = useState<string>('');
 
   useEffect(() => {
-    Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceList(setMessage, setSourceList)]);
+    !isMock && Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceList(setMessage, setSourceList)]);
   }, []);
 
   const contents = () => {
