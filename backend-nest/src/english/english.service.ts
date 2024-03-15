@@ -9,7 +9,7 @@ export class EnglishService {
   // 品詞取得
   async getPartsofSpeechService() {
     try {
-      const result: GetPartsofSpeechAPIResponseDto = await execQuery(SQL.ENGLISH.PARTOFSPEECH.GET.ALL, []);
+      const result: GetPartsofSpeechAPIResponseDto[] = await execQuery(SQL.ENGLISH.PARTOFSPEECH.GET.ALL, []);
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -24,7 +24,7 @@ export class EnglishService {
   // 出典取得
   async getSourceService() {
     try {
-      const result: GetSourceAPIResponseDto = await execQuery(SQL.ENGLISH.SOURCE.GET.ALL, []);
+      const result: GetSourceAPIResponseDto[] = await execQuery(SQL.ENGLISH.SOURCE.GET.ALL, []);
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
