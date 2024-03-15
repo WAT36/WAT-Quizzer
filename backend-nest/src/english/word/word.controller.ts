@@ -9,10 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { EnglishWordService } from './word.service';
-import {
-  EditWordMeanDto,
-} from '../../../interfaces/api/request/english';
-import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto, AddWordSubSourceAPIRequestDto } from 'quizzer-lib';
+import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto, AddWordSubSourceAPIRequestDto, EditWordMeanAPIRequestDto } from 'quizzer-lib';
 
 @Controller('english/word')
 export class EnglishWordController {
@@ -105,7 +102,7 @@ export class EnglishWordController {
   }
 
   @Patch(':id')
-  async editWordMean(@Body() req: EditWordMeanDto) {
+  async editWordMean(@Body() req: EditWordMeanAPIRequestDto) {
     return await this.englishWordService.editWordMeanService(req);
   }
 }

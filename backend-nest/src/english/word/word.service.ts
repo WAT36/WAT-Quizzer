@@ -1,12 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../../config/sql';
 import { execQuery, execTransaction } from '../../../lib/db/dao';
-import {
-  EditWordMeanDto,
-} from '../../../interfaces/api/request/english';
 import { TransactionQuery } from '../../../interfaces/db';
 import { getDateForSqlString } from 'lib/str';
-import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto, AddWordSubSourceAPIRequestDto } from 'quizzer-lib';
+import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto, AddWordSubSourceAPIRequestDto, EditWordMeanAPIRequestDto } from 'quizzer-lib';
 
 @Injectable()
 export class EnglishWordService {
@@ -374,7 +371,7 @@ export class EnglishWordService {
   }
 
   // 単語の意味などを更新
-  async editWordMeanService(req: EditWordMeanDto) {
+  async editWordMeanService(req: EditWordMeanAPIRequestDto) {
     try {
       const { wordId, wordMeanId, meanId, partofspeechId, meaning } = req;
       //意味編集及び追加
