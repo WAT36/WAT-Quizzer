@@ -3,7 +3,13 @@ import { SQL } from '../../../config/sql';
 import { execQuery, execTransaction } from '../../../lib/db/dao';
 import { TransactionQuery } from '../../../interfaces/db';
 import { getDateForSqlString } from 'lib/str';
-import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto, AddWordSubSourceAPIRequestDto, EditWordMeanAPIRequestDto } from 'quizzer-lib';
+import { AddEnglishWordAPIRequestDto, 
+  AddWordTestResultLogAPIRequestDto, 
+  EditWordSourceAPIRequestDto, 
+  AddWordSubSourceAPIRequestDto, 
+  EditWordMeanAPIRequestDto, 
+  WordSearchAPIResponseDto 
+} from 'quizzer-lib';
 
 @Injectable()
 export class EnglishWordService {
@@ -104,10 +110,11 @@ export class EnglishWordService {
   // 単語検索
   async searchWordService(wordName: string, subSourceName: string) {
     try {
-      return await execQuery(
+      const result: WordSearchAPIResponseDto = await execQuery(
         SQL.ENGLISH.WORD.SEARCH(wordName, subSourceName),
         [],
       );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
