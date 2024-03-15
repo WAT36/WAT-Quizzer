@@ -6,7 +6,11 @@ import { WordSummaryApiResponse } from '../../../interfaces/db';
 import { getWordSummaryData } from '@/common/response';
 import { MessageState } from '../../../interfaces/state';
 
-export default function EnglishBotTopPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function EnglishBotTopPage({ isMock }: Props) {
   const [wordSummaryData, setWordSummaryData] = useState<WordSummaryApiResponse[]>([]);
   const [message, setMessage] = useState<MessageState>({
     message: '　',
@@ -15,7 +19,7 @@ export default function EnglishBotTopPage() {
   });
   // 問題ファイルリスト取得
   useEffect(() => {
-    getWordSummaryData(setMessage, setWordSummaryData);
+    !isMock && getWordSummaryData(setMessage, setWordSummaryData);
   }, []);
 
   const contents = () => {
