@@ -8,7 +8,11 @@ import { Title } from '@/components/ui-elements/title/Title';
 import { SearchInputSection } from '@/components/ui-forms/englishbot/dictionary/searchInputSection/SearchInputSection';
 import { SearchResultTable } from '@/components/ui-elements/searchResultTable/SearchResultTable';
 
-export default function EnglishBotDictionaryPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function EnglishBotDictionaryPage({ isMock }: Props) {
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
   const [message, setMessage] = useState<MessageState>({
     message: '　',
