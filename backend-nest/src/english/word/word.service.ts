@@ -10,7 +10,8 @@ import { AddEnglishWordAPIRequestDto,
   EditWordMeanAPIRequestDto, 
   WordSearchAPIResponseDto,
   GetWordAPIResponseDto,
-  GetWordBynameAPIResponseDto
+  GetWordBynameAPIResponseDto,
+  GetRandomWordAPIResponseDto
 } from 'quizzer-lib';
 
 @Injectable()
@@ -191,10 +192,11 @@ export class EnglishWordService {
         }
       `;
       // ランダムに英単語id,nameを返す
-      return await execQuery(
+      const result:GetRandomWordAPIResponseDto[] = await execQuery(
         SQL.ENGLISH.WORD.GET.RANDOM(sourceIdSql, subSourceSql),
         [],
       );
+      return result
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

@@ -23,3 +23,9 @@ export interface GetWordBynameAPIResponseDto {
   partsofspeech_id: number
   partsofspeech: string
 }
+
+// 英単語ランダム取得APIレスポンス型
+export interface GetRandomWordAPIResponseDto {
+  id: number
+  name: string
+}
