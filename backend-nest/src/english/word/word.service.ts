@@ -11,7 +11,9 @@ import { AddEnglishWordAPIRequestDto,
   WordSearchAPIResponseDto,
   GetWordAPIResponseDto,
   GetWordBynameAPIResponseDto,
-  GetRandomWordAPIResponseDto
+  GetRandomWordAPIResponseDto,
+  GetFourChoiceAPIResponseDto,
+  FourChoiceAPIResponseDto
 } from 'quizzer-lib';
 
 @Injectable()
@@ -217,11 +219,11 @@ export class EnglishWordService {
         );
       }
       // 指定単語idの意味を取得
-      const correctMeans = await execQuery(SQL.ENGLISH.MEAN.GET.BY_WORD_ID, [
+      const correctMeans: GetFourChoiceAPIResponseDto[] = await execQuery(SQL.ENGLISH.MEAN.GET.BY_WORD_ID, [
         wordId,
       ]);
       // ダミー選択肢用の意味を取得
-      const dummyMeans = await execQuery(SQL.ENGLISH.MEAN.GET.BY_NOT_WORD_ID, [
+      const dummyMeans: GetFourChoiceAPIResponseDto[]= await execQuery(SQL.ENGLISH.MEAN.GET.BY_NOT_WORD_ID, [
         wordId,
       ]);
 
@@ -232,7 +234,7 @@ export class EnglishWordService {
             mean: x.meaning,
           })),
         },
-      ];
+      ] as FourChoiceAPIResponseDto;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

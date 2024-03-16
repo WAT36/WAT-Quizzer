@@ -29,3 +29,20 @@ export interface GetRandomWordAPIResponseDto {
   id: number
   name: string
 }
+
+// 四択問題選択肢取得APIレスポンス型
+export interface GetFourChoiceAPIResponseDto {
+  id: number
+  word_id: number
+  wordmean_id: number
+  partsofspeech_id: number
+  meaning: string
+}
+export interface FourChoiceAPIResponseDto {
+  correct: {
+    mean: string
+  }
+  dummy: {
+    mean: string
+  }[]
+}
