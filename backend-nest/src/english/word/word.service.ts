@@ -9,7 +9,8 @@ import { AddEnglishWordAPIRequestDto,
   AddWordSubSourceAPIRequestDto, 
   EditWordMeanAPIRequestDto, 
   WordSearchAPIResponseDto,
-  GetWordAPIResponseDto
+  GetWordAPIResponseDto,
+  GetWordBynameAPIResponseDto
 } from 'quizzer-lib';
 
 @Injectable()
@@ -144,7 +145,8 @@ export class EnglishWordService {
   // 単語名から単語情報取得
   async getWordByNameService(name: string) {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.GET.NAME, [name]);
+      const result: GetWordBynameAPIResponseDto[] = await execQuery(SQL.ENGLISH.WORD.GET.NAME, [name])
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
