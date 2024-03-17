@@ -52,3 +52,11 @@ export interface GetWordSummaryAPIResponseDto {
   name: string
   count: number
 }
+
+// 取得APIレスポンス型
+export interface GetSourceOfWordAPIResponseDto {
+  word_id: number
+  word_name: string
+  source_id: number
+  source_name: string
+}

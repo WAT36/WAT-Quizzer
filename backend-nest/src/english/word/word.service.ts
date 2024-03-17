@@ -14,7 +14,8 @@ import { AddEnglishWordAPIRequestDto,
   GetRandomWordAPIResponseDto,
   GetFourChoiceAPIResponseDto,
   FourChoiceAPIResponseDto,
-  GetWordSummaryAPIResponseDto
+  GetWordSummaryAPIResponseDto,
+  GetSourceOfWordAPIResponseDto
 } from 'quizzer-lib';
 
 @Injectable()
@@ -333,7 +334,7 @@ export class EnglishWordService {
   // 単語のサマリデータ取得
   async getSummary() {
     try {
-      const result:GetWordSummaryAPIResponseDto = await execQuery(SQL.ENGLISH.WORD.SUMMARY.GET, []);
+      const result:GetWordSummaryAPIResponseDto[] = await execQuery(SQL.ENGLISH.WORD.SUMMARY.GET, []);
       return result
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -348,7 +349,7 @@ export class EnglishWordService {
   // 単語IDから出典情報取得
   async getSourceOfWordById(id: number) {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.GET.SOURCE, [id]);
+      const  result: GetSourceOfWordAPIResponseDto[] = await execQuery(SQL.ENGLISH.WORD.GET.SOURCE, [id]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
