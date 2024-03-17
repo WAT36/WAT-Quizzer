@@ -53,10 +53,15 @@ export interface GetWordSummaryAPIResponseDto {
   count: number
 }
 
-// 取得APIレスポンス型
+// 単語の出典取得APIレスポンス型
 export interface GetSourceOfWordAPIResponseDto {
   word_id: number
   word_name: string
   source_id: number
   source_name: string
+}
+
+// 単語のサブ出典取得APIレスポンス型
+export interface GetSubSourceOfWordAPIResponseDto {
+  subsource: string
 }
