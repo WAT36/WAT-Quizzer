@@ -13,7 +13,8 @@ import { AddEnglishWordAPIRequestDto,
   GetWordBynameAPIResponseDto,
   GetRandomWordAPIResponseDto,
   GetFourChoiceAPIResponseDto,
-  FourChoiceAPIResponseDto
+  FourChoiceAPIResponseDto,
+  GetWordSummaryAPIResponseDto
 } from 'quizzer-lib';
 
 @Injectable()
@@ -332,7 +333,8 @@ export class EnglishWordService {
   // 単語のサマリデータ取得
   async getSummary() {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.SUMMARY.GET, []);
+      const result:GetWordSummaryAPIResponseDto = await execQuery(SQL.ENGLISH.WORD.SUMMARY.GET, []);
+      return result
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

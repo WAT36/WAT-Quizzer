@@ -9,7 +9,13 @@ import {
   Query,
 } from '@nestjs/common';
 import { EnglishWordService } from './word.service';
-import { AddEnglishWordAPIRequestDto, AddWordTestResultLogAPIRequestDto, EditWordSourceAPIRequestDto, AddWordSubSourceAPIRequestDto, EditWordMeanAPIRequestDto } from 'quizzer-lib';
+import { 
+  AddEnglishWordAPIRequestDto, 
+  AddWordTestResultLogAPIRequestDto, 
+  EditWordSourceAPIRequestDto, 
+  AddWordSubSourceAPIRequestDto, 
+  EditWordMeanAPIRequestDto 
+} from 'quizzer-lib';
 
 @Controller('english/word')
 export class EnglishWordController {

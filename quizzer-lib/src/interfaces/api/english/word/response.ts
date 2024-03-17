@@ -46,3 +46,9 @@ export interface FourChoiceAPIResponseDto {
     mean: string
   }[]
 }
+
+// 四択問題選択肢取得APIレスポンス型
+export interface GetWordSummaryAPIResponseDto {
+  name: string
+  count: number
+}
