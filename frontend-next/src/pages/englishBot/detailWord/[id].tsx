@@ -59,7 +59,6 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
         <MeaningStack
           id={id}
           posList={posList}
-          sourceList={sourcelistoption}
           meanData={meanData}
           modalIsOpen={open}
           setMessage={setMessage}
