@@ -89,7 +89,8 @@ export class SayingService {
   // 格言検索
   async searchSayingService(saying: string) {
     try {
-      return await execQuery(SQL.SAYING.GET.SEARCH(saying), []);
+      const result: GetSayingAPIResponseDto[] = await execQuery(SQL.SAYING.GET.SEARCH(saying), []);
+      return result
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -103,7 +104,8 @@ export class SayingService {
   // 格言取得(ID指定)
   async getSayingByIdService(id: number) {
     try {
-      return await execQuery(SQL.SAYING.GET.BYID, [id]);
+      const result: GetSayingAPIResponseDto[] = await execQuery(SQL.SAYING.GET.BYID, [id]);
+      return result
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
