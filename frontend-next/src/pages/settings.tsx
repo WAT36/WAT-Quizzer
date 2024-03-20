@@ -9,6 +9,8 @@ import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookF
 import { AddSayingForm } from '@/components/ui-forms/settings/addSayingForm/AddSayingForm';
 import { SearchSayingSection } from '@/components/ui-forms/settings/searchSayingSection/SearchSayingSection';
 import { EditSayingSection } from '@/components/ui-forms/settings/editSayingSection/EditSayingSection';
+import { messageState } from '@/atoms/Message';
+import { useRecoilState } from 'recoil';
 
 export default function Settings() {
   const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
@@ -20,14 +22,11 @@ export default function Settings() {
     saying: '',
     explanation: ''
   });
-  const [message, setMessage] = useState({
-    message: '　',
-    messageColor: 'common.black'
-  });
+  const [message, setMessage] = useRecoilState(messageState);
 
   useEffect(() => {
     getBook(setMessage, setBooklistoption);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (
@@ -77,13 +76,7 @@ export default function Settings() {
 
   return (
     <>
-      <Layout
-        mode="settings"
-        contents={contents()}
-        title={'設定'}
-        messageState={message}
-        setMessageStater={setMessage}
-      />
+      <Layout mode="settings" contents={contents()} title={'設定'} />
     </>
   );
 }

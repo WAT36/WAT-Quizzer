@@ -4,7 +4,6 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import {
   DeleteQuizInfoState,
-  MessageState,
   PullDownOptionState,
   QueryOfDeleteQuizState,
   QueryOfIntegrateToQuizState
@@ -12,6 +11,8 @@ import {
 import { getFileList } from '@/common/response';
 import { DeleteQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/deleteQuizForm/DeleteQuizForm';
 import { IntegrateToQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/integrateToQuizForm/IntegrateToQuizForm';
+import { messageState } from '@/atoms/Message';
+import { useRecoilState } from 'recoil';
 
 type Props = {
   isMock?: boolean;
@@ -29,16 +30,12 @@ export default function DeleteQuizPage({ isMock }: Props) {
     format: 'basic'
   });
   const [deleteQuizInfoState, setDeleteQuizInfoState] = useState<DeleteQuizInfoState>({});
-  const [message, setMessage] = useState<MessageState>({
-    message: '　',
-    messageColor: 'common.black',
-    isDisplay: false
-  });
+  const [message, setMessage] = useRecoilState(messageState);
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
 
   useEffect(() => {
     !isMock && getFileList(setMessage, setFilelistoption);
-  }, []);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (
@@ -68,13 +65,7 @@ export default function DeleteQuizPage({ isMock }: Props) {
 
   return (
     <>
-      <Layout
-        mode="quizzer"
-        contents={contents()}
-        title={'問題削除'}
-        messageState={message}
-        setMessageStater={setMessage}
-      />
+      <Layout mode="quizzer" contents={contents()} title={'問題削除'} />
     </>
   );
 }

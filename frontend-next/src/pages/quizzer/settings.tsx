@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import { PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
 import { FileConfigSection } from '@/components/ui-forms/quizzer/settings/fileConfigSection/FileConfigSection';
 import { LogConfigSection } from '@/components/ui-forms/quizzer/settings/logConfigSection/LogConfigSection';
+import { messageState } from '@/atoms/Message';
+import { useRecoilState } from 'recoil';
 
 type Props = {
   isMock?: boolean;
@@ -13,11 +15,7 @@ type Props = {
 
 export default function QuizzerSettingPage({ isMock }: Props) {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
-  const [message, setMessage] = useState<MessageState>({
-    message: '　',
-    messageColor: 'common.black',
-    isDisplay: false
-  });
+  const [message, setMessage] = useRecoilState(messageState);
   const [fileName, setFileName] = useState<string>('');
   const [fileNum, setFileNum] = useState<number>(-1); // 削除する問題ファイルの番号
   const [deleteLogOfFileNum, setDeleteLogOfFileNum] = useState<number>(-1);
@@ -25,7 +23,7 @@ export default function QuizzerSettingPage({ isMock }: Props) {
 
   useEffect(() => {
     !isMock && getFileList(setMessage, setFilelistoption);
-  }, []);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (
@@ -56,13 +54,7 @@ export default function QuizzerSettingPage({ isMock }: Props) {
 
   return (
     <>
-      <Layout
-        mode="quizzer"
-        contents={contents()}
-        title={'設定'}
-        messageState={message}
-        setMessageStater={setMessage}
-      />
+      <Layout mode="quizzer" contents={contents()} title={'設定'} />
     </>
   );
 }

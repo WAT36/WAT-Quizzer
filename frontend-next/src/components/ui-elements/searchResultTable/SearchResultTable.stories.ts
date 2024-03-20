@@ -15,7 +15,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const main: Story = {
+export const Main: Story = {
   args: {
     searchResult: [
       { id: 1, name: '佐藤太郎', point: 50 },

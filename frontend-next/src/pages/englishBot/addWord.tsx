@@ -3,18 +3,20 @@ import { buttonStyle } from '../../styles/Pages';
 import { Button, Container, FormControl, FormGroup, TextField } from '@mui/material';
 import { meanOfAddWordDto } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import { PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanForm/AddMeanForm';
 import { addWordAPI } from '@/common/ButtonAPI';
+import { messageState } from '@/atoms/Message';
+import { useRecoilState } from 'recoil';
 
 type Props = {
   isMock?: boolean;
 };
 
 export default function EnglishBotAddWordPage({ isMock }: Props) {
-  const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
+  const [message, setMessage] = useRecoilState(messageState);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
   const [sourceList, setSourceList] = useState<PullDownOptionState[]>([]);
   const [meanRowList, setMeanRowList] = useState<meanOfAddWordDto[]>([]);
@@ -22,7 +24,7 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
 
   useEffect(() => {
     !isMock && Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceList(setMessage, setSourceList)]);
-  }, []);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (
@@ -59,13 +61,7 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
 
   return (
     <>
-      <Layout
-        mode="englishBot"
-        contents={contents()}
-        title={'単語追加'}
-        messageState={message}
-        setMessageStater={setMessage}
-      />
+      <Layout mode="englishBot" contents={contents()} title={'単語追加'} />
     </>
   );
 }

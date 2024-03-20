@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState, PullDownOptionState, QueryOfPutQuizState } from '../../../interfaces/state';
+import { PullDownOptionState, QueryOfPutQuizState } from '../../../interfaces/state';
 import { AddQuizLogSection } from '@/components/ui-forms/quizzer/addQuiz/addQuizLogSection/AddQuizLogSection';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
 import { AddQuizForm } from '@/components/ui-forms/quizzer/addQuiz/addQuizForm/AddQuizForm';
 import { Button } from '@/components/ui-elements/button/Button';
 import { addQuizAPI } from '@/common/ButtonAPI';
+import { messageState } from '@/atoms/Message';
+import { useRecoilState } from 'recoil';
 
 type Props = {
   isMock?: boolean;
@@ -18,7 +20,7 @@ export default function AddQuizPage({ isMock }: Props) {
     fileNum: -1,
     quizNum: -1
   });
-  const [message, setMessage] = useState<MessageState>({ message: '　', messageColor: 'common.black' });
+  const [message, setMessage] = useRecoilState(messageState);
   const [addLog, setAddLog] = useState<string>('');
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
   const [value, setValue] = React.useState(0);
@@ -26,7 +28,7 @@ export default function AddQuizPage({ isMock }: Props) {
   // 問題ファイルリスト取得
   useEffect(() => {
     !isMock && getFileList(setMessage, setFilelistoption);
-  }, []);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (
@@ -64,13 +66,7 @@ export default function AddQuizPage({ isMock }: Props) {
 
   return (
     <>
-      <Layout
-        mode="quizzer"
-        contents={contents()}
-        title={'問題追加'}
-        messageState={message}
-        setMessageStater={setMessage}
-      />
+      <Layout mode="quizzer" contents={contents()} title={'問題追加'} />
     </>
   );
 }
