@@ -5,7 +5,8 @@ import {
   AddBookAPIRequestDto,
   AddSayingAPIRequestDto,
   EditSayingAPIRequestDto,
-  GetSayingAPIResponseDto
+  GetSayingAPIResponseDto,
+  GetBookAPIResponseDto
 } from 'quizzer-lib';
 
 @Injectable()
@@ -48,7 +49,8 @@ export class SayingService {
   // 啓発本リスト取得
   async getBookListService() {
     try {
-      return await execQuery(SQL.SELFHELP_BOOK.GET.ALL, []);
+      const result: GetBookAPIResponseDto[] = await execQuery(SQL.SELFHELP_BOOK.GET.ALL, []);
+      return result
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

@@ -4,3 +4,9 @@ export interface GetSayingAPIResponseDto {
   explanation: string
   name: string
 }
+
+// 啓発本取得APIレスポンス型
+export interface GetBookAPIResponseDto {
+  id: number
+  name: string
+}
