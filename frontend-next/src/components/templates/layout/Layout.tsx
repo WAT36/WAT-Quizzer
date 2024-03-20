@@ -9,7 +9,6 @@ import { Footer } from '@/components/ui-parts/footer/Footer';
 import { useRecoilState } from 'recoil';
 import { isOpenState } from '@/atoms/SideBar';
 import { Button } from '@/components/ui-elements/button/Button';
-import { MessageState } from '../../../../interfaces/state';
 import { MessageBar } from '@/components/ui-elements/messageBar/MessageBar';
 import { messageState } from '@/atoms/Message';
 
@@ -25,8 +24,6 @@ interface LayoutProps {
   title?: string;
   contents: JSX.Element;
   mode: 'quizzer' | 'englishBot' | 'settings';
-  messageState?: MessageState;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
 }
 
 const urlEnd = process.env.NEXT_PUBLIC_URL_END || '';
