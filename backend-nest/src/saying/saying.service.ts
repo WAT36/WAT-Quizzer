@@ -28,7 +28,7 @@ export class SayingService {
   }
 
   // 啓発本追加
-  async addBookService(req: AddBookDto) {
+  async addBookService(req: AddBookAPIRequestDto) {
     const { book_name } = req;
     try {
       return await execQuery(SQL.SELFHELP_BOOK.ADD, [book_name]);

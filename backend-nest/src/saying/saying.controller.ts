@@ -9,10 +9,12 @@ import {
 } from '@nestjs/common';
 import { SayingService } from './saying.service';
 import {
-  AddBookDto,
   AddSayingDto,
   EditSayingDto,
 } from '../../interfaces/api/request/saying';
+import {
+  AddBookAPIRequestDto,
+} from 'quizzer-lib';
 
 @Controller('saying')
 export class SayingController {
@@ -26,7 +28,7 @@ export class SayingController {
 
   // 啓発本追加
   @Post('/book')
-  async addBook(@Body() req: AddBookDto) {
+  async addBook(@Body() req: AddBookAPIRequestDto) {
     return await this.sayingService.addBookService(req);
   }
 
