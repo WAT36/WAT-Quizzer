@@ -12,7 +12,11 @@ import { EditSayingSection } from '@/components/ui-forms/settings/editSayingSect
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
 
-export default function Settings() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function Settings({ isMock }: Props) {
   const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
   const [bookName, setBookName] = useState<string>('');
   const [queryOfSaying, setQueryOfSaying] = useState<string>('');
@@ -25,8 +29,8 @@ export default function Settings() {
   const [message, setMessage] = useRecoilState(messageState);
 
   useEffect(() => {
-    getBook(setMessage, setBooklistoption);
-  }, [setMessage]);
+    !isMock && getBook(setMessage, setBooklistoption);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (
