@@ -3,21 +3,19 @@ import { Container } from '@mui/material';
 import { GetAccuracyRateByCategoryServiceDto } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
 import { getFileList } from '@/common/response';
-import { MessageState, PullDownOptionState, QueryOfGetAccuracyState } from '../../../interfaces/state';
+import { PullDownOptionState, QueryOfGetAccuracyState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { GetFileForm } from '@/components/ui-forms/quizzer/accuracyRateGraph/getFileForm/GetFileForm';
 import { GetFileButtonGroup } from '@/components/ui-forms/quizzer/accuracyRateGraph/getFileButtonGroup/GetFileButtonGroup';
 import { AccuracyChart } from '@/components/ui-forms/quizzer/accuracyRateGraph/accuracyChart/AccuracyChart';
+import { messageState } from '@/atoms/Message';
+import { useRecoilState } from 'recoil';
 
 export default function AccuracyRateGraphPage() {
   const [queryOfGetAccuracy, setQueryOfGetAccuracy] = useState<QueryOfGetAccuracyState>({
     fileNum: -1
   });
-  const [message, setMessage] = useState<MessageState>({
-    message: '　',
-    messageColor: 'common.black',
-    isDisplay: false
-  });
+  const [message, setMessage] = useRecoilState(messageState);
   const [accuracy_data, setAccuracyData] = useState<GetAccuracyRateByCategoryServiceDto>({
     result: [],
     checked_result: []
@@ -51,13 +49,7 @@ export default function AccuracyRateGraphPage() {
 
   return (
     <>
-      <Layout
-        mode="quizzer"
-        contents={contents()}
-        title={'カテゴリ別正解率表示'}
-        messageState={message}
-        setMessageStater={setMessage}
-      />
+      <Layout mode="quizzer" contents={contents()} title={'カテゴリ別正解率表示'} />
     </>
   );
 }
