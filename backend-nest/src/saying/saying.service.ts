@@ -2,10 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery } from '../../lib/db/dao';
 import {
-  AddBookDto,
-  AddSayingDto,
   EditSayingDto,
 } from '../../interfaces/api/request/saying';
+import {
+  AddBookAPIRequestDto,
+  AddSayingAPIRequestDto,
+} from 'quizzer-lib';
 
 @Injectable()
 export class SayingService {
@@ -57,7 +59,7 @@ export class SayingService {
   }
 
   // 格言追加
-  async addSayingService(req: AddSayingDto) {
+  async addSayingService(req: AddSayingAPIRequestDto) {
     const { book_id, saying, explanation } = req;
     try {
       // 格言の新規ID計算
