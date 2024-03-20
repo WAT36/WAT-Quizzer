@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   MessageState,
   PullDownOptionState,
@@ -14,9 +14,7 @@ import { Button } from '@/components/ui-elements/button/Button';
 
 interface InputQueryForEditFormProps {
   filelistoption: PullDownOptionState[];
-  queryOfQuizState: QueryOfQuizState;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
   setQueryOfEditQuizStater?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
 }
 
@@ -45,18 +43,22 @@ const getLabelIndex = (value: string) => {
 
 export const InputQueryForEditForm = ({
   filelistoption,
-  queryOfQuizState,
   setMessageStater,
-  setQueryofQuizStater,
   setQueryOfEditQuizStater
 }: InputQueryForEditFormProps) => {
+  const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
+    fileNum: -1,
+    quizNum: -1,
+    format: 'basic'
+  });
+
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (!setMessageStater || !setQueryofQuizStater || !setQueryOfEditQuizStater) {
+    if (!setMessageStater || !setQueryOfEditQuizStater) {
       return;
     }
 
-    setQueryofQuizStater({
-      ...queryOfQuizState,
+    setQueryOfQuiz({
+      ...queryOfQuiz,
       fileNum: e.target.value as number
     });
     setMessageStater({
@@ -77,9 +79,9 @@ export const InputQueryForEditForm = ({
           <TextField
             label="問題番号"
             setStater={(value: string) => {
-              if (setQueryofQuizStater) {
-                setQueryofQuizStater({
-                  ...queryOfQuizState,
+              if (setQueryOfQuiz) {
+                setQueryOfQuiz({
+                  ...queryOfQuiz,
                   quizNum: +value
                 });
               }
@@ -94,9 +96,9 @@ export const InputQueryForEditForm = ({
               radioButtonProps: radioButtonLabelArray,
               defaultValue: radioButtonLabelArray[0]['value'],
               setQueryofQuizStater: (value: string) => {
-                if (setQueryofQuizStater) {
-                  setQueryofQuizStater({
-                    ...queryOfQuizState,
+                if (setQueryOfQuiz) {
+                  setQueryOfQuiz({
+                    ...queryOfQuiz,
                     format: value
                   });
                 }
@@ -118,7 +120,9 @@ export const InputQueryForEditForm = ({
         attr={'button-array'}
         variant="contained"
         color="primary"
-        onClick={(e) => getQuizAPI({ queryOfQuizState, setMessageStater, setQueryofPutQuiz: setQueryOfEditQuizStater })}
+        onClick={(e) =>
+          getQuizAPI({ queryOfQuizState: queryOfQuiz, setMessageStater, setQueryofPutQuiz: setQueryOfEditQuizStater })
+        }
       />
     </>
   );

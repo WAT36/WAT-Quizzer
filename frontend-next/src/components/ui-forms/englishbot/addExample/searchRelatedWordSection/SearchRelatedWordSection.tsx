@@ -9,21 +9,18 @@ import { MessageState } from '../../../../../../interfaces/state';
 import { meanColumns } from '../../../../../../utils/englishBot/SearchWordTable';
 
 interface SearchRelatedWordSectionProps {
-  searchResult: GridRowsProp;
   inputExampleData: InputExampleData;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setSearchResult?: React.Dispatch<React.SetStateAction<GridRowsProp>>;
   setInputExampleData?: React.Dispatch<React.SetStateAction<InputExampleData>>;
 }
 
 export const SearchRelatedWordSection = ({
-  searchResult,
   inputExampleData,
   setMessage,
-  setSearchResult,
   setInputExampleData
 }: SearchRelatedWordSectionProps) => {
   const [query, setQuery] = useState('');
+  const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
 
   // チェックした問題のIDをステートに登録
   const registerCheckedIdList = (selectionModel: GridRowSelectionModel) => {

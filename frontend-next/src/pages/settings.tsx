@@ -9,8 +9,14 @@ import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookF
 import { AddSayingForm } from '@/components/ui-forms/settings/addSayingForm/AddSayingForm';
 import { SearchSayingSection } from '@/components/ui-forms/settings/searchSayingSection/SearchSayingSection';
 import { EditSayingSection } from '@/components/ui-forms/settings/editSayingSection/EditSayingSection';
+import { messageState } from '@/atoms/Message';
+import { useRecoilState } from 'recoil';
 
-export default function Settings() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function Settings({ isMock }: Props) {
   const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
   const [bookName, setBookName] = useState<string>('');
   const [queryOfSaying, setQueryOfSaying] = useState<string>('');
@@ -20,14 +26,11 @@ export default function Settings() {
     saying: '',
     explanation: ''
   });
-  const [message, setMessage] = useState({
-    message: '　',
-    messageColor: 'common.black'
-  });
+  const [message, setMessage] = useRecoilState(messageState);
 
   useEffect(() => {
-    getBook(setMessage, setBooklistoption);
-  }, []);
+    !isMock && getBook(setMessage, setBooklistoption);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (
@@ -77,13 +80,7 @@ export default function Settings() {
 
   return (
     <>
-      <Layout
-        mode="settings"
-        contents={contents()}
-        title={'設定'}
-        messageState={message}
-        setMessageStater={setMessage}
-      />
+      <Layout mode="settings" contents={contents()} title={'設定'} />
     </>
   );
 }

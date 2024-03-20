@@ -29,6 +29,7 @@ import {
   QueryOfPutQuizState,
   QueryOfQuizState,
   QueryOfSearchQuizState,
+  QueryOfSearchWordState,
   WordMeanData,
   WordSourceData,
   WordSubSourceData
@@ -2264,18 +2265,22 @@ export const submitExampleSentenseAPI = ({
 
 // 単語検索
 interface SearchWordForDictionaryAPIProps {
-  query: string;
+  queryOfSearchWord: QueryOfSearchWordState;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setSearchResult?: React.Dispatch<React.SetStateAction<GridRowsProp>>;
 }
 
-export const searchWordForDictionary = ({ query, setMessage, setSearchResult }: SearchWordForDictionaryAPIProps) => {
+export const searchWordForDictionary = ({
+  queryOfSearchWord,
+  setMessage,
+  setSearchResult
+}: SearchWordForDictionaryAPIProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
   if (!setMessage || !setSearchResult) {
     return;
   }
 
-  if (!query || query === '') {
+  if (!queryOfSearchWord.query || queryOfSearchWord.query === '') {
     setMessage({ message: 'エラー:検索語句を入力して下さい', messageColor: 'error', isDisplay: true });
     return;
   }
@@ -2308,7 +2313,8 @@ export const searchWordForDictionary = ({ query, setMessage, setSearchResult }: 
       }
     },
     {
-      wordName: query
+      wordName: queryOfSearchWord.query,
+      subSourceName: queryOfSearchWord.subSource?.query || ''
     }
   );
 };

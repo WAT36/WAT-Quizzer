@@ -2,37 +2,33 @@ import React, { useEffect, useState } from 'react';
 
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
-import { MessageState, PullDownOptionState, QueryOfPutQuizState, QueryOfQuizState } from '../../../interfaces/state';
+import { PullDownOptionState, QueryOfPutQuizState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
 import { InputQueryForEditForm } from '@/components/ui-forms/quizzer/editQuiz/InputQueryForEditForm/InputQueryForEditForm';
 import { PutQuizForm } from '@/components/ui-forms/quizzer/forms/putQuizForm/PutQuizForm';
 import { Button } from '@/components/ui-elements/button/Button';
 import { editQuizAPI } from '@/common/ButtonAPI';
+import { messageState } from '@/atoms/Message';
+import { useRecoilState } from 'recoil';
 
-export default function EditQuizPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function EditQuizPage({ isMock }: Props) {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
-
-  const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
-    fileNum: -1,
-    quizNum: -1,
-    format: 'basic'
-  });
   const [queryOfEditQuiz, setQueryOfEditQuiz] = useState<QueryOfPutQuizState>({
     fileNum: -1,
     quizNum: -1,
     format: 'basic',
     formatValue: 0
   });
-  const [message, setMessage] = useState<MessageState>({
-    message: '　',
-    messageColor: 'common.black',
-    isDisplay: false
-  });
+  const [message, setMessage] = useRecoilState(messageState);
 
   useEffect(() => {
-    getFileList(setMessage, setFilelistoption);
-  }, []);
+    !isMock && getFileList(setMessage, setFilelistoption);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (
@@ -41,9 +37,7 @@ export default function EditQuizPage() {
 
         <InputQueryForEditForm
           filelistoption={filelistoption}
-          queryOfQuizState={queryOfQuiz}
           setMessageStater={setMessage}
-          setQueryofQuizStater={setQueryOfQuiz}
           setQueryOfEditQuizStater={setQueryOfEditQuiz}
         />
 
@@ -65,13 +59,7 @@ export default function EditQuizPage() {
 
   return (
     <>
-      <Layout
-        mode="quizzer"
-        contents={contents()}
-        title={'問題編集'}
-        messageState={message}
-        setMessageStater={setMessage}
-      />
+      <Layout mode="quizzer" contents={contents()} title={'問題編集'} />
     </>
   );
 }

@@ -4,19 +4,20 @@ import { Container } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { WordSummaryApiResponse } from '../../../interfaces/db';
 import { getWordSummaryData } from '@/common/response';
-import { MessageState } from '../../../interfaces/state';
+import { messageState } from '@/atoms/Message';
+import { useRecoilState } from 'recoil';
 
-export default function EnglishBotTopPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function EnglishBotTopPage({ isMock }: Props) {
   const [wordSummaryData, setWordSummaryData] = useState<WordSummaryApiResponse[]>([]);
-  const [message, setMessage] = useState<MessageState>({
-    message: '　',
-    messageColor: 'common.black',
-    isDisplay: false
-  });
+  const [message, setMessage] = useRecoilState(messageState);
   // 問題ファイルリスト取得
   useEffect(() => {
-    getWordSummaryData(setMessage, setWordSummaryData);
-  }, []);
+    !isMock && getWordSummaryData(setMessage, setWordSummaryData);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (
@@ -27,13 +28,7 @@ export default function EnglishBotTopPage() {
   };
   return (
     <>
-      <Layout
-        mode="englishBot"
-        contents={contents()}
-        title={'Top'}
-        messageState={message}
-        setMessageStater={setMessage}
-      />
+      <Layout mode="englishBot" contents={contents()} title={'Top'} />
     </>
   );
 }

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { QuizController } from './quiz.controller';
 import { QuizService } from './quiz.service';
+import { QuizFileModule } from './file/file.module';
 
 @Module({
-  imports: [],
+  imports: [QuizFileModule],
   controllers: [QuizController],
   providers: [QuizService],
 })
