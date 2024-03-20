@@ -9,3 +9,10 @@ export interface AddSayingAPIRequestDto {
   saying: string
   explanation: string
 }
+
+//格言編集APIリクエスト型
+export interface EditSayingAPIRequestDto {
+  id: number
+  saying: string
+  explanation?: string
+}

@@ -2,11 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery } from '../../lib/db/dao';
 import {
-  EditSayingDto,
-} from '../../interfaces/api/request/saying';
-import {
   AddBookAPIRequestDto,
   AddSayingAPIRequestDto,
+  EditSayingAPIRequestDto,
 } from 'quizzer-lib';
 
 @Injectable()
@@ -112,7 +110,7 @@ export class SayingService {
   }
 
   // 格言編集
-  async editSayingService(req: EditSayingDto) {
+  async editSayingService(req: EditSayingAPIRequestDto) {
     try {
       const { id, saying, explanation } = req;
       return await execQuery(SQL.SAYING.EDIT, [saying, explanation, id]);
