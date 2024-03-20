@@ -17,7 +17,7 @@ export interface GetWordBynameAPIResponseDto {
   word_id: number
   name: string
   pronounce: string
-  id: number
+  mean_id: number
   wordmean_id: number
   meaning: string
   partsofspeech_id: number

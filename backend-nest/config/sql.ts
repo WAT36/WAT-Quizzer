@@ -1376,7 +1376,7 @@ export const SQL = {
             word.id as word_id,
             word.name as name,
             word.pronounce,
-            mean.id as id, 
+            mean.id as mean_id, 
             mean.wordmean_id as wordmean_id,
             mean.meaning,
             partsofspeech.id as partsofspeech_id,

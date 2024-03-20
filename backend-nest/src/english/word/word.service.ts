@@ -380,7 +380,8 @@ export class EnglishWordService {
   // IDから単語情報取得
   async getWordByIdService(id: number) {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.GET.ID, [id]);
+      const result: GetWordBynameAPIResponseDto[] = await execQuery(SQL.ENGLISH.WORD.GET.ID, [id]);
+      return result
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
