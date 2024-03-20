@@ -31,7 +31,7 @@ export default function DeleteQuizPage() {
 
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (

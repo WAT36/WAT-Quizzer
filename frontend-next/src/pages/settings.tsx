@@ -26,7 +26,7 @@ export default function Settings() {
 
   useEffect(() => {
     getBook(setMessage, setBooklistoption);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (

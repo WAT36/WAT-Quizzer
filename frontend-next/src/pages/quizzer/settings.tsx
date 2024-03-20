@@ -19,7 +19,7 @@ export default function SelectQuizPage() {
 
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (

@@ -31,7 +31,7 @@ export default function GetQuizPage() {
   // 問題ファイルリスト取得
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (

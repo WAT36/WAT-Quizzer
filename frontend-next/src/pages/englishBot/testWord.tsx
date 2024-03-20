@@ -21,7 +21,7 @@ export default function TestWordPage() {
   // 出典リスト取得
   useEffect(() => {
     getSourceList(setMessage, setSourcelistoption);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (

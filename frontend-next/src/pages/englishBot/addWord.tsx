@@ -20,7 +20,7 @@ export default function EnglishBotAddWordPage() {
 
   useEffect(() => {
     Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceList(setMessage, setSourceList)]);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (

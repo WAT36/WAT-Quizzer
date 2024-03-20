@@ -24,7 +24,7 @@ export default function EditQuizPage() {
 
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (

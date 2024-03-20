@@ -37,7 +37,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
       getWordSource(id, setMessage, setWordSourceData),
       getWordSubSource(id, setMessage, setWordSubSourceData)
     ]);
-  }, [id]);
+  }, [id, setMessage]);
 
   const contents = () => {
     return (

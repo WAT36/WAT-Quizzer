@@ -13,7 +13,7 @@ export default function EnglishBotTopPage() {
   // 問題ファイルリスト取得
   useEffect(() => {
     getWordSummaryData(setMessage, setWordSummaryData);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (

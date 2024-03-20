@@ -24,7 +24,7 @@ export default function AccuracyRateGraphPage() {
 
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (

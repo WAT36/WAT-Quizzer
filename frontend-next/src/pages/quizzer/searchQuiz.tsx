@@ -29,7 +29,7 @@ export default function SearchQuizPage() {
 
   useEffect(() => {
     getFileList(setMessage, setFilelistoption);
-  }, []);
+  }, [setMessage]);
 
   const contents = () => {
     return (
