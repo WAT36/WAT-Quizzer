@@ -15,7 +15,11 @@ import { PopularEventList } from '@/components/ui-forms/top/popularEventList/pop
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function Top() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function Top({ isMock }: Props) {
   const [saying, setSaying] = useState<SayingState>({
     saying: '(取得中...)',
     explanation: '(取得中...)',
@@ -34,22 +38,23 @@ export default function Top() {
   ]);
 
   useEffect(() => {
-    Promise.all([
-      get('/saying', (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
-          const result: GetRandomSayingResponse[] = data.body as GetRandomSayingResponse[];
-          setSaying({
-            saying: result[0].saying,
-            explanation: result[0].explanation,
-            name: `出典：${result[0].name}`,
-            color: 'common.black'
-          });
-        }
-      }),
-      executeDbHealthCheck(),
-      getPopularEventList(setEventList)
-    ]);
-  }, []);
+    !isMock &&
+      Promise.all([
+        get('/saying', (data: ProcessingApiReponse) => {
+          if (data.status === 200) {
+            const result: GetRandomSayingResponse[] = data.body as GetRandomSayingResponse[];
+            setSaying({
+              saying: result[0].saying,
+              explanation: result[0].explanation,
+              name: `出典：${result[0].name}`,
+              color: 'common.black'
+            });
+          }
+        }),
+        executeDbHealthCheck(),
+        getPopularEventList(setEventList)
+      ]);
+  }, [isMock]);
 
   // DB ヘルスチェック
   const executeDbHealthCheck = async () => {
