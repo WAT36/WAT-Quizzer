@@ -15,7 +15,9 @@
     "test-storybook": "test-storybook",
     "test-storybook:report": "test-storybook --json --outputFile test-result/a11y.json",
     "chromatic": "chromatic",
-    "git:push": "git push && chromatic"
+    "git:push": "git push && chromatic",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.369.0",
