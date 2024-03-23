@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { CardContent, CardHeader, Container } from '@mui/material';
+import { CardContent, Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
@@ -45,8 +45,7 @@ export default function Settings({ isMock }: Props) {
         <Container>
           <Title label="WAT Quizzer - 設定"></Title>
 
-          <Card variant="outlined" attr="margin-vertical padding">
-            <CardHeader title="格言設定" />
+          <Card variant="outlined" header="格言設定" attr="margin-vertical padding">
             <CardContent>
               <AddBookForm
                 bookName={bookName}
