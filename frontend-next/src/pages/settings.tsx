@@ -10,7 +10,7 @@ import { AddSayingForm } from '@/components/ui-forms/settings/addSayingForm/AddS
 import { SearchSayingSection } from '@/components/ui-forms/settings/searchSayingSection/SearchSayingSection';
 import { EditSayingSection } from '@/components/ui-forms/settings/editSayingSection/EditSayingSection';
 import { messageState } from '@/atoms/Message';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { Card } from '@/components/ui-elements/card/Card';
 
 type Props = {
@@ -21,13 +21,12 @@ export default function Settings({ isMock }: Props) {
   const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
   const [bookName, setBookName] = useState<string>('');
   const [queryOfSaying, setQueryOfSaying] = useState<string>('');
-  const [checkedIdList, setCheckedIdList] = useState<number[]>([] as number[]);
   const [inputSaying, setInputSaying] = useState<InputSayingState>({
     bookId: -1,
     saying: '',
     explanation: ''
   });
-  const [message, setMessage] = useRecoilState(messageState);
+  const setMessage = useSetRecoilState(messageState);
 
   useEffect(() => {
     !isMock && getBook(setMessage, setBooklistoption);
@@ -47,25 +46,14 @@ export default function Settings({ isMock }: Props) {
 
           <Card variant="outlined" header="格言設定" attr="margin-vertical padding">
             <CardContent>
-              <AddBookForm
-                bookName={bookName}
-                setBookName={setBookName}
-                setMessageStater={setMessage}
-                setBooklistoption={setBooklistoption}
-              />
+              <AddBookForm bookName={bookName} setBookName={setBookName} setBooklistoption={setBooklistoption} />
               <AddSayingForm
                 inputSaying={inputSaying}
                 booklistoption={booklistoption}
                 setInputSaying={setInputSaying}
-                setMessageStater={setMessage}
               />
-              <SearchSayingSection
-                queryOfSaying={queryOfSaying}
-                setQueryOfSaying={setQueryOfSaying}
-                setMessageStater={setMessage}
-                setCheckedIdList={setCheckedIdList}
-              />
-              <EditSayingSection setMessageStater={setMessage} />
+              <SearchSayingSection queryOfSaying={queryOfSaying} setQueryOfSaying={setQueryOfSaying} />
+              <EditSayingSection />
             </CardContent>
           </Card>
         </Container>

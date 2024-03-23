@@ -7,20 +7,17 @@ import { addSayingAPI } from '@/common/ButtonAPI';
 import styles from '../Settings.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
 import { TextField } from '@/components/ui-elements/textField/TextField';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
 
 interface AddSayingFormProps {
   inputSaying: InputSayingState;
   booklistoption: PullDownOptionState[];
   setInputSaying?: React.Dispatch<React.SetStateAction<InputSayingState>>;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
 }
 
-export const AddSayingForm = ({
-  inputSaying,
-  booklistoption,
-  setInputSaying,
-  setMessageStater
-}: AddSayingFormProps) => {
+export const AddSayingForm = ({ inputSaying, booklistoption, setInputSaying }: AddSayingFormProps) => {
+  const setMessage = useSetRecoilState(messageState);
   return (
     <>
       <Card variant="outlined" subHeader="格言追加" attr="margin-vertical padding">
@@ -71,7 +68,7 @@ export const AddSayingForm = ({
             label={'格言登録'}
             variant="contained"
             color="primary"
-            onClick={(e) => addSayingAPI({ inputSaying, setMessageStater, setInputSaying })}
+            onClick={(e) => addSayingAPI({ inputSaying, setMessageStater: setMessage, setInputSaying })}
             attr={'after-inline'}
           />
         </CardContent>

@@ -6,15 +6,15 @@ import styles from '../Settings.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
 
-interface EditSayingSectionProps {
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-}
+interface EditSayingSectionProps {}
 
-export const EditSayingSection = ({ setMessageStater }: EditSayingSectionProps) => {
+export const EditSayingSection = ({}: EditSayingSectionProps) => {
   const [id, setId] = useState<number>(-1);
   const [editQueryOfSaying, setEditQueryOfSaying] = useState<EditQueryOfSaying>({ id: -1, saying: '' });
-
+  const setMessage = useSetRecoilState(messageState);
   return (
     <>
       <Card variant="outlined" subHeader="格言編集" attr="margin-vertical padding">
@@ -31,7 +31,7 @@ export const EditSayingSection = ({ setMessageStater }: EditSayingSectionProps) 
             label={'取得'}
             variant="contained"
             color="primary"
-            onClick={(e) => getSayingByIdAPI({ id, setMessageStater, setEditQueryOfSaying })}
+            onClick={(e) => getSayingByIdAPI({ id, setMessageStater: setMessage, setEditQueryOfSaying })}
             attr={'after-inline'}
           />
         </CardContent>
@@ -73,7 +73,7 @@ export const EditSayingSection = ({ setMessageStater }: EditSayingSectionProps) 
             label={'更新'}
             variant="contained"
             color="primary"
-            onClick={(e) => editSayingAPI({ editQueryOfSaying, setMessageStater, setEditQueryOfSaying })}
+            onClick={(e) => editSayingAPI({ editQueryOfSaying, setMessageStater: setMessage, setEditQueryOfSaying })}
             attr={'after-inline'}
           />
         </CardContent>
