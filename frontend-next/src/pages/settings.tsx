@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { Card, CardContent, CardHeader, Container } from '@mui/material';
+import { CardContent, CardHeader, Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
@@ -11,6 +11,7 @@ import { SearchSayingSection } from '@/components/ui-forms/settings/searchSaying
 import { EditSayingSection } from '@/components/ui-forms/settings/editSayingSection/EditSayingSection';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { Card } from '@/components/ui-elements/card/Card';
 
 type Props = {
   isMock?: boolean;
@@ -44,12 +45,7 @@ export default function Settings({ isMock }: Props) {
         <Container>
           <Title label="WAT Quizzer - 設定"></Title>
 
-          <Card
-            variant="outlined"
-            style={{
-              margin: '10px 0'
-            }}
-          >
+          <Card variant="outlined" attr="margin-vertical padding">
             <CardHeader title="格言設定" />
             <CardContent>
               <AddBookForm
