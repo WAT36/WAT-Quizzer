@@ -15,13 +15,13 @@ export const SayingCard = ({ sayingState }: SayingCardProps) => {
           <Typography variant="h6" component="h6" color="grey.700">
             今回の格言
           </Typography>
-          <Typography variant="h2" component="p" color={sayingState.color}>
+          <Typography id="saying" variant="h2" component="p" color={sayingState.color}>
             {sayingState.saying}
           </Typography>
-          <Typography variant="subtitle1" component="p" color="grey.800">
+          <Typography id="saying-explanation" variant="subtitle1" component="p" color="grey.800">
             {sayingState.explanation}
           </Typography>
-          <Typography variant="subtitle1" component="p" color="grey.600">
+          <Typography id="saying-bookname" variant="subtitle1" component="p" color="grey.600">
             {sayingState.name}
           </Typography>
         </CardContent>
