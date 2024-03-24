@@ -1,37 +1,39 @@
 import React, { useState } from 'react';
 import { EditQueryOfSaying, MessageState } from '../../../../../interfaces/state';
-import { Button, Card, CardContent, CardHeader, Input, TextField, Typography } from '@mui/material';
+import { CardContent, Input, Typography } from '@mui/material';
 import { editSayingAPI, getSayingByIdAPI } from '@/common/ButtonAPI';
 import styles from '../Settings.module.css';
+import { Card } from '@/components/ui-elements/card/Card';
+import { TextField } from '@/components/ui-elements/textField/TextField';
+import { Button } from '@/components/ui-elements/button/Button';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
 
-interface EditSayingSectionProps {
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-}
+interface EditSayingSectionProps {}
 
-export const EditSayingSection = ({ setMessageStater }: EditSayingSectionProps) => {
+export const EditSayingSection = ({}: EditSayingSectionProps) => {
   const [id, setId] = useState<number>(-1);
   const [editQueryOfSaying, setEditQueryOfSaying] = useState<EditQueryOfSaying>({ id: -1, saying: '' });
-
+  const setMessage = useSetRecoilState(messageState);
   return (
     <>
-      <Card variant="outlined">
-        <CardHeader subheader="格言編集" />
+      <Card variant="outlined" subHeader="格言編集" attr="margin-vertical padding">
         <CardContent className={styles.cardContent}>
           <TextField
             label="格言ID"
+            className={['fullWidth']}
             variant="outlined"
-            onChange={(e) => {
-              setId(+e.target.value);
+            setStater={(value: string) => {
+              setId(+value);
             }}
-            className={styles.inlineInput}
           />
           <Button
+            label={'取得'}
             variant="contained"
-            className={styles.inlineButton}
-            onClick={(e) => getSayingByIdAPI({ id, setMessageStater, setEditQueryOfSaying })}
-          >
-            取得
-          </Button>
+            color="primary"
+            onClick={(e) => getSayingByIdAPI({ id, setMessageStater: setMessage, setEditQueryOfSaying })}
+            attr={'after-inline'}
+          />
         </CardContent>
         <CardContent>
           <Typography variant="subtitle1" component="h2">
@@ -68,12 +70,12 @@ export const EditSayingSection = ({ setMessageStater }: EditSayingSectionProps) 
             />
           </Typography>
           <Button
+            label={'更新'}
             variant="contained"
-            className={styles.inlineButton}
-            onClick={(e) => editSayingAPI({ editQueryOfSaying, setMessageStater, setEditQueryOfSaying })}
-          >
-            更新
-          </Button>
+            color="primary"
+            onClick={(e) => editSayingAPI({ editQueryOfSaying, setMessageStater: setMessage, setEditQueryOfSaying })}
+            attr={'after-inline'}
+          />
         </CardContent>
       </Card>
     </>

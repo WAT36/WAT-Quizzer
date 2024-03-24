@@ -75,7 +75,7 @@ export const SQL = {
           : ''
       }
       ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
-      ORDER BY rand() LIMIT 1 
+      ORDER BY random() LIMIT 1 
       ;`;
     },
     WORST: (category?: string, checked?: string) => {
@@ -203,8 +203,8 @@ export const SQL = {
           FROM answer_log al
           WHERE quiz_format_id = 1
           AND file_num = ${file_num}
-          AND is_corrected = 0
-          AND CAST(created_at AS DATE) = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+          AND is_corrected = false
+          AND CAST(created_at AS DATE) = CURRENT_DATE - INTERVAL '1 DAY'
         ) l
         ON
             l.quiz_format_id = 1
@@ -215,7 +215,7 @@ export const SQL = {
         ${category ? ` AND category LIKE '%` + category + `%' ` : ''}
         ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
         AND v.deleted_at IS NULL 
-        ORDER BY rand() LIMIT 1
+        ORDER BY random() LIMIT 1
         ;
       `;
     },
@@ -502,7 +502,7 @@ export const SQL = {
       AND accuracy_rate <= ? 
       AND deleted_at IS NULL 
       ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
-      ORDER BY rand() LIMIT 1 
+      ORDER BY random() LIMIT 1 
       ;`;
     },
     WORST: (checked?: string) => {
@@ -621,8 +621,8 @@ export const SQL = {
           FROM answer_log al
           WHERE quiz_format_id = ${quiz_format_id}
           AND file_num = ${file_num}
-          AND is_corrected = 0
-          AND CAST(created_at AS DATE) = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+          AND is_corrected = false
+          AND CAST(created_at AS DATE) = CURRENT_DATE - INTERVAL '1 DAY'
         ) l
         ON
           l.quiz_format_id = ${quiz_format_id}
@@ -632,7 +632,7 @@ export const SQL = {
             v.file_num = ${file_num}
         ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
         AND v.deleted_at IS NULL 
-        ORDER BY rand() LIMIT 1
+        ORDER BY random() LIMIT 1
         ;
       `;
     },
@@ -899,7 +899,7 @@ export const SQL = {
           AND accuracy_rate <= ? 
           AND deleted_at IS NULL 
           ${parseStrToBool(checked) ? ` AND checked = 1 ` : ''}
-          ORDER BY rand() LIMIT 1 
+          ORDER BY random() LIMIT 1 
           ) as a
             INNER JOIN
               dummy_choice as d
@@ -1088,8 +1088,8 @@ export const SQL = {
               FROM answer_log al
               WHERE quiz_format_id = 3
               AND file_num = ${file_num}
-              AND is_corrected = 0
-              AND CAST(created_at AS DATE) = DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+              AND is_corrected = false
+              AND CAST(created_at AS DATE) = CURRENT_DATE - INTERVAL '1 DAY'
             ) l
             ON
               aqv.file_num = l.file_num              		
@@ -1098,7 +1098,7 @@ export const SQL = {
             AND aqv.advanced_quiz_type_id = 2 
             ${parseStrToBool(checked) ? ` AND aqv.checked = 1 ` : ''}
             AND aqv.deleted_at IS NULL
-            ORDER BY rand() LIMIT 1
+            ORDER BY random() LIMIT 1
           ) as a
             INNER JOIN
               dummy_choice as d
@@ -1412,7 +1412,7 @@ export const SQL = {
               ${sourceTemplate}
               ${subSourceTemplate}
               GROUP BY m.word_id
-              ORDER BY RAND() LIMIT 1) as random_word
+              ORDER BY RANDOM() LIMIT 1) as random_word
             ON
               w.id = random_word.word_id;
         `;
@@ -1491,7 +1491,7 @@ export const SQL = {
             mean
           WHERE
             word_id = ?
-          ORDER BY RAND()
+          ORDER BY RANDOM()
           LIMIT 1
           ;
         `,
@@ -1506,7 +1506,7 @@ export const SQL = {
             mean
           WHERE
             word_id <> ?
-          ORDER BY RAND()
+          ORDER BY RANDOM()
           LIMIT 3
           ;
         `,
@@ -1612,7 +1612,7 @@ export const SQL = {
           WHERE
             s.deleted_at IS NULL
           AND b.deleted_at IS NULL
-          ORDER BY RAND()
+          ORDER BY RANDOM()
           LIMIT 1
           ;
         `,
@@ -1630,7 +1630,7 @@ export const SQL = {
           WHERE
             s.deleted_at IS NULL
             AND b.deleted_at IS NULL
-          ORDER BY RAND()
+          ORDER BY RANDOM()
           LIMIT 1
           ;
         `,

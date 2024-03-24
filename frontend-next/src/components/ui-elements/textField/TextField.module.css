@@ -5,3 +5,7 @@
 .flex {
   flex: auto;
 }
+
+.fullWidth {
+  width: 100%;
+}
