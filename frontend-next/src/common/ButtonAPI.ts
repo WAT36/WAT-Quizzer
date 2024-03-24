@@ -8,7 +8,6 @@ import {
   GetAccuracyRateByCategoryServiceDto,
   GetSayingByIdResponse,
   ProcessingAddApiReponse,
-  ProcessingApiReponse,
   SendToAddWordApiData,
   meanOfAddWordDto
 } from '../../interfaces/api/response';
@@ -37,7 +36,7 @@ import {
 import { del, get, patch, post, put } from './API';
 import { generateQuizSentense, getBook } from './response';
 import { InputExampleData } from '@/pages/englishBot/addExample';
-import { getDateForSqlString } from 'quizzer-lib';
+import { getDateForSqlString, ProcessingApiReponse } from 'quizzer-lib';
 
 interface AddQuizButtonProps {
   value: number;
