@@ -1,28 +1,26 @@
 import React from 'react';
 import { InputSayingState, MessageState, PullDownOptionState } from '../../../../../interfaces/state';
-import { Card, CardContent, CardHeader, SelectChangeEvent, TextField } from '@mui/material';
+import { CardContent, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Button } from '@/components/ui-elements/button/Button';
 import { addSayingAPI } from '@/common/ButtonAPI';
 import styles from '../Settings.module.css';
+import { Card } from '@/components/ui-elements/card/Card';
+import { TextField } from '@/components/ui-elements/textField/TextField';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
 
 interface AddSayingFormProps {
   inputSaying: InputSayingState;
   booklistoption: PullDownOptionState[];
   setInputSaying?: React.Dispatch<React.SetStateAction<InputSayingState>>;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
 }
 
-export const AddSayingForm = ({
-  inputSaying,
-  booklistoption,
-  setInputSaying,
-  setMessageStater
-}: AddSayingFormProps) => {
+export const AddSayingForm = ({ inputSaying, booklistoption, setInputSaying }: AddSayingFormProps) => {
+  const setMessage = useSetRecoilState(messageState);
   return (
     <>
-      <Card variant="outlined">
-        <CardHeader subheader="格言追加" />
+      <Card variant="outlined" subHeader="格言追加" attr="margin-vertical padding">
         <CardContent className={styles.cardContent}>
           <PullDown
             label={''}
@@ -41,16 +39,14 @@ export const AddSayingForm = ({
           <TextField
             label="新規格言"
             variant="outlined"
-            onChange={(e) => {
+            className={['fullWidth']}
+            setStater={(value: string) => {
               if (setInputSaying) {
                 setInputSaying({
                   ...inputSaying,
-                  saying: e.target.value
+                  saying: value
                 });
               }
-            }}
-            style={{
-              flex: 'auto'
             }}
           />
         </CardContent>
@@ -58,23 +54,21 @@ export const AddSayingForm = ({
           <TextField
             label="格言の説明"
             variant="outlined"
-            onChange={(e) => {
+            className={['fullWidth']}
+            setStater={(value: string) => {
               if (setInputSaying) {
                 setInputSaying({
                   ...inputSaying,
-                  explanation: e.target.value
+                  explanation: value
                 });
               }
-            }}
-            style={{
-              flex: 'auto'
             }}
           />
           <Button
             label={'格言登録'}
             variant="contained"
             color="primary"
-            onClick={(e) => addSayingAPI({ inputSaying, setMessageStater, setInputSaying })}
+            onClick={(e) => addSayingAPI({ inputSaying, setMessageStater: setMessage, setInputSaying })}
             attr={'after-inline'}
           />
         </CardContent>

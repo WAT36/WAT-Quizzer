@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Quizzer: Story = {
   args: {
     title: 'Sample',
-    contents: <></>,
+    contents: <div>{'ここに内容'}</div>,
     mode: 'quizzer'
   }
 };
@@ -28,7 +28,15 @@ export const Quizzer: Story = {
 export const EnglishBot: Story = {
   args: {
     title: 'Sample',
-    contents: <></>,
+    contents: <div>{'ここに内容'}</div>,
     mode: 'englishBot'
+  }
+};
+
+export const Settings: Story = {
+  args: {
+    title: 'Sample',
+    contents: <div>{'ここに内容'}</div>,
+    mode: 'settings'
   }
 };
