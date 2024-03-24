@@ -1,5 +1,7 @@
+import { ApiResponse } from '../response'
+
 // 格言取得APIレスポンス型
-export interface GetSayingAPIResponseDto {
+export interface GetSayingAPIResponseDto extends ApiResponse {
   id?: number
   saying: string
   explanation: string
@@ -7,7 +9,7 @@ export interface GetSayingAPIResponseDto {
 }
 
 // 啓発本取得APIレスポンス型
-export interface GetBookAPIResponseDto {
+export interface GetBookAPIResponseDto extends ApiResponse {
   id: number
   name: string
 }

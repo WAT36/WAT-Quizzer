@@ -1,5 +1,7 @@
+import { ApiResponse } from '../response'
+
 // 問題取得APIのレスポンス（基礎応用込み）
-export interface GetQuizApiResponseDto {
+export interface GetQuizApiResponseDto extends ApiResponse {
   id: number
   file_num: number
   quiz_num: number

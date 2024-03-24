@@ -1,11 +1,13 @@
+import { ApiResponse } from '../response'
+
 // カテゴリ取得APIレスポンス型
-export interface GetCategoryAPIResponseDto {
+export interface GetCategoryAPIResponseDto extends ApiResponse {
   file_num?: number
   category: string
 }
 
 // (指定ファイルのカテゴリ毎の)正解率が入ったDTO(SQL実行結果)
-export interface AccuracyRateByCategorySqlResultDto {
+export interface AccuracyRateByCategorySqlResultDto extends ApiResponse {
   file_num: number
   c_category: string
   count: number
@@ -13,7 +15,7 @@ export interface AccuracyRateByCategorySqlResultDto {
 }
 
 // (指定ファイルのチェック済の)正解率が入ったDTO(SQL実行結果)
-export interface AccuracyRateOfCheckedQuizSqlResultDto {
+export interface AccuracyRateOfCheckedQuizSqlResultDto extends ApiResponse {
   checked: boolean
   count: number
   sum_clear: number
