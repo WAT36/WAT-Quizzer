@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
-import { AddExampleAPIRequestDto, GetPartsofSpeechAPIResponseDto, GetSourceAPIResponseDto } from 'quizzer-lib';
+import {
+  AddExampleAPIRequestDto,
+  GetPartsofSpeechAPIResponseDto,
+  GetSourceAPIResponseDto,
+} from 'quizzer-lib';
 import { TransactionQuery } from '../../interfaces/db';
 
 @Injectable()
@@ -9,7 +13,10 @@ export class EnglishService {
   // 品詞取得
   async getPartsofSpeechService() {
     try {
-      const result: GetPartsofSpeechAPIResponseDto[] = await execQuery(SQL.ENGLISH.PARTOFSPEECH.GET.ALL, []);
+      const result: GetPartsofSpeechAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.PARTOFSPEECH.GET.ALL,
+        [],
+      );
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -24,7 +31,10 @@ export class EnglishService {
   // 出典取得
   async getSourceService() {
     try {
-      const result: GetSourceAPIResponseDto[] = await execQuery(SQL.ENGLISH.SOURCE.GET.ALL, []);
+      const result: GetSourceAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.SOURCE.GET.ALL,
+        [],
+      );
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { QuizFileService } from './file.service';
 import {
   AddQuizFileAPIRequestDto,
-  DeleteQuizFileAPIRequestDto
+  DeleteQuizFileAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('quiz/file')

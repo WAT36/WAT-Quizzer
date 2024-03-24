@@ -6,7 +6,7 @@ import {
   AddSayingAPIRequestDto,
   EditSayingAPIRequestDto,
   GetSayingAPIResponseDto,
-  GetBookAPIResponseDto
+  GetBookAPIResponseDto,
 } from 'quizzer-lib';
 
 @Injectable()
@@ -14,13 +14,13 @@ export class SayingService {
   // 格言ランダム取得
   async getRandomSaying(book_id?: number) {
     try {
-      let result: GetSayingAPIResponseDto[]
+      let result: GetSayingAPIResponseDto[];
       if (book_id) {
         result = await execQuery(SQL.SAYING.GET.RANDOM.BYBOOK, [book_id]);
       } else {
         result = await execQuery(SQL.SAYING.GET.RANDOM.ALL, []);
       }
-      return result
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -49,8 +49,11 @@ export class SayingService {
   // 啓発本リスト取得
   async getBookListService() {
     try {
-      const result: GetBookAPIResponseDto[] = await execQuery(SQL.SELFHELP_BOOK.GET.ALL, []);
-      return result
+      const result: GetBookAPIResponseDto[] = await execQuery(
+        SQL.SELFHELP_BOOK.GET.ALL,
+        [],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -89,8 +92,11 @@ export class SayingService {
   // 格言検索
   async searchSayingService(saying: string) {
     try {
-      const result: GetSayingAPIResponseDto[] = await execQuery(SQL.SAYING.GET.SEARCH(saying), []);
-      return result
+      const result: GetSayingAPIResponseDto[] = await execQuery(
+        SQL.SAYING.GET.SEARCH(saying),
+        [],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -104,8 +110,11 @@ export class SayingService {
   // 格言取得(ID指定)
   async getSayingByIdService(id: number) {
     try {
-      const result: GetSayingAPIResponseDto[] = await execQuery(SQL.SAYING.GET.BYID, [id]);
-      return result
+      const result: GetSayingAPIResponseDto[] = await execQuery(
+        SQL.SAYING.GET.BYID,
+        [id],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

@@ -1,3 +1,6 @@
 export * from './api/quiz'
 export * from './api/quiz/file'
 export * from './api/english'
+export * from './api/english/word'
+export * from './api/category'
+export * from './api/saying'

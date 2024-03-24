@@ -1,8 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import {
-  ReplaceAllCategorAPIRequestDto
-} from 'quizzer-lib';
+import { ReplaceAllCategorAPIRequestDto } from 'quizzer-lib';
 
 @Controller('category')
 export class CategoryController {

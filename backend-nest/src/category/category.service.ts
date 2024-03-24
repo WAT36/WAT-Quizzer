@@ -5,7 +5,7 @@ import { TransactionQuery } from '../../interfaces/db';
 import {
   ReplaceAllCategorAPIRequestDto,
   GetCategoryAPIResponseDto,
-  GetAccuracyRateByCategoryAPIResponseDto
+  GetAccuracyRateByCategoryAPIResponseDto,
 } from 'quizzer-lib';
 
 @Injectable()
@@ -13,8 +13,11 @@ export class CategoryService {
   // カテゴリリスト(ファイルごと)取得
   async getCategoryList(file_num: number) {
     try {
-      const result:GetCategoryAPIResponseDto[] = await execQuery(SQL.CATEGORY.INFO, [file_num]);
-      return result
+      const result: GetCategoryAPIResponseDto[] = await execQuery(
+        SQL.CATEGORY.INFO,
+        [file_num],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

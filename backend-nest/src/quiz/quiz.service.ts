@@ -1,12 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
-import {
-  GetQuizNumSqlResultDto,
-  QuizDto,
-  GetIdDto,
-  GetLinkedBasisIdDto,
-} from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 import { getDifferenceArray } from '../../lib/array';
 import {
@@ -21,6 +15,9 @@ import {
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
   GetQuizApiResponseDto,
+  GetQuizNumResponseDto,
+  GetIdDto,
+  GetLinkedBasisIdDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -391,7 +388,7 @@ export class QuizService {
       const { question, answer, category, img_file } = input_data;
 
       // 新問題番号を取得しINSERT
-      const res: GetQuizNumSqlResultDto[] = await execQuery(
+      const res: GetQuizNumResponseDto[] = await execQuery(
         SQL.QUIZ.MAX_QUIZ_NUM,
         [file_num],
       );
@@ -491,7 +488,7 @@ export class QuizService {
       // 四択問題時 ダミー選択肢の編集
       if (format === '4choice') {
         // 問題番号を取得
-        const res: GetQuizNumSqlResultDto[] = await execQuery(
+        const res: GetQuizNumResponseDto[] = await execQuery(
           SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.DUMMY_CHOICE,
           [file_num, quiz_num],
         );
@@ -712,16 +709,16 @@ export class QuizService {
       const transactionQuery: TransactionQuery[] = [];
 
       // 統合前の問題取得
-      const pre_data: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
+      const pre_data: GetQuizApiResponseDto[] = await execQuery(SQL.QUIZ.INFO, [
         pre_file_num,
         pre_quiz_num,
       ]);
 
       // 統合後の問題取得
-      const post_data: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
-        post_file_num,
-        post_quiz_num,
-      ]);
+      const post_data: GetQuizApiResponseDto[] = await execQuery(
+        SQL.QUIZ.INFO,
+        [post_file_num, post_quiz_num],
+      );
 
       // 統合データ作成
       const pre_category = new Set(pre_data[0]['category'].split(':'));
@@ -803,7 +800,7 @@ export class QuizService {
     try {
       const { file_num, quiz_num, category } = body;
       // 現在のカテゴリ取得
-      const res: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
+      const res: GetQuizApiResponseDto[] = await execQuery(SQL.QUIZ.INFO, [
         file_num,
         quiz_num,
       ]);
@@ -901,7 +898,10 @@ export class QuizService {
       }
 
       // チェック取得
-      const result: QuizDto[] = await execQuery(infoSql, [file_num, quiz_num]);
+      const result: GetQuizApiResponseDto[] = await execQuery(infoSql, [
+        file_num,
+        quiz_num,
+      ]);
       const checked = result[0].checked;
 
       await execQuery(checked ? uncheckSql : checkSql, [file_num, quiz_num]);
@@ -973,7 +973,7 @@ export class QuizService {
       }
 
       // 新問題番号(ファイルごとの)を取得しINSERT
-      let res: GetQuizNumSqlResultDto[] = await execQuery(
+      let res: GetQuizNumResponseDto[] = await execQuery(
         SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.BYFILE,
         [file_num],
       );
@@ -1072,7 +1072,7 @@ export class QuizService {
       }
 
       // 新問題番号(ファイルごとの)を取得しINSERT
-      let res: GetQuizNumSqlResultDto[] = await execQuery(
+      let res: GetQuizNumResponseDto[] = await execQuery(
         SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.BYFILE,
         [file_num],
       );

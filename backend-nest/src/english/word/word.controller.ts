@@ -9,12 +9,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { EnglishWordService } from './word.service';
-import { 
-  AddEnglishWordAPIRequestDto, 
-  AddWordTestResultLogAPIRequestDto, 
-  EditWordSourceAPIRequestDto, 
-  AddWordSubSourceAPIRequestDto, 
-  EditWordMeanAPIRequestDto 
+import {
+  AddEnglishWordAPIRequestDto,
+  AddWordTestResultLogAPIRequestDto,
+  EditWordSourceAPIRequestDto,
+  AddWordSubSourceAPIRequestDto,
+  EditWordMeanAPIRequestDto,
 } from 'quizzer-lib';
 
 @Controller('english/word')

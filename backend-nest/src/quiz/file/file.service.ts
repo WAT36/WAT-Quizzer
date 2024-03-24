@@ -5,7 +5,7 @@ import { TransactionQuery } from '../../../interfaces/db';
 import {
   AddQuizFileAPIRequestDto,
   DeleteQuizFileAPIRequestDto,
-  GetQuizFileApiResponseDto
+  GetQuizFileApiResponseDto,
 } from 'quizzer-lib';
 
 export interface QueryType {
@@ -19,7 +19,10 @@ export type FormatType = 'basic' | 'applied';
 export class QuizFileService {
   // ファイル名リスト取得
   async getFileList() {
-    const result:GetQuizFileApiResponseDto[] = await execQuery(SQL.QUIZ_FILE.LIST, []);
+    const result: GetQuizFileApiResponseDto[] = await execQuery(
+      SQL.QUIZ_FILE.LIST,
+      [],
+    );
     return result;
   }
 
