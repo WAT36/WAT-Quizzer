@@ -1138,7 +1138,7 @@ export const searchQuizAPI = ({ queryOfSearchQuizState, setMessage, setSearchRes
     '/quiz/search',
     (data: ProcessingApiReponse) => {
       if ((String(data.status)[0] === '2' || String(data.status)[0] === '3') && data.body?.length > 0) {
-        const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
         setSearchResult(res);
         setMessage({
           message: 'Success!! ' + res.length + '問の問題を取得しました',
@@ -1214,7 +1214,7 @@ export const getDeletingQuiz = ({
     '/quiz',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
-        const res: QuizApiResponse[] = data.body as QuizApiResponse[];
+        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
         setDeleteQuizInfoState({
           fileNum: res[0].file_num,
           quizNum: res[0].quiz_num,
@@ -1360,7 +1360,7 @@ export const getIntegrateToQuiz = ({
     '/quiz',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
-        const res: QuizApiResponse[] = data.body as QuizApiResponse[];
+        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
         setIntegrateToQuizInfoState({
           fileNum: res[0].file_num,
           quizNum: res[0].quiz_num,
