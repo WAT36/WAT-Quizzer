@@ -1,18 +1,5 @@
 import { GridRowsProp } from '@mui/x-data-grid';
 import {
-  AddDataApiResponse,
-  AddQuizApiResponse,
-  CheckQuizApiResponse,
-  EnglishBotTestFourChoiceResponse,
-  EnglishWordByNameApiResponse,
-  GetAccuracyRateByCategoryServiceDto,
-  GetSayingByIdResponse,
-  ProcessingAddApiReponse,
-  SendToAddWordApiData,
-  meanOfAddWordDto
-} from '../../interfaces/api/response';
-import { QuizApiResponse, QuizViewApiResponse, WordApiResponse } from '../../interfaces/db';
-import {
   DeleteQuizInfoState,
   DisplayQuizState,
   DisplayWordTestState,
@@ -36,7 +23,20 @@ import {
 import { del, get, patch, post, put } from './API';
 import { generateQuizSentense, getBook } from './response';
 import { InputExampleData } from '@/pages/englishBot/addExample';
-import { getDateForSqlString, GetQuizApiResponseDto, ProcessingApiReponse } from 'quizzer-lib';
+import {
+  AddDataApiResponse,
+  AddQuizApiResponse,
+  CheckQuizApiResponse,
+  EnglishBotTestFourChoiceResponse,
+  GetAccuracyRateByCategoryAPIResponseDto,
+  getDateForSqlString,
+  GetQuizApiResponseDto,
+  GetRandomWordAPIResponseDto,
+  GetSayingAPIResponseDto,
+  GetWordBynameAPIResponseDto,
+  ProcessingApiReponse,
+  WordSearchAPIResponseDto
+} from 'quizzer-lib';
 
 interface AddQuizButtonProps {
   value: number;
@@ -1494,7 +1494,7 @@ export const integrateQuiz = ({
 interface GetAccuracyProps {
   queryOfGetAccuracy: QueryOfGetAccuracyState;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setAccuracyData?: React.Dispatch<React.SetStateAction<GetAccuracyRateByCategoryServiceDto>>;
+  setAccuracyData?: React.Dispatch<React.SetStateAction<GetAccuracyRateByCategoryAPIResponseDto>>;
 }
 export const getAccuracy = ({ queryOfGetAccuracy, setMessage, setAccuracyData }: GetAccuracyProps) => {
   // 設定ステートない場合はreturn(storybook表示用に設定)
@@ -1519,7 +1519,7 @@ export const getAccuracy = ({ queryOfGetAccuracy, setMessage, setAccuracyData }:
     '/category/rate',
     (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        const res: GetAccuracyRateByCategoryServiceDto[] = data.body as GetAccuracyRateByCategoryServiceDto[];
+        const res: GetAccuracyRateByCategoryAPIResponseDto[] = data.body as GetAccuracyRateByCategoryAPIResponseDto[];
         setAccuracyData(res[0]);
         setMessage({
           message: '　',
@@ -1907,7 +1907,7 @@ export const getRandomWordAPI = async ({
     '/english/word/random',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body.length > 0) {
-        const res: WordApiResponse[] = data.body as WordApiResponse[];
+        const res: GetRandomWordAPIResponseDto[] = data.body as GetRandomWordAPIResponseDto[];
         setDisplayWordTest({
           wordName: res[0].name
         });
@@ -2174,7 +2174,7 @@ export const searchWordAPI = ({ query, setMessage, setSearchResult }: SearchWord
     '/english/word/byname',
     (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        const result: EnglishWordByNameApiResponse[] = data.body as EnglishWordByNameApiResponse[];
+        const result: GetWordBynameAPIResponseDto[] = data.body as GetWordBynameAPIResponseDto[];
         setSearchResult(result || []);
         setMessage({
           message: 'Success!!取得しました',
@@ -2289,7 +2289,7 @@ export const searchWordForDictionary = ({
     '/english/word/search',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
-        const result: WordApiResponse[] = data.body as WordApiResponse[];
+        const result: WordSearchAPIResponseDto[] = data.body as WordSearchAPIResponseDto[];
         setSearchResult(result || []);
         setMessage({
           message: 'Success!!' + result.length + '問の問題を取得しました',
@@ -2495,7 +2495,7 @@ export const getSayingByIdAPI = async ({ id, setMessageStater, setEditQueryOfSay
     `/saying/${id}`,
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body.length > 0) {
-        const res: GetSayingByIdResponse[] = data.body as GetSayingByIdResponse[];
+        const res: GetSayingAPIResponseDto[] = data.body as GetSayingAPIResponseDto[];
         setEditQueryOfSaying({
           id: id,
           saying: res[0].saying,

@@ -17,11 +17,6 @@ export interface ProcessingAddApiReponse {
   body: ApiResponse;
 }
 
-// データ追加APIの返り値の型
-export interface AddDataApiResponse extends ApiResponse {
-  insertId: number;
-}
-
 // (指定ファイルのカテゴリ毎の)正解率が入ったDTO(SQL実行結果)
 export interface AccuracyRateByCategorySqlResultDto {
   file_num: number;
@@ -143,16 +138,6 @@ export interface SendToAddWordApiData {
   meaning: string;
   partOfSpeechName?: string;
   sourceName?: string;
-}
-
-// 英単語テスト画面での四択選択肢をAPIから受け取るときのデータ型
-export interface EnglishBotTestFourChoiceResponse extends ApiResponse {
-  correct: {
-    mean: string;
-  };
-  dummy: {
-    mean: string;
-  }[];
 }
 
 // 格言取得
