@@ -22,16 +22,6 @@ export interface AddDataApiResponse extends ApiResponse {
   insertId: number;
 }
 
-// 問題追加APIの返り値の型
-export interface AddQuizApiResponse extends ApiResponse {
-  result: string;
-}
-
-// 問題チェックAPIの返り値の型
-export interface CheckQuizApiResponse extends ApiResponse {
-  result: boolean;
-}
-
 // (指定ファイルのカテゴリ毎の)正解率が入ったDTO(SQL実行結果)
 export interface AccuracyRateByCategorySqlResultDto {
   file_num: number;
