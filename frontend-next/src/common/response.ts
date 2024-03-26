@@ -1,10 +1,6 @@
+import { GetQuizApiResponseDto } from 'quizzer-lib';
 import { GetPopularEventResponse, GetSelfHelpBookResponse, ProcessingApiReponse } from '../../interfaces/api/response';
-import {
-  PartofSpeechApiResponse,
-  QuizFileApiResponse,
-  QuizViewApiResponse,
-  WordSummaryApiResponse
-} from '../../interfaces/db';
+import { PartofSpeechApiResponse, QuizFileApiResponse, WordSummaryApiResponse } from '../../interfaces/db';
 import { MessageState, PullDownOptionState } from '../../interfaces/state';
 import { get } from './API';
 
@@ -62,7 +58,7 @@ export const getFileList = (
 };
 
 // 問題取得系APIの返り値から問題文を生成する
-export const generateQuizSentense = (format: string, res: QuizViewApiResponse[]) => {
+export const generateQuizSentense = (format: string, res: GetQuizApiResponseDto[]) => {
   if (format === '4choice') {
     const choices = [];
     choices.push(res[0].answer);

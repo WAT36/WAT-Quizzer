@@ -36,7 +36,7 @@ import {
 import { del, get, patch, post, put } from './API';
 import { generateQuizSentense, getBook } from './response';
 import { InputExampleData } from '@/pages/englishBot/addExample';
-import { getDateForSqlString, ProcessingApiReponse } from 'quizzer-lib';
+import { getDateForSqlString, GetQuizApiResponseDto, ProcessingApiReponse } from 'quizzer-lib';
 
 interface AddQuizButtonProps {
   value: number;
@@ -497,7 +497,7 @@ export const getMinimumClearQuizAPI = async ({
     '/quiz/minimum',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
-        const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
         setQueryofQuizStater({
           ...queryOfQuizState,
           quizNum: res[0].quiz_num
@@ -592,7 +592,7 @@ export const getLRUQuizAPI = async ({
     '/quiz/lru',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
-        const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
         setQueryofQuizStater({
           ...queryOfQuizState,
           quizNum: res[0].quiz_num
@@ -687,7 +687,7 @@ export const getReviewQuizAPI = async ({
     '/quiz/review',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
-        const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
         setQueryofQuizStater({
           ...queryOfQuizState,
           quizNum: res[0].quiz_num
@@ -784,7 +784,7 @@ export const getQuizAPI = async ({
           isDisplay: true
         });
       } else if (data.status === 200) {
-        const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
         if (setDisplayQuizStater) {
           setDisplayQuizStater({
             fileNum: res[0].file_num,
@@ -888,7 +888,7 @@ export const getRandomQuizAPI = async ({
     '/quiz/random',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body.length > 0) {
-        const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
         setQueryofQuizStater({
           ...queryOfQuizState,
           quizNum: res[0].quiz_num
@@ -983,7 +983,7 @@ export const getWorstRateQuizAPI = async ({
     '/quiz/worst',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
-        const res: QuizViewApiResponse[] = data.body as QuizViewApiResponse[];
+        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
         setQueryofQuizStater({
           ...queryOfQuizState,
           quizNum: res[0].quiz_num
