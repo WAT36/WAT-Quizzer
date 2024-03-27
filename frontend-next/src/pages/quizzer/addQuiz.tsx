@@ -7,9 +7,9 @@ import { Title } from '@/components/ui-elements/title/Title';
 import { getFileList } from '@/common/response';
 import { AddQuizForm } from '@/components/ui-forms/quizzer/addQuiz/addQuizForm/AddQuizForm';
 import { Button } from '@/components/ui-elements/button/Button';
-import { addQuizAPI } from '@/common/ButtonAPI';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { addQuizAPI } from '@/api/quiz/addQuizAPI';
 
 type Props = {
   isMock?: boolean;
