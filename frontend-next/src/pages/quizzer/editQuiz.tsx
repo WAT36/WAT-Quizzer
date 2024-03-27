@@ -8,9 +8,9 @@ import { getFileList } from '@/common/response';
 import { InputQueryForEditForm } from '@/components/ui-forms/quizzer/editQuiz/InputQueryForEditForm/InputQueryForEditForm';
 import { PutQuizForm } from '@/components/ui-forms/quizzer/forms/putQuizForm/PutQuizForm';
 import { Button } from '@/components/ui-elements/button/Button';
-import { editQuizAPI } from '@/common/ButtonAPI';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { editQuizAPI } from '@/api/quiz/editQuizAPI';
 
 type Props = {
   isMock?: boolean;
