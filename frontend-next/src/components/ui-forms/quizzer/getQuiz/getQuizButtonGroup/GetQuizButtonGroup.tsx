@@ -1,15 +1,9 @@
 import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
-import {
-  getLRUQuizAPI,
-  getMinimumClearQuizAPI,
-  getQuizAPI,
-  getRandomQuizAPI,
-  getReviewQuizAPI,
-  getWorstRateQuizAPI
-} from '@/common/ButtonAPI';
+import { getLRUQuizAPI, getQuizAPI, getRandomQuizAPI, getReviewQuizAPI, getWorstRateQuizAPI } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
 import { getImageOfQuizAPI } from '@/api/quiz/getImageOfQuizAPI';
+import { getMinimumClearQuizAPI } from '@/api/quiz/getMinimumClearQuizAPI';
 
 interface GetQuizButtonGroupProps {
   queryOfQuizState: QueryOfQuizState;
