@@ -2,8 +2,9 @@ import React from 'react';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { Button as MuiButton, CardActions, CardContent, Collapse, Typography } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
-import { clearQuizAPI, failQuizAPI, reverseCheckQuizAPI } from '@/common/ButtonAPI';
+import { failQuizAPI, reverseCheckQuizAPI } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
+import { clearQuizAPI } from '@/api/quiz/clearQuizAPI';
 
 interface DisplayQuizSectionProps {
   queryOfQuizState: QueryOfQuizState;
