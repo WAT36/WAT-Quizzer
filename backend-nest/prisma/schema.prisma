@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,321 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model advanced_quiz {
+  id                    Int       @id @default(autoincrement())
+  file_num              Int
+  quiz_num              Int
+  advanced_quiz_type_id Int
+  quiz_sentense         String    @unique @db.VarChar(256)
+  answer                String    @db.VarChar(256)
+  img_file              String?   @db.VarChar(128)
+  checked               Boolean?  @default(false)
+  created_at            DateTime  @default(now()) @db.Timestamp(6)
+  updated_at            DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at            DateTime? @db.Timestamp(6)
+
+  @@unique([file_num, quiz_num])
+}
+
+model advanced_quiz_explanation {
+  id               Int       @id @default(autoincrement())
+  advanced_quiz_id Int       @unique
+  explanation      String
+  created_at       DateTime  @default(now()) @db.Timestamp(6)
+  updated_at       DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime? @db.Timestamp(6)
+}
+
+model advanced_quiz_type {
+  id            Int       @id @default(autoincrement())
+  type_name     String    @unique @db.VarChar(256)
+  type_nickname String    @db.VarChar(256)
+  created_at    DateTime  @default(now()) @db.Timestamp(6)
+  updated_at    DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at    DateTime? @db.Timestamp(6)
+}
+
+model answer_log {
+  id             Int       @id @default(autoincrement())
+  quiz_format_id Int
+  file_num       Int
+  quiz_num       Int
+  is_corrected   Boolean?
+  created_at     DateTime  @default(now()) @db.Timestamp(6)
+  updated_at     DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at     DateTime? @db.Timestamp(6)
+}
+
+model category {
+  file_num   Int
+  category   String    @db.VarChar(256)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+
+  @@id([file_num, category])
+}
+
+model dummy_choice {
+  id                    Int       @id @default(autoincrement())
+  advanced_quiz_id      Int
+  dummy_choice_sentense String    @db.VarChar(256)
+  created_at            DateTime  @default(now()) @db.Timestamp(6)
+  updated_at            DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at            DateTime? @db.Timestamp(6)
+}
+
+model englishbot_answer_log {
+  id         Int       @id @default(autoincrement())
+  word_id    Int
+  result     Boolean?
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+}
+
+model example {
+  id                  Int            @id @default(autoincrement())
+  en_example_sentense String         @db.VarChar(256)
+  ja_example_sentense String         @db.VarChar(256)
+  created_at          DateTime       @default(now()) @db.Timestamp(6)
+  updated_at          DateTime       @default(now()) @db.Timestamp(6)
+  deleted_at          DateTime?      @db.Timestamp(6)
+  mean_example        mean_example[]
+}
+
+model idiom {
+  id         Int          @id @default(autoincrement())
+  word_id    Int
+  name       String       @db.VarChar(256)
+  created_at DateTime     @default(now()) @db.Timestamp(6)
+  updated_at DateTime     @default(now()) @db.Timestamp(6)
+  deleted_at DateTime?    @db.Timestamp(6)
+  word       word         @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  idiom_mean idiom_mean[]
+}
+
+model idiom_mean {
+  id               Int           @id @default(autoincrement())
+  idiom_id         Int
+  idiommean_id     Int
+  partsofspeech_id Int
+  meaning          String        @db.VarChar(256)
+  created_at       DateTime      @default(now()) @db.Timestamp(6)
+  updated_at       DateTime      @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime?     @db.Timestamp(6)
+  idiom            idiom         @relation(fields: [idiom_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  partsofspeech    partsofspeech @relation(fields: [partsofspeech_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([idiom_id, idiommean_id])
+}
+
+model mean {
+  id               Int            @id @default(autoincrement())
+  word_id          Int
+  wordmean_id      Int
+  partsofspeech_id Int
+  meaning          String         @db.VarChar(256)
+  created_at       DateTime       @default(now()) @db.Timestamp(6)
+  updated_at       DateTime       @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime?      @db.Timestamp(6)
+  partsofspeech    partsofspeech  @relation(fields: [partsofspeech_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  word             word           @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  mean_example     mean_example[]
+
+  @@unique([word_id, wordmean_id])
+}
+
+model mean_example {
+  example_sentense_id Int
+  mean_id             Int
+  created_at          DateTime  @default(now()) @db.Timestamp(6)
+  updated_at          DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at          DateTime? @db.Timestamp(6)
+  example             example   @relation(fields: [example_sentense_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  mean                mean      @relation(fields: [mean_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([example_sentense_id, mean_id])
+}
+
+model mean_source {
+  mean_id    Int
+  source_id  Int
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+
+  @@id([mean_id, source_id])
+}
+
+model partsofspeech {
+  id         Int          @id @default(autoincrement())
+  name       String       @db.VarChar(256)
+  created_at DateTime     @default(now()) @db.Timestamp(6)
+  updated_at DateTime     @default(now()) @db.Timestamp(6)
+  deleted_at DateTime?    @db.Timestamp(6)
+  idiom_mean idiom_mean[]
+  mean       mean[]
+}
+
+model quiz {
+  id            Int       @id @default(autoincrement())
+  file_num      Int
+  quiz_num      Int
+  quiz_sentense String    @unique @db.VarChar(256)
+  answer        String    @db.VarChar(256)
+  category      String?   @db.VarChar(256)
+  img_file      String?   @db.VarChar(128)
+  checked       Boolean?  @default(false)
+  created_at    DateTime  @default(now()) @db.Timestamp(6)
+  updated_at    DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at    DateTime? @db.Timestamp(6)
+
+  @@unique([file_num, quiz_num])
+}
+
+model quiz_basis_advanced_linkage {
+  id               Int       @id @default(autoincrement())
+  file_num         Int
+  basis_quiz_id    Int
+  advanced_quiz_id Int
+  created_at       DateTime  @default(now()) @db.Timestamp(6)
+  updated_at       DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime? @db.Timestamp(6)
+
+  @@unique([basis_quiz_id, advanced_quiz_id])
+}
+
+model quiz_dependency {
+  id                  Int       @id @default(autoincrement())
+  preliminary_quiz_id Int
+  quiz_id             Int
+  created_at          DateTime  @default(now()) @db.Timestamp(6)
+  updated_at          DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at          DateTime? @db.Timestamp(6)
+}
+
+model quiz_file {
+  file_num      Int       @id @default(autoincrement())
+  file_name     String    @unique @db.VarChar(256)
+  file_nickname String    @unique @db.VarChar(256)
+  created_at    DateTime  @default(now()) @db.Timestamp(6)
+  updated_at    DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at    DateTime? @db.Timestamp(6)
+}
+
+model quiz_format {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique @db.VarChar(256)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+}
+
+model quiz_similarity {
+  id                  Int       @id @default(autoincrement())
+  similarity_group_id Int
+  quiz_id             Int
+  created_at          DateTime  @default(now()) @db.Timestamp(6)
+  updated_at          DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at          DateTime? @db.Timestamp(6)
+
+  @@unique([similarity_group_id, quiz_id])
+}
+
+model quiz_similarity_group {
+  id                    Int       @id @default(autoincrement())
+  similarity_group_name String    @db.VarChar(256)
+  created_at            DateTime  @default(now()) @db.Timestamp(6)
+  updated_at            DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at            DateTime? @db.Timestamp(6)
+}
+
+model saying {
+  id             Int       @id @default(autoincrement())
+  book_id        Int
+  book_saying_id Int
+  saying         String    @unique @db.VarChar(256)
+  explanation    String
+  created_at     DateTime  @default(now()) @db.Timestamp(6)
+  updated_at     DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at     DateTime? @db.Timestamp(6)
+}
+
+model selfhelp_book {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(256)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+}
+
+model source {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(256)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+}
+
+model word {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique @db.VarChar(256)
+  pronounce  String    @db.VarChar(256)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+  idiom      idiom[]
+  mean       mean[]
+}
+
+model word_etymology {
+  id                      Int       @id @default(autoincrement())
+  word_etymology_group_id Int
+  word_id                 Int
+  created_at              DateTime  @default(now()) @db.Timestamp(6)
+  updated_at              DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at              DateTime? @db.Timestamp(6)
+
+  @@unique([word_etymology_group_id, word_id])
+}
+
+model word_etymology_group {
+  id                        Int       @id @default(autoincrement())
+  word_etymology_group_name String    @db.VarChar(256)
+  created_at                DateTime  @default(now()) @db.Timestamp(6)
+  updated_at                DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at                DateTime? @db.Timestamp(6)
+}
+
+model word_similarity {
+  id                       Int       @id @default(autoincrement())
+  word_similarity_group_id Int
+  word_id                  Int
+  created_at               DateTime  @default(now()) @db.Timestamp(6)
+  updated_at               DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at               DateTime? @db.Timestamp(6)
+
+  @@unique([word_similarity_group_id, word_id])
+}
+
+model word_similarity_group {
+  id                         Int       @id @default(autoincrement())
+  word_similarity_group_name String    @db.VarChar(256)
+  created_at                 DateTime  @default(now()) @db.Timestamp(6)
+  updated_at                 DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at                 DateTime? @db.Timestamp(6)
+}
+
+model word_subsource {
+  id         Int       @id @default(autoincrement())
+  word_id    Int
+  subsource  String    @db.VarChar(256)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+
+  @@unique([word_id, subsource])
 }
