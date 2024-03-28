@@ -104,9 +104,14 @@ export class CategoryService {
       };
 
       // カテゴリビューから指定ファイルのカテゴリ毎の正解率取得
-      result['result'] = await execQuery(SQL.CATEGORY.ACCURRACYRATE, [
-        file_num,
-      ]);
+      result['result'] = await prisma.category_view.findMany({
+        where: {
+          file_num: file_num,
+        },
+        orderBy: {
+          accuracy_rate: 'asc',
+        },
+      });
 
       // チェック済問題の正解率取得
       result['checked_result'] = await execQuery(SQL.QUIZ.ACCURACYRATE, [

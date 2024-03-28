@@ -1,3 +1,5 @@
+import { Decimal } from '@prisma/client/runtime/library';
+
 export interface SelectFileDto {
   file_num: number;
 }
@@ -11,8 +13,8 @@ export interface CategoryByFileSqlResultDto {
 export interface AccuracyRateByCategorySqlResultDto {
   file_num: number;
   c_category: string;
-  count: number;
-  accuracy_rate: number;
+  count: bigint;
+  accuracy_rate: Decimal;
 }
 
 // (指定ファイルのチェック済の)正解率が入ったDTO(SQL実行結果)
