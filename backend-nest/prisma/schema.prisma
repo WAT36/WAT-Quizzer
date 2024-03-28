@@ -327,7 +327,7 @@ model word_subsource {
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view advanced_quiz_view {
-  id                    Int?      @unique
+  id                    Int      @unique
   file_num              Int?
   quiz_num              Int?
   advanced_quiz_type_id Int?
@@ -341,26 +341,23 @@ view advanced_quiz_view {
   updated_at            DateTime? @db.Timestamp(6)
   deleted_at            DateTime? @db.Timestamp(6)
   accuracy_rate         BigInt?
-
-  @@ignore
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view category_view {
-  file_num           Int?
-  c_category         String?  @db.VarChar(256)
+  file_num           Int
+  c_category         String  @db.VarChar(256)
   count              BigInt?
   sum_of_clear_count Decimal? @db.Decimal
   sum_of_fail_count  Decimal? @db.Decimal
   accuracy_rate      Decimal? @db.Decimal
 
   @@unique([file_num, c_category])
-  @@ignore
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view quiz_file_view {
-  file_num               Int?     @unique
+  file_num               Int      @unique
   file_name              String?  @db.VarChar(256)
   file_nickname          String?  @db.VarChar(256)
   basic_quiz_count       BigInt?
@@ -371,13 +368,11 @@ view quiz_file_view {
   advanced_clear         Decimal? @db.Decimal
   advanced_fail          Decimal? @db.Decimal
   advanced_accuracy_rate Decimal? @db.Decimal
-
-  @@ignore
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view quiz_view {
-  id            Int?      @unique
+  id            Int      @unique
   file_num      Int?
   quiz_num      Int?
   quiz_sentense String?   @db.VarChar(256)
@@ -391,14 +386,10 @@ view quiz_view {
   updated_at    DateTime? @db.Timestamp(6)
   deleted_at    DateTime? @db.Timestamp(6)
   accuracy_rate BigInt?
-
-  @@ignore
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view word_summarize {
-  name  String?  @unique
-  count BigInt?
-
-  @@ignore
+  name  String  @unique
+  count BigInt
 }
