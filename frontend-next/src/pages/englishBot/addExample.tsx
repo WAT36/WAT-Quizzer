@@ -15,7 +15,11 @@ export type InputExampleData = {
   meanId?: number[];
 };
 
-export default function EnglishBotAddExamplePage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function EnglishBotAddExamplePage({ isMock }: Props) {
   const [inputExampleData, setInputExampleData] = useState<InputExampleData>({});
   const [message, setMessage] = useRecoilState(messageState);
 

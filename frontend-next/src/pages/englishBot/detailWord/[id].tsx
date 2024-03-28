@@ -15,9 +15,10 @@ import { useRecoilState } from 'recoil';
 
 type EachWordPageProps = {
   id: string;
+  isMock?: boolean;
 };
 
-export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
+export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps) {
   const [wordName, setWordName] = useState<string>('');
   const [meanData, setMeanData] = useState<WordMeanData[]>([]);
   const [wordSourceData, setWordSourceData] = useState<WordSourceData[]>([]);
@@ -30,14 +31,15 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   const [message, setMessage] = useRecoilState(messageState);
 
   useEffect(() => {
-    Promise.all([
-      getPartOfSpeechList(setMessage, setPosList),
-      getSourceList(setMessage, setSourcelistoption),
-      getWordDetail(id, setMessage, setWordName, setMeanData),
-      getWordSource(id, setMessage, setWordSourceData),
-      getWordSubSource(id, setMessage, setWordSubSourceData)
-    ]);
-  }, [id, setMessage]);
+    !isMock &&
+      Promise.all([
+        getPartOfSpeechList(setMessage, setPosList),
+        getSourceList(setMessage, setSourcelistoption),
+        getWordDetail(id, setMessage, setWordName, setMeanData),
+        getWordSource(id, setMessage, setWordSourceData),
+        getWordSubSource(id, setMessage, setWordSubSourceData)
+      ]);
+  }, [id, isMock, setMessage]);
 
   const contents = () => {
     return (

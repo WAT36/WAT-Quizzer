@@ -10,7 +10,11 @@ import { getSourceList } from '@/common/response';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
 
-export default function TestWordPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function TestWordPage({ isMock }: Props) {
   const [message, setMessage] = useRecoilState(messageState);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
   const [queryOfGetWord, setQueryOfGetWord] = useState<QueryOfGetWordState>({});
@@ -20,8 +24,8 @@ export default function TestWordPage() {
 
   // 出典リスト取得
   useEffect(() => {
-    getSourceList(setMessage, setSourcelistoption);
-  }, [setMessage]);
+    !isMock && getSourceList(setMessage, setSourcelistoption);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (
