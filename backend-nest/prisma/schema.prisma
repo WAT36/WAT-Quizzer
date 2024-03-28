@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -322,4 +323,82 @@ model word_subsource {
   deleted_at DateTime? @db.Timestamp(6)
 
   @@unique([word_id, subsource])
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view advanced_quiz_view {
+  id                    Int?      @unique
+  file_num              Int?
+  quiz_num              Int?
+  advanced_quiz_type_id Int?
+  quiz_sentense         String?   @db.VarChar(256)
+  answer                String?   @db.VarChar(256)
+  img_file              String?   @db.VarChar(128)
+  checked               Boolean?
+  clear_count           BigInt?
+  fail_count            BigInt?
+  created_at            DateTime? @db.Timestamp(6)
+  updated_at            DateTime? @db.Timestamp(6)
+  deleted_at            DateTime? @db.Timestamp(6)
+  accuracy_rate         BigInt?
+
+  @@ignore
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view category_view {
+  file_num           Int?
+  c_category         String?  @db.VarChar(256)
+  count              BigInt?
+  sum_of_clear_count Decimal? @db.Decimal
+  sum_of_fail_count  Decimal? @db.Decimal
+  accuracy_rate      Decimal? @db.Decimal
+
+  @@unique([file_num, c_category])
+  @@ignore
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view quiz_file_view {
+  file_num               Int?     @unique
+  file_name              String?  @db.VarChar(256)
+  file_nickname          String?  @db.VarChar(256)
+  basic_quiz_count       BigInt?
+  basic_clear            Decimal? @db.Decimal
+  basic_fail             Decimal? @db.Decimal
+  basic_accuracy_rate    Decimal? @db.Decimal
+  advanced_quiz_count    BigInt?
+  advanced_clear         Decimal? @db.Decimal
+  advanced_fail          Decimal? @db.Decimal
+  advanced_accuracy_rate Decimal? @db.Decimal
+
+  @@ignore
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view quiz_view {
+  id            Int?      @unique
+  file_num      Int?
+  quiz_num      Int?
+  quiz_sentense String?   @db.VarChar(256)
+  answer        String?   @db.VarChar(256)
+  category      String?   @db.VarChar(256)
+  img_file      String?   @db.VarChar(128)
+  checked       Boolean?
+  clear_count   BigInt?
+  fail_count    BigInt?
+  created_at    DateTime? @db.Timestamp(6)
+  updated_at    DateTime? @db.Timestamp(6)
+  deleted_at    DateTime? @db.Timestamp(6)
+  accuracy_rate BigInt?
+
+  @@ignore
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view word_summarize {
+  name  String?  @unique
+  count BigInt?
+
+  @@ignore
 }
