@@ -8,7 +8,7 @@ export class CategoryController {
 
   @Get()
   async getCategory(@Query('file_num') file_num: number) {
-    return await this.categoryService.getCategoryList(file_num);
+    return await this.categoryService.getCategoryList(+file_num);
   }
 
   @Post()

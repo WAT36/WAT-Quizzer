@@ -7,13 +7,28 @@ import {
   SelectFileDto,
 } from '../../interfaces/api/request/category';
 import { TransactionQuery } from '../../interfaces/db';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 @Injectable()
 export class CategoryService {
   // カテゴリリスト(ファイルごと)取得
   async getCategoryList(file_num: number) {
     try {
-      return await execQuery(SQL.CATEGORY.INFO, [file_num]);
+      return await prisma.category.findMany({
+        where: {
+          file_num: file_num,
+          deleted_at: null,
+        },
+        select: {
+          file_num: true,
+          category: true,
+        },
+        orderBy: {
+          category: 'asc',
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
