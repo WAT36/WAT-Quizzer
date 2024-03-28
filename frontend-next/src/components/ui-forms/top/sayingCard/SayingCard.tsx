@@ -10,7 +10,7 @@ interface SayingCardProps {
 export const SayingCard = ({ sayingState }: SayingCardProps) => {
   return (
     <>
-      <Card variant="outlined">
+      <Card variant="outlined" attr="margin-vertical">
         <CardContent>
           <Typography variant="h6" component="h6" color="grey.700">
             今回の格言
