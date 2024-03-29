@@ -20,8 +20,9 @@ import {
   QueryOfIntegrateToQuizState
 } from '../../../../../../interfaces/state';
 import { Button } from '@/components/ui-elements/button/Button';
-import { deleteQuiz, getDeletingQuiz } from '@/common/ButtonAPI';
+import { deleteQuiz } from '@/common/ButtonAPI';
 import styles from '../DeleteQuizForm.module.css';
+import { getDeletingQuiz } from '@/api/quiz/getDeletingQuizAPI';
 
 interface DeleteQuizFormProps {
   queryOfDeleteQuizState: QueryOfDeleteQuizState;
