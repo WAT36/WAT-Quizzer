@@ -38,7 +38,18 @@ export class EnglishService {
   // 出典取得
   async getSourceService() {
     try {
-      const data = await execQuery(SQL.ENGLISH.SOURCE.GET.ALL, []);
+      const data = await prisma.source.findMany({
+        where: {
+          deleted_at: null,
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+        orderBy: {
+          id: 'asc',
+        },
+      });
       return data;
     } catch (error: unknown) {
       if (error instanceof Error) {
