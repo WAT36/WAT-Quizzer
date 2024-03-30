@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { WordSummaryApiResponse } from '../../../interfaces/db';
 import { getWordSummaryData } from '@/common/response';
 import { messageState } from '@/atoms/Message';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 type Props = {
   isMock?: boolean;
@@ -13,7 +13,7 @@ type Props = {
 
 export default function EnglishBotTopPage({ isMock }: Props) {
   const [wordSummaryData, setWordSummaryData] = useState<WordSummaryApiResponse[]>([]);
-  const [message, setMessage] = useRecoilState(messageState);
+  const setMessage = useSetRecoilState(messageState);
   // 問題ファイルリスト取得
   useEffect(() => {
     !isMock && getWordSummaryData(setMessage, setWordSummaryData);
