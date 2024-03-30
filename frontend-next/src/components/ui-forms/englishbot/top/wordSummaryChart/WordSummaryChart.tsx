@@ -13,7 +13,7 @@ export const WordSummaryChart = ({ wordSummaryData }: WordSummaryChartProps) => 
       return x.name !== 'all';
     })
     .map((x) => {
-      return [x.name, x.count];
+      return [x.name, +x.count];
     });
   const sum = data.reduce((accumulator, currentValue) => accumulator + +currentValue[1], 0);
   data.unshift(['word/idiom', 'num']);
