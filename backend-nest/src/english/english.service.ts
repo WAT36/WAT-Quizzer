@@ -3,13 +3,27 @@ import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
 import { AddExampleDto } from '../../interfaces/api/request/english';
 import { TransactionQuery } from '../../interfaces/db';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 @Injectable()
 export class EnglishService {
   // 品詞取得
   async getPartsofSpeechService() {
     try {
-      const data = await execQuery(SQL.ENGLISH.PARTOFSPEECH.GET.ALL, []);
+      const data = await prisma.partsofspeech.findMany({
+        where: {
+          deleted_at: null,
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+        orderBy: {
+          id: 'asc',
+        },
+      });
       return data;
     } catch (error: unknown) {
       if (error instanceof Error) {
