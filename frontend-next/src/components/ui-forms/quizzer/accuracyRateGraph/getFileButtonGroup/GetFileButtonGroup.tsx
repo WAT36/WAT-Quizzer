@@ -1,9 +1,9 @@
 import React from 'react';
 import { MessageState, QueryOfGetAccuracyState } from '../../../../../../interfaces/state';
 import { Button } from '@/components/ui-elements/button/Button';
-import { updateCategory } from '@/common/ButtonAPI';
 import { GetAccuracyRateByCategoryServiceDto } from '../../../../../../interfaces/api/response';
 import { getAccuracy } from '@/api/category/getAccuracyAPI';
+import { updateCategory } from '@/api/category/updateCategoryAPI';
 
 interface GetFileButtonGroupProps {
   queryOfGetAccuracy: QueryOfGetAccuracyState;
