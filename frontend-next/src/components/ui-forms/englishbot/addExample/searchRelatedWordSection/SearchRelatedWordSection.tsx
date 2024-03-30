@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
-import { Button, CardContent, CardHeader, TextField } from '@mui/material';
+import { CardContent } from '@mui/material';
 import styles from '../AddExample.module.css';
+import commonStyles from '../../../../common.module.css';
 import { InputExampleData } from '@/pages/englishBot/addExample';
 import { DataGrid, GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid';
 import { searchWordAPI } from '@/common/ButtonAPI';
 import { MessageState } from '../../../../../../interfaces/state';
 import { meanColumns } from '../../../../../../utils/englishBot/SearchWordTable';
+import { TextField } from '@/components/ui-elements/textField/TextField';
+import { Button } from '@/components/ui-elements/button/Button';
 
 interface SearchRelatedWordSectionProps {
   inputExampleData: InputExampleData;
@@ -24,32 +27,33 @@ export const SearchRelatedWordSection = ({
 
   // チェックした問題のIDをステートに登録
   const registerCheckedIdList = (selectionModel: GridRowSelectionModel) => {
-    const copyInputData = Object.assign({}, inputExampleData);
-    copyInputData.meanId = selectionModel as number[];
-    setInputExampleData && setInputExampleData(copyInputData);
+    setInputExampleData &&
+      setInputExampleData({
+        ...inputExampleData,
+        meanId: selectionModel as number[]
+      });
   };
 
   return (
     <>
       <CardContent>
-        <Card variant="outlined">
-          <CardHeader subheader="関連付け単語検索" />
-          <CardContent className={styles.content}>
+        <Card variant="outlined" subHeader="関連付け単語検索">
+          <CardContent className={commonStyles.cardContent}>
             <TextField
               label="単語検索(完全一致)"
               variant="outlined"
-              onChange={(e) => {
-                setQuery(e.target.value);
+              className={['fullWidth']}
+              setStater={(value: string) => {
+                setQuery(value);
               }}
-              className={styles.inputText}
             />
             <Button
+              label={'検索'}
               variant="contained"
-              className={styles.inlineButton}
+              color="primary"
+              attr={'after-inline'}
               onClick={(e) => searchWordAPI({ query, setMessage, setSearchResult })}
-            >
-              検索
-            </Button>
+            />
           </CardContent>
 
           <CardContent className={styles.searchedTable}>
