@@ -1,19 +1,23 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
-import {
-  CategoryByFileSqlResultDto,
-  GetAccuracyRateByCategoryServiceDto,
-  SelectFileDto,
-} from '../../interfaces/api/request/category';
 import { TransactionQuery } from '../../interfaces/db';
+import {
+  ReplaceAllCategorAPIRequestDto,
+  GetCategoryAPIResponseDto,
+  GetAccuracyRateByCategoryAPIResponseDto,
+} from 'quizzer-lib';
 
 @Injectable()
 export class CategoryService {
   // カテゴリリスト(ファイルごと)取得
   async getCategoryList(file_num: number) {
     try {
-      return await execQuery(SQL.CATEGORY.INFO, [file_num]);
+      const result: GetCategoryAPIResponseDto[] = await execQuery(
+        SQL.CATEGORY.INFO,
+        [file_num],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -25,12 +29,12 @@ export class CategoryService {
   }
 
   // カテゴリ総入れ替え
-  async replaceAllCategory(req: SelectFileDto) {
+  async replaceAllCategory(req: ReplaceAllCategorAPIRequestDto) {
     try {
       const { file_num } = req;
 
       //指定ファイルのカテゴリ取得
-      const results: CategoryByFileSqlResultDto[] = await execQuery(
+      const results: GetCategoryAPIResponseDto[] = await execQuery(
         SQL.QUIZ.CATEGORY.DISTINCT,
         [file_num],
       );
@@ -83,7 +87,7 @@ export class CategoryService {
   // カテゴリ正解率取得
   async getAccuracyRateByCategory(file_num: number) {
     try {
-      const result: GetAccuracyRateByCategoryServiceDto = {
+      const result: GetAccuracyRateByCategoryAPIResponseDto = {
         result: [],
         checked_result: [],
       };
@@ -98,7 +102,7 @@ export class CategoryService {
         file_num,
       ]);
 
-      return [result];
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

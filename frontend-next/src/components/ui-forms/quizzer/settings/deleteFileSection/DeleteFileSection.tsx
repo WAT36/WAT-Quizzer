@@ -12,8 +12,8 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { useState } from 'react';
-import { del } from '@/common/API';
-import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
+import { del } from '@/api/API';
+import { ProcessingApiReponse } from 'quizzer-lib';
 
 interface DeleteFileSectionProps {
   deleteFileNum: number;

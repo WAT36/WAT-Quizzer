@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
-import { GetAccuracyRateByCategoryServiceDto } from '../../../interfaces/api/response';
+import { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
 import { Layout } from '@/components/templates/layout/Layout';
-import { getFileList } from '@/common/response';
 import { PullDownOptionState, QueryOfGetAccuracyState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { GetFileForm } from '@/components/ui-forms/quizzer/accuracyRateGraph/getFileForm/GetFileForm';
@@ -10,6 +9,7 @@ import { GetFileButtonGroup } from '@/components/ui-forms/quizzer/accuracyRateGr
 import { AccuracyChart } from '@/components/ui-forms/quizzer/accuracyRateGraph/accuracyChart/AccuracyChart';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
 
 type Props = {
   isMock?: boolean;
@@ -20,14 +20,14 @@ export default function AccuracyRateGraphPage({ isMock }: Props) {
     fileNum: -1
   });
   const [message, setMessage] = useRecoilState(messageState);
-  const [accuracy_data, setAccuracyData] = useState<GetAccuracyRateByCategoryServiceDto>({
+  const [accuracy_data, setAccuracyData] = useState<GetAccuracyRateByCategoryAPIResponseDto>({
     result: [],
     checked_result: []
   });
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
 
   useEffect(() => {
-    !isMock && getFileList(setMessage, setFilelistoption);
+    !isMock && getQuizFileListAPI(setMessage, setFilelistoption);
   }, [isMock, setMessage]);
 
   const contents = () => {

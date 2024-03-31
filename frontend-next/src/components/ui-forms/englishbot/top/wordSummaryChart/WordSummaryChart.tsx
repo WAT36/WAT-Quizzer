@@ -1,7 +1,7 @@
 import Chart from 'react-google-charts';
-import { WordSummaryApiResponse } from '../../../../../../interfaces/db';
 import styles from '../Chart.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
+import { WordSummaryApiResponse } from 'quizzer-lib';
 
 interface WordSummaryChartProps {
   wordSummaryData: WordSummaryApiResponse[];

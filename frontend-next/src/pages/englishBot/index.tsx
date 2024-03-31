@@ -2,10 +2,10 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { WordSummaryChart } from '@/components/ui-forms/englishbot/top/wordSummaryChart/WordSummaryChart';
 import { Container } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { WordSummaryApiResponse } from '../../../interfaces/db';
-import { getWordSummaryData } from '@/common/response';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
+import { getWordSummaryDataAPI } from '@/api/englishbot/getWordSummaryDataAPI';
+import { WordSummaryApiResponse } from 'quizzer-lib';
 
 type Props = {
   isMock?: boolean;
@@ -16,7 +16,7 @@ export default function EnglishBotTopPage({ isMock }: Props) {
   const setMessage = useSetRecoilState(messageState);
   // 問題ファイルリスト取得
   useEffect(() => {
-    !isMock && getWordSummaryData(setMessage, setWordSummaryData);
+    !isMock && getWordSummaryDataAPI(setMessage, setWordSummaryData);
   }, [isMock, setMessage]);
 
   const contents = () => {

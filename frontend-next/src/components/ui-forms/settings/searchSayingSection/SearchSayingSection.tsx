@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { MessageState } from '../../../../../interfaces/state';
 import { CardContent } from '@mui/material';
-import { searchSayingAPI } from '@/common/ButtonAPI';
 import styles from '../Settings.module.css';
 import { GridRowsProp } from '@mui/x-data-grid';
 import { SearchResultTable } from '@/components/ui-elements/searchResultTable/SearchResultTable';
@@ -11,6 +9,7 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { searchSayingColumns } from '../../../../../utils/tableColumn';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
+import { searchSayingAPI } from '@/api/saying/searchSayingAPI';
 
 interface SearchSayingSectionProps {
   queryOfSaying: string;

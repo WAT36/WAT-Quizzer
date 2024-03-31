@@ -1,10 +1,8 @@
 import { Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getApiAndGetValue } from '@/common/API';
-import { WordApiResponse } from '../../../../interfaces/db';
+import { getApiAndGetValue } from '@/api/API';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState, WordMeanData, WordSourceData, WordSubSourceData } from '../../../../interfaces/state';
-import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
 import { getWordDetail, getWordSource, getWordSubSource } from '@/pages/api/english';
@@ -12,6 +10,9 @@ import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceS
 import { SubSourceStack } from '@/components/ui-forms/englishbot/detailWord/subSourceStack/SubSourceStack';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
+import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
+import { GetWordAPIResponseDto } from 'quizzer-lib';
 
 type EachWordPageProps = {
   id: string;
@@ -33,8 +34,8 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
   useEffect(() => {
     !isMock &&
       Promise.all([
-        getPartOfSpeechList(setMessage, setPosList),
-        getSourceList(setMessage, setSourcelistoption),
+        getPartOfSpeechListAPI(setMessage, setPosList),
+        getSourceListAPI(setMessage, setSourcelistoption),
         getWordDetail(id, setMessage, setWordName, setMeanData),
         getWordSource(id, setMessage, setWordSourceData),
         getWordSubSource(id, setMessage, setWordSubSourceData)
@@ -109,7 +110,7 @@ export async function getStaticProps({ params }: Params) {
 
 // 一番最初に実行される関数
 export async function getStaticPaths() {
-  const words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
+  const words: GetWordAPIResponseDto[] = (await getAllWords()) as GetWordAPIResponseDto[];
   console.log('words num:', words.length);
   return {
     paths: words.map((word) => {

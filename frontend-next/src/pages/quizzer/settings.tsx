@@ -3,11 +3,11 @@ import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
-import { getFileList } from '@/common/response';
 import { FileConfigSection } from '@/components/ui-forms/quizzer/settings/fileConfigSection/FileConfigSection';
 import { LogConfigSection } from '@/components/ui-forms/quizzer/settings/logConfigSection/LogConfigSection';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
 
 type Props = {
   isMock?: boolean;
@@ -22,7 +22,7 @@ export default function QuizzerSettingPage({ isMock }: Props) {
   const [deleteLogOfFileAlertOpen, setDeleteLogOfFileAlertOpen] = React.useState(false);
 
   useEffect(() => {
-    !isMock && getFileList(setMessage, setFilelistoption);
+    !isMock && getQuizFileListAPI(setMessage, setFilelistoption);
   }, [isMock, setMessage]);
 
   const contents = () => {

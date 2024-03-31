@@ -1,20 +1,29 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../../config/sql';
 import { execQuery, execTransaction } from '../../../lib/db/dao';
-import {
-  AddEnglishWordDto,
-  AddWordSubSourceDto,
-  AddWordTestLogDto,
-  EditWordMeanDto,
-  EditWordSourceDto,
-} from '../../../interfaces/api/request/english';
 import { TransactionQuery } from '../../../interfaces/db';
 import { getDateForSqlString } from 'lib/str';
+import {
+  AddEnglishWordAPIRequestDto,
+  AddWordTestResultLogAPIRequestDto,
+  EditWordSourceAPIRequestDto,
+  AddWordSubSourceAPIRequestDto,
+  EditWordMeanAPIRequestDto,
+  WordSearchAPIResponseDto,
+  GetWordAPIResponseDto,
+  GetWordBynameAPIResponseDto,
+  GetRandomWordAPIResponseDto,
+  GetFourChoiceAPIResponseDto,
+  FourChoiceAPIResponseDto,
+  GetWordSummaryAPIResponseDto,
+  GetSourceOfWordAPIResponseDto,
+  GetSubSourceOfWordAPIResponseDto,
+} from 'quizzer-lib';
 
 @Injectable()
 export class EnglishWordService {
   // 単語と意味追加
-  async addWordAndMeanService(req: AddEnglishWordDto) {
+  async addWordAndMeanService(req: AddEnglishWordAPIRequestDto) {
     const { wordName, pronounce, meanArrayData } = req;
     try {
       //トランザクション実行準備
@@ -110,10 +119,11 @@ export class EnglishWordService {
   // 単語検索
   async searchWordService(wordName: string, subSourceName: string) {
     try {
-      return await execQuery(
+      const result: WordSearchAPIResponseDto[] = await execQuery(
         SQL.ENGLISH.WORD.SEARCH(wordName, subSourceName),
         [],
       );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -127,7 +137,11 @@ export class EnglishWordService {
   // 単語全取得
   async getAllWordService() {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.GET.ALL, []);
+      const result: GetWordAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.WORD.GET.ALL,
+        [],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -141,7 +155,11 @@ export class EnglishWordService {
   // 単語名から単語情報取得
   async getWordByNameService(name: string) {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.GET.NAME, [name]);
+      const result: GetWordBynameAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.WORD.GET.NAME,
+        [name],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -186,10 +204,11 @@ export class EnglishWordService {
         }
       `;
       // ランダムに英単語id,nameを返す
-      return await execQuery(
+      const result: GetRandomWordAPIResponseDto[] = await execQuery(
         SQL.ENGLISH.WORD.GET.RANDOM(sourceIdSql, subSourceSql),
         [],
       );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -210,13 +229,15 @@ export class EnglishWordService {
         );
       }
       // 指定単語idの意味を取得
-      const correctMeans = await execQuery(SQL.ENGLISH.MEAN.GET.BY_WORD_ID, [
-        wordId,
-      ]);
+      const correctMeans: GetFourChoiceAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.MEAN.GET.BY_WORD_ID,
+        [wordId],
+      );
       // ダミー選択肢用の意味を取得
-      const dummyMeans = await execQuery(SQL.ENGLISH.MEAN.GET.BY_NOT_WORD_ID, [
-        wordId,
-      ]);
+      const dummyMeans: GetFourChoiceAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.MEAN.GET.BY_NOT_WORD_ID,
+        [wordId],
+      );
 
       return [
         {
@@ -225,7 +246,7 @@ export class EnglishWordService {
             mean: x.meaning,
           })),
         },
-      ];
+      ] as FourChoiceAPIResponseDto[];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -237,7 +258,7 @@ export class EnglishWordService {
   }
 
   // 正解登録
-  async wordTestClearedService(req: AddWordTestLogDto) {
+  async wordTestClearedService(req: AddWordTestResultLogAPIRequestDto) {
     try {
       const { wordId } = req;
       return await execQuery(SQL.ENGLISH.WORD_TEST.CLEARED.INPUT, [wordId]);
@@ -252,7 +273,7 @@ export class EnglishWordService {
   }
 
   // 不正解登録
-  async wordTestFailedService(req: AddWordTestLogDto) {
+  async wordTestFailedService(req: AddWordTestResultLogAPIRequestDto) {
     try {
       const { wordId } = req;
       return await execQuery(SQL.ENGLISH.WORD_TEST.FAILED.INPUT, [wordId]);
@@ -267,7 +288,7 @@ export class EnglishWordService {
   }
 
   // 単語の出典追加・更新
-  async editSourceOfWordById(req: EditWordSourceDto) {
+  async editSourceOfWordById(req: EditWordSourceAPIRequestDto) {
     try {
       const { meanId, oldSourceId, newSourceId } = req;
       //トランザクション実行準備
@@ -303,7 +324,7 @@ export class EnglishWordService {
   }
 
   // 単語のサブ出典追加
-  async addSubSourceOfWordById(req: AddWordSubSourceDto) {
+  async addSubSourceOfWordById(req: AddWordSubSourceAPIRequestDto) {
     try {
       const { wordId, subSource } = req;
       return await execQuery(SQL.ENGLISH.WORD.SUBSOURCE.ADD, [
@@ -323,7 +344,11 @@ export class EnglishWordService {
   // 単語のサマリデータ取得
   async getSummary() {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.SUMMARY.GET, []);
+      const result: GetWordSummaryAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.WORD.SUMMARY.GET,
+        [],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -337,7 +362,11 @@ export class EnglishWordService {
   // 単語IDから出典情報取得
   async getSourceOfWordById(id: number) {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.GET.SOURCE, [id]);
+      const result: GetSourceOfWordAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.WORD.GET.SOURCE,
+        [id],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -351,7 +380,11 @@ export class EnglishWordService {
   // 単語のサブ出典取得
   async getSubSourceOfWordById(id: number) {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.GET.SUBSOURCE, [id]);
+      const result: GetSubSourceOfWordAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.WORD.GET.SUBSOURCE,
+        [id],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -365,7 +398,11 @@ export class EnglishWordService {
   // IDから単語情報取得
   async getWordByIdService(id: number) {
     try {
-      return await execQuery(SQL.ENGLISH.WORD.GET.ID, [id]);
+      const result: GetWordBynameAPIResponseDto[] = await execQuery(
+        SQL.ENGLISH.WORD.GET.ID,
+        [id],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -377,7 +414,7 @@ export class EnglishWordService {
   }
 
   // 単語の意味などを更新
-  async editWordMeanService(req: EditWordMeanDto) {
+  async editWordMeanService(req: EditWordMeanAPIRequestDto) {
     try {
       const { wordId, wordMeanId, meanId, partofspeechId, meaning } = req;
       //意味編集及び追加

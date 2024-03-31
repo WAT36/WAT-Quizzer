@@ -8,11 +8,11 @@ import {
   QueryOfDeleteQuizState,
   QueryOfIntegrateToQuizState
 } from '../../../interfaces/state';
-import { getFileList } from '@/common/response';
 import { DeleteQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/deleteQuizForm/DeleteQuizForm';
 import { IntegrateToQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/integrateToQuizForm/IntegrateToQuizForm';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
 
 type Props = {
   isMock?: boolean;
@@ -34,7 +34,7 @@ export default function DeleteQuizPage({ isMock }: Props) {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
 
   useEffect(() => {
-    !isMock && getFileList(setMessage, setFilelistoption);
+    !isMock && getQuizFileListAPI(setMessage, setFilelistoption);
   }, [isMock, setMessage]);
 
   const contents = () => {

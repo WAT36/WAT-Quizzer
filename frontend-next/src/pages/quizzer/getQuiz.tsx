@@ -6,9 +6,9 @@ import { DisplayQuizState, PullDownOptionState, QueryOfQuizState } from '../../.
 import { GetQuizButtonGroup } from '@/components/ui-forms/quizzer/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
 import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displayQuizSection/DisplayQuizSection';
 import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
-import { getFileList } from '@/common/response';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
 
 type Props = {
   isMock?: boolean;
@@ -34,7 +34,7 @@ export default function GetQuizPage({ isMock }: Props) {
 
   // 問題ファイルリスト取得
   useEffect(() => {
-    !isMock && getFileList(setMessage, setFilelistoption);
+    !isMock && getQuizFileListAPI(setMessage, setFilelistoption);
   }, [isMock, setMessage]);
 
   const contents = () => {

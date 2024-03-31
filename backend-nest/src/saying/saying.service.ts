@@ -2,21 +2,25 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery } from '../../lib/db/dao';
 import {
-  AddBookDto,
-  AddSayingDto,
-  EditSayingDto,
-} from '../../interfaces/api/request/saying';
+  AddBookAPIRequestDto,
+  AddSayingAPIRequestDto,
+  EditSayingAPIRequestDto,
+  GetSayingAPIResponseDto,
+  GetBookAPIResponseDto,
+} from 'quizzer-lib';
 
 @Injectable()
 export class SayingService {
   // 格言ランダム取得
   async getRandomSaying(book_id?: number) {
     try {
+      let result: GetSayingAPIResponseDto[];
       if (book_id) {
-        return await execQuery(SQL.SAYING.GET.RANDOM.BYBOOK, [book_id]);
+        result = await execQuery(SQL.SAYING.GET.RANDOM.BYBOOK, [book_id]);
       } else {
-        return await execQuery(SQL.SAYING.GET.RANDOM.ALL, []);
+        result = await execQuery(SQL.SAYING.GET.RANDOM.ALL, []);
       }
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -28,7 +32,7 @@ export class SayingService {
   }
 
   // 啓発本追加
-  async addBookService(req: AddBookDto) {
+  async addBookService(req: AddBookAPIRequestDto) {
     const { book_name } = req;
     try {
       return await execQuery(SQL.SELFHELP_BOOK.ADD, [book_name]);
@@ -45,7 +49,11 @@ export class SayingService {
   // 啓発本リスト取得
   async getBookListService() {
     try {
-      return await execQuery(SQL.SELFHELP_BOOK.GET.ALL, []);
+      const result: GetBookAPIResponseDto[] = await execQuery(
+        SQL.SELFHELP_BOOK.GET.ALL,
+        [],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -57,7 +65,7 @@ export class SayingService {
   }
 
   // 格言追加
-  async addSayingService(req: AddSayingDto) {
+  async addSayingService(req: AddSayingAPIRequestDto) {
     const { book_id, saying, explanation } = req;
     try {
       // 格言の新規ID計算
@@ -84,7 +92,11 @@ export class SayingService {
   // 格言検索
   async searchSayingService(saying: string) {
     try {
-      return await execQuery(SQL.SAYING.GET.SEARCH(saying), []);
+      const result: GetSayingAPIResponseDto[] = await execQuery(
+        SQL.SAYING.GET.SEARCH(saying),
+        [],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -98,7 +110,11 @@ export class SayingService {
   // 格言取得(ID指定)
   async getSayingByIdService(id: number) {
     try {
-      return await execQuery(SQL.SAYING.GET.BYID, [id]);
+      const result: GetSayingAPIResponseDto[] = await execQuery(
+        SQL.SAYING.GET.BYID,
+        [id],
+      );
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -110,7 +126,7 @@ export class SayingService {
   }
 
   // 格言編集
-  async editSayingService(req: EditSayingDto) {
+  async editSayingService(req: EditSayingAPIRequestDto) {
     try {
       const { id, saying, explanation } = req;
       return await execQuery(SQL.SAYING.EDIT, [saying, explanation, id]);

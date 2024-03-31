@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { buttonStyle } from '../../styles/Pages';
 import { Button, Container, FormControl, FormGroup, TextField } from '@mui/material';
-import { meanOfAddWordDto } from '../../../interfaces/api/response';
+import { meanOfAddWordDto } from 'quizzer-lib';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
-import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanForm/AddMeanForm';
-import { addWordAPI } from '@/common/ButtonAPI';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { addWordAPI } from '@/api/englishbot/addWordAPI';
+import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
+import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
 
 type Props = {
   isMock?: boolean;
@@ -23,7 +24,8 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
   const [inputWord, setInputWord] = useState<string>('');
 
   useEffect(() => {
-    !isMock && Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceList(setMessage, setSourceList)]);
+    !isMock &&
+      Promise.all([getPartOfSpeechListAPI(setMessage, setPosList), getSourceListAPI(setMessage, setSourceList)]);
   }, [isMock, setMessage]);
 
   const contents = () => {

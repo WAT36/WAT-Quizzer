@@ -1,0 +1,17 @@
+{
+  "name": "quizzer-lib",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^20.11.24",
+    "tslint": "^6.1.3",
+    "typescript": "^5.3.3"
+  }
+}

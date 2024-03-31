@@ -9,8 +9,8 @@ import { FormControl, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
-import { getQuizAPI } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
+import { getQuizAPI } from '@/api/quiz/getQuizAPI';
 
 interface InputQueryForEditFormProps {
   filelistoption: PullDownOptionState[];

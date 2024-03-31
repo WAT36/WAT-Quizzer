@@ -21,8 +21,9 @@ import {
   QueryOfDeleteQuizState,
   QueryOfIntegrateToQuizState
 } from '../../../../../../interfaces/state';
-import { getIntegrateToQuiz, integrateQuiz } from '@/common/ButtonAPI';
 import { useState } from 'react';
+import { getIntegrateToQuiz } from '@/api/quiz/getIntegrateToQuizAPI';
+import { integrateQuiz } from '@/api/quiz/integrateQuizAPI';
 
 interface IntegrateToQuizFormProps {
   queryOfDeleteQuizState: QueryOfDeleteQuizState;

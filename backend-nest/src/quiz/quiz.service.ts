@@ -1,23 +1,24 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
-import {
-  UpdateCategoryOfQuizDto,
-  SelectQuizDto,
-  AddQuizDto,
-  IntegrateQuizDto,
-  EditQuizDto,
-  AddFileDto,
-  DeleteFileDto,
-  DeleteAnswerLogByFile,
-  GetQuizNumSqlResultDto,
-  QuizDto,
-  GetIdDto,
-  GetLinkedBasisIdDto,
-  QuizViewApiResponse,
-} from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 import { getDifferenceArray } from '../../lib/array';
+import {
+  ClearQuizAPIRequestDto,
+  FailQuizAPIRequestDto,
+  AddQuizAPIRequestDto,
+  EditQuizAPIRequestDto,
+  DeleteQuizAPIRequestDto,
+  IntegrateQuizAPIRequestDto,
+  UpdateCategoryOfQuizAPIRequestDto,
+  RemoveCategoryOfQuizAPIRequestDto,
+  CheckQuizAPIRequestDto,
+  DeleteAnswerLogAPIRequestDto,
+  GetQuizApiResponseDto,
+  GetQuizNumResponseDto,
+  GetIdDto,
+  GetLinkedBasisIdDto,
+} from 'quizzer-lib';
 
 export interface QueryType {
   query: string;
@@ -64,7 +65,7 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      const result: QuizViewApiResponse[] = await execQuery(
+      const result: GetQuizApiResponseDto[] = await execQuery(
         query.query,
         query.value,
       );
@@ -124,7 +125,12 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
+      const result: GetQuizApiResponseDto[] = await execQuery(sql, [
+        file_num,
+        min_rate || 0,
+        max_rate || 100,
+      ]);
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -160,7 +166,8 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(sql, [file_num]);
+      const result: GetQuizApiResponseDto[] = await execQuery(sql, [file_num]);
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -197,7 +204,8 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(sql, [file_num]);
+      const result: GetQuizApiResponseDto[] = await execQuery(sql, [file_num]);
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -233,7 +241,8 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(sql, []);
+      const result: GetQuizApiResponseDto[] = await execQuery(sql, []);
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -269,7 +278,8 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(sql, []);
+      const result: GetQuizApiResponseDto[] = await execQuery(sql, []);
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -281,7 +291,7 @@ export class QuizService {
   }
 
   // 正解登録
-  async cleared(req: SelectQuizDto) {
+  async cleared(req: ClearQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
       let query: QueryType;
@@ -322,7 +332,7 @@ export class QuizService {
   }
 
   // 不正解登録
-  async failed(req: SelectQuizDto) {
+  async failed(req: FailQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
       let query: QueryType;
@@ -363,7 +373,7 @@ export class QuizService {
   }
 
   // 問題を１問追加
-  async add(req: AddQuizDto) {
+  async add(req: AddQuizAPIRequestDto) {
     try {
       const { file_num, input_data } = req;
       if (!file_num && !input_data) {
@@ -378,7 +388,7 @@ export class QuizService {
       const { question, answer, category, img_file } = input_data;
 
       // 新問題番号を取得しINSERT
-      const res: GetQuizNumSqlResultDto[] = await execQuery(
+      const res: GetQuizNumResponseDto[] = await execQuery(
         SQL.QUIZ.MAX_QUIZ_NUM,
         [file_num],
       );
@@ -416,7 +426,7 @@ export class QuizService {
   }
 
   // 問題編集
-  async edit(req: EditQuizDto) {
+  async edit(req: EditQuizAPIRequestDto) {
     try {
       const {
         format,
@@ -478,7 +488,7 @@ export class QuizService {
       // 四択問題時 ダミー選択肢の編集
       if (format === '4choice') {
         // 問題番号を取得
-        const res: GetQuizNumSqlResultDto[] = await execQuery(
+        const res: GetQuizNumResponseDto[] = await execQuery(
           SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.DUMMY_CHOICE,
           [file_num, quiz_num],
         );
@@ -634,7 +644,12 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(sql, [file_num, min_rate || 0, max_rate || 100]);
+      const result: GetQuizApiResponseDto[] = await execQuery(sql, [
+        file_num,
+        min_rate || 0,
+        max_rate || 100,
+      ]);
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -646,7 +661,7 @@ export class QuizService {
   }
 
   // 問題削除
-  async delete(req: SelectQuizDto) {
+  async delete(req: DeleteQuizAPIRequestDto) {
     try {
       const { format, file_num, quiz_num } = req;
 
@@ -677,7 +692,7 @@ export class QuizService {
   }
 
   // 問題統合（とりあえず基礎問題のみ）
-  async integrate(req: IntegrateQuizDto) {
+  async integrate(req: IntegrateQuizAPIRequestDto) {
     try {
       const { pre_file_num, pre_quiz_num, post_file_num, post_quiz_num } = req;
       if (pre_file_num !== post_file_num) {
@@ -694,16 +709,16 @@ export class QuizService {
       const transactionQuery: TransactionQuery[] = [];
 
       // 統合前の問題取得
-      const pre_data: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
+      const pre_data: GetQuizApiResponseDto[] = await execQuery(SQL.QUIZ.INFO, [
         pre_file_num,
         pre_quiz_num,
       ]);
 
       // 統合後の問題取得
-      const post_data: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
-        post_file_num,
-        post_quiz_num,
-      ]);
+      const post_data: GetQuizApiResponseDto[] = await execQuery(
+        SQL.QUIZ.INFO,
+        [post_file_num, post_quiz_num],
+      );
 
       // 統合データ作成
       const pre_category = new Set(pre_data[0]['category'].split(':'));
@@ -742,7 +757,7 @@ export class QuizService {
   }
 
   // 問題にカテゴリ追加
-  async addCategoryToQuiz(req: UpdateCategoryOfQuizDto) {
+  async addCategoryToQuiz(req: UpdateCategoryOfQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, category } = req;
       // 現在のカテゴリ取得
@@ -781,11 +796,11 @@ export class QuizService {
   }
 
   // 問題からカテゴリ削除
-  async removeCategoryFromQuiz(body: UpdateCategoryOfQuizDto) {
+  async removeCategoryFromQuiz(body: RemoveCategoryOfQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, category } = body;
       // 現在のカテゴリ取得
-      const res: QuizDto[] = await execQuery(SQL.QUIZ.INFO, [
+      const res: GetQuizApiResponseDto[] = await execQuery(SQL.QUIZ.INFO, [
         file_num,
         quiz_num,
       ]);
@@ -831,7 +846,7 @@ export class QuizService {
   }
 
   // 問題にチェック追加
-  async check(req: SelectQuizDto) {
+  async check(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num } = req;
       // 更新
@@ -842,7 +857,7 @@ export class QuizService {
   }
 
   // 問題にチェック外す
-  async uncheck(req: SelectQuizDto) {
+  async uncheck(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num } = req;
       // 更新
@@ -858,7 +873,7 @@ export class QuizService {
   }
 
   // 問題のチェック反転
-  async reverseCheck(req: SelectQuizDto) {
+  async reverseCheck(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
       let infoSql: string;
@@ -883,7 +898,10 @@ export class QuizService {
       }
 
       // チェック取得
-      const result: QuizDto[] = await execQuery(infoSql, [file_num, quiz_num]);
+      const result: GetQuizApiResponseDto[] = await execQuery(infoSql, [
+        file_num,
+        quiz_num,
+      ]);
       const checked = result[0].checked;
 
       await execQuery(checked ? uncheckSql : checkSql, [file_num, quiz_num]);
@@ -901,7 +919,7 @@ export class QuizService {
   }
 
   // 回答ログ削除(ファイル指定)
-  async deleteAnswerLogByFile(req: DeleteAnswerLogByFile) {
+  async deleteAnswerLogByFile(req: DeleteAnswerLogAPIRequestDto) {
     try {
       const { file_id } = req;
       // 指定ファイルの回答ログ削除
@@ -921,7 +939,7 @@ export class QuizService {
   }
 
   // 応用問題を１問追加
-  async addAdvancedQuiz(req: AddQuizDto) {
+  async addAdvancedQuiz(req: AddQuizAPIRequestDto) {
     try {
       const { file_num, input_data } = req;
       if (!file_num && !input_data) {
@@ -955,7 +973,7 @@ export class QuizService {
       }
 
       // 新問題番号(ファイルごとの)を取得しINSERT
-      let res: GetQuizNumSqlResultDto[] = await execQuery(
+      let res: GetQuizNumResponseDto[] = await execQuery(
         SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.BYFILE,
         [file_num],
       );
@@ -1005,7 +1023,7 @@ export class QuizService {
   }
 
   // 四択問題を１問追加
-  async addFourChoiceQuiz(req: AddQuizDto) {
+  async addFourChoiceQuiz(req: AddQuizAPIRequestDto) {
     try {
       const { file_num, input_data } = req;
       if (!file_num && !input_data) {
@@ -1054,7 +1072,7 @@ export class QuizService {
       }
 
       // 新問題番号(ファイルごとの)を取得しINSERT
-      let res: GetQuizNumSqlResultDto[] = await execQuery(
+      let res: GetQuizNumResponseDto[] = await execQuery(
         SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.BYFILE,
         [file_num],
       );

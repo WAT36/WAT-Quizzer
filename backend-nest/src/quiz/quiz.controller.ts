@@ -10,13 +10,17 @@ import {
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 import {
-  UpdateCategoryOfQuizDto,
-  SelectQuizDto,
-  AddQuizDto,
-  IntegrateQuizDto,
-  EditQuizDto,
-  DeleteFileDto,
-} from '../../interfaces/api/request/quiz';
+  ClearQuizAPIRequestDto,
+  FailQuizAPIRequestDto,
+  AddQuizAPIRequestDto,
+  EditQuizAPIRequestDto,
+  DeleteQuizAPIRequestDto,
+  IntegrateQuizAPIRequestDto,
+  UpdateCategoryOfQuizAPIRequestDto,
+  RemoveCategoryOfQuizAPIRequestDto,
+  CheckQuizAPIRequestDto,
+  DeleteAnswerLogAPIRequestDto,
+} from 'quizzer-lib';
 
 @Controller('quiz')
 export class QuizController {
@@ -111,22 +115,22 @@ export class QuizController {
   }
 
   @Post('/clear')
-  async cleared(@Body() req: SelectQuizDto) {
+  async cleared(@Body() req: ClearQuizAPIRequestDto) {
     return await this.quizService.cleared(req);
   }
 
   @Post('/fail')
-  async failed(@Body() req: SelectQuizDto) {
+  async failed(@Body() req: FailQuizAPIRequestDto) {
     return await this.quizService.failed(req);
   }
 
   @Post('/add')
-  async add(@Body() req: AddQuizDto) {
+  async add(@Body() req: AddQuizAPIRequestDto) {
     return await this.quizService.add(req);
   }
 
   @Post('/edit')
-  async edit(@Body() req: EditQuizDto) {
+  async edit(@Body() req: EditQuizAPIRequestDto) {
     return await this.quizService.edit(req);
   }
 
@@ -156,52 +160,54 @@ export class QuizController {
   }
 
   @Delete()
-  async delete(@Body() req: SelectQuizDto) {
+  async delete(@Body() req: DeleteQuizAPIRequestDto) {
     return await this.quizService.delete(req);
   }
 
   @Post('/integrate')
-  async integrate(@Body() req: IntegrateQuizDto) {
+  async integrate(@Body() req: IntegrateQuizAPIRequestDto) {
     return await this.quizService.integrate(req);
   }
 
   @Post('/category')
-  async addCategoryToQuiz(@Body() body: UpdateCategoryOfQuizDto) {
+  async addCategoryToQuiz(@Body() body: UpdateCategoryOfQuizAPIRequestDto) {
     return await this.quizService.addCategoryToQuiz(body);
   }
 
   @Put('/category')
-  async removeCategoryFromQuiz(@Body() body: UpdateCategoryOfQuizDto) {
+  async removeCategoryFromQuiz(
+    @Body() body: RemoveCategoryOfQuizAPIRequestDto,
+  ) {
     return await this.quizService.removeCategoryFromQuiz(body);
   }
 
   @Put('/check')
-  async check(@Body() req: SelectQuizDto) {
+  async check(@Body() req: CheckQuizAPIRequestDto) {
     return await this.quizService.check(req);
   }
 
   @Put('/uncheck')
-  async uncheck(@Body() req: SelectQuizDto) {
+  async uncheck(@Body() req: CheckQuizAPIRequestDto) {
     return await this.quizService.uncheck(req);
   }
 
   @Post('/check')
-  async reverseCheck(@Body() req: SelectQuizDto) {
+  async reverseCheck(@Body() req: CheckQuizAPIRequestDto) {
     return await this.quizService.reverseCheck(req);
   }
 
   @Patch('/answer_log/file')
-  async deleteAnswerLogByFile(@Body() req: DeleteFileDto) {
+  async deleteAnswerLogByFile(@Body() req: DeleteAnswerLogAPIRequestDto) {
     return await this.quizService.deleteAnswerLogByFile(req);
   }
 
   @Post('/advanced')
-  async addAdvanceQuiz(@Body() req: AddQuizDto) {
+  async addAdvanceQuiz(@Body() req: AddQuizAPIRequestDto) {
     return await this.quizService.addAdvancedQuiz(req);
   }
 
   @Post('/advanced/4choice')
-  async addFourChoiceQuiz(@Body() req: AddQuizDto) {
+  async addFourChoiceQuiz(@Body() req: AddQuizAPIRequestDto) {
     return await this.quizService.addFourChoiceQuiz(req);
   }
 }

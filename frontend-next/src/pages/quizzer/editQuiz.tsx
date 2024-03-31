@@ -4,13 +4,13 @@ import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState, QueryOfPutQuizState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
-import { getFileList } from '@/common/response';
 import { InputQueryForEditForm } from '@/components/ui-forms/quizzer/editQuiz/InputQueryForEditForm/InputQueryForEditForm';
 import { PutQuizForm } from '@/components/ui-forms/quizzer/forms/putQuizForm/PutQuizForm';
 import { Button } from '@/components/ui-elements/button/Button';
-import { editQuizAPI } from '@/common/ButtonAPI';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { editQuizAPI } from '@/api/quiz/editQuizAPI';
+import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
 
 type Props = {
   isMock?: boolean;
@@ -27,7 +27,7 @@ export default function EditQuizPage({ isMock }: Props) {
   const [message, setMessage] = useRecoilState(messageState);
 
   useEffect(() => {
-    !isMock && getFileList(setMessage, setFilelistoption);
+    !isMock && getQuizFileListAPI(setMessage, setFilelistoption);
   }, [isMock, setMessage]);
 
   const contents = () => {

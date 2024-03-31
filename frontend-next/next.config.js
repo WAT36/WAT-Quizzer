@@ -7,6 +7,9 @@ const withInterceptStdout = require('next-intercept-stdout');
 const nextConfig = withInterceptStdout(
   {
     reactStrictMode: true,
+    experimental: {
+      externalDir: true
+    },
     trailingSlash: true
   },
   (text) => (text.includes('Duplicate atom key') ? '' : text)

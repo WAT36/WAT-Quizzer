@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { SelectFileDto } from '../../interfaces/api/request/category';
+import { ReplaceAllCategorAPIRequestDto } from 'quizzer-lib';
 
 @Controller('category')
 export class CategoryController {
@@ -12,7 +12,7 @@ export class CategoryController {
   }
 
   @Post()
-  async replaceAllCategory(@Body() req: SelectFileDto) {
+  async replaceAllCategory(@Body() req: ReplaceAllCategorAPIRequestDto) {
     return await this.categoryService.replaceAllCategory(req);
   }
 

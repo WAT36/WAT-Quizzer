@@ -4,11 +4,11 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { AddExampleSection } from '@/components/ui-forms/englishbot/addExample/addExampleSection/AddExampleSection';
 import { SearchRelatedWordSection } from '@/components/ui-forms/englishbot/addExample/searchRelatedWordSection/SearchRelatedWordSection';
-import { submitExampleSentenseAPI } from '@/common/ButtonAPI';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
+import { submitExampleSentenseAPI } from '@/api/englishbot/submitExampleSentenseAPI';
 
 export type InputExampleData = {
   exampleJa?: string;

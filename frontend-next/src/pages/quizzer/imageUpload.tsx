@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageUploadReturnValue } from '../../../interfaces/api/response';
+import { ImageUploadReturnValue } from 'quizzer-lib';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';

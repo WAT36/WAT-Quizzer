@@ -7,7 +7,7 @@ import { MessageState, WordSubSourceData } from '../../../../../../interfaces/st
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { addEnglishWordSubSourceAPI } from '@/common/ButtonAPI';
+import { addEnglishWordSubSourceAPI } from '@/api/englishbot/addEnglishWordSubSourceAPI';
 
 interface SubSourceStackProps {
   id: string;
