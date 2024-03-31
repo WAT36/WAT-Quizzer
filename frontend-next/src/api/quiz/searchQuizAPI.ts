@@ -1,6 +1,6 @@
 import { GridRowsProp } from '@mui/x-data-grid';
 import { MessageState, QueryOfSearchQuizState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 import { GetQuizApiResponseDto, ProcessingApiReponse } from 'quizzer-lib';
 
 interface SearchQuizButtonProps {

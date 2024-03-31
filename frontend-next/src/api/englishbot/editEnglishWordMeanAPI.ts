@@ -1,4 +1,4 @@
-import { patch } from '@/common/API';
+import { patch } from '@/api/API';
 import { ProcessingAddApiReponse, AddDataApiResponse } from 'quizzer-lib';
 import { WordMeanData, MessageState } from '../../../interfaces/state';
 

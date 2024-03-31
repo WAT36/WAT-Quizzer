@@ -1,6 +1,6 @@
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
-import { post } from '@/common/API';
+import { post } from '@/api/API';
 
 interface ClearQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;

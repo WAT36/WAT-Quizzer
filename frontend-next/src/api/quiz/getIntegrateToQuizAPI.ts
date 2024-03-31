@@ -1,6 +1,6 @@
 import { ProcessingApiReponse, GetQuizApiResponseDto } from 'quizzer-lib';
 import { QueryOfIntegrateToQuizState, MessageState, DeleteQuizInfoState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 interface GetIntegrateToQuizButtonProps {
   queryOfIntegrateToQuizState: QueryOfIntegrateToQuizState;

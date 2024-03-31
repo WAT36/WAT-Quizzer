@@ -1,6 +1,6 @@
 import { GetAccuracyRateByCategoryAPIResponseDto, ProcessingApiReponse } from 'quizzer-lib';
 import { QueryOfGetAccuracyState, MessageState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 interface GetAccuracyProps {
   queryOfGetAccuracy: QueryOfGetAccuracyState;

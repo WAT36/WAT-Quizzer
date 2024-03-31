@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { Inter } from 'next/font/google';
 import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 import { GetPopularEventResponse, GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { dbHealthCheck } from '@/api/healthCheck';

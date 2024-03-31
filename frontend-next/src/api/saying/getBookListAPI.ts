@@ -1,7 +1,7 @@
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { GetSelfHelpBookResponse } from '../../../interfaces/api/response';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 // 設定ページ用 啓発本名リストをapi通信して取ってくる
 export const getBook = (

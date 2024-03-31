@@ -1,7 +1,7 @@
 import { GridRowsProp } from '@mui/x-data-grid';
 import { ProcessingApiReponse, GetWordBynameAPIResponseDto } from 'quizzer-lib';
 import { MessageState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 // 英単語検索
 interface SearchWordAPIProps {

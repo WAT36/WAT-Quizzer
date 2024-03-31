@@ -3,7 +3,7 @@ import { CardContent, CardHeader } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
 import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
-import { post } from '@/common/API';
+import { post } from '@/api/API';
 import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
 import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
 import { getRandomStr } from 'quizzer-lib';

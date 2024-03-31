@@ -1,7 +1,7 @@
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { WordSummaryApiResponse } from '../../../interfaces/db';
 import { MessageState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 // englishbot用 単語熟語統計データを取ってくる
 export const getWordSummaryDataAPI = (

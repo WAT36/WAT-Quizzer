@@ -1,4 +1,4 @@
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 import {
   EnglishWordByIdApiResponse,
   EnglishWordSourceByIdApiResponse,

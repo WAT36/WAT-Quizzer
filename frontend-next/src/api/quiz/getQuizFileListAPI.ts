@@ -1,7 +1,7 @@
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { QuizFileApiResponse } from '../../../interfaces/db';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 // quizzer各画面用 問題ファイルリストをapi通信して取ってくる
 export const getQuizFileListAPI = (

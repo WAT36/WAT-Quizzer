@@ -1,4 +1,4 @@
-import { post } from '@/common/API';
+import { post } from '@/api/API';
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { getBook } from './getBookListAPI';

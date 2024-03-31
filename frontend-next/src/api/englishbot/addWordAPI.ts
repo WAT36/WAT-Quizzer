@@ -1,4 +1,4 @@
-import { post } from '@/common/API';
+import { post } from '@/api/API';
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { meanOfAddWordDto, SendToAddWordApiData } from '../../../interfaces/api/response';
 import { MessageState } from '../../../interfaces/state';

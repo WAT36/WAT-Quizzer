@@ -1,4 +1,4 @@
-import { post } from '@/common/API';
+import { post } from '@/api/API';
 import { InputExampleData } from '@/pages/englishBot/addExample';
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { MessageState } from '../../../interfaces/state';

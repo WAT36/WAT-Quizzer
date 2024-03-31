@@ -1,7 +1,7 @@
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { PartofSpeechApiResponse } from '../../../interfaces/db';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 // englishbot用 品詞リストをapi通信して取ってくる
 export const getPartOfSpeechListAPI = (

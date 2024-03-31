@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui-elements/button/Button';
 import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { patch } from '@/common/API';
+import { patch } from '@/api/API';
 import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
 
 interface DeleteAnswerLogFileSectionProps {

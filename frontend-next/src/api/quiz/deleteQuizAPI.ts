@@ -1,4 +1,4 @@
-import { del } from '@/common/API';
+import { del } from '@/api/API';
 import { DeleteQuizInfoState, MessageState, QueryOfDeleteQuizState } from '../../../interfaces/state';
 import { ProcessingApiReponse } from 'quizzer-lib';
 

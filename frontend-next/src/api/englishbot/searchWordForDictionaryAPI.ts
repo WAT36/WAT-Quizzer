@@ -3,7 +3,7 @@
 import { GridRowsProp } from '@mui/x-data-grid';
 import { ProcessingApiReponse, WordSearchAPIResponseDto } from 'quizzer-lib';
 import { QueryOfSearchWordState, MessageState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 // TODO 英単語検索API2つあるのでこっちは消したい
 interface SearchWordForDictionaryAPIProps {

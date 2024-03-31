@@ -1,6 +1,6 @@
 import { Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getApiAndGetValue } from '@/common/API';
+import { getApiAndGetValue } from '@/api/API';
 import { WordApiResponse } from '../../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState, WordMeanData, WordSourceData, WordSubSourceData } from '../../../../interfaces/state';

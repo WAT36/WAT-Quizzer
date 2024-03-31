@@ -1,6 +1,6 @@
 import { AddQuizApiResponse, ProcessingApiReponse } from 'quizzer-lib';
 import { MessageState, QueryOfPutQuizState } from '../../../interfaces/state';
-import { post } from '@/common/API';
+import { post } from '@/api/API';
 
 interface EditQuizButtonProps {
   queryOfEditQuiz: QueryOfPutQuizState;

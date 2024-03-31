@@ -1,4 +1,4 @@
-import { put } from '@/common/API';
+import { put } from '@/api/API';
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { WordSubSourceData, MessageState } from '../../../interfaces/state';
 

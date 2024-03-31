@@ -1,7 +1,7 @@
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { GetSelfHelpBookResponse } from '../../../interfaces/api/response';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 // englishbot用 出典リストをapi通信して取ってくる
 export const getSourceListAPI = (

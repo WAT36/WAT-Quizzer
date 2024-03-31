@@ -1,4 +1,4 @@
-import { post } from '@/common/API';
+import { post } from '@/api/API';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
 import { CheckQuizApiResponse, ProcessingApiReponse } from 'quizzer-lib';
 

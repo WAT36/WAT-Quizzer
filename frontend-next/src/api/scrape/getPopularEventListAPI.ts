@@ -1,6 +1,6 @@
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { GetPopularEventResponse } from '../../../interfaces/api/response';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 // イベントリストをapi通信して取ってくる
 export const getPopularEventListAPI = async (

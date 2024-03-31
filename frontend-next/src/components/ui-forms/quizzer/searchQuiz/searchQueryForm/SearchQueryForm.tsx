@@ -6,7 +6,7 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 import { CategoryApiResponse } from '../../../../../../interfaces/db';
 
 interface SearchQueryFormProps {

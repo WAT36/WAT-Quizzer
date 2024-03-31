@@ -5,7 +5,7 @@ import {
   EnglishBotTestFourChoiceResponse
 } from 'quizzer-lib';
 import { QueryOfGetWordState, MessageState, DisplayWordTestState } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 interface GetRandomWordButtonProps {
   queryOfGetWordState: QueryOfGetWordState;

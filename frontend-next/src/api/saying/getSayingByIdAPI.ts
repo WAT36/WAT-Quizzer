@@ -1,6 +1,6 @@
 import { ProcessingApiReponse, GetSayingAPIResponseDto } from 'quizzer-lib';
 import { MessageState, EditQueryOfSaying } from '../../../interfaces/state';
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 
 interface getSayingAPIProps {
   id: number;
