@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
-import { GetAccuracyRateByCategoryServiceDto } from '../../../interfaces/api/response';
+import { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState, QueryOfGetAccuracyState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
@@ -20,7 +20,7 @@ export default function AccuracyRateGraphPage({ isMock }: Props) {
     fileNum: -1
   });
   const [message, setMessage] = useRecoilState(messageState);
-  const [accuracy_data, setAccuracyData] = useState<GetAccuracyRateByCategoryServiceDto>({
+  const [accuracy_data, setAccuracyData] = useState<GetAccuracyRateByCategoryAPIResponseDto>({
     result: [],
     checked_result: []
   });

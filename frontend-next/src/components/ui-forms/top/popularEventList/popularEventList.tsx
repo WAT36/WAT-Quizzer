@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, Link, List, ListItem, ListItemText } from '@mui/material';
-import { GetPopularEventResponse } from '../../../../../interfaces/api/response';
+import { GetPopularEventResponse } from 'quizzer-lib';
 
 interface PopularEventListProps {
   eventList: GetPopularEventResponse[];

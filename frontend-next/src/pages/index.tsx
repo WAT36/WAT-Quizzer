@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { get } from '@/api/API';
-import { GetPopularEventResponse, GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
+import { GetPopularEventResponse, GetRandomSayingResponse, ProcessingApiReponse } from 'quizzer-lib';
 import { Title } from '@/components/ui-elements/title/Title';
 import { dbHealthCheck } from '@/api/healthCheck';
 import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButtonGroup';

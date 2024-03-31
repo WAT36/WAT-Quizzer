@@ -4,7 +4,7 @@ import {
   EnglishWordSourceByIdApiResponse,
   EnglishWordSubSourceByIdApiResponse,
   ProcessingApiReponse
-} from '../../../interfaces/api/response';
+} from 'quizzer-lib';
 import { MessageState, WordMeanData, WordSourceData, WordSubSourceData } from '../../../interfaces/state';
 
 export const getWordDetail = async (

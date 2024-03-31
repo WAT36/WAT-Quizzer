@@ -1,5 +1,4 @@
-import { ProcessingApiReponse } from 'quizzer-lib';
-import { GetSelfHelpBookResponse } from '../../../interfaces/api/response';
+import { ProcessingApiReponse, GetSelfHelpBookResponse } from 'quizzer-lib';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { get } from '@/api/API';
 

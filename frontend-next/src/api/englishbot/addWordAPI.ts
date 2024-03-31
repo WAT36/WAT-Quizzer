@@ -1,6 +1,5 @@
 import { post } from '@/api/API';
-import { ProcessingApiReponse } from 'quizzer-lib';
-import { meanOfAddWordDto, SendToAddWordApiData } from '../../../interfaces/api/response';
+import { ProcessingApiReponse, meanOfAddWordDto, SendToAddWordApiData } from 'quizzer-lib';
 import { MessageState } from '../../../interfaces/state';
 
 interface AddWordButtonProps {

@@ -1,14 +1,14 @@
 import React from 'react';
 import { MessageState, QueryOfGetAccuracyState } from '../../../../../../interfaces/state';
 import { Button } from '@/components/ui-elements/button/Button';
-import { GetAccuracyRateByCategoryServiceDto } from '../../../../../../interfaces/api/response';
+import { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
 import { getAccuracy } from '@/api/category/getAccuracyAPI';
 import { updateCategory } from '@/api/category/updateCategoryAPI';
 
 interface GetFileButtonGroupProps {
   queryOfGetAccuracy: QueryOfGetAccuracyState;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setAccuracyData?: React.Dispatch<React.SetStateAction<GetAccuracyRateByCategoryServiceDto>>;
+  setAccuracyData?: React.Dispatch<React.SetStateAction<GetAccuracyRateByCategoryAPIResponseDto>>;
 }
 
 export const GetFileButtonGroup = ({ queryOfGetAccuracy, setMessage, setAccuracyData }: GetFileButtonGroupProps) => {

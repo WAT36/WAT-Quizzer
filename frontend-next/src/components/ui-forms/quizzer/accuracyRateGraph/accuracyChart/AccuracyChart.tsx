@@ -1,9 +1,9 @@
-import { GetAccuracyRateByCategoryServiceDto } from '../../../../../../interfaces/api/response';
+import { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
 import { Chart } from 'react-google-charts';
 import styles from './AccuracyChart.module.css';
 
 interface AccuracyChartProps {
-  accuracyData: GetAccuracyRateByCategoryServiceDto;
+  accuracyData: GetAccuracyRateByCategoryAPIResponseDto;
 }
 
 export const AccuracyChart = ({ accuracyData }: AccuracyChartProps) => {

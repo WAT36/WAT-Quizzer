@@ -46,3 +46,10 @@ export interface AddQuizApiResponse extends ApiResponse {
 export interface CheckQuizApiResponse extends ApiResponse {
   result: boolean
 }
+
+// TODO 画像アップロード
+export interface ImageUploadReturnValue {
+  name: string
+  isUploading: boolean
+  url: string
+}

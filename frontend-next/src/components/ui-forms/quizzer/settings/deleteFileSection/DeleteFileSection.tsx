@@ -13,7 +13,7 @@ import { MessageState, PullDownOptionState } from '../../../../../../interfaces/
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { useState } from 'react';
 import { del } from '@/api/API';
-import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
+import { ProcessingApiReponse } from 'quizzer-lib';
 
 interface DeleteFileSectionProps {
   deleteFileNum: number;

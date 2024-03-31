@@ -4,7 +4,7 @@ import { FormControl, FormGroup, TextField } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
 import { MessageState, QueryOfSearchQuizState } from '../../../../../../interfaces/state';
 import { post, put } from '@/api/API';
-import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
+import { ProcessingApiReponse } from 'quizzer-lib';
 
 interface EditSearchResultFormProps {
   changedCategory: string;

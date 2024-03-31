@@ -10,9 +10,8 @@ import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
-import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
 import { get } from '@/api/API';
-import { GetCategoryAPIResponseDto } from 'quizzer-lib';
+import { GetCategoryAPIResponseDto, ProcessingApiReponse } from 'quizzer-lib';
 
 interface InputQueryFormProps {
   filelistoption: PullDownOptionState[];

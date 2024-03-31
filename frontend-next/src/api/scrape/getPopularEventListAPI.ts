@@ -1,5 +1,4 @@
-import { ProcessingApiReponse } from 'quizzer-lib';
-import { GetPopularEventResponse } from '../../../interfaces/api/response';
+import { ProcessingApiReponse, GetPopularEventResponse } from 'quizzer-lib';
 import { get } from '@/api/API';
 
 // イベントリストをapi通信して取ってくる

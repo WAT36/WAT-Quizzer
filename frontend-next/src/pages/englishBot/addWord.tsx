@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { buttonStyle } from '../../styles/Pages';
 import { Button, Container, FormControl, FormGroup, TextField } from '@mui/material';
-import { meanOfAddWordDto } from '../../../interfaces/api/response';
+import { meanOfAddWordDto } from 'quizzer-lib';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
