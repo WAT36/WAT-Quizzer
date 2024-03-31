@@ -1,61 +1,7 @@
 import { GridRowsProp } from '@mui/x-data-grid';
-import {
-  EditQueryOfSaying,
-  InputSayingState,
-  MessageState,
-  PullDownOptionState,
-  QueryOfSearchWordState
-} from '../../interfaces/state';
+import { EditQueryOfSaying, InputSayingState, MessageState } from '../../interfaces/state';
 import { get, patch, post } from './API';
-import { getBook } from './response';
-import { GetSayingAPIResponseDto, ProcessingApiReponse, WordSearchAPIResponseDto } from 'quizzer-lib';
-
-// 啓発本と格言系
-
-interface AddBookButtonProps {
-  bookName: string;
-  attr?: string;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setBooklistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
-}
-
-export const addBookAPI = async ({ bookName, setMessageStater, setBooklistoption }: AddBookButtonProps) => {
-  // 設定ステートない場合はreturn(storybook表示用に設定)
-  if (!setMessageStater || !setBooklistoption) {
-    return;
-  }
-  if (!bookName || bookName === '') {
-    setMessageStater({ message: 'エラー:本の名前を入力して下さい', messageColor: 'error', isDisplay: true });
-    return;
-  }
-
-  setMessageStater({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-  await post(
-    '/saying/book',
-    {
-      book_name: bookName
-    },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        setMessageStater({
-          message: `新規ファイル「${bookName}」を追加しました`,
-          messageColor: 'success.light',
-          isDisplay: true
-        });
-      } else {
-        setMessageStater({ message: 'エラー:外部APIとの連携に失敗しました', messageColor: 'error', isDisplay: true });
-      }
-    }
-  ).catch((err) => {
-    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
-    setMessageStater({
-      message: 'エラー:外部APIとの連携に失敗しました',
-      messageColor: 'error',
-      isDisplay: true
-    });
-  });
-  getBook(setMessageStater, setBooklistoption);
-};
+import { GetSayingAPIResponseDto, ProcessingApiReponse } from 'quizzer-lib';
 
 interface AddSayingButtonProps {
   inputSaying: InputSayingState;
