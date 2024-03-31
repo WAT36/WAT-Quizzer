@@ -5,8 +5,8 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
 import { post } from '@/common/API';
 import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
-import { getRandomStr } from '../../../../../../lib/str';
-import { getFileList } from '@/common/response';
+import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
+import { getRandomStr } from 'quizzer-lib';
 
 interface AddFileSectionProps {
   fileName: string;
@@ -49,7 +49,7 @@ export const AddFileSection = ({ fileName, setMessage, setFileName, setFilelisto
         }
       }
     );
-    getFileList(setMessage, setFilelistoption);
+    getQuizFileListAPI(setMessage, setFilelistoption);
   };
 
   return (
