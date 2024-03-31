@@ -5,11 +5,12 @@ import { meanOfAddWordDto } from '../../../interfaces/api/response';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
-import { getPartOfSpeechList, getSourceList } from '@/common/response';
+import { getPartOfSpeechList } from '@/common/response';
 import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanForm/AddMeanForm';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
 import { addWordAPI } from '@/api/englishbot/addWordAPI';
+import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 
 type Props = {
   isMock?: boolean;
@@ -23,7 +24,7 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
   const [inputWord, setInputWord] = useState<string>('');
 
   useEffect(() => {
-    !isMock && Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceList(setMessage, setSourceList)]);
+    !isMock && Promise.all([getPartOfSpeechList(setMessage, setPosList), getSourceListAPI(setMessage, setSourceList)]);
   }, [isMock, setMessage]);
 
   const contents = () => {

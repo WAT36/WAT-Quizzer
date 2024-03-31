@@ -6,9 +6,9 @@ import { GetWordQueryForm } from '@/components/ui-forms/englishbot/testWord/getW
 import { GetWordButtonGroup } from '@/components/ui-forms/englishbot/testWord/getWordButtonGroup/GetWordButtonGroup';
 import { DisplayTestWordSection } from '@/components/ui-forms/englishbot/testWord/displayTestWordSection/DisplayTestWordSection';
 import { Title } from '@/components/ui-elements/title/Title';
-import { getSourceList } from '@/common/response';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 
 export default function TestWordPage() {
   const [message, setMessage] = useRecoilState(messageState);
@@ -20,7 +20,7 @@ export default function TestWordPage() {
 
   // 出典リスト取得
   useEffect(() => {
-    getSourceList(setMessage, setSourcelistoption);
+    getSourceListAPI(setMessage, setSourcelistoption);
   }, [setMessage]);
 
   const contents = () => {

@@ -4,7 +4,7 @@ import { getApiAndGetValue } from '@/common/API';
 import { WordApiResponse } from '../../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState, WordMeanData, WordSourceData, WordSubSourceData } from '../../../../interfaces/state';
-import { getPartOfSpeechList, getSourceList } from '@/common/response';
+import { getPartOfSpeechList } from '@/common/response';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
 import { getWordDetail, getWordSource, getWordSubSource } from '@/pages/api/english';
@@ -12,6 +12,7 @@ import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceS
 import { SubSourceStack } from '@/components/ui-forms/englishbot/detailWord/subSourceStack/SubSourceStack';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 
 type EachWordPageProps = {
   id: string;
@@ -32,7 +33,7 @@ export default function EnglishBotEachWordPage({ id }: EachWordPageProps) {
   useEffect(() => {
     Promise.all([
       getPartOfSpeechList(setMessage, setPosList),
-      getSourceList(setMessage, setSourcelistoption),
+      getSourceListAPI(setMessage, setSourcelistoption),
       getWordDetail(id, setMessage, setWordName, setMeanData),
       getWordSource(id, setMessage, setWordSourceData),
       getWordSubSource(id, setMessage, setWordSubSourceData)
