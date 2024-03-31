@@ -4,9 +4,9 @@ import { Button, CardContent, CardHeader, TextField } from '@mui/material';
 import styles from '../AddExample.module.css';
 import { InputExampleData } from '@/pages/englishBot/addExample';
 import { DataGrid, GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid';
-import { searchWordAPI } from '@/common/ButtonAPI';
 import { MessageState } from '../../../../../../interfaces/state';
 import { meanColumns } from '../../../../../../utils/englishBot/SearchWordTable';
+import { searchWordAPI } from '@/api/englishbot/searchWordAPI';
 
 interface SearchRelatedWordSectionProps {
   inputExampleData: InputExampleData;
