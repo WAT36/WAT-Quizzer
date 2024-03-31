@@ -3,12 +3,12 @@ import { InputSayingState, MessageState, PullDownOptionState } from '../../../..
 import { CardContent, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Button } from '@/components/ui-elements/button/Button';
-import { addSayingAPI } from '@/common/ButtonAPI';
 import styles from '../Settings.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
+import { addSayingAPI } from '@/api/saying/addSayingAPI';
 
 interface AddSayingFormProps {
   inputSaying: InputSayingState;

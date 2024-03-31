@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../config/sql';
 import { execQuery, execTransaction } from '../../lib/db/dao';
-import { AddExampleDto } from '../../interfaces/api/request/english';
+import {
+  AddExampleAPIRequestDto,
+  GetPartsofSpeechAPIResponseDto,
+  GetSourceAPIResponseDto,
+} from 'quizzer-lib';
 import { TransactionQuery } from '../../interfaces/db';
 import { PrismaClient } from '@prisma/client';
 
@@ -62,7 +66,7 @@ export class EnglishService {
   }
 
   // 例文追加
-  async addExampleService(req: AddExampleDto) {
+  async addExampleService(req: AddExampleAPIRequestDto) {
     const { exampleEn, exampleJa, meanId } = req;
     try {
       //トランザクション実行準備

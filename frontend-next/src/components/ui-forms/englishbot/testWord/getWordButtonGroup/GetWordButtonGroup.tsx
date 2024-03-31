@@ -1,7 +1,7 @@
 import React from 'react';
 import { DisplayWordTestState, MessageState, QueryOfGetWordState } from '../../../../../../interfaces/state';
-import { getRandomWordAPI } from '@/common/ButtonAPI';
 import { Button } from '@/components/ui-elements/button/Button';
+import { getRandomWordAPI } from '@/api/englishbot/getRandomWordAPI';
 
 interface GetWordButtonGroupProps {
   queryOfGetWordState: QueryOfGetWordState;

@@ -7,7 +7,7 @@ import { MessageState, PullDownOptionState, WordMeanData } from '../../../../../
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { editEnglishWordMeanAPI } from '@/common/ButtonAPI';
+import { editEnglishWordMeanAPI } from '@/api/englishbot/editEnglishWordMeanAPI';
 
 interface MeaningStackProps {
   id: string;

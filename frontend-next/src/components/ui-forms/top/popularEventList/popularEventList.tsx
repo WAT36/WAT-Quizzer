@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card, CardContent, Link, List, ListItem, ListItemText } from '@mui/material';
-import { GetPopularEventResponse } from '../../../../../interfaces/api/response';
+import { CardContent, Link, List, ListItem, ListItemText } from '@mui/material';
+import { Card } from '@/components/ui-elements/card/Card';
+import { GetPopularEventResponse } from 'quizzer-lib';
 
 interface PopularEventListProps {
   eventList: GetPopularEventResponse[];
@@ -8,7 +9,7 @@ interface PopularEventListProps {
 
 export const PopularEventList = ({ eventList }: PopularEventListProps) => {
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" attr="margin-vertical">
       <CardContent>
         <List>
           {eventList.map((x, index) => (

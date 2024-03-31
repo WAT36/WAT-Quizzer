@@ -1,10 +1,10 @@
-import { get } from '@/common/API';
+import { get } from '@/api/API';
 import {
   EnglishWordByIdApiResponse,
   EnglishWordSourceByIdApiResponse,
   EnglishWordSubSourceByIdApiResponse,
   ProcessingApiReponse
-} from '../../../interfaces/api/response';
+} from 'quizzer-lib';
 import { MessageState, WordMeanData, WordSourceData, WordSubSourceData } from '../../../interfaces/state';
 
 export const getWordDetail = async (

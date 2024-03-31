@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { EnglishService } from './english.service';
-import { AddExampleDto } from '../../interfaces/api/request/english';
-
+import { AddExampleAPIRequestDto } from 'quizzer-lib';
 @Controller('english')
 export class EnglishController {
   constructor(private readonly englishService: EnglishService) {}
@@ -17,7 +16,7 @@ export class EnglishController {
   }
 
   @Post('/example')
-  async addExample(@Body() req: AddExampleDto) {
+  async addExample(@Body() req: AddExampleAPIRequestDto) {
     return await this.englishService.addExampleService(req);
   }
 }

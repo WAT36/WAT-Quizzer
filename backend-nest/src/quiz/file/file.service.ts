@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SQL } from '../../../config/sql';
 import { execQuery, execTransaction } from '../../../lib/db/dao';
-import {
-  AddFileDto,
-  DeleteFileDto,
-} from '../../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../../interfaces/db';
+import {
+  AddQuizFileAPIRequestDto,
+  DeleteQuizFileAPIRequestDto,
+  GetQuizFileApiResponseDto,
+} from 'quizzer-lib';
 
 export interface QueryType {
   query: string;
@@ -18,11 +19,15 @@ export type FormatType = 'basic' | 'applied';
 export class QuizFileService {
   // ファイル名リスト取得
   async getFileList() {
-    return await execQuery(SQL.QUIZ_FILE.LIST, []);
+    const result: GetQuizFileApiResponseDto[] = await execQuery(
+      SQL.QUIZ_FILE.LIST,
+      [],
+    );
+    return result;
   }
 
   // ファイル追加
-  async addFile(req: AddFileDto) {
+  async addFile(req: AddQuizFileAPIRequestDto) {
     try {
       const { file_name, file_nickname } = req;
       // ファイル番号取得
@@ -46,7 +51,7 @@ export class QuizFileService {
   }
 
   // ファイル削除（とりあえず基礎問題のみ）
-  async deleteFile(req: DeleteFileDto) {
+  async deleteFile(req: DeleteQuizFileAPIRequestDto) {
     try {
       const { file_id } = req;
 

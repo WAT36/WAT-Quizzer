@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { buttonStyle } from '../../styles/Pages';
-import { Button, Card, CardHeader, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { AddExampleSection } from '@/components/ui-forms/englishbot/addExample/addExampleSection/AddExampleSection';
 import { SearchRelatedWordSection } from '@/components/ui-forms/englishbot/addExample/searchRelatedWordSection/SearchRelatedWordSection';
-import { submitExampleSentenseAPI } from '@/common/ButtonAPI';
 import { messageState } from '@/atoms/Message';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
+import { Card } from '@/components/ui-elements/card/Card';
+import { Button } from '@/components/ui-elements/button/Button';
+import { submitExampleSentenseAPI } from '@/api/englishbot/submitExampleSentenseAPI';
 
 export type InputExampleData = {
   exampleJa?: string;
@@ -15,17 +16,19 @@ export type InputExampleData = {
   meanId?: number[];
 };
 
-export default function EnglishBotAddExamplePage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function EnglishBotAddExamplePage({ isMock }: Props) {
   const [inputExampleData, setInputExampleData] = useState<InputExampleData>({});
-  const [message, setMessage] = useRecoilState(messageState);
+  const setMessage = useSetRecoilState(messageState);
 
   const contents = () => {
     return (
       <Container>
         <Title label="Add Example Sentense"></Title>
-
-        <Card variant="outlined">
-          <CardHeader title="例文追加" />
+        <Card variant="outlined" attr="margin-vertical" header="例文追加">
           <AddExampleSection inputExampleData={inputExampleData} setInputExampleData={setInputExampleData} />
           <SearchRelatedWordSection
             inputExampleData={inputExampleData}
@@ -33,13 +36,12 @@ export default function EnglishBotAddExamplePage() {
             setInputExampleData={setInputExampleData}
           />
           <Button
-            style={buttonStyle}
+            label={'登録'}
+            attr={'after-inline'}
             variant="contained"
             color="primary"
             onClick={(e) => submitExampleSentenseAPI({ inputExampleData, setMessage, setInputExampleData })}
-          >
-            登録
-          </Button>
+          />
         </Card>
       </Container>
     );

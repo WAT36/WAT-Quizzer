@@ -1,6 +1,6 @@
 export const columns = [
   {
-    field: 'id',
+    field: 'quiz_num',
     headerName: 'ID',
     sortable: true,
     width: 75

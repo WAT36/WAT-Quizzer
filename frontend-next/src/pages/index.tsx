@@ -2,16 +2,16 @@ import Head from 'next/head';
 import { Inter } from 'next/font/google';
 import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { get } from '@/common/API';
-import { GetPopularEventResponse, GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
+import { get } from '@/api/API';
+import { GetPopularEventResponse, GetRandomSayingResponse, ProcessingApiReponse } from 'quizzer-lib';
 import { Title } from '@/components/ui-elements/title/Title';
-import { dbHealthCheck } from '@/common/health';
+import { dbHealthCheck } from '@/api/healthCheck';
 import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButtonGroup';
 import { SayingCard } from '@/components/ui-forms/top/sayingCard/SayingCard';
 import { DbHealthCheckState, SayingState } from '../../interfaces/state';
 import { DbHealthCheckCard } from '@/components/ui-forms/top/dbHealthCheckCard/DbHealthCheckCard';
-import { getPopularEventList } from '@/common/response';
 import { PopularEventList } from '@/components/ui-forms/top/popularEventList/popularEventList';
+import { getPopularEventListAPI } from '@/api/scrape/getPopularEventListAPI';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -52,7 +52,7 @@ export default function Top({ isMock }: Props) {
           }
         }),
         executeDbHealthCheck(),
-        getPopularEventList(setEventList)
+        getPopularEventListAPI(setEventList)
       ]);
   }, [isMock]);
 

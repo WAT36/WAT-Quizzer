@@ -4,12 +4,12 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState, QueryOfPutQuizState } from '../../../interfaces/state';
 import { AddQuizLogSection } from '@/components/ui-forms/quizzer/addQuiz/addQuizLogSection/AddQuizLogSection';
 import { Title } from '@/components/ui-elements/title/Title';
-import { getFileList } from '@/common/response';
 import { AddQuizForm } from '@/components/ui-forms/quizzer/addQuiz/addQuizForm/AddQuizForm';
 import { Button } from '@/components/ui-elements/button/Button';
-import { addQuizAPI } from '@/common/ButtonAPI';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { addQuizAPI } from '@/api/quiz/addQuizAPI';
+import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
 
 type Props = {
   isMock?: boolean;
@@ -27,7 +27,7 @@ export default function AddQuizPage({ isMock }: Props) {
 
   // 問題ファイルリスト取得
   useEffect(() => {
-    !isMock && getFileList(setMessage, setFilelistoption);
+    !isMock && getQuizFileListAPI(setMessage, setFilelistoption);
   }, [isMock, setMessage]);
 
   const contents = () => {

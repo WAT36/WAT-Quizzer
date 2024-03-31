@@ -10,19 +10,19 @@ import {
 } from '@nestjs/common';
 import { EnglishWordService } from './word.service';
 import {
-  AddEnglishWordDto,
-  AddWordSubSourceDto,
-  AddWordTestLogDto,
-  EditWordMeanDto,
-  EditWordSourceDto,
-} from '../../../interfaces/api/request/english';
+  AddEnglishWordAPIRequestDto,
+  AddWordTestResultLogAPIRequestDto,
+  EditWordSourceAPIRequestDto,
+  AddWordSubSourceAPIRequestDto,
+  EditWordMeanAPIRequestDto,
+} from 'quizzer-lib';
 
 @Controller('english/word')
 export class EnglishWordController {
   constructor(private readonly englishWordService: EnglishWordService) {}
 
   @Post('add')
-  async addWord(@Body() req: AddEnglishWordDto) {
+  async addWord(@Body() req: AddEnglishWordAPIRequestDto) {
     return await this.englishWordService.addWordAndMeanService(req);
   }
 
@@ -67,22 +67,22 @@ export class EnglishWordController {
   }
 
   @Post('test/clear')
-  async wordTestCleared(@Body() req: AddWordTestLogDto) {
+  async wordTestCleared(@Body() req: AddWordTestResultLogAPIRequestDto) {
     return await this.englishWordService.wordTestClearedService(req);
   }
 
   @Post('test/fail')
-  async wordTestFailed(@Body() req: AddWordTestLogDto) {
+  async wordTestFailed(@Body() req: AddWordTestResultLogAPIRequestDto) {
     return await this.englishWordService.wordTestFailedService(req);
   }
 
   @Put('source')
-  async editSourceOfWordById(@Body() req: EditWordSourceDto) {
+  async editSourceOfWordById(@Body() req: EditWordSourceAPIRequestDto) {
     return await this.englishWordService.editSourceOfWordById(req);
   }
 
   @Put('subsource')
-  async addSubSourceOfWordById(@Body() req: AddWordSubSourceDto) {
+  async addSubSourceOfWordById(@Body() req: AddWordSubSourceAPIRequestDto) {
     return await this.englishWordService.addSubSourceOfWordById(req);
   }
 
@@ -108,7 +108,7 @@ export class EnglishWordController {
   }
 
   @Patch(':id')
-  async editWordMean(@Body() req: EditWordMeanDto) {
+  async editWordMean(@Body() req: EditWordMeanAPIRequestDto) {
     return await this.englishWordService.editWordMeanService(req);
   }
 }

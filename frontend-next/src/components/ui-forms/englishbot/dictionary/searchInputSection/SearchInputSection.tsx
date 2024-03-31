@@ -3,7 +3,7 @@ import { Button, FormControl, FormGroup, TextField } from '@mui/material';
 import { MessageState, QueryOfSearchWordState } from '../../../../../../interfaces/state';
 import styles from '../Dictionary.module.css';
 import { GridRowsProp } from '@mui/x-data-grid';
-import { searchWordForDictionary } from '@/common/ButtonAPI';
+import { searchWordForDictionary } from '@/api/englishbot/searchWordForDictionaryAPI';
 
 interface SearchInputSectionProps {
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;

@@ -6,11 +6,15 @@ import { GetWordQueryForm } from '@/components/ui-forms/englishbot/testWord/getW
 import { GetWordButtonGroup } from '@/components/ui-forms/englishbot/testWord/getWordButtonGroup/GetWordButtonGroup';
 import { DisplayTestWordSection } from '@/components/ui-forms/englishbot/testWord/displayTestWordSection/DisplayTestWordSection';
 import { Title } from '@/components/ui-elements/title/Title';
-import { getSourceList } from '@/common/response';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 
-export default function TestWordPage() {
+type Props = {
+  isMock?: boolean;
+};
+
+export default function TestWordPage({ isMock }: Props) {
   const [message, setMessage] = useRecoilState(messageState);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
   const [queryOfGetWord, setQueryOfGetWord] = useState<QueryOfGetWordState>({});
@@ -20,8 +24,8 @@ export default function TestWordPage() {
 
   // 出典リスト取得
   useEffect(() => {
-    getSourceList(setMessage, setSourcelistoption);
-  }, [setMessage]);
+    !isMock && getSourceListAPI(setMessage, setSourcelistoption);
+  }, [isMock, setMessage]);
 
   const contents = () => {
     return (

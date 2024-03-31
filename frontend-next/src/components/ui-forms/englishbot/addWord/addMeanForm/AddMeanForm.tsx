@@ -14,8 +14,8 @@ import {
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
-import { meanOfAddWordDto } from '../../../../../../interfaces/api/response';
+import { PullDownOptionState } from '../../../../../../interfaces/state';
+import { meanOfAddWordDto } from 'quizzer-lib';
 
 interface AddMeanFormProps {
   posList: PullDownOptionState[];

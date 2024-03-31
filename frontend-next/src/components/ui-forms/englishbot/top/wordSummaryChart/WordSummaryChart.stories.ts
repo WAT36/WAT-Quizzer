@@ -19,6 +19,15 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Main: Story = {
   args: {
-    wordSummaryData: []
+    wordSummaryData: [
+      {
+        name: '単語',
+        count: 300
+      },
+      {
+        name: '熟語',
+        count: 200
+      }
+    ]
   }
 };

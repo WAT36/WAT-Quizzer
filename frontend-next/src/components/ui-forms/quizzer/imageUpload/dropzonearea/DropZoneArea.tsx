@@ -1,6 +1,6 @@
 import Dropzone from 'react-dropzone';
 import { MessageState } from '../../../../../../interfaces/state';
-import { ImageUploadReturnValue } from '../../../../../../interfaces/api/response';
+import { ImageUploadReturnValue } from 'quizzer-lib';
 import axios from 'axios';
 import styles from './DropZoneArea.module.css';
 

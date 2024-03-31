@@ -1,8 +1,10 @@
 import React from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
-import { CardContent, CardHeader, TextField } from '@mui/material';
+import { CardContent, CardHeader } from '@mui/material';
 import styles from '../AddExample.module.css';
+import commonStyles from '../../../../common.module.css';
 import { InputExampleData } from '@/pages/englishBot/addExample';
+import { TextField } from '@/components/ui-elements/textField/TextField';
 
 interface AddExampleSectionProps {
   inputExampleData: InputExampleData;
@@ -15,29 +17,35 @@ export const AddExampleSection = ({ inputExampleData, setInputExampleData }: Add
       <CardContent>
         <Card variant="outlined">
           <CardHeader subheader="例文(英文)" />
-          <CardContent className={styles.content}>
+          <CardContent className={commonStyles.cardContent}>
             <TextField
               label="例文(英語)"
               variant="outlined"
-              onChange={(e) => {
-                const copyInputData = Object.assign({}, inputExampleData);
-                copyInputData.exampleEn = e.target.value;
-                setInputExampleData && setInputExampleData(copyInputData);
+              setStater={(value: string) => {
+                if (setInputExampleData) {
+                  setInputExampleData({
+                    ...inputExampleData,
+                    exampleEn: value
+                  });
+                }
               }}
-              className={styles.inputText}
+              className={['fullWidth']}
             />
           </CardContent>
           <CardHeader subheader="例文(和訳)" />
-          <CardContent className={styles.content}>
+          <CardContent className={commonStyles.cardContent}>
             <TextField
               label="例文(和訳)"
               variant="outlined"
-              onChange={(e) => {
-                const copyInputData = Object.assign({}, inputExampleData);
-                copyInputData.exampleJa = e.target.value;
-                setInputExampleData && setInputExampleData(copyInputData);
+              setStater={(value: string) => {
+                if (setInputExampleData) {
+                  setInputExampleData({
+                    ...inputExampleData,
+                    exampleJa: value
+                  });
+                }
               }}
-              className={styles.inputText}
+              className={['fullWidth']}
             />
           </CardContent>
         </Card>
