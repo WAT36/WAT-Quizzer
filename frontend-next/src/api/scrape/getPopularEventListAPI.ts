@@ -1,10 +1,9 @@
-import { GetPopularEventResponse, ProcessingApiReponse } from '../../interfaces/api/response';
-import { get } from './API';
-
-// TODO この辺の関数群は適切なファイル名フォルダ構成にしてわかりやすいように振り分けるべき
+import { ProcessingApiReponse } from 'quizzer-lib';
+import { GetPopularEventResponse } from '../../../interfaces/api/response';
+import { get } from '@/common/API';
 
 // イベントリストをapi通信して取ってくる
-export const getPopularEventList = async (
+export const getPopularEventListAPI = async (
   setEventList: React.Dispatch<React.SetStateAction<GetPopularEventResponse[]>>
 ) => {
   const storageKey = 'popularEventList';

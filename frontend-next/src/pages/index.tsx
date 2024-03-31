@@ -10,8 +10,8 @@ import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButt
 import { SayingCard } from '@/components/ui-forms/top/sayingCard/SayingCard';
 import { DbHealthCheckState, SayingState } from '../../interfaces/state';
 import { DbHealthCheckCard } from '@/components/ui-forms/top/dbHealthCheckCard/DbHealthCheckCard';
-import { getPopularEventList } from '@/common/response';
 import { PopularEventList } from '@/components/ui-forms/top/popularEventList/popularEventList';
+import { getPopularEventListAPI } from '@/api/scrape/getPopularEventListAPI';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -52,7 +52,7 @@ export default function Top({ isMock }: Props) {
           }
         }),
         executeDbHealthCheck(),
-        getPopularEventList(setEventList)
+        getPopularEventListAPI(setEventList)
       ]);
   }, [isMock]);
 
