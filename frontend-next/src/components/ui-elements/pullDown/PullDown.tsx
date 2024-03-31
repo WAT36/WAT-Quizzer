@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import styles from './PullDown.module.css';
-import { getRandomStr } from '../../../../lib/str';
+import { getRandomStr } from 'quizzer-lib';
 
 interface PullDownProps {
   optionList: {

@@ -8,10 +8,14 @@ export interface WordSearchAPIResponseDto extends ApiResponse {
 }
 
 // 英単語取得系APIレスポンス型
+// word(単語)からの取得結果
 export interface GetWordAPIResponseDto extends ApiResponse {
   id: number
   name: string
-  pronounce: string
+  pronounce?: string
+  created_at?: string
+  updated_at?: string
+  deleted_at?: string
 }
 
 // 英単語取得(byname)系APIレスポンス型
