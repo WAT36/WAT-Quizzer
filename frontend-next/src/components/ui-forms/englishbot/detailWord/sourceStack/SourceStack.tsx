@@ -7,7 +7,7 @@ import { MessageState, PullDownOptionState, WordMeanData, WordSourceData } from 
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { editEnglishWordSourceAPI } from '@/common/ButtonAPI';
+import { editEnglishWordSourceAPI } from '@/api/englishbot/editEnglishWordSourceAPI';
 
 interface SourceStackProps {
   id: string;
