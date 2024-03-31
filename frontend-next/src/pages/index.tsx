@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { get } from '@/common/API';
 import { GetPopularEventResponse, GetRandomSayingResponse, ProcessingApiReponse } from '../../interfaces/api/response';
 import { Title } from '@/components/ui-elements/title/Title';
-import { dbHealthCheck } from '@/common/health';
+import { dbHealthCheck } from '@/api/healthCheck';
 import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButtonGroup';
 import { SayingCard } from '@/components/ui-forms/top/sayingCard/SayingCard';
 import { DbHealthCheckState, SayingState } from '../../interfaces/state';
