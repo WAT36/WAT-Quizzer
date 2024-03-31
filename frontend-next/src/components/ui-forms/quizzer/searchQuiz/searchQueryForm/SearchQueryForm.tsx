@@ -7,7 +7,7 @@ import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSli
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 import { ProcessingApiReponse } from '../../../../../../interfaces/api/response';
 import { get } from '@/api/API';
-import { CategoryApiResponse } from '../../../../../../interfaces/db';
+import { GetCategoryAPIResponseDto } from 'quizzer-lib';
 
 interface SearchQueryFormProps {
   filelistoption: PullDownOptionState[];
@@ -39,7 +39,7 @@ export const SearchQueryForm = ({
       '/category',
       (data: ProcessingApiReponse) => {
         if (data.status === 200) {
-          const res: CategoryApiResponse[] = data.body as CategoryApiResponse[];
+          const res: GetCategoryAPIResponseDto[] = data.body as GetCategoryAPIResponseDto[];
           let categorylist: PullDownOptionState[] = [];
           for (var i = 0; i < res.length; i++) {
             categorylist.push({

@@ -1,5 +1,4 @@
-import { ProcessingApiReponse } from 'quizzer-lib';
-import { PartofSpeechApiResponse } from '../../../interfaces/db';
+import { PartofSpeechApiResponse, ProcessingApiReponse } from 'quizzer-lib';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { get } from '@/api/API';
 

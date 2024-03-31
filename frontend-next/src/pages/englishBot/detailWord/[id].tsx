@@ -1,7 +1,6 @@
 import { Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getApiAndGetValue } from '@/api/API';
-import { WordApiResponse } from '../../../../interfaces/db';
 import { Layout } from '@/components/templates/layout/Layout';
 import { PullDownOptionState, WordMeanData, WordSourceData, WordSubSourceData } from '../../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
@@ -13,6 +12,7 @@ import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
 import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
+import { GetWordAPIResponseDto } from 'quizzer-lib';
 
 type EachWordPageProps = {
   id: string;
@@ -108,7 +108,7 @@ export async function getStaticProps({ params }: Params) {
 
 // 一番最初に実行される関数
 export async function getStaticPaths() {
-  const words: WordApiResponse[] = (await getAllWords()) as WordApiResponse[];
+  const words: GetWordAPIResponseDto[] = (await getAllWords()) as GetWordAPIResponseDto[];
   console.log('words num:', words.length);
   return {
     paths: words.map((word) => {

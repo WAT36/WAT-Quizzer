@@ -1,5 +1,4 @@
-import { ProcessingApiReponse } from 'quizzer-lib';
-import { QuizFileApiResponse } from '../../../interfaces/db';
+import { GetQuizFileApiResponseDto, ProcessingApiReponse } from 'quizzer-lib';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
 import { get } from '@/api/API';
 
@@ -19,7 +18,7 @@ export const getQuizFileListAPI = (
   if (!savedFileList) {
     get('/quiz/file', (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        const res: QuizFileApiResponse[] = data.body as QuizFileApiResponse[];
+        const res: GetQuizFileApiResponseDto[] = data.body as GetQuizFileApiResponseDto[];
         let filelist: PullDownOptionState[] = [];
         for (var i = 0; i < res.length; i++) {
           filelist.push({

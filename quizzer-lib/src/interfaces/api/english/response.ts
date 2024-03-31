@@ -27,3 +27,18 @@ export interface EnglishBotTestFourChoiceResponse extends ApiResponse {
     mean: string
   }[]
 }
+
+// partofspeechからの取得結果
+export interface PartofSpeechApiResponse extends ApiResponse {
+  id: number
+  name: string
+  created_at: string
+  updated_at: string
+  deleted_at: string | undefined
+}
+
+// word_summarizeからの取得結果
+export interface WordSummaryApiResponse extends ApiResponse {
+  name: string
+  count: number
+}

@@ -2,10 +2,10 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { WordSummaryChart } from '@/components/ui-forms/englishbot/top/wordSummaryChart/WordSummaryChart';
 import { Container } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { WordSummaryApiResponse } from '../../../interfaces/db';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
 import { getWordSummaryDataAPI } from '@/api/englishbot/getWordSummaryDataAPI';
+import { WordSummaryApiResponse } from 'quizzer-lib';
 
 type Props = {
   isMock?: boolean;

@@ -1,5 +1,4 @@
-import { ProcessingApiReponse } from 'quizzer-lib';
-import { WordSummaryApiResponse } from '../../../interfaces/db';
+import { ProcessingApiReponse, WordSummaryApiResponse } from 'quizzer-lib';
 import { MessageState } from '../../../interfaces/state';
 import { get } from '@/api/API';
 
