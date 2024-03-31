@@ -5,9 +5,9 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { AddExampleSection } from '@/components/ui-forms/englishbot/addExample/addExampleSection/AddExampleSection';
 import { SearchRelatedWordSection } from '@/components/ui-forms/englishbot/addExample/searchRelatedWordSection/SearchRelatedWordSection';
-import { submitExampleSentenseAPI } from '@/common/ButtonAPI';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { submitExampleSentenseAPI } from '@/api/englishbot/submitExampleSentenseAPI';
 
 export type InputExampleData = {
   exampleJa?: string;
