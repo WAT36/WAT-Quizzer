@@ -1,6 +1,6 @@
-import { EditQueryOfSaying, MessageState } from '../../interfaces/state';
-import { patch } from './API';
+import { patch } from '@/common/API';
 import { ProcessingApiReponse } from 'quizzer-lib';
+import { EditQueryOfSaying, MessageState } from '../../../interfaces/state';
 
 interface editSayingAPIProps {
   editQueryOfSaying: EditQueryOfSaying;

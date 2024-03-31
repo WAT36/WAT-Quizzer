@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { EditQueryOfSaying } from '../../../../../interfaces/state';
 import { CardContent, Input, Typography } from '@mui/material';
-import { editSayingAPI } from '@/common/ButtonAPI';
 import styles from '../Settings.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
 import { TextField } from '@/components/ui-elements/textField/TextField';
@@ -9,6 +8,7 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { getSayingByIdAPI } from '@/api/saying/getSayingByIdAPI';
+import { editSayingAPI } from '@/api/saying/editSayingAPI';
 
 interface EditSayingSectionProps {}
 
