@@ -7,8 +7,6 @@ import {
   AddQuizDto,
   IntegrateQuizDto,
   EditQuizDto,
-  AddFileDto,
-  DeleteFileDto,
   DeleteAnswerLogByFile,
   GetQuizNumSqlResultDto,
   QuizDto,
@@ -18,6 +16,9 @@ import {
 } from '../../interfaces/api/request/quiz';
 import { TransactionQuery } from '../../interfaces/db';
 import { getDifferenceArray } from '../../lib/array';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export interface QueryType {
   query: string;
