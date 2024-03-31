@@ -1,7 +1,6 @@
 import { get } from '@/common/API';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
-import { GetQuizApiResponseDto, ProcessingApiReponse } from 'quizzer-lib';
-import { generateQuizSentense } from '@/common/response';
+import { GetQuizApiResponseDto, ProcessingApiReponse, generateQuizSentense } from 'quizzer-lib';
 
 interface GetRandomQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;
