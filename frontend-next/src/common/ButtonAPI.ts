@@ -1,57 +1,6 @@
-import { GridRowsProp } from '@mui/x-data-grid';
-import { EditQueryOfSaying, InputSayingState, MessageState } from '../../interfaces/state';
-import { get, patch, post } from './API';
+import { EditQueryOfSaying, MessageState } from '../../interfaces/state';
+import { get, patch } from './API';
 import { GetSayingAPIResponseDto, ProcessingApiReponse } from 'quizzer-lib';
-
-interface searchSayingAPIProps {
-  queryOfSaying: string;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setSearchResult?: React.Dispatch<React.SetStateAction<GridRowsProp>>;
-}
-
-export const searchSayingAPI = async ({ queryOfSaying, setMessageStater, setSearchResult }: searchSayingAPIProps) => {
-  // 設定ステートない場合はreturn(storybook表示用に設定)
-  if (!setMessageStater || !setSearchResult) {
-    return;
-  }
-
-  await get(
-    '/saying/search',
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 && data.body.length > 0) {
-        const res: [] = data.body as [];
-        setSearchResult(res);
-        setMessageStater({
-          message: '　',
-          messageColor: 'common.black',
-          isDisplay: false
-        });
-      } else if (data.status === 404 || data.body?.length === 0) {
-        setMessageStater({
-          message: 'エラー:条件に合致するデータはありません',
-          messageColor: 'error',
-          isDisplay: true
-        });
-      } else {
-        setMessageStater({
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error',
-          isDisplay: true
-        });
-      }
-    },
-    {
-      saying: queryOfSaying
-    }
-  ).catch((err) => {
-    console.error(`API Error2. ${JSON.stringify(err)},${err}`);
-    setMessageStater({
-      message: 'エラー:外部APIとの連携に失敗しました',
-      messageColor: 'error',
-      isDisplay: true
-    });
-  });
-};
 
 interface getSayingAPIProps {
   id: number;
