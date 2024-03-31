@@ -3,7 +3,6 @@ import { CardContent, Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
-import { getBook } from '@/common/response';
 import { InputSayingState, PullDownOptionState } from '../../interfaces/state';
 import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookForm';
 import { AddSayingForm } from '@/components/ui-forms/settings/addSayingForm/AddSayingForm';
@@ -12,6 +11,7 @@ import { EditSayingSection } from '@/components/ui-forms/settings/editSayingSect
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
 import { Card } from '@/components/ui-elements/card/Card';
+import { getBook } from '@/api/saying/getBookListAPI';
 
 type Props = {
   isMock?: boolean;

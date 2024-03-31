@@ -1,7 +1,7 @@
 import { post } from '@/common/API';
-import { getBook } from '@/common/response';
 import { ProcessingApiReponse } from 'quizzer-lib';
 import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import { getBook } from './getBookListAPI';
 
 interface AddBookButtonProps {
   bookName: string;
