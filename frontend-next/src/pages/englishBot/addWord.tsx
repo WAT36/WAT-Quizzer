@@ -7,9 +7,9 @@ import { PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { getPartOfSpeechList, getSourceList } from '@/common/response';
 import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanForm/AddMeanForm';
-import { addWordAPI } from '@/common/ButtonAPI';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
+import { addWordAPI } from '@/api/englishbot/addWordAPI';
 
 type Props = {
   isMock?: boolean;
