@@ -46,21 +46,65 @@ export class QuizService {
       let linkedBasisId: string;
       let ids: { basis_quiz_id: string }[];
       let idArray: string[];
+      let result;
       switch (format) {
         case 'basic':
-          query = { query: SQL.QUIZ.INFO, value: [file_num, quiz_num] };
+          result = await prisma.quiz_view.findMany({
+            where: {
+              file_num,
+              quiz_num,
+              deleted_at: null,
+            },
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              quiz_sentense: true,
+              answer: true,
+              category: true,
+              img_file: true,
+              checked: true,
+              clear_count: true,
+              fail_count: true,
+              accuracy_rate: true,
+            },
+            orderBy: {
+              id: 'asc',
+            },
+          });
           break;
         case 'applied':
-          query = {
-            query: SQL.ADVANCED_QUIZ.INFO,
-            value: [file_num, quiz_num],
-          };
+          result = await prisma.advanced_quiz_view.findMany({
+            where: {
+              file_num,
+              quiz_num,
+              advanced_quiz_type_id: 1,
+              deleted_at: null,
+            },
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              advanced_quiz_type_id: true,
+              quiz_sentense: true,
+              answer: true,
+              img_file: true,
+              checked: true,
+              clear_count: true,
+              fail_count: true,
+              accuracy_rate: true,
+            },
+            orderBy: {
+              id: 'asc',
+            },
+          });
           break;
         case '4choice':
           query = {
             query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.DUMMY_CHOICE,
             value: [file_num, quiz_num],
           };
+          result = await execQuery(query.query, query.value);
           break;
         default:
           throw new HttpException(
@@ -68,10 +112,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      const result: GetQuizApiResponseDto[] = await execQuery(
-        query.query,
-        query.value,
-      );
 
       if (format === 'applied' || format === '4choice') {
         // 関連基礎問題取得
