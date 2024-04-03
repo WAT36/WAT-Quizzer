@@ -13,14 +13,14 @@ export interface GetCategoryAPIResponseDto extends ApiResponse {
 export interface AccuracyRateByCategorySqlResultDto extends ApiResponse {
   file_num: number
   c_category: string
-  count: number
+  count: bigint
   accuracy_rate: number
 }
 
 // (指定ファイルのチェック済の)正解率が入ったDTO(SQL実行結果)
 export interface AccuracyRateOfCheckedQuizSqlResultDto extends ApiResponse {
   checked: boolean
-  count: number
+  count: bigint
   sum_clear: number
   sum_fail: number
   accuracy_rate: number

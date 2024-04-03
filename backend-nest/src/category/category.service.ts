@@ -1,11 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SQL } from '../../config/sql';
-import { execQuery, execTransaction } from '../../lib/db/dao';
-import { TransactionQuery } from '../../interfaces/db';
 import {
   ReplaceAllCategorAPIRequestDto,
   GetCategoryAPIResponseDto,
-  GetAccuracyRateByCategoryAPIResponseDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 
@@ -107,10 +103,7 @@ export class CategoryService {
   // カテゴリ正解率取得
   async getAccuracyRateByCategory(file_num: number) {
     try {
-      const result: GetAccuracyRateByCategoryAPIResponseDto = {
-        result: [],
-        checked_result: [],
-      };
+      const result = {};
 
       // カテゴリビューから指定ファイルのカテゴリ毎の正解率取得
       result['result'] = await prisma.category_view.findMany({
@@ -123,9 +116,21 @@ export class CategoryService {
       });
 
       // チェック済問題の正解率取得
-      result['checked_result'] = await execQuery(SQL.QUIZ.ACCURACYRATE, [
-        file_num,
-      ]);
+      result['checked_result'] = await prisma.quiz_view.groupBy({
+        by: ['checked'],
+        where: {
+          file_num,
+          checked: true,
+          deleted_at: null,
+        },
+        _sum: {
+          clear_count: true,
+          fail_count: true,
+        },
+        _count: {
+          checked: true,
+        },
+      });
 
       return result;
     } catch (error: unknown) {
