@@ -19,6 +19,9 @@ import {
   GetSourceOfWordAPIResponseDto,
   GetSubSourceOfWordAPIResponseDto,
 } from 'quizzer-lib';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 @Injectable()
 export class EnglishWordService {
@@ -26,86 +29,96 @@ export class EnglishWordService {
   async addWordAndMeanService(req: AddEnglishWordAPIRequestDto) {
     const { wordName, pronounce, meanArrayData } = req;
     try {
-      //トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-      //単語追加
-      transactionQuery.push({
-        query: SQL.ENGLISH.WORD.ADD,
-        value: [wordName, pronounce],
+      // //トランザクション実行準備
+      await prisma.$transaction(async (prisma) => {
+        //単語追加
+        const addWordResult = await prisma.word.create({
+          data: {
+            name: wordName,
+            pronounce,
+          },
+        });
+
+        // insertされた単語ID取得
+        const wordWillId = addWordResult.id;
+
+        //入力した意味一つ分のデータ作成
+        for (let i = 0; i < meanArrayData.length; i++) {
+          // その他　の場合は入力した品詞をチェック
+          let partofspeechId: number = meanArrayData[i].partOfSpeechId;
+          if (meanArrayData[i].partOfSpeechId === -2) {
+            if (!meanArrayData[i].partOfSpeechName) {
+              throw new Error(`[${i + 1}]品詞が入力されていません`);
+            }
+
+            // 品詞名で既に登録されているか検索
+            const posData = await prisma.partsofspeech.findMany({
+              where: {
+                name: meanArrayData[i].partOfSpeechName,
+                deleted_at: null,
+              },
+            });
+
+            if (posData[0]) {
+              // 既にある -> そのIDを品詞IDとして使用
+              partofspeechId = posData[0].id;
+            } else {
+              // 登録されていない -> 新規登録してそのIDを使用
+              const result = await prisma.partsofspeech.create({
+                data: {
+                  name: meanArrayData[i].partOfSpeechName,
+                },
+              });
+              partofspeechId = result.id;
+            }
+          }
+
+          // その他　の場合は入力した出典をチェック
+          let sourceId: number = meanArrayData[i].sourceId;
+          if (meanArrayData[i].sourceId === -2) {
+            if (!meanArrayData[i].sourceName) {
+              throw new Error(`[${i + 1}]出典が入力されていません`);
+            }
+
+            // 出典名で既に登録されているか検索
+            const sourceData = await prisma.source.findMany({
+              where: {
+                name: meanArrayData[i].sourceName,
+                deleted_at: null,
+              },
+            });
+
+            if (sourceData[0]) {
+              // 既にある -> そのIDを出典IDとして使用
+              sourceId = sourceData[0].id;
+            } else {
+              // 登録されていない -> 新規登録してそのIDを使用
+              const result = await prisma.source.create({
+                data: {
+                  name: meanArrayData[i].sourceName,
+                },
+              });
+              sourceId = result.id;
+            }
+          }
+          //意味追加
+          const addMeanResult = await prisma.mean.create({
+            data: {
+              word_id: wordWillId,
+              wordmean_id: i + 1,
+              partsofspeech_id: partofspeechId,
+              meaning: meanArrayData[i].meaning,
+            },
+          });
+          // 意味出典追加
+          await prisma.mean_source.create({
+            data: {
+              mean_id: addMeanResult.id,
+              source_id: sourceId,
+            },
+          });
+        }
       });
-
-      // insertされるだろう単語ID,意味ID計算
-      const wordWillId =
-        ((await execQuery(SQL.ENGLISH.WORD.GET.MAX_ID, []))[0][
-          'id'
-        ] as number) + 1;
-      const meanWillId =
-        ((await execQuery(SQL.ENGLISH.MEAN.GET.MAX_ID, []))[0][
-          'id'
-        ] as number) + 1;
-
-      //入力した意味一つ分のデータ作成
-      for (let i = 0; i < meanArrayData.length; i++) {
-        // その他　の場合は入力した品詞をチェック
-        let partofspeechId: number = meanArrayData[i].partOfSpeechId;
-        if (meanArrayData[i].partOfSpeechId === -2) {
-          if (!meanArrayData[i].partOfSpeechName) {
-            throw new Error(`[${i + 1}]品詞が入力されていません`);
-          }
-
-          // 品詞名で既に登録されているか検索
-          const posData = await execQuery(SQL.ENGLISH.PARTOFSPEECH.GET.BYNAME, [
-            meanArrayData[i].partOfSpeechName,
-          ]);
-
-          if (posData[0]) {
-            // 既にある -> そのIDを品詞IDとして使用
-            partofspeechId = posData[0].id;
-          } else {
-            // 登録されていない -> 新規登録してそのIDを使用
-            const result = await execQuery(SQL.ENGLISH.PARTOFSPEECH.ADD, [
-              meanArrayData[i].partOfSpeechName,
-            ]);
-            partofspeechId = result['insertId'];
-          }
-        }
-
-        // その他　の場合は入力した出典をチェック
-        let sourceId: number = meanArrayData[i].sourceId;
-        if (meanArrayData[i].sourceId === -2) {
-          if (!meanArrayData[i].sourceName) {
-            throw new Error(`[${i + 1}]出典が入力されていません`);
-          }
-
-          // 出典名で既に登録されているか検索
-          const sourceData = await execQuery(SQL.ENGLISH.SOURCE.GET.BYNAME, [
-            meanArrayData[i].sourceName,
-          ]);
-
-          if (sourceData[0]) {
-            // 既にある -> そのIDを出典IDとして使用
-            sourceId = sourceData[0].id;
-          } else {
-            // 登録されていない -> 新規登録してそのIDを使用
-            const result = await execQuery(SQL.ENGLISH.SOURCE.ADD, [
-              meanArrayData[i].sourceName,
-            ]);
-            sourceId = result['insertId'];
-          }
-        }
-
-        transactionQuery.push({
-          query: SQL.ENGLISH.MEAN.ADD,
-          value: [wordWillId, i + 1, partofspeechId, meanArrayData[i].meaning],
-        });
-        transactionQuery.push({
-          query: SQL.ENGLISH.MEAN.SOURCE.ADD,
-          value: [meanWillId + i, sourceId],
-        });
-      }
-
-      //トランザクション実行
-      return await execTransaction(transactionQuery);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
