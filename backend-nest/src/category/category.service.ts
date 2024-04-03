@@ -45,10 +45,15 @@ export class CategoryService {
       const { file_num } = req;
 
       //指定ファイルのカテゴリ取得
-      const results: GetCategoryAPIResponseDto[] = await execQuery(
-        SQL.QUIZ.CATEGORY.DISTINCT,
-        [file_num],
-      );
+      const results: GetCategoryAPIResponseDto[] = await prisma.quiz.findMany({
+        where: {
+          file_num,
+        },
+        select: {
+          category: true,
+        },
+        distinct: ['category'],
+      });
 
       //カテゴリデータ作成
       let categories: Set<string> = new Set([]);
@@ -66,24 +71,28 @@ export class CategoryService {
         data.push([file_num, categoriesArray[i]]);
       }
 
-      // トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-      //まず指定ファイルのカテゴリを全削除
-      transactionQuery.push({
-        query: SQL.CATEGORY.DELETE,
-        value: [file_num],
-      });
-
-      //カテゴリデータ全挿入
-      for (let i = 0; i < data.length; i++) {
-        transactionQuery.push({
-          query: SQL.CATEGORY.ADD,
-          value: data[i],
+      // トランザクション実行
+      let result;
+      await prisma.$transaction(async (prisma) => {
+        //まず指定ファイルのカテゴリを全削除
+        await prisma.category.deleteMany({
+          where: {
+            file_num,
+          },
         });
-      }
-      //トランザクション実行
-      const result = await execTransaction(transactionQuery);
 
+        //カテゴリデータ全挿入
+        for (let i = 0; i < data.length; i++) {
+          result.add(
+            await prisma.category.create({
+              data: {
+                file_num: data[i][0],
+                category: data[i][1],
+              },
+            }),
+          );
+        }
+      });
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
