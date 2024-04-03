@@ -150,10 +150,11 @@ export class EnglishWordService {
   // 単語全取得
   async getAllWordService() {
     try {
-      const result: GetWordAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.WORD.GET.ALL,
-        [],
-      );
+      const result = await prisma.word.findMany({
+        where: {
+          deleted_at: null,
+        },
+      });
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
