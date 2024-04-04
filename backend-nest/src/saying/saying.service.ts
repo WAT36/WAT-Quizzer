@@ -114,16 +114,26 @@ export class SayingService {
     const { book_id, saying, explanation } = req;
     try {
       // 格言の新規ID計算
-      const result = await execQuery(SQL.SAYING.GET.ID.BYBOOK, [book_id]);
+      const result = await prisma.saying.groupBy({
+        by: ['book_id'],
+        where: {
+          book_id,
+        },
+        _max: {
+          book_saying_id: true,
+        },
+      });
       const sayingWillId =
-        result.length > 0 ? +result[0]['book_saying_id'] + 1 : 1;
+        result.length > 0 ? +result[0]._max.book_saying_id + 1 : 1;
       // 格言追加
-      return await execQuery(SQL.SAYING.ADD, [
-        book_id,
-        sayingWillId,
-        saying,
-        explanation,
-      ]);
+      return await prisma.saying.create({
+        data: {
+          book_id,
+          book_saying_id: sayingWillId,
+          saying,
+          explanation,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
