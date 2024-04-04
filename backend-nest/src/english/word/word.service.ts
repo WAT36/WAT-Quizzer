@@ -295,15 +295,37 @@ export class EnglishWordService {
         );
       }
       // 指定単語idの意味を取得
-      const correctMeans: GetFourChoiceAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.MEAN.GET.BY_WORD_ID,
-        [wordId],
-      );
+      const correctMeans = await prisma.mean.findMany({
+        select: {
+          id: true,
+          word_id: true,
+          wordmean_id: true,
+          partsofspeech_id: true,
+          meaning: true,
+        },
+        where: {
+          word_id: wordId,
+        },
+        //skip: // TODO prismaでのランダム処理
+        take: 1,
+      });
       // ダミー選択肢用の意味を取得
-      const dummyMeans: GetFourChoiceAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.MEAN.GET.BY_NOT_WORD_ID,
-        [wordId],
-      );
+      const dummyMeans = await prisma.mean.findMany({
+        select: {
+          id: true,
+          word_id: true,
+          wordmean_id: true,
+          partsofspeech_id: true,
+          meaning: true,
+        },
+        where: {
+          word_id: {
+            not: wordId,
+          },
+        },
+        //skip: // TODO prismaでのランダム処理
+        take: 3,
+      });
 
       return [
         {
