@@ -436,10 +436,12 @@ export class EnglishWordService {
   async addSubSourceOfWordById(req: AddWordSubSourceAPIRequestDto) {
     try {
       const { wordId, subSource } = req;
-      return await execQuery(SQL.ENGLISH.WORD.SUBSOURCE.ADD, [
-        wordId,
-        subSource,
-      ]);
+      return await prisma.word_subsource.create({
+        data: {
+          word_id: wordId,
+          subsource: subSource,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
