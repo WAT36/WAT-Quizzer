@@ -144,8 +144,10 @@ export class EnglishWordService {
           },
           ...(subSourceName && {
             word_subsource: {
-              subsource: {
-                contains: subSourceName,
+              every: {
+                subsource: {
+                  contains: subSourceName,
+                },
               },
             },
           }),
@@ -230,37 +232,48 @@ export class EnglishWordService {
     endDate: string,
   ) {
     try {
-      const sourceIdSql = !source
-        ? ''
-        : `
-      INNER JOIN
-        mean_source ms 
-      ON m.id = ms.mean_id 
-      AND ms.source_id = ${source}
-      `;
-      const subSourceSql =
-        !startDate && !endDate
-          ? ''
-          : `
-        INNER JOIN
-          word_subsource ws
-        ON m.word_id = ws.word_id
-        ${
-          startDate
-            ? ` AND ws.created_at >= '${getDateForSqlString(startDate)}' `
-            : ``
-        }
-        ${
-          endDate
-            ? ` AND ws.created_at <= '${getDateForSqlString(endDate)}' `
-            : ``
-        }
-      `;
-      // ランダムに英単語id,nameを返す
-      const result: GetRandomWordAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.WORD.GET.RANDOM(sourceIdSql, subSourceSql),
-        [],
-      );
+      // サブ出典・日時に関するクエリ
+      const startDateQuery = {
+        gte: new Date(getDateForSqlString(startDate)),
+      };
+      const endDateQuery = {
+        lte: new Date(getDateForSqlString(endDate)),
+      };
+      const subSourceQuery =
+        startDate && endDate
+          ? { ...startDateQuery, ...endDateQuery }
+          : startDate
+          ? startDateQuery
+          : endDate
+          ? endDateQuery
+          : null;
+      // ランダム取得
+      const result = await prisma.word.findMany({
+        select: {
+          id: true,
+          name: true,
+        },
+        where: {
+          mean: {
+            ...(source && {
+              every: {
+                mean_source: {
+                  every: {
+                    source_id: +source,
+                  },
+                },
+              },
+            }),
+          },
+          word_subsource: {
+            every: {
+              created_at: subSourceQuery,
+            },
+          },
+        },
+        // skip:  //TODO prismaでランダムってどうやるか
+        take: 1,
+      });
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
