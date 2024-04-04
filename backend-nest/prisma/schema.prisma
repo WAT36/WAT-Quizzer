@@ -249,14 +249,15 @@ model quiz_similarity_group {
 }
 
 model saying {
-  id             Int       @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   book_id        Int
   book_saying_id Int
-  saying         String    @unique @db.VarChar(256)
+  saying         String        @unique @db.VarChar(256)
   explanation    String
-  created_at     DateTime  @default(now()) @db.Timestamp(6)
-  updated_at     DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at     DateTime? @db.Timestamp(6)
+  created_at     DateTime      @default(now()) @db.Timestamp(6)
+  updated_at     DateTime      @default(now()) @db.Timestamp(6)
+  deleted_at     DateTime?     @db.Timestamp(6)
+  selfhelp_book  selfhelp_book @relation(fields: [book_id], references: [id])
 }
 
 model selfhelp_book {
@@ -265,6 +266,7 @@ model selfhelp_book {
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
+  saying     saying[]
 }
 
 model source {
