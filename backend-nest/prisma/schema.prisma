@@ -9,38 +9,42 @@ datasource db {
 }
 
 model advanced_quiz {
-  id                    Int       @id @default(autoincrement())
+  id                    Int                        @id @default(autoincrement())
   file_num              Int
   quiz_num              Int
   advanced_quiz_type_id Int
-  quiz_sentense         String    @unique @db.VarChar(256)
-  answer                String    @db.VarChar(256)
-  img_file              String?   @db.VarChar(128)
-  checked               Boolean?  @default(false)
-  created_at            DateTime  @default(now()) @db.Timestamp(6)
-  updated_at            DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at            DateTime? @db.Timestamp(6)
-  quiz_file             quiz_file @relation(fields: [file_num], references: [file_num])
+  quiz_sentense         String                     @unique @db.VarChar(256)
+  answer                String                     @db.VarChar(256)
+  img_file              String?                    @db.VarChar(128)
+  checked               Boolean?                   @default(false)
+  created_at            DateTime                   @default(now()) @db.Timestamp(6)
+  updated_at            DateTime                   @default(now()) @db.Timestamp(6)
+  deleted_at            DateTime?                  @db.Timestamp(6)
+  quiz_file             quiz_file                  @relation(fields: [file_num], references: [file_num])
+  explanation           advanced_quiz_explanation?
+  advanced_quiz_type    advanced_quiz_type         @relation(fields: [advanced_quiz_type_id], references: [id])
 
   @@unique([file_num, quiz_num])
 }
 
 model advanced_quiz_explanation {
-  id               Int       @id @default(autoincrement())
-  advanced_quiz_id Int       @unique
+  id               Int           @id @default(autoincrement())
+  advanced_quiz_id Int           @unique
   explanation      String
-  created_at       DateTime  @default(now()) @db.Timestamp(6)
-  updated_at       DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at       DateTime? @db.Timestamp(6)
+  created_at       DateTime      @default(now()) @db.Timestamp(6)
+  updated_at       DateTime      @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime?     @db.Timestamp(6)
+  advanced_quiz    advanced_quiz @relation(fields: [advanced_quiz_id], references: [id])
 }
 
 model advanced_quiz_type {
-  id            Int       @id @default(autoincrement())
-  type_name     String    @unique @db.VarChar(256)
-  type_nickname String    @db.VarChar(256)
-  created_at    DateTime  @default(now()) @db.Timestamp(6)
-  updated_at    DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at    DateTime? @db.Timestamp(6)
+  id            Int             @id @default(autoincrement())
+  type_name     String          @unique @db.VarChar(256)
+  type_nickname String          @db.VarChar(256)
+  created_at    DateTime        @default(now()) @db.Timestamp(6)
+  updated_at    DateTime        @default(now()) @db.Timestamp(6)
+  deleted_at    DateTime?       @db.Timestamp(6)
+  advanced_quiz advanced_quiz[]
 }
 
 model answer_log {
@@ -268,14 +272,15 @@ model source {
 }
 
 model word {
-  id         Int       @id @default(autoincrement())
-  name       String    @unique @db.VarChar(256)
-  pronounce  String    @db.VarChar(256)
-  created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at DateTime? @db.Timestamp(6)
-  idiom      idiom[]
-  mean       mean[]
+  id             Int              @id @default(autoincrement())
+  name           String           @unique @db.VarChar(256)
+  pronounce      String           @db.VarChar(256)
+  created_at     DateTime         @default(now()) @db.Timestamp(6)
+  updated_at     DateTime         @default(now()) @db.Timestamp(6)
+  deleted_at     DateTime?        @db.Timestamp(6)
+  idiom          idiom[]
+  mean           mean[]
+  word_subsource word_subsource[]
 }
 
 model word_etymology {
@@ -323,6 +328,7 @@ model word_subsource {
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
+  word       word      @relation(fields: [word_id], references: [id])
 
   @@unique([word_id, subsource])
 }
