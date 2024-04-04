@@ -533,11 +533,30 @@ export class EnglishWordService {
   // IDから単語情報取得
   async getWordByIdService(id: number) {
     try {
-      const result: GetWordBynameAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.WORD.GET.ID,
-        [id],
-      );
-      return result;
+      return await prisma.word.findMany({
+        select: {
+          id: true,
+          name: true,
+          pronounce: true,
+          mean: {
+            select: {
+              id: true,
+              wordmean_id: true,
+              meaning: true,
+              partsofspeech: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+        where: {
+          id,
+          deleted_at: null,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
