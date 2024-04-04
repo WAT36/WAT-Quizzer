@@ -180,11 +180,16 @@ export class SayingService {
   // 格言取得(ID指定)
   async getSayingByIdService(id: number) {
     try {
-      const result: GetSayingAPIResponseDto[] = await execQuery(
-        SQL.SAYING.GET.BYID,
-        [id],
-      );
-      return result;
+      return await prisma.saying.findFirst({
+        select: {
+          saying: true,
+          explanation: true,
+        },
+        where: {
+          id,
+          deleted_at: null,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
