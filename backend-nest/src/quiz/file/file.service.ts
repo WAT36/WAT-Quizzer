@@ -63,30 +63,42 @@ export class QuizFileService {
     try {
       const { file_id } = req;
 
-      //トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-
-      // 指定ファイルの問題全削除
-      transactionQuery.push({
-        query: SQL.QUIZ.DELETE_FILE,
-        value: [file_id],
-      });
-
-      // 指定ファイルの回答ログ全削除
-      transactionQuery.push({
-        query: SQL.ANSWER_LOG.FILE.RESET,
-        value: [file_id],
-      });
-
-      // 指定ファイル削除
-      transactionQuery.push({
-        query: SQL.QUIZ_FILE.DELETE,
-        value: [file_id],
-      });
-
       //トランザクション実行
-      const result = await execTransaction(transactionQuery);
-      return { result };
+      await prisma.$transaction(async (prisma) => {
+        // 指定ファイルの問題全削除
+        await prisma.quiz.updateMany({
+          data: {
+            updated_at: new Date(),
+            deleted_at: new Date(),
+          },
+          where: {
+            file_num: file_id,
+          },
+        });
+
+        // 指定ファイルの回答ログ全削除
+        await prisma.answer_log.updateMany({
+          data: {
+            deleted_at: new Date(),
+          },
+          where: {
+            file_num: file_id,
+            deleted_at: null,
+          },
+        });
+
+        // 指定ファイル削除
+        await prisma.quiz_file.update({
+          data: {
+            updated_at: new Date(),
+            deleted_at: new Date(),
+          },
+          where: {
+            file_num: file_id,
+          },
+        });
+      });
+      return { result: 'Deleted.' };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
