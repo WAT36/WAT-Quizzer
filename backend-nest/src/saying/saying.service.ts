@@ -204,7 +204,16 @@ export class SayingService {
   async editSayingService(req: EditSayingAPIRequestDto) {
     try {
       const { id, saying, explanation } = req;
-      return await execQuery(SQL.SAYING.EDIT, [saying, explanation, id]);
+      return await prisma.saying.update({
+        data: {
+          saying,
+          explanation,
+          updated_at: new Date(),
+        },
+        where: {
+          id,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
