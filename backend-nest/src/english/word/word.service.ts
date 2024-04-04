@@ -573,19 +573,28 @@ export class EnglishWordService {
       const { wordId, wordMeanId, meanId, partofspeechId, meaning } = req;
       //意味編集及び追加
       if (meanId === -1) {
-        return await execQuery(SQL.ENGLISH.MEAN.ADD, [
-          wordId,
-          wordMeanId,
-          partofspeechId,
-          meaning,
-        ]);
+        return await prisma.mean.create({
+          data: {
+            word_id: wordId,
+            wordmean_id: wordMeanId,
+            partsofspeech_id: partofspeechId,
+            meaning,
+          },
+        });
       } else {
-        return await execQuery(SQL.ENGLISH.MEAN.EDIT, [
-          partofspeechId,
-          meaning,
-          wordId,
-          wordMeanId,
-        ]);
+        return await prisma.mean.update({
+          data: {
+            partsofspeech_id: partofspeechId,
+            meaning,
+            updated_at: new Date(),
+          },
+          where: {
+            word_id_wordmean_id: {
+              word_id: wordId,
+              wordmean_id: wordMeanId,
+            },
+          },
+        });
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
