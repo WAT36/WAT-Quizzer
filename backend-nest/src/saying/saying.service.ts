@@ -8,19 +8,57 @@ import {
   GetSayingAPIResponseDto,
   GetBookAPIResponseDto,
 } from 'quizzer-lib';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 @Injectable()
 export class SayingService {
   // 格言ランダム取得
   async getRandomSaying(book_id?: number) {
     try {
-      let result: GetSayingAPIResponseDto[];
       if (book_id) {
-        result = await execQuery(SQL.SAYING.GET.RANDOM.BYBOOK, [book_id]);
+        return await prisma.saying.findMany({
+          select: {
+            saying: true,
+            explanation: true,
+            selfhelp_book: {
+              select: {
+                name: true,
+              },
+            },
+          },
+          where: {
+            deleted_at: null,
+            selfhelp_book: {
+              id: book_id,
+              deleted_at: null,
+            },
+          },
+          // skip: // TODO prismaでのランダム処理
+          take: 1,
+        });
       } else {
-        result = await execQuery(SQL.SAYING.GET.RANDOM.ALL, []);
+        return await prisma.saying.findMany({
+          select: {
+            saying: true,
+            explanation: true,
+            selfhelp_book: {
+              select: {
+                name: true,
+              },
+            },
+          },
+          where: {
+            deleted_at: null,
+            selfhelp_book: {
+              deleted_at: null,
+            },
+          },
+          // skip: // TODO prismaでのランダム処理
+          take: 1,
+        });
       }
-      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
