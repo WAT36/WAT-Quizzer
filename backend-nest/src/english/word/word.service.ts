@@ -132,10 +132,29 @@ export class EnglishWordService {
   // 単語検索
   async searchWordService(wordName: string, subSourceName: string) {
     try {
-      const result: WordSearchAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.WORD.SEARCH(wordName, subSourceName),
-        [],
-      );
+      const result = await prisma.word.findMany({
+        select: {
+          id: true,
+          name: true,
+          pronounce: true,
+        },
+        where: {
+          name: {
+            contains: wordName,
+          },
+          ...(subSourceName && {
+            word_subsource: {
+              subsource: {
+                contains: subSourceName,
+              },
+            },
+          }),
+        },
+        orderBy: {
+          name: 'asc',
+        },
+        take: 200,
+      });
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
