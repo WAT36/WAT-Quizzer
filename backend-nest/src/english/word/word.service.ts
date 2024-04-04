@@ -188,10 +188,30 @@ export class EnglishWordService {
   // 単語名から単語情報取得
   async getWordByNameService(name: string) {
     try {
-      const result: GetWordBynameAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.WORD.GET.NAME,
-        [name],
-      );
+      const result = await prisma.word.findMany({
+        select: {
+          id: true,
+          name: true,
+          pronounce: true,
+          mean: {
+            select: {
+              id: true,
+              wordmean_id: true,
+              meaning: true,
+              partsofspeech: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+        where: {
+          name,
+          deleted_at: null,
+        },
+      });
       return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
