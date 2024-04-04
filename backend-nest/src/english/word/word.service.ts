@@ -511,11 +511,15 @@ export class EnglishWordService {
   // 単語のサブ出典取得
   async getSubSourceOfWordById(id: number) {
     try {
-      const result: GetSubSourceOfWordAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.WORD.GET.SUBSOURCE,
-        [id],
-      );
-      return result;
+      return await prisma.word_subsource.findMany({
+        select: {
+          subsource: true,
+        },
+        where: {
+          word_id: id,
+          deleted_at: null,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
