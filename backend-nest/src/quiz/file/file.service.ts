@@ -41,16 +41,13 @@ export class QuizFileService {
   async addFile(req: AddQuizFileAPIRequestDto) {
     try {
       const { file_name, file_nickname } = req;
-      // ファイル番号取得
-      const max_file_num: number = (await execQuery(SQL.QUIZ_FILE.COUNT, []))[0]
-        .file_num;
-
       // ファイル追加
-      return await execQuery(SQL.QUIZ_FILE.ADD, [
-        max_file_num + 1,
-        file_name,
-        file_nickname,
-      ]);
+      return await prisma.quiz_file.create({
+        data: {
+          file_name,
+          file_nickname,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
