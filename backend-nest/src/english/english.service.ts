@@ -69,29 +69,29 @@ export class EnglishService {
   async addExampleService(req: AddExampleAPIRequestDto) {
     const { exampleEn, exampleJa, meanId } = req;
     try {
-      //トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-
-      // insertされるだろう例文ID計算
-      const exampleWillId =
-        ((await execQuery(SQL.ENGLISH.EXAMPLE.GET.MAX_ID, []))[0][
-          'id'
-        ] as number) + 1;
-
-      //例文追加
-      transactionQuery.push({
-        query: SQL.ENGLISH.EXAMPLE.ADD,
-        value: [exampleEn, exampleJa],
-      });
-      for (let i = 0; i < meanId.length; i++) {
-        // await execQuery(SQL.ENGLISH.MEAN.EXAMPLE.ADD, [exampleId, meanId[i]]);
-        transactionQuery.push({
-          query: SQL.ENGLISH.MEAN.EXAMPLE.ADD,
-          value: [exampleWillId, meanId[i]],
-        });
-      }
       //トランザクション実行
-      return await execTransaction(transactionQuery);
+      await prisma.$transaction(async (prisma) => {
+        //例文追加
+        const createdExampleData = await prisma.example.create({
+          data: {
+            en_example_sentense: exampleEn,
+            ja_example_sentense: exampleJa,
+          },
+        });
+
+        for (let i = 0; i < meanId.length; i++) {
+          //  mean_exampleにデータ追加
+          await prisma.mean_example.create({
+            data: {
+              example_sentense_id: createdExampleData.id,
+              mean_id: meanId[i],
+            },
+          });
+        }
+      });
+      return {
+        result: 'Added!',
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
