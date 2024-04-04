@@ -455,11 +455,12 @@ export class EnglishWordService {
   // 単語のサマリデータ取得
   async getSummary() {
     try {
-      const result: GetWordSummaryAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.WORD.SUMMARY.GET,
-        [],
-      );
-      return result;
+      return await prisma.word_summarize.findMany({
+        select: {
+          name: true,
+          count: true,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
