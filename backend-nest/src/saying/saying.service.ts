@@ -87,11 +87,18 @@ export class SayingService {
   // 啓発本リスト取得
   async getBookListService() {
     try {
-      const result: GetBookAPIResponseDto[] = await execQuery(
-        SQL.SELFHELP_BOOK.GET.ALL,
-        [],
-      );
-      return result;
+      return await prisma.selfhelp_book.findMany({
+        select: {
+          id: true,
+          name: true,
+        },
+        where: {
+          deleted_at: null,
+        },
+        orderBy: {
+          id: 'asc',
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
