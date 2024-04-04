@@ -20,6 +20,7 @@ model advanced_quiz {
   created_at            DateTime  @default(now()) @db.Timestamp(6)
   updated_at            DateTime  @default(now()) @db.Timestamp(6)
   deleted_at            DateTime? @db.Timestamp(6)
+  quiz_file             quiz_file @relation(fields: [file_num], references: [file_num])
 
   @@unique([file_num, quiz_num])
 }
@@ -203,12 +204,13 @@ model quiz_dependency {
 }
 
 model quiz_file {
-  file_num      Int       @id @default(autoincrement())
-  file_name     String    @unique @db.VarChar(256)
-  file_nickname String    @unique @db.VarChar(256)
-  created_at    DateTime  @default(now()) @db.Timestamp(6)
-  updated_at    DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at    DateTime? @db.Timestamp(6)
+  file_num      Int             @id @default(autoincrement())
+  file_name     String          @unique @db.VarChar(256)
+  file_nickname String          @unique @db.VarChar(256)
+  created_at    DateTime        @default(now()) @db.Timestamp(6)
+  updated_at    DateTime        @default(now()) @db.Timestamp(6)
+  deleted_at    DateTime?       @db.Timestamp(6)
+  advanced_quiz advanced_quiz[]
 }
 
 model quiz_format {
@@ -327,7 +329,7 @@ model word_subsource {
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view advanced_quiz_view {
-  id                    Int      @unique
+  id                    Int       @unique
   file_num              Int?
   quiz_num              Int?
   advanced_quiz_type_id Int?
@@ -346,7 +348,7 @@ view advanced_quiz_view {
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view category_view {
   file_num           Int
-  c_category         String  @db.VarChar(256)
+  c_category         String   @db.VarChar(256)
   count              BigInt?
   sum_of_clear_count Decimal? @db.Decimal
   sum_of_fail_count  Decimal? @db.Decimal
@@ -372,7 +374,7 @@ view quiz_file_view {
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view quiz_view {
-  id            Int      @unique
+  id            Int       @unique
   file_num      Int?
   quiz_num      Int?
   quiz_sentense String?   @db.VarChar(256)
@@ -390,6 +392,6 @@ view quiz_view {
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view word_summarize {
-  name  String  @unique
+  name  String @unique
   count BigInt
 }
