@@ -1,7 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SQL } from '../../../config/sql';
-import { execQuery, execTransaction } from '../../../lib/db/dao';
-import { TransactionQuery } from '../../../interfaces/db';
 import { getDateForSqlString } from 'lib/str';
 import {
   AddEnglishWordAPIRequestDto,
@@ -9,15 +6,7 @@ import {
   EditWordSourceAPIRequestDto,
   AddWordSubSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
-  WordSearchAPIResponseDto,
-  GetWordAPIResponseDto,
-  GetWordBynameAPIResponseDto,
-  GetRandomWordAPIResponseDto,
-  GetFourChoiceAPIResponseDto,
   FourChoiceAPIResponseDto,
-  GetWordSummaryAPIResponseDto,
-  GetSourceOfWordAPIResponseDto,
-  GetSubSourceOfWordAPIResponseDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 
