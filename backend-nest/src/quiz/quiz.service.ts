@@ -42,14 +42,9 @@ export class QuizService {
     }
 
     try {
-      let query: QueryType;
-      let linkedBasisId: string;
-      let ids: { basis_quiz_id: string }[];
-      let idArray: string[];
-      let result;
       switch (format) {
         case 'basic':
-          result = await prisma.quiz_view.findMany({
+          return await prisma.quiz.findMany({
             where: {
               file_num,
               quiz_num,
@@ -64,9 +59,13 @@ export class QuizService {
               category: true,
               img_file: true,
               checked: true,
-              clear_count: true,
-              fail_count: true,
-              accuracy_rate: true,
+              quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
             },
             orderBy: {
               id: 'asc',
@@ -74,7 +73,7 @@ export class QuizService {
           });
           break;
         case 'applied':
-          result = await prisma.advanced_quiz_view.findMany({
+          return await prisma.advanced_quiz.findMany({
             where: {
               file_num,
               quiz_num,
@@ -90,9 +89,18 @@ export class QuizService {
               answer: true,
               img_file: true,
               checked: true,
-              clear_count: true,
-              fail_count: true,
-              accuracy_rate: true,
+              advanced_quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+              quiz_basis_advanced_linkage: {
+                select: {
+                  basis_quiz_id: true,
+                },
+              },
             },
             orderBy: {
               id: 'asc',
@@ -100,11 +108,49 @@ export class QuizService {
           });
           break;
         case '4choice':
-          query = {
-            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.DUMMY_CHOICE,
-            value: [file_num, quiz_num],
-          };
-          result = await execQuery(query.query, query.value);
+          return await await prisma.advanced_quiz.findMany({
+            where: {
+              file_num,
+              quiz_num,
+              advanced_quiz_type_id: 2,
+              deleted_at: null,
+            },
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              advanced_quiz_type_id: true,
+              quiz_sentense: true,
+              answer: true,
+              img_file: true,
+              checked: true,
+              advanced_quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+              dummy_choice: {
+                select: {
+                  dummy_choice_sentense: true,
+                },
+              },
+              advanced_quiz_explanation: {
+                select: {
+                  explanation: true,
+                },
+              },
+              quiz_basis_advanced_linkage: {
+                select: {
+                  basis_quiz_id: true,
+                },
+              },
+            },
+            orderBy: {
+              id: 'asc',
+            },
+          });
           break;
         default:
           throw new HttpException(
@@ -112,25 +158,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-
-      if (format === 'applied' || format === '4choice') {
-        // 関連基礎問題取得
-        ids = await execQuery(SQL.ADVANCED_QUIZ.BASIC_LINKAGE.GET, [
-          file_num,
-          quiz_num,
-        ]);
-        idArray = [];
-        for (let i = 0; i < ids.length; i++) {
-          idArray.push(ids[i].basis_quiz_id);
-        }
-        linkedBasisId = idArray.length > 0 ? idArray.join(',') : undefined;
-        if (linkedBasisId) {
-          for (let i = 0; i < result.length; i++) {
-            result[i].matched_basic_quiz_id = linkedBasisId;
-          }
-        }
-      }
-      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
