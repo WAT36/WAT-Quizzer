@@ -1,11 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SQL } from '../../../config/sql';
-import { execQuery, execTransaction } from '../../../lib/db/dao';
-import { TransactionQuery } from '../../../interfaces/db';
 import {
   AddQuizFileAPIRequestDto,
   DeleteQuizFileAPIRequestDto,
-  GetQuizFileApiResponseDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 
