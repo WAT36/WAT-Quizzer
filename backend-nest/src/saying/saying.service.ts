@@ -73,7 +73,11 @@ export class SayingService {
   async addBookService(req: AddBookAPIRequestDto) {
     const { book_name } = req;
     try {
-      return await execQuery(SQL.SELFHELP_BOOK.ADD, [book_name]);
+      return await prisma.selfhelp_book.create({
+        data: {
+          name: book_name,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
