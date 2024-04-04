@@ -474,11 +474,30 @@ export class EnglishWordService {
   // 単語IDから出典情報取得
   async getSourceOfWordById(id: number) {
     try {
-      const result: GetSourceOfWordAPIResponseDto[] = await execQuery(
-        SQL.ENGLISH.WORD.GET.SOURCE,
-        [id],
-      );
-      return result;
+      return await prisma.word.findMany({
+        select: {
+          id: true,
+          name: true,
+          mean: {
+            select: {
+              mean_source: {
+                select: {
+                  source: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        where: {
+          id,
+          deleted_at: null,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
