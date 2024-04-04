@@ -1,12 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SQL } from '../../config/sql';
-import { execQuery } from '../../lib/db/dao';
 import {
   AddBookAPIRequestDto,
   AddSayingAPIRequestDto,
   EditSayingAPIRequestDto,
-  GetSayingAPIResponseDto,
-  GetBookAPIResponseDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 
