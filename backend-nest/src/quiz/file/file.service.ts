@@ -7,6 +7,9 @@ import {
   DeleteQuizFileAPIRequestDto,
   GetQuizFileApiResponseDto,
 } from 'quizzer-lib';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export interface QueryType {
   query: string;
@@ -19,11 +22,19 @@ export type FormatType = 'basic' | 'applied';
 export class QuizFileService {
   // ファイル名リスト取得
   async getFileList() {
-    const result: GetQuizFileApiResponseDto[] = await execQuery(
-      SQL.QUIZ_FILE.LIST,
-      [],
-    );
-    return result;
+    return await prisma.quiz_file.findMany({
+      select: {
+        file_num: true,
+        file_name: true,
+        file_nickname: true,
+      },
+      where: {
+        deleted_at: null,
+      },
+      orderBy: {
+        file_num: 'asc',
+      },
+    });
   }
 
   // ファイル追加
