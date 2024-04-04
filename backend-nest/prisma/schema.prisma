@@ -9,20 +9,23 @@ datasource db {
 }
 
 model advanced_quiz {
-  id                    Int                        @id @default(autoincrement())
-  file_num              Int
-  quiz_num              Int
-  advanced_quiz_type_id Int
-  quiz_sentense         String                     @unique @db.VarChar(256)
-  answer                String                     @db.VarChar(256)
-  img_file              String?                    @db.VarChar(128)
-  checked               Boolean?                   @default(false)
-  created_at            DateTime                   @default(now()) @db.Timestamp(6)
-  updated_at            DateTime                   @default(now()) @db.Timestamp(6)
-  deleted_at            DateTime?                  @db.Timestamp(6)
-  quiz_file             quiz_file                  @relation(fields: [file_num], references: [file_num])
-  explanation           advanced_quiz_explanation?
-  advanced_quiz_type    advanced_quiz_type         @relation(fields: [advanced_quiz_type_id], references: [id])
+  id                            Int                            @id @default(autoincrement())
+  file_num                      Int
+  quiz_num                      Int
+  advanced_quiz_type_id         Int
+  quiz_sentense                 String                         @unique @db.VarChar(256)
+  answer                        String                         @db.VarChar(256)
+  img_file                      String?                        @db.VarChar(128)
+  checked                       Boolean?                       @default(false)
+  created_at                    DateTime                       @default(now()) @db.Timestamp(6)
+  updated_at                    DateTime                       @default(now()) @db.Timestamp(6)
+  deleted_at                    DateTime?                      @db.Timestamp(6)
+  advanced_quiz_type            advanced_quiz_type             @relation(fields: [advanced_quiz_type_id], references: [id])
+  quiz_file                     quiz_file                      @relation(fields: [file_num], references: [file_num])
+  advanced_quiz_statistics_view advanced_quiz_statistics_view?
+  dummy_choice                  dummy_choice[]
+  advanced_quiz_explanation     advanced_quiz_explanation?
+  quiz_basis_advanced_linkage   quiz_basis_advanced_linkage[]
 
   @@unique([file_num, quiz_num])
 }
@@ -69,12 +72,13 @@ model category {
 }
 
 model dummy_choice {
-  id                    Int       @id @default(autoincrement())
+  id                    Int           @id @default(autoincrement())
   advanced_quiz_id      Int
-  dummy_choice_sentense String    @db.VarChar(256)
-  created_at            DateTime  @default(now()) @db.Timestamp(6)
-  updated_at            DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at            DateTime? @db.Timestamp(6)
+  dummy_choice_sentense String        @db.VarChar(256)
+  created_at            DateTime      @default(now()) @db.Timestamp(6)
+  updated_at            DateTime      @default(now()) @db.Timestamp(6)
+  deleted_at            DateTime?     @db.Timestamp(6)
+  advanced_quiz         advanced_quiz @relation(fields: [advanced_quiz_id], references: [id])
 }
 
 model englishbot_answer_log {
@@ -158,8 +162,8 @@ model mean_source {
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
-  source     source    @relation(fields: [source_id], references: [id])
   mean       mean      @relation(fields: [mean_id], references: [id])
+  source     source    @relation(fields: [source_id], references: [id])
 
   @@id([mean_id, source_id])
 }
@@ -175,29 +179,33 @@ model partsofspeech {
 }
 
 model quiz {
-  id            Int       @id @default(autoincrement())
-  file_num      Int
-  quiz_num      Int
-  quiz_sentense String    @unique @db.VarChar(256)
-  answer        String    @db.VarChar(256)
-  category      String?   @db.VarChar(256)
-  img_file      String?   @db.VarChar(128)
-  checked       Boolean?  @default(false)
-  created_at    DateTime  @default(now()) @db.Timestamp(6)
-  updated_at    DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at    DateTime? @db.Timestamp(6)
+  id                          Int                           @id @default(autoincrement())
+  file_num                    Int
+  quiz_num                    Int
+  quiz_sentense               String                        @unique @db.VarChar(256)
+  answer                      String                        @db.VarChar(256)
+  category                    String?                       @db.VarChar(256)
+  img_file                    String?                       @db.VarChar(128)
+  checked                     Boolean?                      @default(false)
+  created_at                  DateTime                      @default(now()) @db.Timestamp(6)
+  updated_at                  DateTime                      @default(now()) @db.Timestamp(6)
+  deleted_at                  DateTime?                     @db.Timestamp(6)
+  quiz_statistics_view        quiz_statistics_view?
+  quiz_basis_advanced_linkage quiz_basis_advanced_linkage[]
 
   @@unique([file_num, quiz_num])
 }
 
 model quiz_basis_advanced_linkage {
-  id               Int       @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   file_num         Int
   basis_quiz_id    Int
   advanced_quiz_id Int
-  created_at       DateTime  @default(now()) @db.Timestamp(6)
-  updated_at       DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at       DateTime? @db.Timestamp(6)
+  created_at       DateTime      @default(now()) @db.Timestamp(6)
+  updated_at       DateTime      @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime?     @db.Timestamp(6)
+  quiz             quiz          @relation(fields: [basis_quiz_id], references: [id])
+  advanced_quiz    advanced_quiz @relation(fields: [advanced_quiz_id], references: [id])
 
   @@unique([basis_quiz_id, advanced_quiz_id])
 }
@@ -285,10 +293,10 @@ model word {
   created_at            DateTime                @default(now()) @db.Timestamp(6)
   updated_at            DateTime                @default(now()) @db.Timestamp(6)
   deleted_at            DateTime?               @db.Timestamp(6)
+  englishbot_answer_log englishbot_answer_log[]
   idiom                 idiom[]
   mean                  mean[]
   word_subsource        word_subsource[]
-  englishbot_answer_log englishbot_answer_log[]
 }
 
 model word_etymology {
@@ -408,4 +416,22 @@ view quiz_view {
 view word_summarize {
   name  String @unique
   count BigInt
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view advanced_quiz_statistics_view {
+  id            Int           @unique
+  clear_count   BigInt?
+  fail_count    BigInt?
+  accuracy_rate BigInt?
+  advanced_quiz advanced_quiz @relation(fields: [id], references: [id])
+}
+
+/// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+view quiz_statistics_view {
+  id            Int     @unique
+  clear_count   BigInt?
+  fail_count    BigInt?
+  accuracy_rate BigInt?
+  quiz          quiz    @relation(fields: [id], references: [id])
 }
