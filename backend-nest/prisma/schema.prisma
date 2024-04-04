@@ -84,6 +84,7 @@ model englishbot_answer_log {
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
+  word       word      @relation(fields: [word_id], references: [id])
 }
 
 model example {
@@ -276,15 +277,16 @@ model source {
 }
 
 model word {
-  id             Int              @id @default(autoincrement())
-  name           String           @unique @db.VarChar(256)
-  pronounce      String           @db.VarChar(256)
-  created_at     DateTime         @default(now()) @db.Timestamp(6)
-  updated_at     DateTime         @default(now()) @db.Timestamp(6)
-  deleted_at     DateTime?        @db.Timestamp(6)
-  idiom          idiom[]
-  mean           mean[]
-  word_subsource word_subsource[]
+  id                    Int                     @id @default(autoincrement())
+  name                  String                  @unique @db.VarChar(256)
+  pronounce             String                  @db.VarChar(256)
+  created_at            DateTime                @default(now()) @db.Timestamp(6)
+  updated_at            DateTime                @default(now()) @db.Timestamp(6)
+  deleted_at            DateTime?               @db.Timestamp(6)
+  idiom                 idiom[]
+  mean                  mean[]
+  word_subsource        word_subsource[]
+  englishbot_answer_log englishbot_answer_log[]
 }
 
 model word_etymology {
