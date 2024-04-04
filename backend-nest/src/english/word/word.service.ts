@@ -349,7 +349,12 @@ export class EnglishWordService {
   async wordTestClearedService(req: AddWordTestResultLogAPIRequestDto) {
     try {
       const { wordId } = req;
-      return await execQuery(SQL.ENGLISH.WORD_TEST.CLEARED.INPUT, [wordId]);
+      return await prisma.englishbot_answer_log.create({
+        data: {
+          word_id: wordId,
+          result: true,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
