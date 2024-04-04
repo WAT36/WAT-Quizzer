@@ -390,27 +390,38 @@ export class EnglishWordService {
     try {
       const { meanId, oldSourceId, newSourceId } = req;
       //トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-
-      if (oldSourceId === -1) {
-        // 出典追加
-        for (let i = 0; i < meanId.length; i++) {
-          transactionQuery.push({
-            query: SQL.ENGLISH.MEAN.SOURCE.ADD,
-            value: [meanId[i], newSourceId],
-          });
+      await prisma.$transaction(async (prisma) => {
+        if (oldSourceId === -1) {
+          // 出典追加
+          for (let i = 0; i < meanId.length; i++) {
+            await prisma.mean_source.create({
+              data: {
+                mean_id: meanId[i],
+                source_id: newSourceId,
+              },
+            });
+          }
+        } else {
+          // 出典更新
+          for (let i = 0; i < meanId.length; i++) {
+            await prisma.mean_source.update({
+              data: {
+                source_id: newSourceId,
+                updated_at: new Date(),
+              },
+              where: {
+                mean_id_source_id: {
+                  mean_id: meanId[i],
+                  source_id: oldSourceId,
+                },
+              },
+            });
+          }
         }
-      } else {
-        // 出典更新
-        for (let i = 0; i < meanId.length; i++) {
-          transactionQuery.push({
-            query: SQL.ENGLISH.MEAN.SOURCE.EDIT,
-            value: [newSourceId, meanId[i], oldSourceId],
-          });
-        }
-      }
-      //トランザクション実行
-      return await execTransaction(transactionQuery);
+      });
+      return {
+        result: 'Edited!',
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
