@@ -147,11 +147,26 @@ export class SayingService {
   // 格言検索
   async searchSayingService(saying: string) {
     try {
-      const result: GetSayingAPIResponseDto[] = await execQuery(
-        SQL.SAYING.GET.SEARCH(saying),
-        [],
-      );
-      return result;
+      return await prisma.saying.findMany({
+        select: {
+          saying: true,
+          explanation: true,
+          selfhelp_book: {
+            select: {
+              name: true,
+            },
+          },
+        },
+        where: {
+          saying: {
+            contains: saying,
+          },
+          deleted_at: null,
+          selfhelp_book: {
+            deleted_at: null,
+          },
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
