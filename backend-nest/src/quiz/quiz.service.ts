@@ -20,6 +20,7 @@ import {
   GetLinkedBasisIdDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
+import { parseStrToBool } from 'lib/str';
 
 const prisma = new PrismaClient();
 
@@ -181,7 +182,48 @@ export class QuizService {
       let sql: string;
       switch (format) {
         case 'basic':
-          sql = SQL.QUIZ.RANDOM(category, checked);
+          // sql = SQL.QUIZ.RANDOM(category, checked);
+          return await prisma.quiz.findMany({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              quiz_sentense: true,
+              answer: true,
+              category: true,
+              img_file: true,
+              checked: true,
+              quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+            },
+            where: {
+              file_num,
+              deleted_at: null,
+              quiz_statistics_view: {
+                accuracy_rate: {
+                  gte: min_rate || 0,
+                  lte: max_rate || 100,
+                },
+              },
+              ...(category && {
+                category: {
+                  contains: category,
+                },
+              }),
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+            },
+            // skip: // TODO ランダム
+            take: 1,
+          });
           break;
         case 'applied':
           sql = SQL.ADVANCED_QUIZ.RANDOM(checked);
