@@ -486,16 +486,134 @@ export class QuizService {
     format: string,
   ) {
     try {
-      let sql: string;
       switch (format) {
         case 'basic':
-          sql = SQL.QUIZ.MINIMUM(category, checked);
+          return await prisma.quiz.findMany({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              quiz_sentense: true,
+              answer: true,
+              category: true,
+              img_file: true,
+              checked: true,
+              quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+            },
+            where: {
+              file_num,
+              deleted_at: null,
+              ...(category && {
+                category: {
+                  contains: category,
+                },
+              }),
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+            },
+            orderBy: {
+              quiz_statistics_view: {
+                answer_count: 'asc',
+                fail_count: 'desc',
+              },
+            },
+            take: 1,
+          });
           break;
         case 'applied':
-          sql = SQL.ADVANCED_QUIZ.MINIMUM(checked);
+          return await prisma.advanced_quiz.findMany({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              advanced_quiz_type_id: true,
+              quiz_sentense: true,
+              answer: true,
+              img_file: true,
+              checked: true,
+              advanced_quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+            },
+            where: {
+              file_num,
+              advanced_quiz_type_id: 1,
+              deleted_at: null,
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+            },
+            orderBy: {
+              advanced_quiz_statistics_view: {
+                answer_count: 'asc',
+                fail_count: 'desc',
+              },
+            },
+            take: 1,
+          });
           break;
         case '4choice':
-          sql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.MINIMUM(checked);
+          return await prisma.advanced_quiz.findMany({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              advanced_quiz_type_id: true,
+              quiz_sentense: true,
+              answer: true,
+              img_file: true,
+              checked: true,
+              advanced_quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+              dummy_choice: {
+                select: {
+                  dummy_choice_sentense: true,
+                },
+              },
+              advanced_quiz_explanation: {
+                select: {
+                  explanation: true,
+                },
+              },
+            },
+            where: {
+              file_num,
+              advanced_quiz_type_id: 2,
+              deleted_at: null,
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+            },
+            orderBy: {
+              advanced_quiz_statistics_view: {
+                answer_count: 'asc',
+                fail_count: 'desc',
+              },
+            },
+            take: 1,
+          });
           break;
         default:
           throw new HttpException(
@@ -503,8 +621,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      const result: GetQuizApiResponseDto[] = await execQuery(sql, [file_num]);
-      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
