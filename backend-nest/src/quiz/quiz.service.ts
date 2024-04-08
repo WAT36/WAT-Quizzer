@@ -182,7 +182,6 @@ export class QuizService {
       let sql: string;
       switch (format) {
         case 'basic':
-          // sql = SQL.QUIZ.RANDOM(category, checked);
           return await prisma.quiz.findMany({
             select: {
               id: true,
@@ -226,10 +225,92 @@ export class QuizService {
           });
           break;
         case 'applied':
-          sql = SQL.ADVANCED_QUIZ.RANDOM(checked);
+          return await prisma.advanced_quiz.findMany({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              advanced_quiz_type_id: true,
+              quiz_sentense: true,
+              answer: true,
+              img_file: true,
+              checked: true,
+              advanced_quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+            },
+            where: {
+              file_num,
+              advanced_quiz_type_id: 1,
+              deleted_at: null,
+              advanced_quiz_statistics_view: {
+                accuracy_rate: {
+                  gte: min_rate || 0,
+                  lte: max_rate || 100,
+                },
+              },
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+            },
+            // skip: // TODO ランダム
+            take: 1,
+          });
           break;
         case '4choice':
-          sql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.RANDOM(checked);
+          return await prisma.advanced_quiz.findMany({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              advanced_quiz_type_id: true,
+              quiz_sentense: true,
+              answer: true,
+              img_file: true,
+              checked: true,
+              advanced_quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+              dummy_choice: {
+                select: {
+                  dummy_choice_sentense: true,
+                },
+              },
+              advanced_quiz_explanation: {
+                select: {
+                  explanation: true,
+                },
+              },
+            },
+            where: {
+              file_num,
+              advanced_quiz_type_id: 2,
+              deleted_at: null,
+              advanced_quiz_statistics_view: {
+                accuracy_rate: {
+                  gte: min_rate || 0,
+                  lte: max_rate || 100,
+                },
+              },
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+            },
+            // skip: // TODO ランダム
+            take: 1,
+          });
           break;
         default:
           throw new HttpException(
