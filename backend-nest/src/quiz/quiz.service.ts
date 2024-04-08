@@ -762,25 +762,36 @@ export class QuizService {
   async failed(req: FailQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
-      let query: QueryType;
       switch (format) {
         case 'basic': // 基礎問題
-          query = {
-            query: SQL.QUIZ.FAILED.INPUT,
-            value: [file_num, quiz_num],
-          };
+          return prisma.answer_log.create({
+            data: {
+              quiz_format_id: 1,
+              file_num,
+              quiz_num,
+              is_corrected: false,
+            },
+          });
           break;
         case 'applied': // 応用問題
-          query = {
-            query: SQL.ADVANCED_QUIZ.FAILED.INPUT,
-            value: [file_num, quiz_num],
-          };
+          return prisma.answer_log.create({
+            data: {
+              quiz_format_id: 2,
+              file_num,
+              quiz_num,
+              is_corrected: false,
+            },
+          });
           break;
         case '4choice': // 四択問題
-          query = {
-            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.FAILED,
-            value: [file_num, quiz_num],
-          };
+          return prisma.answer_log.create({
+            data: {
+              quiz_format_id: 3,
+              file_num,
+              quiz_num,
+              is_corrected: false,
+            },
+          });
           break;
         default:
           throw new HttpException(
@@ -788,7 +799,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(query.query, query.value);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
