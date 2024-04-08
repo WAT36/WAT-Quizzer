@@ -711,25 +711,36 @@ export class QuizService {
   async cleared(req: ClearQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
-      let query: QueryType;
       switch (format) {
         case 'basic': // 基礎問題
-          query = {
-            query: SQL.QUIZ.CLEARED.INPUT,
-            value: [file_num, quiz_num],
-          };
+          return prisma.answer_log.create({
+            data: {
+              quiz_format_id: 1,
+              file_num,
+              quiz_num,
+              is_corrected: true,
+            },
+          });
           break;
         case 'applied': // 応用問題
-          query = {
-            query: SQL.ADVANCED_QUIZ.CLEARED.INPUT,
-            value: [file_num, quiz_num],
-          };
+          return prisma.answer_log.create({
+            data: {
+              quiz_format_id: 2,
+              file_num,
+              quiz_num,
+              is_corrected: true,
+            },
+          });
           break;
         case '4choice': // 四択問題
-          query = {
-            query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.CLEARED,
-            value: [file_num, quiz_num],
-          };
+          return prisma.answer_log.create({
+            data: {
+              quiz_format_id: 3,
+              file_num,
+              quiz_num,
+              is_corrected: true,
+            },
+          });
           break;
         default:
           throw new HttpException(
@@ -737,7 +748,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return await execQuery(query.query, query.value);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
