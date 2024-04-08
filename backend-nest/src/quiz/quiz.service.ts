@@ -632,6 +632,7 @@ export class QuizService {
   }
 
   // 最後に回答してから最も長い時間が経っている問題を取得
+  // TODO LRUのprisma化　これは基礎応用問題を一体テーブル化しないとできない
   async getLRUQuiz(
     file_num: number,
     category: string,
@@ -669,6 +670,7 @@ export class QuizService {
   }
 
   // 昨日間違えた問題を取得
+  // TODO 復習問題のprisma化　これは基礎応用問題を一体テーブル化して解答ログを関連付けしないとできない
   async getReviewQuiz(
     file_num: number,
     category: string,
