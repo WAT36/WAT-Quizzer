@@ -2,6 +2,9 @@ SELECT
   advanced_quiz.id,
   COALESCE(corrected_data.clear_count, (0) :: bigint) AS clear_count,
   COALESCE(incorrected_data.fail_count, (0) :: bigint) AS fail_count,
+  (
+    COALESCE(corrected_data.clear_count, (0) :: bigint) + COALESCE(incorrected_data.fail_count, (0) :: bigint)
+  ) AS answer_count,
   CASE
     WHEN (
       (

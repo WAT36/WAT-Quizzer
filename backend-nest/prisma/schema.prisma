@@ -22,10 +22,10 @@ model advanced_quiz {
   deleted_at                    DateTime?                      @db.Timestamp(6)
   advanced_quiz_type            advanced_quiz_type             @relation(fields: [advanced_quiz_type_id], references: [id])
   quiz_file                     quiz_file                      @relation(fields: [file_num], references: [file_num])
-  advanced_quiz_statistics_view advanced_quiz_statistics_view?
-  dummy_choice                  dummy_choice[]
   advanced_quiz_explanation     advanced_quiz_explanation?
+  dummy_choice                  dummy_choice[]
   quiz_basis_advanced_linkage   quiz_basis_advanced_linkage[]
+  advanced_quiz_statistics_view advanced_quiz_statistics_view?
 
   @@unique([file_num, quiz_num])
 }
@@ -190,8 +190,8 @@ model quiz {
   created_at                  DateTime                      @default(now()) @db.Timestamp(6)
   updated_at                  DateTime                      @default(now()) @db.Timestamp(6)
   deleted_at                  DateTime?                     @db.Timestamp(6)
-  quiz_statistics_view        quiz_statistics_view?
   quiz_basis_advanced_linkage quiz_basis_advanced_linkage[]
+  quiz_statistics_view        quiz_statistics_view?
 
   @@unique([file_num, quiz_num])
 }
@@ -204,8 +204,8 @@ model quiz_basis_advanced_linkage {
   created_at       DateTime      @default(now()) @db.Timestamp(6)
   updated_at       DateTime      @default(now()) @db.Timestamp(6)
   deleted_at       DateTime?     @db.Timestamp(6)
-  quiz             quiz          @relation(fields: [basis_quiz_id], references: [id])
   advanced_quiz    advanced_quiz @relation(fields: [advanced_quiz_id], references: [id])
+  quiz             quiz          @relation(fields: [basis_quiz_id], references: [id])
 
   @@unique([basis_quiz_id, advanced_quiz_id])
 }
@@ -423,6 +423,7 @@ view advanced_quiz_statistics_view {
   id            Int           @unique
   clear_count   BigInt?
   fail_count    BigInt?
+  answer_count  BigInt?
   accuracy_rate BigInt?
   advanced_quiz advanced_quiz @relation(fields: [id], references: [id])
 }
@@ -432,6 +433,7 @@ view quiz_statistics_view {
   id            Int     @unique
   clear_count   BigInt?
   fail_count    BigInt?
+  answer_count  BigInt?
   accuracy_rate BigInt?
   quiz          quiz    @relation(fields: [id], references: [id])
 }
