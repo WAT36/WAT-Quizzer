@@ -825,20 +825,30 @@ export class QuizService {
       const { question, answer, category, img_file } = input_data;
 
       // 新問題番号を取得しINSERT
-      const res: GetQuizNumResponseDto[] = await execQuery(
-        SQL.QUIZ.MAX_QUIZ_NUM,
-        [file_num],
-      );
-      const new_quiz_id: number =
-        res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
-      await execQuery(SQL.QUIZ.ADD, [
-        file_num,
-        new_quiz_id,
-        question,
-        answer,
-        category,
-        img_file,
-      ]);
+      const res = await prisma.quiz.findFirst({
+        select: {
+          quiz_num: true,
+        },
+        where: {
+          file_num,
+        },
+        orderBy: {
+          quiz_num: 'desc',
+        },
+        take: 1,
+      });
+      const new_quiz_id: number = res && res.quiz_num ? res.quiz_num + 1 : 1;
+      await prisma.quiz.create({
+        data: {
+          file_num,
+          quiz_num: new_quiz_id,
+          quiz_sentense: question,
+          answer,
+          category,
+          img_file,
+          checked: false,
+        },
+      });
       return [
         {
           result:
