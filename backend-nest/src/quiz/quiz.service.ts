@@ -967,6 +967,21 @@ export class QuizService {
                 answer,
                 img_file,
                 updated_at: new Date(),
+                ...(explanation && {
+                  advanced_quiz_explanation: {
+                    upsert: {
+                      create: {
+                        explanation,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                      },
+                      update: {
+                        explanation,
+                        updated_at: new Date(),
+                      },
+                    },
+                  },
+                }),
               },
               where: {
                 file_num_quiz_num: {
@@ -1029,14 +1044,6 @@ export class QuizService {
               value: [dummyChoices[i], id],
             });
           }
-        }
-
-        // 解説文を作成
-        if (explanation) {
-          transactionQuery.push({
-            query: SQL.ADVANCED_QUIZ.EXPLANATION.UPSERT,
-            value: [advanced_quiz_id, explanation, explanation],
-          });
         }
       }
 
