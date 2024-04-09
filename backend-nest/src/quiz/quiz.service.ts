@@ -896,26 +896,98 @@ export class QuizService {
       let deleteLogSqlValue: (number | string)[];
       switch (format) {
         case 'basic':
-          editSql = SQL.QUIZ.EDIT;
-          editSqlValue = [
-            question,
-            answer,
-            category,
-            img_file,
-            file_num,
-            quiz_num,
-          ];
-          deleteLogSqlValue = [1, file_num, quiz_num];
+          await prisma.$transaction(async (prisma) => {
+            // 更新
+            await prisma.quiz.update({
+              data: {
+                quiz_sentense: question,
+                answer,
+                category,
+                img_file,
+                checked: false,
+                updated_at: new Date(),
+              },
+              where: {
+                file_num_quiz_num: {
+                  file_num,
+                  quiz_num,
+                },
+              },
+            });
+            // ログ削除
+            await prisma.answer_log.updateMany({
+              data: {
+                deleted_at: new Date(),
+              },
+              where: {
+                quiz_format_id: 1,
+                file_num,
+                quiz_num,
+              },
+            });
+          });
           break;
         case 'applied':
-          editSql = SQL.ADVANCED_QUIZ.EDIT;
-          editSqlValue = [question, answer, img_file, file_num, quiz_num];
-          deleteLogSqlValue = [2, file_num, quiz_num];
+          await prisma.$transaction(async (prisma) => {
+            // 更新
+            await prisma.advanced_quiz.update({
+              data: {
+                quiz_sentense: question,
+                answer,
+                img_file,
+                updated_at: new Date(),
+              },
+              where: {
+                file_num_quiz_num: {
+                  file_num,
+                  quiz_num,
+                },
+                advanced_quiz_type_id: 1,
+              },
+            });
+            // ログ削除
+            await prisma.answer_log.updateMany({
+              data: {
+                deleted_at: new Date(),
+              },
+              where: {
+                quiz_format_id: 1,
+                file_num,
+                quiz_num,
+              },
+            });
+          });
           break;
         case '4choice':
-          editSql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.ADVANCED_QUIZ;
-          editSqlValue = [question, answer, img_file, file_num, quiz_num];
-          deleteLogSqlValue = [2, file_num, quiz_num];
+          await prisma.$transaction(async (prisma) => {
+            // 更新
+            await prisma.advanced_quiz.update({
+              data: {
+                quiz_sentense: question,
+                answer,
+                img_file,
+                updated_at: new Date(),
+              },
+              where: {
+                file_num_quiz_num: {
+                  file_num,
+                  quiz_num,
+                },
+                advanced_quiz_type_id: 2,
+              },
+            });
+            // ログ削除
+            await prisma.answer_log.updateMany({
+              data: {
+                deleted_at: new Date(),
+              },
+              where: {
+                quiz_format_id: 2,
+                file_num,
+                quiz_num,
+              },
+            });
+          });
           break;
         default:
           throw new HttpException(
@@ -926,11 +998,6 @@ export class QuizService {
 
       // トランザクション実行準備
       const transactionQuery: TransactionQuery[] = [];
-
-      transactionQuery.push({
-        query: editSql,
-        value: editSqlValue,
-      });
 
       // 四択問題時 ダミー選択肢の編集
       if (format === '4choice') {
