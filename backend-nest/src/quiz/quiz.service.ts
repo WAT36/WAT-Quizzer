@@ -890,10 +890,24 @@ export class QuizService {
         explanation,
       } = req;
 
+      //編集画面で入力した関連基礎問題番号取得・バリデーション
+      const matched_basic_quiz_id_list: number[] = [];
+      let id_list: string[] = [];
+      if (matched_basic_quiz_id) {
+        id_list = matched_basic_quiz_id.split(',');
+        for (let i = 0; i < id_list.length; i++) {
+          if (isNaN(+id_list[i])) {
+            throw new HttpException(
+              `入力した関連基礎問題番号でエラーが発生しました；("${id_list[i]}"は数値ではありません)`,
+              HttpStatus.BAD_REQUEST,
+            );
+          } else {
+            matched_basic_quiz_id_list.push(+id_list[i]);
+          }
+        }
+      }
+
       // クエリ用意
-      let editSql: string;
-      let editSqlValue: (number | string)[];
-      let deleteLogSqlValue: (number | string)[];
       switch (format) {
         case 'basic':
           await prisma.$transaction(async (prisma) => {
@@ -930,7 +944,7 @@ export class QuizService {
         case 'applied':
           await prisma.$transaction(async (prisma) => {
             // 更新
-            await prisma.advanced_quiz.update({
+            const updatedAdvancedQuiz = await prisma.advanced_quiz.update({
               data: {
                 quiz_sentense: question,
                 answer,
@@ -945,6 +959,44 @@ export class QuizService {
                 advanced_quiz_type_id: 1,
               },
             });
+            // 関連問題更新
+            if (
+              matched_basic_quiz_id &&
+              matched_basic_quiz_id_list.length > 0
+            ) {
+              // 一度削除
+              await prisma.quiz_basis_advanced_linkage.updateMany({
+                data: {
+                  deleted_at: new Date(),
+                },
+                where: {
+                  advanced_quiz_id: updatedAdvancedQuiz.id,
+                },
+              });
+              // 削除後追加
+              for (let i = 0; i < matched_basic_quiz_id_list.length; i++) {
+                await prisma.quiz_basis_advanced_linkage.upsert({
+                  update: {
+                    deleted_at: null,
+                    updated_at: new Date(),
+                  },
+                  create: {
+                    file_num,
+                    basis_quiz_id: matched_basic_quiz_id_list[i],
+                    advanced_quiz_id: updatedAdvancedQuiz.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    deleted_at: null,
+                  },
+                  where: {
+                    basis_quiz_id_advanced_quiz_id: {
+                      basis_quiz_id: matched_basic_quiz_id_list[i],
+                      advanced_quiz_id: updatedAdvancedQuiz.id,
+                    },
+                  },
+                });
+              }
+            }
             // ログ削除
             await prisma.answer_log.updateMany({
               data: {
@@ -1019,6 +1071,44 @@ export class QuizService {
                 },
               });
             }
+            // 関連問題更新
+            if (
+              matched_basic_quiz_id &&
+              matched_basic_quiz_id_list.length > 0
+            ) {
+              // 一度削除
+              await prisma.quiz_basis_advanced_linkage.updateMany({
+                data: {
+                  deleted_at: new Date(),
+                },
+                where: {
+                  advanced_quiz_id: updatedAdvancedQuiz.id,
+                },
+              });
+              // 削除後追加
+              for (let i = 0; i < matched_basic_quiz_id_list.length; i++) {
+                await prisma.quiz_basis_advanced_linkage.upsert({
+                  update: {
+                    deleted_at: null,
+                    updated_at: new Date(),
+                  },
+                  create: {
+                    file_num,
+                    basis_quiz_id: matched_basic_quiz_id_list[i],
+                    advanced_quiz_id: updatedAdvancedQuiz.id,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    deleted_at: null,
+                  },
+                  where: {
+                    basis_quiz_id_advanced_quiz_id: {
+                      basis_quiz_id: matched_basic_quiz_id_list[i],
+                      advanced_quiz_id: updatedAdvancedQuiz.id,
+                    },
+                  },
+                });
+              }
+            }
             // ログ削除
             await prisma.answer_log.updateMany({
               data: {
@@ -1038,79 +1128,7 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-
-      // トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-
-      // 応用問題の場合　関連基礎問題を編集する
-      if (
-        matched_basic_quiz_id &&
-        (format === 'applied' || format === '4choice')
-      ) {
-        //入力した問題番号のadvanced_quiz_idでの問題IDを取得
-        const advanced_quiz_id = (
-          await execQuery(SQL.ADVANCED_QUIZ.INFO, [file_num, quiz_num])
-        )[0]['id'] as number;
-
-        //編集画面で入力した関連基礎問題番号取得・バリデーション(A)
-        const matched_basic_quiz_id_list: number[] = [];
-        const id_list = matched_basic_quiz_id.split(',');
-        for (let i = 0; i < id_list.length; i++) {
-          if (isNaN(+id_list[i])) {
-            throw new HttpException(
-              `入力した関連基礎問題番号でエラーが発生しました；("${id_list[i]}"は数値ではありません)`,
-              HttpStatus.BAD_REQUEST,
-            );
-          } else {
-            matched_basic_quiz_id_list.push(+id_list[i]);
-          }
-        }
-
-        //指定した応用問題の番号　から　応用問題テーブルでの問題IDを取得
-        //指定応用問題IDから、今登録されている関連基礎問題のデータを取得(B)
-        const registered_basic_quiz_id_list: number[] = [];
-        const res: GetLinkedBasisIdDto[] = await execQuery(
-          SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.BASIS_ADVANCED_LINK,
-          [file_num, quiz_num],
-        );
-        for (let i = 0; i < res.length; i++) {
-          registered_basic_quiz_id_list.push(res[i].basis_quiz_id);
-        }
-
-        //(A)と(B)を比較
-        //(A)だけにしかないもの→関連基礎問題関連付テーブルにデータを新規追加する
-        const onlyAvalueArray = getDifferenceArray(
-          matched_basic_quiz_id_list,
-          registered_basic_quiz_id_list,
-        );
-        for (let i = 0; i < onlyAvalueArray.length; i++) {
-          transactionQuery.push({
-            query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.ADD,
-            value: [file_num, onlyAvalueArray[i], advanced_quiz_id],
-          });
-        }
-        //(B)だけにしかないもの→関連基礎問題関連付テーブルからデータを削除する
-        const onlyBvalueArray = getDifferenceArray(
-          registered_basic_quiz_id_list,
-          matched_basic_quiz_id_list,
-        );
-        for (let i = 0; i < onlyBvalueArray.length; i++) {
-          transactionQuery.push({
-            query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.DELETE,
-            value: [file_num, onlyBvalueArray[i], advanced_quiz_id],
-          });
-        }
-      }
-
-      // 編集した問題の解答ログ削除
-      transactionQuery.push({
-        query: SQL.ANSWER_LOG.RESET,
-        value: deleteLogSqlValue,
-      });
-
-      //トランザクション実行
-      const result = await execTransaction(transactionQuery);
-      return { result };
+      return { result: 'Edited!' };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
