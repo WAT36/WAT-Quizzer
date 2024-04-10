@@ -1507,11 +1507,20 @@ export class QuizService {
     try {
       const { file_num, quiz_num, category } = body;
       // 現在のカテゴリ取得
-      const res: GetQuizApiResponseDto[] = await execQuery(SQL.QUIZ.INFO, [
-        file_num,
-        quiz_num,
-      ]);
-      const nowCategory = res[0]['category'];
+      const nowCategory: string = (
+        await prisma.quiz.findUnique({
+          select: {
+            category: true,
+          },
+          where: {
+            file_num_quiz_num: {
+              file_num,
+              quiz_num,
+            },
+            deleted_at: null,
+          },
+        })
+      ).category;
 
       // 指定カテゴリが含まれているか確認、含まれていなければ終了
       if (!nowCategory.includes(category)) {
@@ -1533,15 +1542,19 @@ export class QuizService {
       }
 
       // 更新
-      const result = await execQuery(SQL.QUIZ.CATEGORY.UPDATE, [
-        newCategory,
-        file_num,
-        quiz_num,
-      ]);
-
-      return {
-        result,
-      };
+      return await prisma.quiz.update({
+        data: {
+          category: newCategory,
+          updated_at: new Date(),
+        },
+        where: {
+          file_num_quiz_num: {
+            file_num,
+            quiz_num,
+          },
+          deleted_at: null,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
