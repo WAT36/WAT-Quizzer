@@ -1274,14 +1274,34 @@ export class QuizService {
   async delete(req: DeleteQuizAPIRequestDto) {
     try {
       const { format, file_num, quiz_num } = req;
-
-      let sql: string;
       switch (format) {
         case 'basic':
-          sql = SQL.QUIZ.DELETE;
+          return await prisma.quiz.update({
+            data: {
+              updated_at: new Date(),
+              deleted_at: new Date(),
+            },
+            where: {
+              file_num_quiz_num: {
+                file_num,
+                quiz_num,
+              },
+            },
+          });
           break;
         case 'applied':
-          sql = SQL.ADVANCED_QUIZ.DELETE;
+          return await prisma.advanced_quiz.update({
+            data: {
+              updated_at: new Date(),
+              deleted_at: new Date(),
+            },
+            where: {
+              file_num_quiz_num: {
+                file_num,
+                quiz_num,
+              },
+            },
+          });
           break;
         default:
           throw new HttpException(
@@ -1289,8 +1309,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      // 削除済にアップデート
-      return await execQuery(sql, [file_num, quiz_num]);
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
