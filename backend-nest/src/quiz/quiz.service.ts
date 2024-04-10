@@ -1152,25 +1152,107 @@ export class QuizService {
     format: string,
   ) {
     try {
-      let sql: string;
       switch (format) {
         case 'basic':
-          sql = SQL.QUIZ.SEARCH(
-            category,
-            checked,
-            query,
-            queryOnlyInSentense,
-            queryOnlyInAnswer,
-          );
+          return await prisma.quiz.findMany({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              quiz_sentense: true,
+              answer: true,
+              category: true,
+              img_file: true,
+              checked: true,
+              quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+            },
+            where: {
+              file_num,
+              deleted_at: null,
+              quiz_statistics_view: {
+                accuracy_rate: {
+                  gte: min_rate || 0,
+                  lte: max_rate || 100,
+                },
+              },
+              ...(category && {
+                category: {
+                  contains: category,
+                },
+              }),
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+              ...(parseStrToBool(queryOnlyInSentense)
+                ? {
+                    quiz_sentense: {
+                      contains: query,
+                    },
+                  }
+                : {}),
+              ...(parseStrToBool(queryOnlyInAnswer)
+                ? {
+                    answer: {
+                      contains: query,
+                    },
+                  }
+                : {}),
+            },
+            orderBy: {
+              quiz_num: 'asc',
+            },
+          });
           break;
         case 'applied':
-          sql = SQL.ADVANCED_QUIZ.SEARCH(
-            category,
-            checked,
-            query,
-            queryOnlyInSentense,
-            queryOnlyInAnswer,
-          );
+          return await prisma.advanced_quiz.findMany({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              quiz_sentense: true,
+              answer: true,
+              img_file: true,
+              checked: true,
+              advanced_quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                },
+              },
+            },
+            where: {
+              file_num,
+              deleted_at: null,
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+              ...(parseStrToBool(queryOnlyInSentense)
+                ? {
+                    quiz_sentense: {
+                      contains: query,
+                    },
+                  }
+                : {}),
+              ...(parseStrToBool(queryOnlyInAnswer)
+                ? {
+                    answer: {
+                      contains: query,
+                    },
+                  }
+                : {}),
+            },
+          });
           break;
         default:
           throw new HttpException(
@@ -1178,12 +1260,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      const result: GetQuizApiResponseDto[] = await execQuery(sql, [
-        file_num,
-        min_rate || 0,
-        max_rate || 100,
-      ]);
-      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
