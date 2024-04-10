@@ -961,7 +961,7 @@ export class QuizService {
         case '4choice':
           await prisma.$transaction(async (prisma) => {
             // 更新
-            await prisma.advanced_quiz.update({
+            const updatedAdvancedQuiz = await prisma.advanced_quiz.update({
               data: {
                 quiz_sentense: question,
                 answer,
@@ -991,6 +991,34 @@ export class QuizService {
                 advanced_quiz_type_id: 2,
               },
             });
+            // ダミー選択肢更新
+            // TODO もっと効率いい方法ないか..
+            const dummyChoices = [dummy1, dummy2, dummy3];
+            for (let i = 0; i < dummyChoices.length; i++) {
+              // ダミー選択肢のID取得
+              const dummyChoiceId = await prisma.dummy_choice.findFirst({
+                select: {
+                  id: true,
+                },
+                where: {
+                  advanced_quiz_id: updatedAdvancedQuiz.id,
+                },
+                orderBy: {
+                  id: 'asc',
+                },
+                skip: i,
+                take: 1,
+              });
+              // ダミー選択肢更新
+              await prisma.dummy_choice.update({
+                data: {
+                  dummy_choice_sentense: dummyChoices[i],
+                },
+                where: {
+                  id: dummyChoiceId.id,
+                },
+              });
+            }
             // ログ削除
             await prisma.answer_log.updateMany({
               data: {
@@ -1013,39 +1041,6 @@ export class QuizService {
 
       // トランザクション実行準備
       const transactionQuery: TransactionQuery[] = [];
-
-      // 四択問題時 ダミー選択肢の編集
-      if (format === '4choice') {
-        // 問題番号を取得
-        const res: GetQuizNumResponseDto[] = await execQuery(
-          SQL.ADVANCED_QUIZ.FOUR_CHOICE.GET.DUMMY_CHOICE,
-          [file_num, quiz_num],
-        );
-        const advanced_quiz_id: number =
-          res && res.length > 0 ? res[0]['id'] : -1;
-        // ダミー選択肢編集
-        const dummyChoices = [dummy1, dummy2, dummy3];
-        for (let i = 0; i < dummyChoices.length; i++) {
-          // 編集対象ダミー選択肢のID取得
-          const res: GetIdDto[] = await execQuery(
-            SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.DUMMY_CHOICE.GET_DUMMY_CHOICE_ID,
-            [advanced_quiz_id, i],
-          );
-          const id: number = res && res.length > 0 ? res[0]['id'] : -1;
-          //編集対象ダミー選択肢の更新
-          if (id === -1) {
-            transactionQuery.push({
-              query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.DUMMY_CHOICE.INSERT,
-              value: [advanced_quiz_id, dummyChoices[i]],
-            });
-          } else {
-            transactionQuery.push({
-              query: SQL.ADVANCED_QUIZ.FOUR_CHOICE.EDIT.DUMMY_CHOICE.UPDATE,
-              value: [dummyChoices[i], id],
-            });
-          }
-        }
-      }
 
       // 応用問題の場合　関連基礎問題を編集する
       if (
