@@ -1452,8 +1452,19 @@ export class QuizService {
       const { file_num, quiz_num, category } = req;
       // 現在のカテゴリ取得
       const nowCategory: string = (
-        await execQuery(SQL.QUIZ.INFO, [file_num, quiz_num])
-      )[0]['category'];
+        await prisma.quiz.findUnique({
+          select: {
+            category: true,
+          },
+          where: {
+            file_num_quiz_num: {
+              file_num,
+              quiz_num,
+            },
+            deleted_at: null,
+          },
+        })
+      ).category;
 
       if (nowCategory.includes(category)) {
         return {
@@ -1468,13 +1479,19 @@ export class QuizService {
       }
 
       // 更新
-      const result = await execQuery(SQL.QUIZ.CATEGORY.UPDATE, [
-        newCategory,
-        file_num,
-        quiz_num,
-      ]);
-
-      return result;
+      return await prisma.quiz.update({
+        data: {
+          category: newCategory,
+          updated_at: new Date(),
+        },
+        where: {
+          file_num_quiz_num: {
+            file_num,
+            quiz_num,
+          },
+          deleted_at: null,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
