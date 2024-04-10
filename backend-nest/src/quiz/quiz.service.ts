@@ -1333,47 +1333,109 @@ export class QuizService {
         );
       }
 
-      //トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-
       // 統合前の問題取得
-      const pre_data: GetQuizApiResponseDto[] = await execQuery(SQL.QUIZ.INFO, [
-        pre_file_num,
-        pre_quiz_num,
-      ]);
+      const pre_data = await prisma.quiz.findUnique({
+        select: {
+          id: true,
+          file_num: true,
+          quiz_num: true,
+          quiz_sentense: true,
+          answer: true,
+          category: true,
+          img_file: true,
+          checked: true,
+          quiz_statistics_view: {
+            select: {
+              clear_count: true,
+              fail_count: true,
+              accuracy_rate: true,
+            },
+          },
+        },
+        where: {
+          file_num_quiz_num: {
+            file_num: pre_file_num,
+            quiz_num: pre_quiz_num,
+          },
+          deleted_at: null,
+        },
+      });
 
       // 統合後の問題取得
-      const post_data: GetQuizApiResponseDto[] = await execQuery(
-        SQL.QUIZ.INFO,
-        [post_file_num, post_quiz_num],
-      );
+      const post_data = await prisma.quiz.findUnique({
+        select: {
+          id: true,
+          file_num: true,
+          quiz_num: true,
+          quiz_sentense: true,
+          answer: true,
+          category: true,
+          img_file: true,
+          checked: true,
+          quiz_statistics_view: {
+            select: {
+              clear_count: true,
+              fail_count: true,
+              accuracy_rate: true,
+            },
+          },
+        },
+        where: {
+          file_num_quiz_num: {
+            file_num: post_file_num,
+            quiz_num: post_quiz_num,
+          },
+          deleted_at: null,
+        },
+      });
 
       // 統合データ作成
-      const pre_category = new Set(pre_data[0]['category'].split(':'));
-      const post_category = new Set(post_data[0]['category'].split(':'));
+      const pre_category = new Set(pre_data.category.split(':'));
+      const post_category = new Set(post_data.category.split(':'));
       const new_category = Array.from(
         new Set([...pre_category, ...post_category]),
       ).join(':');
 
-      // 問題統合
-      transactionQuery.push({
-        query: SQL.QUIZ.INTEGRATE,
-        value: [new_category, post_file_num, post_quiz_num],
-      });
+      // トランザクション
+      await prisma.$transaction(async (prisma) => {
+        // 問題統合
+        await prisma.quiz.update({
+          data: {
+            category: new_category,
+            updated_at: new Date(),
+          },
+          where: {
+            file_num_quiz_num: {
+              file_num: post_file_num,
+              quiz_num: post_quiz_num,
+            },
+          },
+        });
 
-      // 統合元データは削除、それまでの解答ログデータも削除
-      transactionQuery.push({
-        query: SQL.QUIZ.DELETE,
-        value: [pre_file_num, pre_quiz_num],
+        // 統合元データは削除、それまでの解答ログデータも削除
+        await prisma.quiz.update({
+          data: {
+            updated_at: new Date(),
+            deleted_at: new Date(),
+          },
+          where: {
+            file_num_quiz_num: {
+              file_num: pre_file_num,
+              quiz_num: pre_quiz_num,
+            },
+          },
+        });
+        await prisma.answer_log.updateMany({
+          data: {
+            deleted_at: new Date(),
+          },
+          where: {
+            quiz_format_id: 1,
+            file_num: pre_file_num,
+            quiz_num: pre_quiz_num,
+          },
+        });
       });
-      transactionQuery.push({
-        query: SQL.ANSWER_LOG.RESET,
-        value: [1, pre_file_num, pre_quiz_num],
-      });
-
-      //トランザクション実行
-      const result = await execTransaction(transactionQuery);
-      return { result };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
