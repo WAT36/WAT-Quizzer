@@ -1618,19 +1618,61 @@ export class QuizService {
   async reverseCheck(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
-      let infoSql: string;
-      let checkSql: string;
-      let uncheckSql: string;
+      let checked: boolean;
       switch (format) {
         case 'basic': // 基礎問題
-          infoSql = SQL.QUIZ.INFO;
-          checkSql = SQL.QUIZ.CHECK;
-          uncheckSql = SQL.QUIZ.UNCHECK;
+          checked = (
+            await prisma.quiz.findUnique({
+              select: {
+                checked: true,
+              },
+              where: {
+                file_num_quiz_num: {
+                  file_num,
+                  quiz_num,
+                },
+              },
+            })
+          ).checked;
+          return await prisma.quiz.update({
+            data: {
+              checked: !checked,
+              updated_at: new Date(),
+            },
+            where: {
+              file_num_quiz_num: {
+                file_num,
+                quiz_num,
+              },
+            },
+          });
           break;
         case 'applied': // 応用問題
-          infoSql = SQL.ADVANCED_QUIZ.INFO;
-          checkSql = SQL.ADVANCED_QUIZ.CHECK;
-          uncheckSql = SQL.ADVANCED_QUIZ.UNCHECK;
+          checked = (
+            await prisma.advanced_quiz.findUnique({
+              select: {
+                checked: true,
+              },
+              where: {
+                file_num_quiz_num: {
+                  file_num,
+                  quiz_num,
+                },
+              },
+            })
+          ).checked;
+          return await prisma.advanced_quiz.update({
+            data: {
+              checked: !checked,
+              updated_at: new Date(),
+            },
+            where: {
+              file_num_quiz_num: {
+                file_num,
+                quiz_num,
+              },
+            },
+          });
           break;
         default:
           throw new HttpException(
@@ -1638,18 +1680,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-
-      // チェック取得
-      const result: GetQuizApiResponseDto[] = await execQuery(infoSql, [
-        file_num,
-        quiz_num,
-      ]);
-      const checked = result[0].checked;
-
-      await execQuery(checked ? uncheckSql : checkSql, [file_num, quiz_num]);
-
-      // チェックしたらtrue、チェック外したらfalseを返す
-      return [{ result: !checked }];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
