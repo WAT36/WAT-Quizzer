@@ -1592,7 +1592,18 @@ export class QuizService {
     try {
       const { file_num, quiz_num } = req;
       // 更新
-      return await execQuery(SQL.QUIZ.UNCHECK, [file_num, quiz_num]);
+      return await prisma.quiz.update({
+        data: {
+          checked: false,
+          updated_at: new Date(),
+        },
+        where: {
+          file_num_quiz_num: {
+            file_num,
+            quiz_num,
+          },
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
