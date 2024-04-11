@@ -1695,11 +1695,15 @@ export class QuizService {
     try {
       const { file_id } = req;
       // 指定ファイルの回答ログ削除
-      const result = await execQuery(SQL.ANSWER_LOG.FILE.RESET, [file_id]);
-
-      return {
-        result,
-      };
+      return await prisma.answer_log.updateMany({
+        data: {
+          deleted_at: new Date(),
+        },
+        where: {
+          file_num: file_id,
+          deleted_at: null,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
