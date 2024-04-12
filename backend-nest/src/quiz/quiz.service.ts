@@ -1729,9 +1729,6 @@ export class QuizService {
 
       const { question, answer, img_file, matched_basic_quiz_id } = input_data;
 
-      //トランザクション実行準備
-      const transactionQuery: TransactionQuery[] = [];
-
       // 関連する基礎問題番号リストのバリデーション・取得
       const matched_basic_quiz_id_list: number[] = [];
       if (matched_basic_quiz_id) {
@@ -1749,30 +1746,48 @@ export class QuizService {
       }
 
       // 新問題番号(ファイルごとの)を取得しINSERT
-      let res: GetQuizNumResponseDto[] = await execQuery(
-        SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.BYFILE,
-        [file_num],
-      );
-      const new_quiz_id: number =
-        res && res.length > 0 ? res[0]['quiz_num'] + 1 : 1;
-      transactionQuery.push({
-        query: SQL.ADVANCED_QUIZ.ADD,
-        value: [file_num, new_quiz_id, 1, question, answer, img_file],
-      });
+      const res = (
+        await prisma.advanced_quiz.findFirst({
+          select: {
+            quiz_num: true,
+          },
+          where: {
+            file_num,
+          },
+          orderBy: {
+            quiz_num: 'desc',
+          },
+          take: 1,
+        })
+      ).quiz_num;
+      const new_quiz_id: number = res ? res + 1 : 1;
 
-      // 新問題番号(advanced_quiz全体での)を取得しINSERT
-      res = await execQuery(SQL.ADVANCED_QUIZ.MAX_QUIZ_NUM.ALL, []);
-      const new_id: number = res && res.length > 0 ? res[0]['id'] + 1 : 1;
-      // 関連する基礎問題番号リストを追加
-      for (let i = 0; i < matched_basic_quiz_id_list.length; i++) {
-        transactionQuery.push({
-          query: SQL.QUIZ_BASIS_ADVANCED_LINKAGE.ADD,
-          value: [file_num, matched_basic_quiz_id_list[i], new_id],
+      await prisma.$transaction(async (prisma) => {
+        const advancedQuiz = await prisma.advanced_quiz.create({
+          data: {
+            file_num,
+            quiz_num: new_quiz_id,
+            advanced_quiz_type_id: 1,
+            quiz_sentense: question,
+            answer,
+            img_file,
+            checked: false,
+          },
         });
-      }
 
-      // トランザクション処理実行
-      await execTransaction(transactionQuery);
+        // 新問題番号(advanced_quiz全体での)を取得しINSERT
+        const new_id: number = advancedQuiz.id;
+        // 関連する基礎問題番号リストを追加
+        for (let i = 0; i < matched_basic_quiz_id_list.length; i++) {
+          await prisma.quiz_basis_advanced_linkage.create({
+            data: {
+              file_num,
+              basis_quiz_id: matched_basic_quiz_id_list[i],
+              advanced_quiz_id: new_id,
+            },
+          });
+        }
+      });
       return [
         {
           result:
