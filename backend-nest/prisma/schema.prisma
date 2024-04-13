@@ -420,20 +420,22 @@ view word_summarize {
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view advanced_quiz_statistics_view {
-  id            Int           @unique
-  clear_count   BigInt?
-  fail_count    BigInt?
-  answer_count  BigInt?
-  accuracy_rate BigInt?
-  advanced_quiz advanced_quiz @relation(fields: [id], references: [id])
+  id              Int           @unique
+  clear_count     BigInt?
+  fail_count      BigInt?
+  answer_count    BigInt?
+  accuracy_rate   BigInt?
+  last_answer_log DateTime?     @db.Timestamp(6)
+  advanced_quiz   advanced_quiz @relation(fields: [id], references: [id])
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view quiz_statistics_view {
-  id            Int     @unique
-  clear_count   BigInt?
-  fail_count    BigInt?
-  answer_count  BigInt?
-  accuracy_rate BigInt?
-  quiz          quiz    @relation(fields: [id], references: [id])
+  id              Int       @unique
+  clear_count     BigInt?
+  fail_count      BigInt?
+  answer_count    BigInt?
+  accuracy_rate   BigInt?
+  last_answer_log DateTime? @db.Timestamp(6)
+  quiz            quiz      @relation(fields: [id], references: [id])
 }
