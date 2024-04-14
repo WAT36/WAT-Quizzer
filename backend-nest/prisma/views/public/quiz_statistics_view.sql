@@ -19,7 +19,8 @@ SELECT
       )
     )
   END AS accuracy_rate,
-  all_log_data.last_answer_log
+  all_log_data.last_answer_log,
+  incorrected_data.last_failed_answer_log
 FROM
   (
     (
@@ -51,7 +52,8 @@ FROM
         SELECT
           answer_log.file_num,
           answer_log.quiz_num,
-          count(*) AS fail_count
+          count(*) AS fail_count,
+          max(answer_log.created_at) AS last_failed_answer_log
         FROM
           answer_log
         WHERE
