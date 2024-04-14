@@ -13,6 +13,7 @@ import {
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
   GetQuizApiResponseDto,
+  getPrismaYesterdayRange,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 import { parseStrToBool } from 'lib/str';
@@ -697,7 +698,7 @@ export class QuizService {
               },
             },
             where: {
-              advanced_quiz_type_id: 2,
+              advanced_quiz_type_id: 1,
               file_num,
               deleted_at: null,
               ...(parseStrToBool(checked)
@@ -775,7 +776,6 @@ export class QuizService {
   }
 
   // 昨日間違えた問題を取得
-  // TODO 復習問題のprisma化　これは基礎応用問題を一体テーブル化して解答ログを関連付けしないとできない
   async getReviewQuiz(
     file_num: number,
     category: string,
@@ -783,16 +783,120 @@ export class QuizService {
     format: string,
   ) {
     try {
-      let sql: string;
       switch (format) {
         case 'basic':
-          sql = SQL.QUIZ.REVIEW(file_num, category, checked);
+          return await prisma.quiz.findFirst({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              quiz_sentense: true,
+              answer: true,
+              category: true,
+              img_file: true,
+              checked: true,
+              quiz_statistics_view: {
+                select: {
+                  accuracy_rate: true,
+                },
+              },
+            },
+            where: {
+              file_num,
+              deleted_at: null,
+              ...(category && {
+                category: {
+                  contains: category,
+                },
+              }),
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+              quiz_statistics_view: {
+                last_failed_answer_log: getPrismaYesterdayRange(),
+              },
+            },
+          });
           break;
         case 'applied':
-          sql = SQL.ADVANCED_QUIZ.REVIEW(2, file_num, checked);
+          return await prisma.advanced_quiz.findFirst({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              advanced_quiz_type_id: true,
+              quiz_sentense: true,
+              answer: true,
+              img_file: true,
+              checked: true,
+              advanced_quiz_statistics_view: {
+                select: {
+                  clear_count: true,
+                  fail_count: true,
+                  accuracy_rate: true,
+                  last_answer_log: true,
+                },
+              },
+            },
+            where: {
+              advanced_quiz_type_id: 1,
+              file_num,
+              deleted_at: null,
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+              advanced_quiz_statistics_view: {
+                last_failed_answer_log: getPrismaYesterdayRange(),
+              },
+            },
+          });
           break;
         case '4choice':
-          sql = SQL.ADVANCED_QUIZ.FOUR_CHOICE.REVIEW(file_num, checked);
+          return await prisma.advanced_quiz.findFirst({
+            select: {
+              id: true,
+              file_num: true,
+              quiz_num: true,
+              advanced_quiz_type_id: true,
+              quiz_sentense: true,
+              answer: true,
+              img_file: true,
+              checked: true,
+              advanced_quiz_statistics_view: {
+                select: {
+                  accuracy_rate: true,
+                  last_answer_log: true,
+                },
+              },
+              dummy_choice: {
+                select: {
+                  dummy_choice_sentense: true,
+                },
+              },
+              advanced_quiz_explanation: {
+                select: {
+                  explanation: true,
+                },
+              },
+            },
+            where: {
+              advanced_quiz_type_id: 2,
+              file_num,
+              deleted_at: null,
+              ...(parseStrToBool(checked)
+                ? {
+                    checked: true,
+                  }
+                : {}),
+              advanced_quiz_statistics_view: {
+                last_failed_answer_log: getPrismaYesterdayRange(),
+              },
+            },
+          });
           break;
         default:
           throw new HttpException(
@@ -800,8 +904,6 @@ export class QuizService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      const result: GetQuizApiResponseDto[] = await execQuery(sql, []);
-      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
