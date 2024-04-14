@@ -1,6 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SQL } from '../../config/sql';
-import { execQuery } from '../../lib/db/dao';
 import {
   ClearQuizAPIRequestDto,
   FailQuizAPIRequestDto,
@@ -12,7 +10,6 @@ import {
   RemoveCategoryOfQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
-  GetQuizApiResponseDto,
   getPrismaYesterdayRange,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
