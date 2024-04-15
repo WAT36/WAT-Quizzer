@@ -46,7 +46,7 @@ export default function Top({ isMock }: Props) {
             setSaying({
               saying: result[0].saying,
               explanation: result[0].explanation,
-              name: `出典：${result[0].name}`,
+              name: `出典：${result[0].selfhelp_book.name}`,
               color: 'common.black'
             });
           }
