@@ -11,6 +11,7 @@ import {
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
   getPrismaYesterdayRange,
+  getRandomElementsFromArray,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 import { parseStrToBool } from 'lib/str';
@@ -174,135 +175,138 @@ export class QuizService {
     try {
       switch (format) {
         case 'basic':
-          return await prisma.quiz.findMany({
-            select: {
-              id: true,
-              file_num: true,
-              quiz_num: true,
-              quiz_sentense: true,
-              answer: true,
-              category: true,
-              img_file: true,
-              checked: true,
-              quiz_statistics_view: {
-                select: {
-                  clear_count: true,
-                  fail_count: true,
-                  accuracy_rate: true,
+          return getRandomElementsFromArray(
+            await prisma.quiz.findMany({
+              select: {
+                id: true,
+                file_num: true,
+                quiz_num: true,
+                quiz_sentense: true,
+                answer: true,
+                category: true,
+                img_file: true,
+                checked: true,
+                quiz_statistics_view: {
+                  select: {
+                    clear_count: true,
+                    fail_count: true,
+                    accuracy_rate: true,
+                  },
                 },
               },
-            },
-            where: {
-              file_num,
-              deleted_at: null,
-              quiz_statistics_view: {
-                accuracy_rate: {
-                  gte: min_rate || 0,
-                  lte: max_rate || 100,
+              where: {
+                file_num,
+                deleted_at: null,
+                quiz_statistics_view: {
+                  accuracy_rate: {
+                    gte: min_rate || 0,
+                    lte: max_rate || 100,
+                  },
                 },
+                ...(category && {
+                  category: {
+                    contains: category,
+                  },
+                }),
+                ...(parseStrToBool(checked)
+                  ? {
+                      checked: true,
+                    }
+                  : {}),
               },
-              ...(category && {
-                category: {
-                  contains: category,
-                },
-              }),
-              ...(parseStrToBool(checked)
-                ? {
-                    checked: true,
-                  }
-                : {}),
-            },
-            // skip: // TODO ランダム
-            take: 1,
-          });
+            }),
+            1,
+          );
           break;
         case 'applied':
-          return await prisma.advanced_quiz.findMany({
-            select: {
-              id: true,
-              file_num: true,
-              quiz_num: true,
-              advanced_quiz_type_id: true,
-              quiz_sentense: true,
-              answer: true,
-              img_file: true,
-              checked: true,
-              advanced_quiz_statistics_view: {
-                select: {
-                  clear_count: true,
-                  fail_count: true,
-                  accuracy_rate: true,
+          return getRandomElementsFromArray(
+            await prisma.advanced_quiz.findMany({
+              select: {
+                id: true,
+                file_num: true,
+                quiz_num: true,
+                advanced_quiz_type_id: true,
+                quiz_sentense: true,
+                answer: true,
+                img_file: true,
+                checked: true,
+                advanced_quiz_statistics_view: {
+                  select: {
+                    clear_count: true,
+                    fail_count: true,
+                    accuracy_rate: true,
+                  },
                 },
               },
-            },
-            where: {
-              file_num,
-              advanced_quiz_type_id: 1,
-              deleted_at: null,
-              advanced_quiz_statistics_view: {
-                accuracy_rate: {
-                  gte: min_rate || 0,
-                  lte: max_rate || 100,
+              where: {
+                file_num,
+                advanced_quiz_type_id: 1,
+                deleted_at: null,
+                advanced_quiz_statistics_view: {
+                  accuracy_rate: {
+                    gte: min_rate || 0,
+                    lte: max_rate || 100,
+                  },
                 },
+                ...(parseStrToBool(checked)
+                  ? {
+                      checked: true,
+                    }
+                  : {}),
               },
-              ...(parseStrToBool(checked)
-                ? {
-                    checked: true,
-                  }
-                : {}),
-            },
-            // skip: // TODO ランダム
-            take: 1,
-          });
+            }),
+            1,
+          );
           break;
         case '4choice':
-          return await prisma.advanced_quiz.findMany({
-            select: {
-              id: true,
-              file_num: true,
-              quiz_num: true,
-              advanced_quiz_type_id: true,
-              quiz_sentense: true,
-              answer: true,
-              img_file: true,
-              checked: true,
-              advanced_quiz_statistics_view: {
-                select: {
-                  clear_count: true,
-                  fail_count: true,
-                  accuracy_rate: true,
+          return getRandomElementsFromArray(
+            await prisma.advanced_quiz.findMany({
+              select: {
+                id: true,
+                file_num: true,
+                quiz_num: true,
+                advanced_quiz_type_id: true,
+                quiz_sentense: true,
+                answer: true,
+                img_file: true,
+                checked: true,
+                advanced_quiz_statistics_view: {
+                  select: {
+                    clear_count: true,
+                    fail_count: true,
+                    accuracy_rate: true,
+                  },
+                },
+                dummy_choice: {
+                  select: {
+                    dummy_choice_sentense: true,
+                  },
+                },
+                advanced_quiz_explanation: {
+                  select: {
+                    explanation: true,
+                  },
                 },
               },
-              dummy_choice: {
-                select: {
-                  dummy_choice_sentense: true,
+              where: {
+                file_num,
+                advanced_quiz_type_id: 2,
+                deleted_at: null,
+                advanced_quiz_statistics_view: {
+                  accuracy_rate: {
+                    gte: min_rate || 0,
+                    lte: max_rate || 100,
+                  },
                 },
+                ...(parseStrToBool(checked)
+                  ? {
+                      checked: true,
+                    }
+                  : {}),
               },
-              advanced_quiz_explanation: {
-                select: {
-                  explanation: true,
-                },
-              },
-            },
-            where: {
-              file_num,
-              advanced_quiz_type_id: 2,
-              deleted_at: null,
-              advanced_quiz_statistics_view: {
-                accuracy_rate: {
-                  gte: min_rate || 0,
-                  lte: max_rate || 100,
-                },
-              },
-              ...(parseStrToBool(checked)
-                ? {
-                    checked: true,
-                  }
-                : {}),
-            },
-            // skip: // TODO ランダム
-            take: 1,
-          });
+            }),
+            1,
+          );
           break;
         default:
           throw new HttpException(
@@ -330,7 +334,7 @@ export class QuizService {
     try {
       switch (format) {
         case 'basic':
-          return await prisma.quiz.findMany({
+          return await prisma.quiz.findFirst({
             select: {
               id: true,
               file_num: true,
@@ -367,11 +371,10 @@ export class QuizService {
                 accuracy_rate: 'asc',
               },
             },
-            take: 1,
           });
           break;
         case 'applied':
-          return await prisma.advanced_quiz.findMany({
+          return await prisma.advanced_quiz.findFirst({
             select: {
               id: true,
               file_num: true,
@@ -404,11 +407,10 @@ export class QuizService {
                 accuracy_rate: 'asc',
               },
             },
-            take: 1,
           });
           break;
         case '4choice':
-          return await prisma.advanced_quiz.findMany({
+          return await prisma.advanced_quiz.findFirst({
             select: {
               id: true,
               file_num: true,
@@ -451,7 +453,6 @@ export class QuizService {
                 accuracy_rate: 'asc',
               },
             },
-            take: 1,
           });
           break;
         default:
@@ -481,7 +482,7 @@ export class QuizService {
     try {
       switch (format) {
         case 'basic':
-          return await prisma.quiz.findMany({
+          return await prisma.quiz.findFirst({
             select: {
               id: true,
               file_num: true,
@@ -519,11 +520,10 @@ export class QuizService {
                 fail_count: 'desc',
               },
             },
-            take: 1,
           });
           break;
         case 'applied':
-          return await prisma.advanced_quiz.findMany({
+          return await prisma.advanced_quiz.findFirst({
             select: {
               id: true,
               file_num: true,
@@ -557,11 +557,10 @@ export class QuizService {
                 fail_count: 'desc',
               },
             },
-            take: 1,
           });
           break;
         case '4choice':
-          return await prisma.advanced_quiz.findMany({
+          return await prisma.advanced_quiz.findFirst({
             select: {
               id: true,
               file_num: true,
@@ -605,7 +604,6 @@ export class QuizService {
                 fail_count: 'desc',
               },
             },
-            take: 1,
           });
           break;
         default:

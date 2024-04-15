@@ -7,6 +7,7 @@ import {
   AddWordSubSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
   FourChoiceAPIResponseDto,
+  getRandomElementsFromArray,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 
@@ -260,10 +261,9 @@ export class EnglishWordService {
             },
           },
         },
-        // skip:  //TODO prismaでランダムってどうやるか
-        take: 1,
       });
-      return result;
+      // 結果からランダムに1つ取得して返す
+      return result[Math.floor(Math.random() * result.length)];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -284,37 +284,39 @@ export class EnglishWordService {
         );
       }
       // 指定単語idの意味を取得
-      const correctMeans = await prisma.mean.findMany({
-        select: {
-          id: true,
-          word_id: true,
-          wordmean_id: true,
-          partsofspeech_id: true,
-          meaning: true,
-        },
-        where: {
-          word_id: wordId,
-        },
-        //skip: // TODO prismaでのランダム処理
-        take: 1,
-      });
-      // ダミー選択肢用の意味を取得
-      const dummyMeans = await prisma.mean.findMany({
-        select: {
-          id: true,
-          word_id: true,
-          wordmean_id: true,
-          partsofspeech_id: true,
-          meaning: true,
-        },
-        where: {
-          word_id: {
-            not: wordId,
+      const correctMeans = getRandomElementsFromArray(
+        await prisma.mean.findMany({
+          select: {
+            id: true,
+            word_id: true,
+            wordmean_id: true,
+            partsofspeech_id: true,
+            meaning: true,
           },
-        },
-        //skip: // TODO prismaでのランダム処理
-        take: 3,
-      });
+          where: {
+            word_id: wordId,
+          },
+        }),
+        1,
+      );
+      // ダミー選択肢用の意味を取得
+      const dummyMeans = getRandomElementsFromArray(
+        await prisma.mean.findMany({
+          select: {
+            id: true,
+            word_id: true,
+            wordmean_id: true,
+            partsofspeech_id: true,
+            meaning: true,
+          },
+          where: {
+            word_id: {
+              not: wordId,
+            },
+          },
+        }),
+        3,
+      );
 
       return [
         {

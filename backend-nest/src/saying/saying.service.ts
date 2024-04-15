@@ -3,6 +3,7 @@ import {
   AddBookAPIRequestDto,
   AddSayingAPIRequestDto,
   EditSayingAPIRequestDto,
+  getRandomElementsFromArray,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 
@@ -14,46 +15,48 @@ export class SayingService {
   async getRandomSaying(book_id?: number) {
     try {
       if (book_id) {
-        return await prisma.saying.findMany({
-          select: {
-            saying: true,
-            explanation: true,
-            selfhelp_book: {
-              select: {
-                name: true,
+        return getRandomElementsFromArray(
+          await prisma.saying.findMany({
+            select: {
+              saying: true,
+              explanation: true,
+              selfhelp_book: {
+                select: {
+                  name: true,
+                },
               },
             },
-          },
-          where: {
-            deleted_at: null,
-            selfhelp_book: {
-              id: book_id,
+            where: {
               deleted_at: null,
+              selfhelp_book: {
+                id: book_id,
+                deleted_at: null,
+              },
             },
-          },
-          // skip: // TODO prismaでのランダム処理
-          take: 1,
-        });
+          }),
+          1,
+        );
       } else {
-        return await prisma.saying.findMany({
-          select: {
-            saying: true,
-            explanation: true,
-            selfhelp_book: {
-              select: {
-                name: true,
+        return getRandomElementsFromArray(
+          await prisma.saying.findMany({
+            select: {
+              saying: true,
+              explanation: true,
+              selfhelp_book: {
+                select: {
+                  name: true,
+                },
               },
             },
-          },
-          where: {
-            deleted_at: null,
-            selfhelp_book: {
+            where: {
               deleted_at: null,
+              selfhelp_book: {
+                deleted_at: null,
+              },
             },
-          },
-          // skip: // TODO prismaでのランダム処理
-          take: 1,
-        });
+          }),
+          1,
+        );
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
