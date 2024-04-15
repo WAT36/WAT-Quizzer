@@ -2,8 +2,7 @@ import Head from 'next/head';
 import { Inter } from 'next/font/google';
 import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { get } from '@/api/API';
-import { GetPopularEventResponse, GetRandomSayingResponse, ProcessingApiReponse } from 'quizzer-lib';
+import { GetPopularEventResponse } from 'quizzer-lib';
 import { Title } from '@/components/ui-elements/title/Title';
 import { dbHealthCheck } from '@/api/healthCheck';
 import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButtonGroup';
@@ -12,6 +11,7 @@ import { DbHealthCheckState, SayingState } from '../../interfaces/state';
 import { DbHealthCheckCard } from '@/components/ui-forms/top/dbHealthCheckCard/DbHealthCheckCard';
 import { PopularEventList } from '@/components/ui-forms/top/popularEventList/popularEventList';
 import { getPopularEventListAPI } from '@/api/scrape/getPopularEventListAPI';
+import { getSayingAPI } from '@/api/saying/getSayingAPI';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -38,22 +38,7 @@ export default function Top({ isMock }: Props) {
   ]);
 
   useEffect(() => {
-    !isMock &&
-      Promise.all([
-        get('/saying', (data: ProcessingApiReponse) => {
-          if (data.status === 200) {
-            const result: GetRandomSayingResponse[] = data.body as GetRandomSayingResponse[];
-            setSaying({
-              saying: result[0].saying,
-              explanation: result[0].explanation,
-              name: `出典：${result[0].selfhelp_book.name}`,
-              color: 'common.black'
-            });
-          }
-        }),
-        executeDbHealthCheck(),
-        getPopularEventListAPI(setEventList)
-      ]);
+    !isMock && Promise.all([getSayingAPI({ setSaying }), executeDbHealthCheck(), getPopularEventListAPI(setEventList)]);
   }, [isMock]);
 
   // DB ヘルスチェック
