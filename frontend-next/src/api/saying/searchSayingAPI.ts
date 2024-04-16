@@ -1,5 +1,5 @@
 import { GridRowsProp } from '@mui/x-data-grid';
-import { ProcessingApiReponse } from 'quizzer-lib';
+import { ProcessingApiReponse, SearchSayingResponse } from 'quizzer-lib';
 import { MessageState } from '../../../interfaces/state';
 import { get } from '@/api/API';
 
@@ -19,8 +19,17 @@ export const searchSayingAPI = async ({ queryOfSaying, setMessageStater, setSear
     '/saying/search',
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body.length > 0) {
-        const res: [] = data.body as [];
-        setSearchResult(res);
+        const res: SearchSayingResponse[] = data.body as SearchSayingResponse[];
+        setSearchResult(
+          res.map((x) => {
+            return {
+              id: x.id,
+              explanation: x.explanation,
+              saying: x.saying,
+              name: x.selfhelp_book.name
+            };
+          })
+        );
         setMessageStater({
           message: '　',
           messageColor: 'common.black',

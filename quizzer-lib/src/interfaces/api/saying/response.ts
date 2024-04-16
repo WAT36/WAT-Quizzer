@@ -24,6 +24,15 @@ export interface GetRandomSayingResponse extends ApiResponse {
   }
 }
 
+export interface SearchSayingResponse extends ApiResponse {
+  id: number
+  saying: string
+  explanation: string
+  selfhelp_book: {
+    name: string
+  }
+}
+
 export interface GetSelfHelpBookResponse extends ApiResponse {
   id: number
   name: string

@@ -152,6 +152,7 @@ export class SayingService {
     try {
       return await prisma.saying.findMany({
         select: {
+          id: true,
           saying: true,
           explanation: true,
           selfhelp_book: {
