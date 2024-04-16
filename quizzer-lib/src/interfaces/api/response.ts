@@ -9,5 +9,10 @@ export interface ProcessingAddApiReponse {
   body: ApiResponse
 }
 
+export interface ProcessingApiSingleReponse {
+  status: number
+  body: ApiResponse
+}
+
 // APIから得られるデータ(抽象クラス)
 export interface ApiResponse {}
