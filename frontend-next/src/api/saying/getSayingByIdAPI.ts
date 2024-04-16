@@ -1,4 +1,4 @@
-import { ProcessingApiReponse, GetSayingAPIResponseDto, ProcessingApiSingleReponse } from 'quizzer-lib';
+import { GetSayingAPIResponseDto, ProcessingApiSingleReponse } from 'quizzer-lib';
 import { MessageState, EditQueryOfSaying } from '../../../interfaces/state';
 import { get } from '@/api/API';
 
