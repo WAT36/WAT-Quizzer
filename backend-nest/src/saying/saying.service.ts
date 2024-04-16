@@ -184,7 +184,7 @@ export class SayingService {
   // 格言取得(ID指定)
   async getSayingByIdService(id: number) {
     try {
-      return await prisma.saying.findFirst({
+      return await prisma.saying.findUnique({
         select: {
           saying: true,
           explanation: true,

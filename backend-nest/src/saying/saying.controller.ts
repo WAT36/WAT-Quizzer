@@ -57,6 +57,6 @@ export class SayingController {
   // 格言取得(格言ID指定)
   @Get('/:id')
   async getSayingById(@Param('id') id: number) {
-    return await this.sayingService.getSayingByIdService(id);
+    return await this.sayingService.getSayingByIdService(+id);
   }
 }

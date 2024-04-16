@@ -1,4 +1,4 @@
-import { ProcessingApiReponse, GetSayingAPIResponseDto } from 'quizzer-lib';
+import { ProcessingApiReponse, GetSayingAPIResponseDto, ProcessingApiSingleReponse } from 'quizzer-lib';
 import { MessageState, EditQueryOfSaying } from '../../../interfaces/state';
 import { get } from '@/api/API';
 
@@ -25,20 +25,20 @@ export const getSayingByIdAPI = async ({ id, setMessageStater, setEditQueryOfSay
 
   await get(
     `/saying/${id}`,
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 && data.body.length > 0) {
-        const res: GetSayingAPIResponseDto[] = data.body as GetSayingAPIResponseDto[];
+    (data: ProcessingApiSingleReponse) => {
+      if (data.status === 200 && data.body) {
+        const res: GetSayingAPIResponseDto = data.body as GetSayingAPIResponseDto;
         setEditQueryOfSaying({
           id: id,
-          saying: res[0].saying,
-          explanation: res[0].explanation
+          saying: res.saying,
+          explanation: res.explanation
         });
         setMessageStater({
           message: '格言を取得しました',
           messageColor: 'success.light',
           isDisplay: true
         });
-      } else if (data.status === 404 || data.body?.length === 0) {
+      } else if (data.status === 404 || !data.body) {
         setEditQueryOfSaying({
           id: -1,
           saying: ''
