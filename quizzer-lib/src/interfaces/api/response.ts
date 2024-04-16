@@ -1,4 +1,5 @@
 // APIから受け取ったデータを変換しフロント側で処理する型
+// TODO  名前変えたい ApiSingleResponseとか
 export interface ProcessingApiReponse {
   status: number
   body: ApiResponse[]
