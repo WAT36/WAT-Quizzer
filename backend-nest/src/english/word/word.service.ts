@@ -446,11 +446,17 @@ export class EnglishWordService {
   // 単語のサマリデータ取得
   async getSummary() {
     try {
-      return await prisma.word_summarize.findMany({
+      const result = await prisma.word_summarize.findMany({
         select: {
           name: true,
           count: true,
         },
+      });
+      return result.map((x) => {
+        return {
+          ...x,
+          count: x.count.toString(),
+        };
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
