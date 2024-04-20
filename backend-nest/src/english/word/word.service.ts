@@ -382,39 +382,42 @@ export class EnglishWordService {
   async editSourceOfWordById(req: EditWordSourceAPIRequestDto) {
     try {
       const { meanId, oldSourceId, newSourceId } = req;
+      const result = [];
       //トランザクション実行準備
       await prisma.$transaction(async (prisma) => {
         if (oldSourceId === -1) {
           // 出典追加
           for (let i = 0; i < meanId.length; i++) {
-            await prisma.mean_source.create({
-              data: {
-                mean_id: meanId[i],
-                source_id: newSourceId,
-              },
-            });
+            result.push(
+              await prisma.mean_source.create({
+                data: {
+                  mean_id: meanId[i],
+                  source_id: newSourceId,
+                },
+              }),
+            );
           }
         } else {
           // 出典更新
           for (let i = 0; i < meanId.length; i++) {
-            await prisma.mean_source.update({
-              data: {
-                source_id: newSourceId,
-                updated_at: new Date(),
-              },
-              where: {
-                mean_id_source_id: {
-                  mean_id: meanId[i],
-                  source_id: oldSourceId,
+            result.push(
+              await prisma.mean_source.update({
+                data: {
+                  source_id: newSourceId,
+                  updated_at: new Date(),
                 },
-              },
-            });
+                where: {
+                  mean_id_source_id: {
+                    mean_id: meanId[i],
+                    source_id: oldSourceId,
+                  },
+                },
+              }),
+            );
           }
         }
       });
-      return {
-        result: 'Edited!',
-      };
+      return result;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -532,7 +535,7 @@ export class EnglishWordService {
   // IDから単語情報取得
   async getWordByIdService(id: number) {
     try {
-      return await prisma.word.findMany({
+      return await prisma.word.findUnique({
         select: {
           id: true,
           name: true,
@@ -548,6 +551,21 @@ export class EnglishWordService {
                   name: true,
                 },
               },
+              mean_source: {
+                select: {
+                  source: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          word_subsource: {
+            select: {
+              subsource: true,
             },
           },
         },
