@@ -20,14 +20,42 @@ export const searchWordAPI = ({ query, setMessage, setSearchResult }: SearchWord
     setMessage({ message: 'エラー:検索語句を入力して下さい', messageColor: 'error' });
     return;
   }
-
+  setSearchResult([]);
   setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
   get(
     '/english/word/byname',
     (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const result: GetWordBynameAPIResponseDto[] = data.body as GetWordBynameAPIResponseDto[];
-        setSearchResult(result || []);
+
+        if (result.length === 0) {
+          setMessage({
+            message: 'エラー:条件に合うデータはありません',
+            messageColor: 'error',
+            isDisplay: true
+          });
+          return;
+        }
+
+        setSearchResult(
+          result.reduce(
+            (accumulator, currentValue) => {
+              for (let i = 0; i < currentValue.mean.length; i++) {
+                accumulator.push({
+                  ...currentValue.mean[i],
+                  partsofspeech: currentValue.mean[i].partsofspeech.name
+                });
+              }
+              return accumulator;
+            },
+            [] as {
+              id: number;
+              wordmean_id: number;
+              meaning: string;
+              partsofspeech: string;
+            }[]
+          )
+        );
         setMessage({
           message: 'Success!!取得しました',
           messageColor: 'success.light',
