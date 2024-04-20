@@ -1,26 +1,25 @@
 import { put } from '@/api/API';
-import { ProcessingApiReponse } from 'quizzer-lib';
-import { WordSubSourceData, MessageState } from '../../../interfaces/state';
+import { ProcessingAddApiReponse } from 'quizzer-lib';
+import { MessageState, WordDetailData } from '../../../interfaces/state';
+import { getWordDetail } from '@/pages/api/english';
 
 interface AddEnglishWordSubSourceButtonProps {
-  wordId: number;
+  wordDetail: WordDetailData;
   subSourceName: string;
-  wordSubSourceData: WordSubSourceData[];
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   setSubSourceName?: React.Dispatch<React.SetStateAction<string>>;
-  setWordSubSourceData?: React.Dispatch<React.SetStateAction<WordSubSourceData[]>>;
+  setWordDetail?: React.Dispatch<React.SetStateAction<WordDetailData>>;
 }
 
 // TODO ここのAPI部分は分けたい
 export const addEnglishWordSubSourceAPI = async ({
-  wordId,
+  wordDetail,
   subSourceName,
-  wordSubSourceData,
   setMessage,
   setModalIsOpen,
   setSubSourceName,
-  setWordSubSourceData
+  setWordDetail
 }: AddEnglishWordSubSourceButtonProps) => {
   if (setModalIsOpen) {
     setModalIsOpen(false);
@@ -35,10 +34,10 @@ export const addEnglishWordSubSourceAPI = async ({
   await put(
     '/english/word/subsource',
     {
-      wordId: wordId,
+      wordId: wordDetail.id,
       subSource: subSourceName
     },
-    (data: ProcessingApiReponse) => {
+    (data: ProcessingAddApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         if (setMessage) {
           setMessage({
@@ -48,12 +47,8 @@ export const addEnglishWordSubSourceAPI = async ({
           });
         }
 
-        const editedWordSubSourceData = wordSubSourceData;
-        editedWordSubSourceData.push({
-          subSourceName: subSourceName
-        });
-        if (setWordSubSourceData) {
-          setWordSubSourceData(editedWordSubSourceData);
+        if (setWordDetail && setMessage) {
+          getWordDetail(String(wordDetail.id), setMessage, setWordDetail);
         }
 
         setSubSourceName && setSubSourceName('');

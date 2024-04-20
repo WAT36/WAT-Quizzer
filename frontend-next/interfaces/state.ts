@@ -129,24 +129,42 @@ export interface DisplayWordTestState {
 }
 
 export interface WordMeanData {
-  wordId: number;
-  wordName: string;
-  wordmeanId: number;
-  meanId: number;
-  mean: string;
-  partofspeechId: number;
-  partofspeechName: string;
+  mean_source: {
+    source: {
+      id: number;
+      name: string;
+    };
+  }[];
+  partsofspeech: {
+    id: number;
+    name: string;
+  };
+  id: number;
+  wordmean_id: number;
+  meaning: string;
 }
 
 export interface WordSourceData {
-  wordId: number;
-  wordName: string;
-  sourceId: number;
-  sourceName: string;
+  word: {
+    id: number;
+    name: string;
+  };
+  source: {
+    id: number;
+    name: string;
+  }[];
 }
 
 export interface WordSubSourceData {
-  subSourceName: string;
+  subsource: string;
+}
+
+export interface WordDetailData {
+  id: number;
+  name: string;
+  pronounce: string;
+  mean: WordMeanData[];
+  word_subsource: WordSubSourceData[];
 }
 
 export interface SayingState {

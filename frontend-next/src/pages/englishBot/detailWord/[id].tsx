@@ -2,10 +2,10 @@ import { Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getApiAndGetValue } from '@/api/API';
 import { Layout } from '@/components/templates/layout/Layout';
-import { PullDownOptionState, WordMeanData, WordSourceData, WordSubSourceData } from '../../../../interfaces/state';
+import { PullDownOptionState, WordDetailData } from '../../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
-import { getWordDetail, getWordSource, getWordSubSource } from '@/pages/api/english';
+import { getWordDetail } from '@/pages/api/english';
 import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceStack/SourceStack';
 import { SubSourceStack } from '@/components/ui-forms/englishbot/detailWord/subSourceStack/SubSourceStack';
 import { messageState } from '@/atoms/Message';
@@ -20,10 +20,13 @@ type EachWordPageProps = {
 };
 
 export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps) {
-  const [wordName, setWordName] = useState<string>('');
-  const [meanData, setMeanData] = useState<WordMeanData[]>([]);
-  const [wordSourceData, setWordSourceData] = useState<WordSourceData[]>([]);
-  const [wordSubSourceData, setWordSubSourceData] = useState<WordSubSourceData[]>([]);
+  const [wordDetail, setWordDetail] = useState<WordDetailData>({
+    id: -1,
+    name: '',
+    pronounce: '',
+    mean: [],
+    word_subsource: []
+  });
   const [open, setOpen] = useState(false);
   const [subSourceModalOpen, setSubSourceModalOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
@@ -36,9 +39,9 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
       Promise.all([
         getPartOfSpeechListAPI(setMessage, setPosList),
         getSourceListAPI(setMessage, setSourcelistoption),
-        getWordDetail(id, setMessage, setWordName, setMeanData),
-        getWordSource(id, setMessage, setWordSourceData),
-        getWordSubSource(id, setMessage, setWordSubSourceData)
+        getWordDetail(id, setMessage, setWordDetail)
+        // getWordSource(id, setMessage, setWordSourceData),
+        // getWordSubSource(id, setMessage, setWordSubSourceData)
       ]);
   }, [id, isMock, setMessage]);
 
@@ -48,35 +51,31 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         <Title label="WAT Quizzer - englishBot"></Title>
 
         <Typography variant="h1" component="h1" color="common.black">
-          {wordName}
+          {wordDetail.name}
         </Typography>
 
         <MeaningStack
-          id={id}
           posList={posList}
-          meanData={meanData}
+          wordDetail={wordDetail}
           modalIsOpen={open}
           setMessage={setMessage}
+          setWordDetail={setWordDetail}
           setModalIsOpen={setOpen}
-          setMeanData={setMeanData}
         />
         <SourceStack
-          id={id}
-          meanData={meanData}
           sourceList={sourcelistoption}
-          wordSourceData={wordSourceData}
+          wordDetail={wordDetail}
           modalIsOpen={sourceModalOpen}
           setModalIsOpen={setSourceModalOpen}
           setMessage={setMessage}
-          setWordSourceData={setWordSourceData}
+          setWordDetail={setWordDetail}
         />
         <SubSourceStack
-          id={id}
-          wordSubSourceData={wordSubSourceData}
+          wordDetail={wordDetail}
           modalIsOpen={subSourceModalOpen}
           setModalIsOpen={setSubSourceModalOpen}
           setMessage={setMessage}
-          setWordSubSourceData={setWordSubSourceData}
+          setWordDetail={setWordDetail}
         />
       </Container>
     );

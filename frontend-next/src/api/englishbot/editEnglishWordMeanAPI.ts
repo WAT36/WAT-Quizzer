@@ -1,33 +1,30 @@
 import { patch } from '@/api/API';
-import { ProcessingAddApiReponse, AddDataApiResponse } from 'quizzer-lib';
-import { WordMeanData, MessageState } from '../../../interfaces/state';
+import { ProcessingAddApiReponse } from 'quizzer-lib';
+import { WordMeanData, MessageState, WordDetailData } from '../../../interfaces/state';
+import { getWordDetail } from '@/pages/api/english';
 
 interface EditEnglishWordMeanButtonProps {
-  meanData: WordMeanData[];
-  meanDataIndex: number;
+  wordDetail: WordDetailData;
   inputEditData: WordMeanData;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  setMeanDataIndex?: React.Dispatch<React.SetStateAction<number>>;
   setInputEditData?: React.Dispatch<React.SetStateAction<WordMeanData>>;
-  setMeanData?: React.Dispatch<React.SetStateAction<WordMeanData[]>>;
+  setWordDetail?: React.Dispatch<React.SetStateAction<WordDetailData>>;
 }
 
 // TODO ここのAPI部分は分けたい
 export const editEnglishWordMeanAPI = async ({
-  meanData,
-  meanDataIndex,
+  wordDetail,
   inputEditData,
   setMessage,
   setModalIsOpen,
-  setMeanDataIndex,
   setInputEditData,
-  setMeanData
+  setWordDetail
 }: EditEnglishWordMeanButtonProps) => {
   if (setModalIsOpen) {
     setModalIsOpen(false);
   }
-  if (inputEditData.partofspeechId === -1) {
+  if (inputEditData.partsofspeech.id === -1) {
     if (setMessage) {
       setMessage({ message: 'エラー:品詞を選択して下さい', messageColor: 'error', isDisplay: true });
     }
@@ -35,13 +32,13 @@ export const editEnglishWordMeanAPI = async ({
   }
 
   await patch(
-    '/english/word/' + String(inputEditData.wordId),
+    '/english/word/' + String(wordDetail.id),
     {
-      wordId: inputEditData.wordId,
-      wordMeanId: inputEditData.wordmeanId,
-      meanId: inputEditData.meanId,
-      partofspeechId: inputEditData.partofspeechId,
-      meaning: inputEditData.mean
+      wordId: wordDetail.id,
+      wordMeanId: inputEditData.wordmean_id,
+      meanId: inputEditData.id,
+      partofspeechId: inputEditData.partsofspeech.id,
+      meaning: inputEditData.meaning
     },
     (data: ProcessingAddApiReponse) => {
       if (data.status === 200 || data.status === 201) {
@@ -52,17 +49,10 @@ export const editEnglishWordMeanAPI = async ({
             isDisplay: true
           });
         }
-        const editedMeanData = meanData;
-        if (inputEditData.meanId === -1) {
-          // 意味を新規追加時
-          const responseBody = data.body as AddDataApiResponse;
-          editedMeanData.push({ ...inputEditData, meanId: responseBody.insertId });
-        } else {
-          // 意味を編集時
-          editedMeanData[meanDataIndex] = inputEditData;
-        }
-        if (setMeanData) {
-          setMeanData(editedMeanData);
+
+        // 更新確認後、単語の意味を再取得させる
+        if (setWordDetail && setMessage) {
+          getWordDetail(String(wordDetail.id), setMessage, setWordDetail);
         }
       } else {
         if (setMessage) {
@@ -73,18 +63,17 @@ export const editEnglishWordMeanAPI = async ({
           });
         }
       }
-      if (setMeanDataIndex) {
-        setMeanDataIndex(-1);
-      }
+
       if (setInputEditData) {
         setInputEditData({
-          wordId: inputEditData.wordId,
-          wordName: '',
-          wordmeanId: -1,
-          meanId: -1,
-          mean: '',
-          partofspeechId: -1,
-          partofspeechName: ''
+          mean_source: [],
+          partsofspeech: {
+            id: -1,
+            name: ''
+          },
+          id: -1,
+          wordmean_id: -1,
+          meaning: ''
         });
       }
     }

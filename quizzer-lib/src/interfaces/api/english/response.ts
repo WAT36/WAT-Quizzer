@@ -45,16 +45,27 @@ export interface WordSummaryApiResponse extends ApiResponse {
 
 // 英単語（単語IDで）取得APIの返り値
 export interface EnglishWordByIdApiResponse extends ApiResponse {
-  word_id: string
+  id: number
   name: string
   pronounce: string
-  mean_id: number //mean.id
-  wordmean_id: number
-  meaning: string
-  partsofspeech_id: number
-  partsofspeech: string // partofspeech.name
-  source_id: number
-  source_name: string
+  mean: {
+    mean_source: {
+      source: {
+        id: number
+        name: string
+      }
+    }[]
+    partsofspeech: {
+      id: number
+      name: string
+    }
+    id: number
+    wordmean_id: number
+    meaning: string
+  }[]
+  word_subsource: {
+    subsource: string
+  }[]
 }
 
 // 英単語の出典（単語IDで）取得APIの返り値

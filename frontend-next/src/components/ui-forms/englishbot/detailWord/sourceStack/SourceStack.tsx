@@ -3,21 +3,19 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { Box, IconButton, MenuItem, Select, Stack, Typography } from '@mui/material';
-import { MessageState, PullDownOptionState, WordMeanData, WordSourceData } from '../../../../../../interfaces/state';
+import { MessageState, PullDownOptionState, WordDetailData, WordSourceData } from '../../../../../../interfaces/state';
 import { style } from '../Stack.style';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { editEnglishWordSourceAPI } from '@/api/englishbot/editEnglishWordSourceAPI';
 
 interface SourceStackProps {
-  id: string;
-  meanData: WordMeanData[];
   sourceList: PullDownOptionState[];
-  wordSourceData: WordSourceData[];
+  wordDetail: WordDetailData;
   modalIsOpen: boolean;
   setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setWordSourceData?: React.Dispatch<React.SetStateAction<WordSourceData[]>>;
+  setWordDetail?: React.Dispatch<React.SetStateAction<WordDetailData>>;
 }
 
 // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
@@ -56,24 +54,59 @@ const displaySourceInput = (
 };
 
 export const SourceStack = ({
-  id,
-  meanData,
   sourceList,
-  wordSourceData,
+  wordDetail,
   modalIsOpen,
   setModalIsOpen,
   setMessage,
-  setWordSourceData
+  setWordDetail
 }: SourceStackProps) => {
+  // TODO word-sourceの構造変えたらここも直したい
   const [selectedWordSourceIndex, setSelectedWordSourceIndex] = useState<number>(-1); //仮
   const [inputSourceId, setInputSourceId] = useState<number>(-1);
+  const [wordSourceData, setWordSourceData] = useState<WordSourceData>({
+    word: {
+      id: -1,
+      name: ''
+    },
+    source: []
+  });
 
-  const handleOpen = (x: WordSourceData, index: number) => {
+  useEffect(() => {
+    setWordSourceData({
+      word: {
+        id: wordDetail.id,
+        name: wordDetail.name
+      },
+      // TODO wordDetail内のmean内のmean_source内のsourceを重複ないように作り変えているが、
+      source: Array.from(
+        new Map(
+          wordDetail.mean
+            .reduce(
+              (accumulator, currentValue) => {
+                for (let i = 0; i < currentValue.mean_source.length; i++) {
+                  accumulator.push(currentValue.mean_source[i].source);
+                }
+                return accumulator;
+              },
+              [] as {
+                id: number;
+                name: string;
+              }[]
+            )
+            // ここまででwordDetail内のsourceを全て取り出している（重複あり）
+            .map((source) => [source.id, source])
+        ).values()
+      )
+    });
+  }, [wordDetail.id, wordDetail.mean, wordDetail.name]);
+
+  const handleOpen = (sourceId: number, index: number) => {
     if (setModalIsOpen) {
       setModalIsOpen(true);
     }
     setSelectedWordSourceIndex(index);
-    setInputSourceId(x.sourceId);
+    setInputSourceId(sourceId);
   };
   return (
     <>
@@ -83,37 +116,25 @@ export const SourceStack = ({
         </Typography>
         <Box sx={{ width: '100%', padding: '4px' }}>
           <Stack spacing={2}>
-            {wordSourceData.map((x, index) => {
+            {wordSourceData.source.map((x, index) => {
               return (
                 // eslint-disable-next-line react/jsx-key
-                <Item key={x.wordId}>
+                <Item key={x.id}>
                   <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography component="div">
                       <Typography align="left" variant="h5" component="p">
-                        {x.sourceName}
+                        {x.name}
                       </Typography>
                     </Typography>
                     <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x, index)} />
+                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x.id, index)} />
                     </Typography>
                   </Typography>
                 </Item>
               );
             })}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton
-                onClick={(e) =>
-                  handleOpen(
-                    {
-                      wordId: +id,
-                      wordName: '',
-                      sourceId: -1,
-                      sourceName: ''
-                    },
-                    -1
-                  )
-                }
-              >
+              <IconButton onClick={(e) => handleOpen(-1, -1)}>
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>
@@ -133,14 +154,13 @@ export const SourceStack = ({
                   color="primary"
                   onClick={(e) =>
                     editEnglishWordSourceAPI({
-                      meanData,
-                      sourceList,
+                      wordDetail,
                       wordSourceData,
                       selectedWordSourceIndex,
                       inputSourceId,
                       setMessage,
                       setModalIsOpen,
-                      setWordSourceData
+                      setWordDetail
                     })
                   }
                 />

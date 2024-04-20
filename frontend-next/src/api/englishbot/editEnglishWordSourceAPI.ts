@@ -1,28 +1,27 @@
 import { put } from '@/api/API';
 import { ProcessingApiReponse } from 'quizzer-lib';
-import { WordMeanData, PullDownOptionState, WordSourceData, MessageState } from '../../../interfaces/state';
+import { WordSourceData, MessageState, WordDetailData } from '../../../interfaces/state';
+import { getWordDetail } from '@/pages/api/english';
 
 interface EditEnglishWordSourceButtonProps {
-  meanData: WordMeanData[];
-  sourceList: PullDownOptionState[];
-  wordSourceData: WordSourceData[];
+  wordDetail: WordDetailData;
+  wordSourceData: WordSourceData;
   selectedWordSourceIndex: number;
   inputSourceId: number;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  setWordSourceData?: React.Dispatch<React.SetStateAction<WordSourceData[]>>;
+  setWordDetail?: React.Dispatch<React.SetStateAction<WordDetailData>>;
 }
 
 // TODO ここのAPI部分は分けたい
 export const editEnglishWordSourceAPI = async ({
-  meanData,
-  sourceList,
+  wordDetail,
   wordSourceData,
   selectedWordSourceIndex,
   inputSourceId,
   setMessage,
   setModalIsOpen,
-  setWordSourceData
+  setWordDetail
 }: EditEnglishWordSourceButtonProps) => {
   if (setModalIsOpen) {
     setModalIsOpen(false);
@@ -37,8 +36,8 @@ export const editEnglishWordSourceAPI = async ({
   await put(
     '/english/word/source',
     {
-      meanId: meanData.map((x) => x.meanId),
-      oldSourceId: selectedWordSourceIndex === -1 ? -1 : wordSourceData[selectedWordSourceIndex].sourceId,
+      meanId: wordDetail.mean.map((x) => x.id),
+      oldSourceId: selectedWordSourceIndex === -1 ? -1 : wordSourceData.source[selectedWordSourceIndex].id,
       newSourceId: inputSourceId
     },
     (data: ProcessingApiReponse) => {
@@ -50,29 +49,9 @@ export const editEnglishWordSourceAPI = async ({
             isDisplay: true
           });
         }
-        const editedWordSourceData = wordSourceData;
-        if (selectedWordSourceIndex === -1) {
-          editedWordSourceData.push({
-            // TODO  wordidは最悪いらない、ここの扱いをどうしようか・・
-            wordId: -1,
-            wordName: '',
-            sourceId: inputSourceId,
-            sourceName: sourceList.reduce((previousValue, currentValue) => {
-              return +currentValue.value === inputSourceId ? previousValue + currentValue.label : previousValue;
-            }, '')
-          });
-        } else {
-          editedWordSourceData[selectedWordSourceIndex] = {
-            ...wordSourceData[selectedWordSourceIndex],
-            sourceId: inputSourceId,
-            sourceName: sourceList.reduce((previousValue, currentValue) => {
-              return +currentValue.value === inputSourceId ? previousValue + currentValue.label : previousValue;
-            }, '')
-          };
-        }
-
-        if (setWordSourceData) {
-          setWordSourceData(editedWordSourceData);
+        // 更新確認後、単語の意味を再取得させる
+        if (setWordDetail && setMessage) {
+          getWordDetail(String(wordDetail.id), setMessage, setWordDetail);
         }
       } else {
         if (setMessage) {
