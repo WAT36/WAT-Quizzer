@@ -217,20 +217,24 @@ export class EnglishWordService {
     }
   }
 
-  // 単語をランダムに取得
-  async getRandomWordService(
+  // 四択問題テストで利用するデータ（ランダム単語・ダミー選択肢）を取得する
+  async getTestDataOfFourChoice(
     source: string,
     startDate: string,
     endDate: string,
   ) {
     try {
       // サブ出典・日時に関するクエリ
-      const startDateQuery = {
-        gte: new Date(getDateForSqlString(startDate)),
-      };
-      const endDateQuery = {
-        lte: new Date(getDateForSqlString(endDate)),
-      };
+      const startDateQuery = startDate
+        ? {
+            gte: new Date(getDateForSqlString(startDate)),
+          }
+        : {};
+      const endDateQuery = endDate
+        ? {
+            lte: new Date(getDateForSqlString(endDate)),
+          }
+        : {};
       const subSourceQuery =
         startDate && endDate
           ? { ...startDateQuery, ...endDateQuery }
@@ -240,10 +244,11 @@ export class EnglishWordService {
           ? endDateQuery
           : null;
       // ランダム取得
-      const result = await prisma.word.findMany({
+      const randomResult = await prisma.word.findMany({
         select: {
           id: true,
           name: true,
+          mean: true,
         },
         where: {
           mean: {
@@ -257,52 +262,20 @@ export class EnglishWordService {
               },
             }),
           },
-          word_subsource: {
-            every: {
-              created_at: subSourceQuery,
+          ...(subSourceQuery && {
+            word_subsource: {
+              every: {
+                created_at: subSourceQuery,
+              },
             },
-          },
+          }),
         },
       });
       // 結果からランダムに1つ取得して返す
-      return result[Math.floor(Math.random() * result.length)];
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
-  }
+      const testWord = getRandomElementsFromArray(randomResult, 1)[0];
 
-  // 指定した単語を出題するときの四択選択肢（正解選択肢1つとダミー選択肢3つ）を作る
-  async makeFourChoiceService(wordId: number) {
-    try {
-      if (isNaN(wordId)) {
-        throw new HttpException(
-          `単語IDが不正です:${wordId}`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      // 指定単語idの意味を取得
-      const correctMeans = getRandomElementsFromArray(
-        await prisma.mean.findMany({
-          select: {
-            id: true,
-            word_id: true,
-            wordmean_id: true,
-            partsofspeech_id: true,
-            meaning: true,
-          },
-          where: {
-            word_id: wordId,
-          },
-        }),
-        1,
-      );
       // ダミー選択肢用の意味を取得
-      const dummyMeans = getRandomElementsFromArray(
+      const dummyOptions = getRandomElementsFromArray(
         await prisma.mean.findMany({
           select: {
             id: true,
@@ -313,21 +286,25 @@ export class EnglishWordService {
           },
           where: {
             word_id: {
-              not: wordId,
+              not: testWord.id,
             },
           },
         }),
         3,
       );
 
-      return [
-        {
-          correct: { mean: correctMeans[0].meaning },
-          dummy: dummyMeans.map((x) => ({
-            mean: x.meaning,
-          })),
+      return {
+        word: {
+          id: testWord.id,
+          name: testWord.name,
         },
-      ] as FourChoiceAPIResponseDto[];
+        correct: {
+          mean: getRandomElementsFromArray(testWord.mean, 1)[0].meaning,
+        },
+        dummy: dummyOptions.map((x) => ({
+          mean: x.meaning,
+        })),
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

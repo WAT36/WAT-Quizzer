@@ -18,16 +18,6 @@ export interface AddDataApiResponse extends ApiResponse {
   insertId: number
 }
 
-// 英単語テスト画面での四択選択肢をAPIから受け取るときのデータ型
-export interface EnglishBotTestFourChoiceResponse extends ApiResponse {
-  correct: {
-    mean: string
-  }
-  dummy: {
-    mean: string
-  }[]
-}
-
 // partofspeechからの取得結果
 export interface PartofSpeechApiResponse extends ApiResponse {
   id: number

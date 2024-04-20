@@ -47,23 +47,17 @@ export class EnglishWordController {
     return await this.englishWordService.getWordByNameService(name);
   }
 
-  @Get('random')
-  async getRandomWord(
+  @Get('test/fourchoice')
+  async getTestDataOfFourChoice(
     @Query('source') source: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
-    return await this.englishWordService.getRandomWordService(
+    return await this.englishWordService.getTestDataOfFourChoice(
       source,
       startDate,
       endDate,
     );
-  }
-
-  // 指定した単語を出題するときの四択選択肢（正解選択肢1つとダミー選択肢3つ）を作る
-  @Get('fourchoice')
-  async makeFourChoice(@Query('wordId') wordId: number) {
-    return await this.englishWordService.makeFourChoiceService(+wordId);
   }
 
   @Post('test/clear')

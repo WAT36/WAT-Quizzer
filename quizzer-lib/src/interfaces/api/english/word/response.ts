@@ -49,6 +49,10 @@ export interface GetFourChoiceAPIResponseDto extends ApiResponse {
   meaning: string
 }
 export interface FourChoiceAPIResponseDto extends ApiResponse {
+  word: {
+    id: number
+    name: string
+  }
   correct: {
     mean: string
   }
