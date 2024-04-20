@@ -1,7 +1,7 @@
 import React from 'react';
 import { DisplayWordTestState, MessageState, QueryOfGetWordState } from '../../../../../../interfaces/state';
 import { Button } from '@/components/ui-elements/button/Button';
-import { getRandomWordAPI } from '@/api/englishbot/getRandomWordAPI';
+import { getTestDataOfFourChoiceAPI } from '@/api/englishbot/getTestDataOfFourChoiceAPI';
 
 interface GetWordButtonGroupProps {
   queryOfGetWordState: QueryOfGetWordState;
@@ -21,7 +21,7 @@ export const GetWordButtonGroup = ({
         attr={'button-array'}
         variant="contained"
         color="primary"
-        onClick={(e) => getRandomWordAPI({ queryOfGetWordState, setMessageStater, setDisplayWordTest })}
+        onClick={(e) => getTestDataOfFourChoiceAPI({ queryOfGetWordState, setMessageStater, setDisplayWordTest })}
       />
     </>
   );
