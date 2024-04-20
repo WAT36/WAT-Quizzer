@@ -100,13 +100,15 @@ export class EnglishWordService {
               meaning: meanArrayData[i].meaning,
             },
           });
-          // 意味出典追加
-          await prisma.mean_source.create({
-            data: {
-              mean_id: addMeanResult.id,
-              source_id: sourceId,
-            },
-          });
+          // 意味出典追加（登録されてない場合(-1)は登録しない）
+          if (sourceId !== -1) {
+            await prisma.mean_source.create({
+              data: {
+                mean_id: addMeanResult.id,
+                source_id: sourceId,
+              },
+            });
+          }
         }
       });
     } catch (error: unknown) {

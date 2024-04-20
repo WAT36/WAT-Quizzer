@@ -74,7 +74,7 @@ export const addWordAPI = async ({
       }, [])
     },
     (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
+      if (Math.floor(data.status / 100) === 2) {
         setMessage({
           message: `単語「${inputWord}」を登録しました`,
           messageColor: 'success.light',
