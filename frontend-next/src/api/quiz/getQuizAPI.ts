@@ -50,7 +50,7 @@ export const getQuizAPI = async ({
   await get(
     '/quiz',
     (data: ProcessingApiSingleReponse) => {
-      if (data.status === 404 || !data.body) {
+      if (data.status === 404) {
         setMessageStater({
           message: 'エラー:条件に合致するデータはありません',
           messageColor: 'error',
