@@ -10,12 +10,25 @@ export interface GetQuizApiResponseDto extends ApiResponse {
   category?: string
   img_file?: string
   checked?: boolean
-  clear_count: number
-  fail_count: number
-  accuracy_rate: number
-  dummy_choice_sentense?: string // TODO テーブルごとの型なので本当は望ましくない getQuiz専用のAPI返り値型を作るべき
-  explanation?: string
-  matched_basic_quiz_id?: string
+  quiz_statistics_view?: {
+    clear_count: number
+    fail_count: number
+    accuracy_rate: number
+  }
+  advanced_quiz_statistics_view?: {
+    clear_count: number
+    fail_count: number
+    accuracy_rate: number
+  }
+  dummy_choice?: {
+    dummy_choice_sentense: string // TODO テーブルごとの型なので本当は望ましくない getQuiz専用のAPI返り値型を作るべき
+  }[]
+  advanced_quiz_explanation?: {
+    explanation: string
+  }
+  quiz_basis_advanced_linkage?: {
+    basis_quiz_id: number
+  }[]
 }
 
 // 問題番号(のみ)を取得する用のDTO
