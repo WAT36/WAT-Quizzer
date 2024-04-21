@@ -1,6 +1,6 @@
 import { get } from '@/api/API';
 import { DisplayQuizState, MessageState, QueryOfPutQuizState, QueryOfQuizState } from '../../../interfaces/state';
-import { GetQuizApiResponseDto, ProcessingApiReponse, generateQuizSentense } from 'quizzer-lib';
+import { GetQuizApiResponseDto, ProcessingApiSingleReponse, generateQuizSentense } from 'quizzer-lib';
 
 interface GetQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;
@@ -49,20 +49,20 @@ export const getQuizAPI = async ({
   });
   await get(
     '/quiz',
-    (data: ProcessingApiReponse) => {
-      if (data.status === 404 || data.body?.length === 0) {
+    (data: ProcessingApiSingleReponse) => {
+      if (data.status === 404 || !data.body) {
         setMessageStater({
           message: 'エラー:条件に合致するデータはありません',
           messageColor: 'error',
           isDisplay: true
         });
       } else if (data.status === 200) {
-        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
+        const res: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto;
         if (setDisplayQuizStater) {
           setDisplayQuizStater({
-            fileNum: res[0].file_num,
-            quizNum: res[0].quiz_num,
-            checked: res[0].checked || false,
+            fileNum: res.file_num,
+            quizNum: res.quiz_num,
+            checked: res.checked || false,
             expanded: false,
             ...generateQuizSentense(queryOfQuizState.format, res)
           });
@@ -71,21 +71,23 @@ export const getQuizAPI = async ({
           setQueryofPutQuiz((prev) => ({
             format: prev.format,
             formatValue: prev.formatValue,
-            fileNum: res[0].file_num,
-            quizNum: res[0].quiz_num,
-            question: res[0].quiz_sentense,
-            answer: res[0].answer,
-            category: res[0].category,
-            img_file: res[0].img_file,
-            matched_basic_quiz_id: res[0].matched_basic_quiz_id,
-            dummy1: res[0].dummy_choice_sentense, //四択問題のダミー選択肢１
-            dummy2: res[1] ? res[1].dummy_choice_sentense : undefined, //四択問題のダミー選択肢２
-            dummy3: res[2] ? res[2].dummy_choice_sentense : undefined, //四択問題のダミー選択肢３
-            explanation: res[0].explanation
+            fileNum: res.file_num,
+            quizNum: res.quiz_num,
+            question: res.quiz_sentense,
+            answer: res.answer,
+            category: res.category,
+            img_file: res.img_file,
+            matched_basic_quiz_id: res.quiz_basis_advanced_linkage
+              ? JSON.stringify(res.quiz_basis_advanced_linkage)
+              : '',
+            dummy1: res.dummy_choice && res.dummy_choice[0].dummy_choice_sentense, //四択問題のダミー選択肢１
+            dummy2: res.dummy_choice && res.dummy_choice[1].dummy_choice_sentense, //四択問題のダミー選択肢２
+            dummy3: res.dummy_choice && res.dummy_choice[2].dummy_choice_sentense, //四択問題のダミー選択肢３
+            explanation: res.advanced_quiz_explanation?.explanation
           }));
         }
         setMessageStater({
-          message: '　',
+          message: '問題を取得しました',
           messageColor: 'success.light',
           isDisplay: false
         });

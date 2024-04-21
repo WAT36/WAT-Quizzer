@@ -32,7 +32,7 @@ export class QuizController {
     @Query('quiz_num') quiz_num: number,
     @Query('format') format: string,
   ) {
-    return await this.quizService.getQuiz(file_num, quiz_num, format);
+    return await this.quizService.getQuiz(+file_num, +quiz_num, format);
   }
 
   @Get('/random')

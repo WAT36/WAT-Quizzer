@@ -39,10 +39,12 @@ export class QuizService {
     try {
       switch (format) {
         case 'basic':
-          return await prisma.quiz.findMany({
+          const basicResult = await prisma.quiz.findUnique({
             where: {
-              file_num,
-              quiz_num,
+              file_num_quiz_num: {
+                file_num,
+                quiz_num,
+              },
               deleted_at: null,
             },
             select: {
@@ -62,16 +64,36 @@ export class QuizService {
                 },
               },
             },
-            orderBy: {
-              id: 'asc',
-            },
           });
+          if (!basicResult) {
+            throw new HttpException(
+              `条件に合致するデータはありません`,
+              HttpStatus.NOT_FOUND,
+            );
+          }
+          return basicResult
+            ? {
+                ...basicResult,
+                ...(basicResult.quiz_statistics_view && {
+                  quiz_statistics_view: {
+                    clear_count:
+                      basicResult.quiz_statistics_view.clear_count.toString(),
+                    fail_count:
+                      basicResult.quiz_statistics_view.fail_count.toString(),
+                    accuracy_rate:
+                      basicResult.quiz_statistics_view.accuracy_rate.toString(),
+                  },
+                }),
+              }
+            : {};
           break;
         case 'applied':
-          return await prisma.advanced_quiz.findMany({
+          const appliedResult = await prisma.advanced_quiz.findUnique({
             where: {
-              file_num,
-              quiz_num,
+              file_num_quiz_num: {
+                file_num,
+                quiz_num,
+              },
               advanced_quiz_type_id: 1,
               deleted_at: null,
             },
@@ -91,22 +113,47 @@ export class QuizService {
                   accuracy_rate: true,
                 },
               },
+              advanced_quiz_explanation: {
+                select: {
+                  explanation: true,
+                },
+              },
               quiz_basis_advanced_linkage: {
                 select: {
                   basis_quiz_id: true,
                 },
               },
             },
-            orderBy: {
-              id: 'asc',
-            },
           });
+          if (!appliedResult) {
+            throw new HttpException(
+              `条件に合致するデータはありません`,
+              HttpStatus.NOT_FOUND,
+            );
+          }
+          return appliedResult
+            ? {
+                ...appliedResult,
+                ...(appliedResult.advanced_quiz_statistics_view && {
+                  advanced_quiz_statistics_view: {
+                    clear_count:
+                      appliedResult.advanced_quiz_statistics_view.clear_count.toString(),
+                    fail_count:
+                      appliedResult.advanced_quiz_statistics_view.fail_count.toString(),
+                    accuracy_rate:
+                      appliedResult.advanced_quiz_statistics_view.accuracy_rate.toString(),
+                  },
+                }),
+              }
+            : {};
           break;
         case '4choice':
-          return await await prisma.advanced_quiz.findMany({
+          const fcResult = await prisma.advanced_quiz.findUnique({
             where: {
-              file_num,
-              quiz_num,
+              file_num_quiz_num: {
+                file_num,
+                quiz_num,
+              },
               advanced_quiz_type_id: 2,
               deleted_at: null,
             },
@@ -142,10 +189,28 @@ export class QuizService {
                 },
               },
             },
-            orderBy: {
-              id: 'asc',
-            },
           });
+          if (!fcResult) {
+            throw new HttpException(
+              `条件に合致するデータはありません`,
+              HttpStatus.NOT_FOUND,
+            );
+          }
+          return fcResult
+            ? {
+                ...fcResult,
+                ...(fcResult.advanced_quiz_statistics_view && {
+                  advanced_quiz_statistics_view: {
+                    clear_count:
+                      fcResult.advanced_quiz_statistics_view.clear_count.toString(),
+                    fail_count:
+                      fcResult.advanced_quiz_statistics_view.fail_count.toString(),
+                    accuracy_rate:
+                      fcResult.advanced_quiz_statistics_view.accuracy_rate.toString(),
+                  },
+                }),
+              }
+            : {};
           break;
         default:
           throw new HttpException(
@@ -154,7 +219,10 @@ export class QuizService {
           );
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (error instanceof HttpException) {
+        // 404系はそのまま返す
+        throw error;
+      } else if (error instanceof Error) {
         throw new HttpException(
           error.message,
           HttpStatus.INTERNAL_SERVER_ERROR,
