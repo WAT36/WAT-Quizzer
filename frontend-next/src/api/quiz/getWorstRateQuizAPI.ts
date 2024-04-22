@@ -1,6 +1,11 @@
 import { get } from '@/api/API';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
-import { GetQuizApiResponseDto, ProcessingApiReponse, generateQuizSentense } from 'quizzer-lib';
+import {
+  GetQuizApiResponseDto,
+  ProcessingApiReponse,
+  ProcessingApiSingleReponse,
+  generateQuizSentense
+} from 'quizzer-lib';
 
 interface GetWorstRateQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;
@@ -53,17 +58,17 @@ export const getWorstRateQuizAPI = async ({
   });
   await get(
     '/quiz/worst',
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 && data.body?.length > 0) {
-        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
+    (data: ProcessingApiSingleReponse) => {
+      if (data.status === 200) {
+        const res: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto;
         setQueryofQuizStater({
           ...queryOfQuizState,
-          quizNum: res[0].quiz_num
+          quizNum: res.quiz_num
         });
         setDisplayQuizStater({
-          fileNum: res[0].file_num,
-          quizNum: res[0].quiz_num,
-          checked: res[0].checked || false,
+          fileNum: res.file_num,
+          quizNum: res.quiz_num,
+          checked: res.checked || false,
           expanded: false,
           ...generateQuizSentense(sendData.format, res)
         });
@@ -72,7 +77,7 @@ export const getWorstRateQuizAPI = async ({
           messageColor: 'common.black',
           isDisplay: false
         });
-      } else if (data.status === 404 || data.body?.length === 0) {
+      } else if (data.status === 404) {
         setMessageStater({
           message: 'エラー:条件に合致するデータはありません',
           messageColor: 'error',
