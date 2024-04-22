@@ -1,11 +1,6 @@
 import { get } from '@/api/API';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
-import {
-  GetQuizApiResponseDto,
-  ProcessingApiReponse,
-  ProcessingApiSingleReponse,
-  generateQuizSentense
-} from 'quizzer-lib';
+import { GetQuizApiResponseDto, ProcessingApiSingleReponse, generateQuizSentense } from 'quizzer-lib';
 
 interface GetWorstRateQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;
