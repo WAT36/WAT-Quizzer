@@ -24,7 +24,7 @@ export const AddQuizForm = ({
     if (setQueryofPutQuizStater) {
       setQueryofPutQuizStater((prev) => ({
         ...prev,
-        ['fileNum']: e.target.value as number
+        fileNum: +e.target.value
       }));
     }
   };

@@ -1421,7 +1421,7 @@ export class QuizService {
         take: 1,
       });
       const new_quiz_id: number = res && res.quiz_num ? res.quiz_num + 1 : 1;
-      await prisma.quiz.create({
+      return await prisma.quiz.create({
         data: {
           file_num,
           quiz_num: new_quiz_id,
@@ -1432,19 +1432,6 @@ export class QuizService {
           checked: false,
         },
       });
-      return [
-        {
-          result:
-            'Added!! [' +
-            file_num +
-            '-' +
-            new_quiz_id +
-            ']:' +
-            question +
-            ',' +
-            answer,
-        },
-      ];
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -2345,8 +2332,9 @@ export class QuizService {
       ).quiz_num;
       const new_quiz_id: number = res ? res + 1 : 1;
 
+      let advancedQuiz;
       await prisma.$transaction(async (prisma) => {
-        const advancedQuiz = await prisma.advanced_quiz.create({
+        advancedQuiz = await prisma.advanced_quiz.create({
           data: {
             file_num,
             quiz_num: new_quiz_id,
@@ -2371,21 +2359,7 @@ export class QuizService {
           });
         }
       });
-      return [
-        {
-          result:
-            'Added!! [' +
-            file_num +
-            '-' +
-            new_quiz_id +
-            ']:' +
-            question +
-            ',' +
-            answer +
-            ',関連基礎問題:' +
-            JSON.stringify(matched_basic_quiz_id_list),
-        },
-      ];
+      return advancedQuiz;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -2443,6 +2417,7 @@ export class QuizService {
       }
 
       let new_quiz_id: number;
+      let advancedQuiz;
       await prisma.$transaction(async (prisma) => {
         // 新問題番号(ファイルごとの)を取得しINSERT
         const res = await prisma.advanced_quiz.findFirst({
@@ -2458,7 +2433,7 @@ export class QuizService {
           take: 1,
         });
         new_quiz_id = res ? res.quiz_num + 1 : 1;
-        const advancedQuiz = await prisma.advanced_quiz.create({
+        advancedQuiz = await prisma.advanced_quiz.create({
           data: {
             file_num,
             quiz_num: new_quiz_id,
@@ -2502,21 +2477,7 @@ export class QuizService {
           });
         }
       });
-      return [
-        {
-          result:
-            'Added!! [' +
-            file_num +
-            '-' +
-            new_quiz_id +
-            ']:' +
-            question +
-            ',' +
-            answer +
-            ',関連基礎問題:' +
-            JSON.stringify(matched_basic_quiz_id_list),
-        },
-      ];
+      return advancedQuiz;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

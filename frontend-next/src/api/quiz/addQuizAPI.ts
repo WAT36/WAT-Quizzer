@@ -1,4 +1,4 @@
-import { AddQuizApiResponse, ProcessingApiReponse } from 'quizzer-lib';
+import { GetQuizApiResponseDto, ProcessingAddApiReponse } from 'quizzer-lib';
 import { MessageState, QueryOfPutQuizState } from '../../../interfaces/state';
 import { post } from '@/api/API';
 
@@ -70,15 +70,15 @@ export const addQuizAPI = async ({
       file_num: queryOfAddQuizState.fileNum,
       input_data: queryOfAddQuizState
     },
-    (data: ProcessingApiReponse) => {
+    (data: ProcessingAddApiReponse) => {
       if (data.status === 200 || data.status === 201) {
-        const res: AddQuizApiResponse[] = data.body as AddQuizApiResponse[];
+        const res: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto;
         setMessageStater({
           message: 'Success!! 問題を追加できました!',
           messageColor: 'success.light',
           isDisplay: true
         });
-        setAddLog(res[0].result);
+        setAddLog(`Added!! [${res.file_num}-${res.quiz_num}]:${res.quiz_sentense},${res.answer}`);
         setQueryofAddQuizStater({
           fileNum: queryOfAddQuizState.fileNum,
           quizNum: -1
