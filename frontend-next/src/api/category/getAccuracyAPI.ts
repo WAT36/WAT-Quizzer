@@ -1,4 +1,4 @@
-import { GetAccuracyRateByCategoryAPIResponseDto, ProcessingApiReponse } from 'quizzer-lib';
+import { GetAccuracyRateByCategoryAPIResponseDto, ProcessingApiSingleReponse } from 'quizzer-lib';
 import { QueryOfGetAccuracyState, MessageState } from '../../../interfaces/state';
 import { get } from '@/api/API';
 
@@ -28,10 +28,10 @@ export const getAccuracy = ({ queryOfGetAccuracy, setMessage, setAccuracyData }:
   });
   get(
     '/category/rate',
-    (data: ProcessingApiReponse) => {
+    (data: ProcessingApiSingleReponse) => {
       if (data.status === 200) {
-        const res: GetAccuracyRateByCategoryAPIResponseDto[] = data.body as GetAccuracyRateByCategoryAPIResponseDto[];
-        setAccuracyData(res[0]);
+        const res: GetAccuracyRateByCategoryAPIResponseDto = data.body as GetAccuracyRateByCategoryAPIResponseDto;
+        setAccuracyData(res);
         setMessage({
           message: '　',
           messageColor: 'commmon.black',

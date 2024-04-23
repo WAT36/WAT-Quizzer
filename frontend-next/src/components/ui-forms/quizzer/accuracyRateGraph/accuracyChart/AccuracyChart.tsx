@@ -8,7 +8,7 @@ interface AccuracyChartProps {
 
 export const AccuracyChart = ({ accuracyData }: AccuracyChartProps) => {
   // データがない場合は何もしない
-  if (accuracyData.result.length === 0) {
+  if (accuracyData.result.length === 0 && accuracyData.checked_result.length === 0) {
     return <></>;
   }
 

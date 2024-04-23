@@ -106,7 +106,7 @@ export class CategoryService {
       const result = {};
 
       // カテゴリビューから指定ファイルのカテゴリ毎の正解率取得
-      result['result'] = await prisma.category_view.findMany({
+      const categoryResult = await prisma.category_view.findMany({
         where: {
           file_num: file_num,
         },
@@ -114,9 +114,15 @@ export class CategoryService {
           accuracy_rate: 'asc',
         },
       });
+      result['result'] = categoryResult.map((x) => {
+        return {
+          ...x,
+          count: Number(x.count),
+        };
+      });
 
       // チェック済問題の正解率取得
-      result['checked_result'] = await prisma.quiz_view.groupBy({
+      const checkedResult = await prisma.quiz_view.groupBy({
         by: ['checked'],
         where: {
           file_num,
@@ -130,6 +136,18 @@ export class CategoryService {
         _count: {
           checked: true,
         },
+      });
+      result['checked_result'] = checkedResult.map((x) => {
+        return {
+          checked: x.checked,
+          count: x._count.checked,
+          sum_clear: Number(x._sum.clear_count),
+          sum_fail: Number(x._sum.fail_count),
+          accuracy_rate:
+            100 *
+            (Number(x._sum.clear_count) /
+              (Number(x._sum.clear_count) + Number(x._sum.fail_count))),
+        };
       });
 
       return result;

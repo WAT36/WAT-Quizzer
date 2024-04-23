@@ -18,6 +18,6 @@ export class CategoryController {
 
   @Get('rate')
   async getAccuracyRateByCategory(@Query('file_num') file_num: number) {
-    return await this.categoryService.getAccuracyRateByCategory(file_num);
+    return await this.categoryService.getAccuracyRateByCategory(+file_num);
   }
 }
