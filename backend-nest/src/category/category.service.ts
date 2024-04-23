@@ -41,7 +41,7 @@ export class CategoryService {
       const { file_num } = req;
 
       //指定ファイルのカテゴリ取得
-      const results: GetCategoryAPIResponseDto[] = await prisma.quiz.findMany({
+      const results = await prisma.quiz.findMany({
         where: {
           file_num,
         },
@@ -55,9 +55,10 @@ export class CategoryService {
       let categories: Set<string> = new Set([]);
       // eslint-disable-next-line no-var
       for (var i = 0; i < results.length; i++) {
-        const result_i: Set<string> = new Set(
-          results[i]['category'].split(':'),
-        );
+        if (!results[i].category) {
+          continue;
+        }
+        const result_i: Set<string> = new Set(results[i].category.split(':'));
         categories = new Set([...result_i, ...categories]);
       }
       const categoriesArray: string[] = Array.from(categories);
@@ -68,7 +69,7 @@ export class CategoryService {
       }
 
       // トランザクション実行
-      let result;
+      const result = [];
       await prisma.$transaction(async (prisma) => {
         //まず指定ファイルのカテゴリを全削除
         await prisma.category.deleteMany({
@@ -79,7 +80,7 @@ export class CategoryService {
 
         //カテゴリデータ全挿入
         for (let i = 0; i < data.length; i++) {
-          result.add(
+          result.push(
             await prisma.category.create({
               data: {
                 file_num: data[i][0],
