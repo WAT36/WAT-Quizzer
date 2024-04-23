@@ -1734,13 +1734,6 @@ export class QuizService {
               category: true,
               img_file: true,
               checked: true,
-              quiz_statistics_view: {
-                select: {
-                  clear_count: true,
-                  fail_count: true,
-                  accuracy_rate: true,
-                },
-              },
             },
             where: {
               file_num,
@@ -1791,13 +1784,6 @@ export class QuizService {
               answer: true,
               img_file: true,
               checked: true,
-              advanced_quiz_statistics_view: {
-                select: {
-                  clear_count: true,
-                  fail_count: true,
-                  accuracy_rate: true,
-                },
-              },
             },
             where: {
               file_num,

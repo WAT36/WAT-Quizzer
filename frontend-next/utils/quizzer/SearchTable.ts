@@ -29,11 +29,5 @@ export const columns = [
     headerName: 'カテゴリ',
     sortable: false,
     width: 250
-  },
-  {
-    field: 'accuracy_rate',
-    headerName: '正解率',
-    sortable: true,
-    width: 150
   }
 ];

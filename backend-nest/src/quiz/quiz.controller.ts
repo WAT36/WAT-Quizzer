@@ -147,9 +147,9 @@ export class QuizController {
     @Query('format') format: string,
   ) {
     return await this.quizService.search(
-      file_num,
-      min_rate,
-      max_rate,
+      +file_num,
+      +min_rate,
+      +max_rate,
       category,
       checked,
       query,
