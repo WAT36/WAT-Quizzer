@@ -1,6 +1,6 @@
 import { del } from '@/api/API';
 import { DeleteQuizInfoState, MessageState, QueryOfDeleteQuizState } from '../../../interfaces/state';
-import { ProcessingApiReponse } from 'quizzer-lib';
+import { ProcessingApiSingleReponse } from 'quizzer-lib';
 
 interface DeleteQuizButtonProps {
   queryOfDeleteQuizState: QueryOfDeleteQuizState;
@@ -40,7 +40,7 @@ export const deleteQuiz = ({
       quiz_num: queryOfDeleteQuizState.quizNum,
       format: queryOfDeleteQuizState.format
     },
-    (data: ProcessingApiReponse) => {
+    (data: ProcessingApiSingleReponse) => {
       if (data.status === 200) {
         let quiz_num = '[' + queryOfDeleteQuizState.fileNum + '-' + queryOfDeleteQuizState.quizNum + ']';
         setMessage({

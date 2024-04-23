@@ -1946,8 +1946,12 @@ export class QuizService {
       });
 
       // 統合データ作成
-      const pre_category = new Set(pre_data.category.split(':'));
-      const post_category = new Set(post_data.category.split(':'));
+      const pre_category = new Set(
+        pre_data.category ? pre_data.category.split(':') : [],
+      );
+      const post_category = new Set(
+        post_data.category ? post_data.category.split(':') : [],
+      );
       const new_category = Array.from(
         new Set([...pre_category, ...post_category]),
       ).join(':');
@@ -1992,6 +1996,10 @@ export class QuizService {
           },
         });
       });
+
+      return {
+        result: 'OK!',
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

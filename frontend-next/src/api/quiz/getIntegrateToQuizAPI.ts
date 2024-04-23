@@ -1,4 +1,4 @@
-import { ProcessingApiReponse, GetQuizApiResponseDto } from 'quizzer-lib';
+import { GetQuizApiResponseDto, ProcessingApiSingleReponse } from 'quizzer-lib';
 import { QueryOfIntegrateToQuizState, MessageState, DeleteQuizInfoState } from '../../../interfaces/state';
 import { get } from '@/api/API';
 
@@ -41,23 +41,23 @@ export const getIntegrateToQuiz = ({
   });
   get(
     '/quiz',
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 && data.body?.length > 0) {
-        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
+    (data: ProcessingApiSingleReponse) => {
+      if (data.status === 200) {
+        const res: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto;
         setIntegrateToQuizInfoState({
-          fileNum: res[0].file_num,
-          quizNum: res[0].quiz_num,
-          sentense: res[0].quiz_sentense,
-          answer: res[0].answer,
-          category: res[0].category,
-          image: res[0].img_file
+          fileNum: res.file_num,
+          quizNum: res.quiz_num,
+          sentense: res.quiz_sentense,
+          answer: res.answer,
+          category: res.category,
+          image: res.img_file
         });
         setMessage({
           message: '　',
           messageColor: 'commmon.black',
           isDisplay: false
         });
-      } else if (data.status === 404 || data.body?.length === 0) {
+      } else if (data.status === 404) {
         setMessage({
           message: 'エラー:条件に合致するデータはありません',
           messageColor: 'error',
