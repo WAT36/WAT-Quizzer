@@ -92,7 +92,7 @@ export class QuizController {
     @Query('format') format: string,
   ) {
     return await this.quizService.getLRUQuiz(
-      file_num,
+      +file_num,
       category,
       checked,
       format,
