@@ -1,6 +1,6 @@
 import { post } from '@/api/API';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
-import { CheckQuizApiResponse, ProcessingApiReponse } from 'quizzer-lib';
+import { GetQuizApiResponseDto, ProcessingApiSingleReponse } from 'quizzer-lib';
 
 interface ReverseCheckQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;
@@ -55,15 +55,15 @@ export const reverseCheckQuizAPI = async ({
       file_num: queryOfQuizState.fileNum,
       quiz_num: queryOfQuizState.quizNum
     },
-    (data: ProcessingApiReponse) => {
+    (data: ProcessingApiSingleReponse) => {
       if (data.status === 200 || data.status === 201) {
-        const res: CheckQuizApiResponse[] = data.body as CheckQuizApiResponse[];
+        const res: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto;
         setDisplayQuizStater({
           ...displayQuizState,
-          checked: res[0].result
+          checked: res.checked || false
         });
         setMessageStater({
-          message: `問題[${queryOfQuizState.quizNum}] にチェック${res[0].result ? 'をつけ' : 'を外し'}ました`,
+          message: `問題[${queryOfQuizState.quizNum}] にチェック${res.checked ? 'をつけ' : 'を外し'}ました`,
           messageColor: 'success.light',
           isDisplay: true
         });

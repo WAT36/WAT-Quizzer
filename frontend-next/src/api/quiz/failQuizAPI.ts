@@ -1,6 +1,6 @@
 import { post } from '@/api/API';
 import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../interfaces/state';
-import { ProcessingApiReponse } from 'quizzer-lib';
+import { ProcessingApiSingleReponse } from 'quizzer-lib';
 
 interface FailQuizButtonProps {
   queryOfQuizState: QueryOfQuizState;
@@ -55,7 +55,7 @@ export const failQuizAPI = async ({
       file_num: queryOfQuizState.fileNum,
       quiz_num: queryOfQuizState.quizNum
     },
-    (data: ProcessingApiReponse) => {
+    (data: ProcessingApiSingleReponse) => {
       if (data.status === 200 || data.status === 201) {
         setDisplayQuizStater({
           ...displayQuizState,

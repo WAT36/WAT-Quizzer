@@ -58,7 +58,7 @@ export const InputQueryForm = ({
           }
           setQueryofQuizStater({
             ...queryOfQuizState,
-            fileNum: e.target.value as number
+            fileNum: +e.target.value
           });
           setCategorylistoption(categorylist);
           setMessageStater({
