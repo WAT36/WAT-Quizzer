@@ -30,6 +30,10 @@ jobs:
         cut -d= -f2 .env  | xargs -I arg echo ::add-mask::arg
         cat .env >> "$GITHUB_ENV"
 
+    - name: Setup dependencies(quizzer-lib)
+      id: setup-dependencies-lib 
+      run: cd ./quizzer-lib && npm ci && npm run build
+
     - name: Setup dependencies(frontend)
       id: setup-dependencies-frontend 
       run: cd ./frontend-next && npm ci
