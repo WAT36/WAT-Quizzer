@@ -9,22 +9,24 @@ datasource db {
 }
 
 model advanced_quiz {
-  id                          Int                           @id @default(autoincrement())
-  file_num                    Int
-  quiz_num                    Int
-  advanced_quiz_type_id       Int
-  quiz_sentense               String                        @unique @db.VarChar(256)
-  answer                      String                        @db.VarChar(256)
-  img_file                    String?                       @db.VarChar(128)
-  checked                     Boolean?                      @default(false)
-  created_at                  DateTime                      @default(now()) @db.Timestamp(6)
-  updated_at                  DateTime                      @default(now()) @db.Timestamp(6)
-  deleted_at                  DateTime?                     @db.Timestamp(6)
-  advanced_quiz_type          advanced_quiz_type            @relation(fields: [advanced_quiz_type_id], references: [id])
-  quiz_file                   quiz_file                     @relation(fields: [file_num], references: [file_num])
-  advanced_quiz_explanation   advanced_quiz_explanation?
-  dummy_choice                dummy_choice[]
-  quiz_basis_advanced_linkage quiz_basis_advanced_linkage[]
+  id                              Int                            @id @default(autoincrement())
+  file_num                        Int
+  quiz_num                        Int
+  advanced_quiz_type_id           Int
+  quiz_sentense                   String                         @unique @db.VarChar(256)
+  answer                          String                         @db.VarChar(256)
+  img_file                        String?                        @db.VarChar(128)
+  checked                         Boolean?                       @default(false)
+  created_at                      DateTime                       @default(now()) @db.Timestamp(6)
+  updated_at                      DateTime                       @default(now()) @db.Timestamp(6)
+  deleted_at                      DateTime?                      @db.Timestamp(6)
+  advanced_quiz_type              advanced_quiz_type             @relation(fields: [advanced_quiz_type_id], references: [id])
+  quiz_file                       quiz_file                      @relation(fields: [file_num], references: [file_num])
+  advanced_quiz_explanation       advanced_quiz_explanation?
+  dummy_choice                    dummy_choice[]
+  quiz_basis_advanced_linkage     quiz_basis_advanced_linkage[]
+  advanced_quiz_statistics_view   advanced_quiz_statistics_view? @relation(fields: [advanced_quiz_statistics_viewId], references: [id])
+  advanced_quiz_statistics_viewId Int?
 
   @@unique([file_num, quiz_num])
 }
@@ -190,6 +192,8 @@ model quiz {
   updated_at                  DateTime                      @default(now()) @db.Timestamp(6)
   deleted_at                  DateTime?                     @db.Timestamp(6)
   quiz_basis_advanced_linkage quiz_basis_advanced_linkage[]
+  quiz_statistics_view        quiz_statistics_view?         @relation(fields: [quiz_statistics_viewId], references: [id])
+  quiz_statistics_viewId      Int?
 
   @@unique([file_num, quiz_num])
 }
@@ -349,15 +353,14 @@ model word_subsource {
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view advanced_quiz_statistics_view {
-  id                     Int       @unique
+  id                     Int             @unique
   clear_count            BigInt?
   fail_count             BigInt?
   answer_count           BigInt?
   accuracy_rate          BigInt?
-  last_answer_log        DateTime? @db.Timestamp(6)
-  last_failed_answer_log DateTime? @db.Timestamp(6)
-
-  @@ignore
+  last_answer_log        DateTime?       @db.Timestamp(6)
+  last_failed_answer_log DateTime?       @db.Timestamp(6)
+  advanced_quiz          advanced_quiz[]
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -376,8 +379,6 @@ view advanced_quiz_view {
   updated_at            DateTime? @db.Timestamp(6)
   deleted_at            DateTime? @db.Timestamp(6)
   accuracy_rate         BigInt?
-
-  @@ignore
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -416,6 +417,7 @@ view quiz_statistics_view {
   accuracy_rate          BigInt?
   last_answer_log        DateTime? @db.Timestamp(6)
   last_failed_answer_log DateTime? @db.Timestamp(6)
+  quiz                   quiz[]
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
