@@ -1,0 +1,19 @@
+{
+  "name": "quizzer-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.13.0",
+    "prisma": "^5.13.0"
+  }
+}
