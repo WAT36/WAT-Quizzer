@@ -13,10 +13,8 @@ import {
   getPrismaYesterdayRange,
   getRandomElementFromArray,
 } from 'quizzer-lib';
-import { PrismaClient } from '@prisma/client';
 import { parseStrToBool } from 'lib/str';
-
-const prisma = new PrismaClient();
+import { prisma } from 'quizzer-db';
 
 export interface QueryType {
   query: string;
@@ -2259,7 +2257,7 @@ export class QuizService {
     try {
       const { file_id } = req;
       // 指定ファイルの回答ログ削除
-      return await prisma.answer_log.updateMany({
+      await prisma.answer_log.updateMany({
         data: {
           deleted_at: new Date(),
         },
@@ -2268,6 +2266,9 @@ export class QuizService {
           deleted_at: null,
         },
       });
+      return {
+        result: 'Deleted!',
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

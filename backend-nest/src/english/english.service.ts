@@ -1,8 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AddExampleAPIRequestDto } from 'quizzer-lib';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from 'quizzer-db';
 
 @Injectable()
 export class EnglishService {

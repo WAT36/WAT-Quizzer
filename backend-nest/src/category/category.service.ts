@@ -1,11 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import {
-  ReplaceAllCategorAPIRequestDto,
-  GetCategoryAPIResponseDto,
-} from 'quizzer-lib';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { ReplaceAllCategorAPIRequestDto } from 'quizzer-lib';
+import { prisma } from 'quizzer-db';
 
 @Injectable()
 export class CategoryService {

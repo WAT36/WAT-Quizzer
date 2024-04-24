@@ -3,9 +3,7 @@ import {
   AddQuizFileAPIRequestDto,
   DeleteQuizFileAPIRequestDto,
 } from 'quizzer-lib';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from 'quizzer-db';
 
 export interface QueryType {
   query: string;
