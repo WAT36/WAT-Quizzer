@@ -1,10 +1,9 @@
 import React, { memo, useState } from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
-import { DisplayWordTestState, MessageState } from '../../../../../../interfaces/state';
+import { DisplayWordTestState, FourChoiceData, MessageState } from '../../../../../../interfaces/state';
 import { CardContent, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
 import { submitEnglishBotTestAPI } from '@/api/englishbot/submitEnglishBotTestAPI';
-import { EnglishBotTestFourChoiceResponse } from 'quizzer-lib';
 
 interface DisplayTestWordSectionProps {
   displayWordTest: DisplayWordTestState;
@@ -14,7 +13,7 @@ interface DisplayTestWordSectionProps {
 
 // 英単語テスト四択APIの返り値から問題文を生成する
 interface EnglishWordTestFourChoiceSentenseProps {
-  res: EnglishBotTestFourChoiceResponse;
+  res: FourChoiceData;
   setValue: React.Dispatch<React.SetStateAction<boolean | undefined>>;
 }
 // eslint-disable-next-line react/display-name
@@ -62,7 +61,7 @@ export const DisplayTestWordSection = ({
     <>
       <Card variant="outlined">
         <CardContent>
-          <h2>{displayWordTest.wordName || '(null)'}</h2>
+          <h2>{displayWordTest.wordName || ''}</h2>
           {displayWordTest.choice && (
             <EnglishWordTestFourChoiceSentense res={displayWordTest.choice} setValue={setValue} />
           )}

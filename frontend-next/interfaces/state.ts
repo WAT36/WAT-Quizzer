@@ -1,3 +1,4 @@
+// TODO stateはAPI responseの型とまとめたい　そしてこれもquizzer-libに持っていきたい
 export interface MessageState {
   message: string;
   messageColor: string;
@@ -115,17 +116,18 @@ export interface QueryOfSearchWordState {
   };
 }
 
+export interface FourChoiceData {
+  correct: {
+    mean: string;
+  };
+  dummy: {
+    mean: string;
+  }[];
+}
 export interface DisplayWordTestState {
   wordId?: number;
   wordName?: string;
-  choice?: {
-    correct: {
-      mean: string;
-    };
-    dummy: {
-      mean: string;
-    }[];
-  };
+  choice?: FourChoiceData;
 }
 
 export interface WordMeanData {

@@ -19,9 +19,14 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Main: Story = {
   args: {
-    id: '0',
     posList: [],
-    meanData: [],
+    wordDetail: {
+      id: 0,
+      name: 'word',
+      pronounce: '発音',
+      mean: [],
+      word_subsource: []
+    },
     modalIsOpen: false
   }
 };
