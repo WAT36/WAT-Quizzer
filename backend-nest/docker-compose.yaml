@@ -7,5 +7,6 @@ services:
     container_name: "quizzer_api"
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - APP_ENV=${APP_ENV}
     ports:
       - 4000:4000

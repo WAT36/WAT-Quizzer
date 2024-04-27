@@ -6,6 +6,7 @@ dist
 backend/node_modules
 backend/aws/cognito
 backend/aws/s3
+quizzer-lib*.tgz
 
 # db
 container/README.md
