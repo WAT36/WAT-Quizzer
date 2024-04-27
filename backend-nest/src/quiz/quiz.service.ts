@@ -14,7 +14,8 @@ import {
   getRandomElementFromArray,
 } from 'quizzer-lib';
 import { parseStrToBool } from 'lib/str';
-import { prisma } from 'quizzer-db';
+import { PrismaClient } from '@prisma/client';
+export const prisma: PrismaClient = new PrismaClient();
 
 export interface QueryType {
   query: string;

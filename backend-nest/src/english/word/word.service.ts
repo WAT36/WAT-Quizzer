@@ -8,7 +8,8 @@ import {
   EditWordMeanAPIRequestDto,
   getRandomElementsFromArray,
 } from 'quizzer-lib';
-import { prisma } from 'quizzer-db';
+import { PrismaClient } from '@prisma/client';
+export const prisma: PrismaClient = new PrismaClient();
 
 @Injectable()
 export class EnglishWordService {
