@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "npx prisma format && npx prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -25,7 +25,10 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
-    "aws-serverless-express": "^3.4.0"
+    "@prisma/client": "^5.13.0",
+    "aws-serverless-express": "^3.4.0",
+    "quizzer-lib": "file:quizzer-lib-1.0.1.tgz",
+    "prisma": "^5.13.0"
   },
   "devDependencies": {
     "@nestjs/schematics": "^9.0.0",
@@ -46,8 +49,6 @@
     "jest": "29.5.0",
     "pg": "^8.11.5",
     "prettier": "^2.3.2",
-    "quizzer-db": "file:../quizzer-db",
-    "quizzer-lib": "file:../quizzer-lib",
     "reflect-metadata": "^0.1.14",
     "rxjs": "^7.8.1",
     "source-map-support": "^0.5.21",
