@@ -36,7 +36,7 @@ export class UsEast1Stack extends cdk.Stack {
       this,
       `${props.env}CognitoLambdaAtEdge`,
       {
-        runtime: lambda.Runtime.NODEJS_16_X,
+        runtime: lambda.Runtime.NODEJS_18_X,
         handler: 'index.handler',
         role: edgeLambdaRole.iamRole,
         code: lambda.Code.fromAsset(

@@ -2,7 +2,7 @@ import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as targets from 'aws-cdk-lib/aws-route53-targets'
 import { Construct } from 'constructs'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
-import * as apigw from 'aws-cdk-lib/aws-apigateway'
+import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 
 export const makeRecordsToDistribution = (
   scope: Construct,
@@ -33,17 +33,15 @@ export const makeRecordsToDistribution = (
   )
 }
 
-export const makeRecordsToApigw = (
+export const makeRecordsToALB = (
   scope: Construct,
   recordName: string,
-  apiDomainName: apigw.DomainName,
+  alb: elbv2.ApplicationLoadBalancer,
   hostedZone: route53.HostedZone
 ) => {
   // make A record
   new route53.ARecord(scope, `ARecordOf${recordName.replace(/[-\.]/g, '')}`, {
-    target: route53.RecordTarget.fromAlias(
-      new targets.ApiGatewayDomain(apiDomainName)
-    ),
+    target: route53.RecordTarget.fromAlias(new targets.LoadBalancerTarget(alb)),
     zone: hostedZone,
     recordName
   })
@@ -54,7 +52,7 @@ export const makeRecordsToApigw = (
     `AAAARecordOf${recordName.replace(/[-\.]/g, '')}`,
     {
       target: route53.RecordTarget.fromAlias(
-        new targets.ApiGatewayDomain(apiDomainName)
+        new targets.LoadBalancerTarget(alb)
       ),
       zone: hostedZone,
       recordName

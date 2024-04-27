@@ -31,15 +31,5 @@ export class CertificateStack extends cdk.Stack {
         validation: acm.CertificateValidation.fromDns(props.hostedZone)
       }
     )
-
-    // ACM（quizzer API用）
-    this.apiCertificate = new acm.Certificate(
-      this,
-      `${props.env}-quizzer-api`,
-      {
-        domainName: process.env.API_DOMAIN_NAME || '',
-        validation: acm.CertificateValidation.fromDns(props.hostedZone)
-      }
-    )
   }
 }
