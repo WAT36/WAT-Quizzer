@@ -25,7 +25,6 @@ const frontendStack = new FrontendStack(app, 'FrontendStack', {
 
 const backendStack = new BackendStack(app, 'BackendStack', {
   env,
-  apiCertificate: certificateStack.apiCertificate,
   hostedZone: dnsStack.hostedZone
 })
 

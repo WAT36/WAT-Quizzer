@@ -7,8 +7,6 @@ import {
   makeReadbleQuizzerBucketIamRole,
   makeUnauthenticatedQuizzerBucketIamRole
 } from '../service/iam'
-import * as fs from 'fs'
-import * as path from 'path'
 
 dotenv.config()
 
@@ -64,6 +62,12 @@ export class FrontendStack extends cdk.Stack {
     // cognito app client
     const appClient = userPool.addClient('userPoolAppClient', {
       generateSecret: false,
+      authFlows: {
+        adminUserPassword: true,
+        custom: true,
+        userPassword: true,
+        userSrp: true
+      },
       oAuth: {
         callbackUrls: [process.env.FRONT_CALLBACK_URL || ''],
         logoutUrls: [process.env.LOGOUT_URL || ''],
@@ -97,8 +101,6 @@ export class FrontendStack extends cdk.Stack {
       this.s3Bucket.bucketName,
       idPool.ref
     )
-
-    // read s3 iam role
     const unauthenticatedRole = makeUnauthenticatedQuizzerBucketIamRole(
       this,
       props.env,
