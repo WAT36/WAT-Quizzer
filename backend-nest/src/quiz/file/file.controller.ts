@@ -1,10 +1,12 @@
-import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { QuizFileService } from './file.service';
 import {
   AddQuizFileAPIRequestDto,
   DeleteQuizFileAPIRequestDto,
 } from 'quizzer-lib';
+import { AuthGuard } from '../../auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('quiz/file')
 export class QuizFileController {
   constructor(private readonly quizFileService: QuizFileService) {}

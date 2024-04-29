@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { EnglishWordService } from './word.service';
 import {
@@ -16,7 +17,9 @@ import {
   AddWordSubSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
 } from 'quizzer-lib';
+import { AuthGuard } from '../../auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('english/word')
 export class EnglishWordController {
   constructor(private readonly englishWordService: EnglishWordService) {}

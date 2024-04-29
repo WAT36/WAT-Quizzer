@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 import {
@@ -21,7 +22,9 @@ import {
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
 } from 'quizzer-lib';
+import { AuthGuard } from '../auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('quiz')
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}

@@ -1,6 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { EnglishService } from './english.service';
 import { AddExampleAPIRequestDto } from 'quizzer-lib';
+import { AuthGuard } from '../auth/auth.guard';
+
+@UseGuards(AuthGuard)
 @Controller('english')
 export class EnglishController {
   constructor(private readonly englishService: EnglishService) {}

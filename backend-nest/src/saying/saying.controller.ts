@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { SayingService } from './saying.service';
 import {
@@ -13,7 +14,9 @@ import {
   AddSayingAPIRequestDto,
   EditSayingAPIRequestDto,
 } from 'quizzer-lib';
+import { AuthGuard } from '../auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('saying')
 export class SayingController {
   constructor(private readonly sayingService: SayingService) {}

@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { ReplaceAllCategorAPIRequestDto } from 'quizzer-lib';
+import { AuthGuard } from '../auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
