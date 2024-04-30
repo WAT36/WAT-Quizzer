@@ -54,8 +54,8 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       run: |
         cd ./backend-nest
-        && docker build . --tag ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
-        && docker push ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+        docker build . --tag ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+        docker push ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
 
     # frontendをビルド
     - name: Next.js Build and Export(Frontend)
