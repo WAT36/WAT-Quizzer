@@ -9,8 +9,6 @@ import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButt
 import { SayingCard } from '@/components/ui-forms/top/sayingCard/SayingCard';
 import { DbHealthCheckState, SayingState } from '../../interfaces/state';
 import { DbHealthCheckCard } from '@/components/ui-forms/top/dbHealthCheckCard/DbHealthCheckCard';
-import { PopularEventList } from '@/components/ui-forms/top/popularEventList/popularEventList';
-import { getPopularEventListAPI } from '@/api/scrape/getPopularEventListAPI';
 import { getSayingAPI } from '@/api/saying/getSayingAPI';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -38,7 +36,7 @@ export default function Top({ isMock }: Props) {
   ]);
 
   useEffect(() => {
-    !isMock && Promise.all([getSayingAPI({ setSaying }), executeDbHealthCheck(), getPopularEventListAPI(setEventList)]);
+    !isMock && Promise.all([getSayingAPI({ setSaying }), executeDbHealthCheck()]);
   }, [isMock]);
 
   // DB ヘルスチェック
@@ -60,7 +58,6 @@ export default function Top({ isMock }: Props) {
         <TopButtonGroup />
         <SayingCard sayingState={saying} />
         <DbHealthCheckCard dbHealthCheckState={dbHealth} />
-        <PopularEventList eventList={eventList} />
       </Container>
     </>
   );
