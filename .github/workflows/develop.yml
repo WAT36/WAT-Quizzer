@@ -35,21 +35,14 @@ jobs:
         cut -d= -f2 .env  | xargs -I arg echo ::add-mask::arg
         cat .env >> "$GITHUB_ENV"
 
-    - name: Setup dependencies(quizzer-lib)
-      id: setup-dependencies-lib 
-      run: cd ./quizzer-lib && npm ci --production && npm run build && cd ../ && npm pack quizzer-lib/ && mv quizzer-lib*.tgz ./backend-nest/
+    - name: Setup dependencies(all)
+      id: setup-dependencies
+      run: npm ci --production
 
-    - name: Setup dependencies(frontend)
-      id: setup-dependencies-frontend 
-      run: cd ./frontend-next && npm ci
-
-    - name: Setup dependencies(backend)
-      id: setup-dependencies-backend 
-      run: cd ./backend-nest && ls -l && npm ci --production
-
-    - name: Setup dependencies(infra)
-      id: setup-dependencies-infra 
-      run: cd ./infra && npm ci
+    # backendをビルド
+    - name: nest build
+      id: build-api
+      run: cd ./backend-nest && npm run build
 
     # Docker イメージを build・push する
     - name: build and push docker image to ecr
@@ -60,13 +53,11 @@ jobs:
         # 今回は Git のコミットハッシュにしておく
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build . --tag ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
-        docker push ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+        cd ./backend-nest
+        && docker build . --tag ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+        && docker push ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
 
-    - name: nest build
-      id: build-api
-      run: cd ./backend-nest && npm run build
-
+    # frontendをビルド
     - name: Next.js Build and Export(Frontend)
       run: cd ./frontend-next && npm run export
 
