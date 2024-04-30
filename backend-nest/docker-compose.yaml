@@ -8,5 +8,8 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - APP_ENV=${APP_ENV}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_COGNITO_USERPOOL_ID=${AWS_COGNITO_USERPOOL_ID}
+      - AWS_COGNITO_APPCLIENT_ID=${AWS_COGNITO_APPCLIENT_ID}
     ports:
       - 4000:4000
