@@ -1,0 +1,26 @@
+{
+  "name": "wat-quizzer",
+  "version": "1.0.0",
+  "description": "csv_quiz_bot 2nd edition by WAT",
+  "private": true,
+  "workspaces": [
+    "backend-nest",
+    "frontend-next",
+    "quizzer-lib",
+    "infra"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WAT36/WAT-Quizzer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WAT36/WAT-Quizzer/issues"
+  },
+  "homepage": "https://github.com/WAT36/WAT-Quizzer#readme"
+}

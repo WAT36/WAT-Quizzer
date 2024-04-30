@@ -33,7 +33,7 @@
     "aws-serverless-express": "^3.4.0",
     "bcrypt": "^5.1.1",
     "prisma": "^5.13.0",
-    "quizzer-lib": "file:quizzer-lib-1.0.1.tgz"
+    "quizzer-lib": "^1.0.1"
   },
   "devDependencies": {
     "@nestjs/schematics": "^9.0.0",
