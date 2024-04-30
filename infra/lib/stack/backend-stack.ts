@@ -161,7 +161,10 @@ export class BackendStack extends cdk.Stack {
           )
         },
         environment: {
-          APP_ENV: 'local'
+          APP_ENV: 'local',
+          AWS_REGION: process.env.AWS_REGION || '',
+          AWS_COGNITO_USERPOOL_ID: process.env.AWS_COGNITO_USERPOOL_ID || '',
+          AWS_COGNITO_APPCLIENT_ID: process.env.AWS_COGNITO_APPCLIENT_ID || ''
         }
       }
     )
