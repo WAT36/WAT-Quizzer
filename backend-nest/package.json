@@ -4,6 +4,7 @@
   "description": "",
   "author": "",
   "private": true,
+  "main": "dist/src/main.js",
   "license": "UNLICENSED",
   "scripts": {
     "build": "npx prisma format && npx prisma generate && nest build",
@@ -31,7 +32,7 @@
     "amazon-cognito-identity-js": "^6.3.12",
     "aws-jwt-verify": "^4.0.1",
     "aws-serverless-express": "^3.4.0",
-    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
     "prisma": "^5.13.0",
     "quizzer-lib": "^1.0.1"
   },
