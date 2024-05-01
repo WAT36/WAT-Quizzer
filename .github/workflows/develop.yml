@@ -39,6 +39,10 @@ jobs:
       id: setup-dependencies
       run: npm ci --production
 
+    # frontendをビルド
+    - name: Next.js Build and Export(Frontend)
+      run: cd ./frontend-next && npm run export
+
     # backendをビルド
     - name: nest build
       id: build-api
@@ -56,10 +60,6 @@ jobs:
         cd ./backend-nest
         docker build . --tag ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
         docker push ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
-
-    # frontendをビルド
-    - name: Next.js Build and Export(Frontend)
-      run: cd ./frontend-next && npm run export
 
     - name: Deploy backend stack
       id: cdk-deploy-backend
