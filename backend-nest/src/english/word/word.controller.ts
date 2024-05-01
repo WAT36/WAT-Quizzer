@@ -19,16 +19,22 @@ import {
 } from 'quizzer-lib';
 import { AuthGuard } from '../../auth/auth.guard';
 
-@UseGuards(AuthGuard)
 @Controller('english/word')
 export class EnglishWordController {
   constructor(private readonly englishWordService: EnglishWordService) {}
 
+  @Get('num')
+  async getWordNum() {
+    return await this.englishWordService.getWordNumService();
+  }
+
+  @UseGuards(AuthGuard)
   @Post('add')
   async addWord(@Body() req: AddEnglishWordAPIRequestDto) {
     return await this.englishWordService.addWordAndMeanService(req);
   }
 
+  @UseGuards(AuthGuard)
   @Get('search')
   async searchWord(
     @Query('wordName') wordName: string,
@@ -40,16 +46,19 @@ export class EnglishWordController {
     );
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   async getAllWord() {
     return await this.englishWordService.getAllWordService();
   }
 
+  @UseGuards(AuthGuard)
   @Get('byname')
   async getWordByName(@Query('name') name: string) {
     return await this.englishWordService.getWordByNameService(name);
   }
 
+  @UseGuards(AuthGuard)
   @Get('test/fourchoice')
   async getTestDataOfFourChoice(
     @Query('source') source: string,
@@ -63,47 +72,56 @@ export class EnglishWordController {
     );
   }
 
+  @UseGuards(AuthGuard)
   @Post('test/clear')
   async wordTestCleared(@Body() req: AddWordTestResultLogAPIRequestDto) {
     return await this.englishWordService.wordTestClearedService(req);
   }
 
+  @UseGuards(AuthGuard)
   @Post('test/fail')
   async wordTestFailed(@Body() req: AddWordTestResultLogAPIRequestDto) {
     return await this.englishWordService.wordTestFailedService(req);
   }
 
+  @UseGuards(AuthGuard)
   @Put('source')
   async editSourceOfWordById(@Body() req: EditWordSourceAPIRequestDto) {
     return await this.englishWordService.editSourceOfWordById(req);
   }
 
+  @UseGuards(AuthGuard)
   @Put('subsource')
   async addSubSourceOfWordById(@Body() req: AddWordSubSourceAPIRequestDto) {
     return await this.englishWordService.addSubSourceOfWordById(req);
   }
 
+  @UseGuards(AuthGuard)
   @Get('summary')
   async getSummary() {
     return await this.englishWordService.getSummary();
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
+  @UseGuards(AuthGuard)
   @Get('source/:id')
   async getSourceOfWordById(@Param('id') id: string) {
     return await this.englishWordService.getSourceOfWordById(+id);
   }
 
+  @UseGuards(AuthGuard)
   @Get('subsource/:id')
   async getSubSourceOfWordById(@Param('id') id: string) {
     return await this.englishWordService.getSubSourceOfWordById(+id);
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   async getWordById(@Param('id') id: string) {
     return await this.englishWordService.getWordByIdService(+id);
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
   async editWordMean(@Body() req: EditWordMeanAPIRequestDto) {
     return await this.englishWordService.editWordMeanService(req);

@@ -597,4 +597,22 @@ export class EnglishWordService {
       }
     }
   }
+
+  // 現在登録されている単語の最大idを取得
+  async getWordNumService() {
+    try {
+      return await prisma.word.aggregate({
+        _max: {
+          id: true,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }
