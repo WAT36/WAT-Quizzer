@@ -12,7 +12,7 @@ import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
 import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
-import { GetWordAPIResponseDto } from 'quizzer-lib';
+import { GetWordNumResponseDto } from 'quizzer-lib';
 
 type EachWordPageProps = {
   id: string;
@@ -88,10 +88,6 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
   );
 }
 
-export async function getAllWords() {
-  return await getApiAndGetValue('/english/word');
-}
-
 // getStaticPathsの返り値、各文書のファイルパス(dynamic routing([id])のためstring)
 type Params = {
   params: {
@@ -109,16 +105,19 @@ export async function getStaticProps({ params }: Params) {
 
 // 一番最初に実行される関数
 export async function getStaticPaths() {
-  const words: GetWordAPIResponseDto[] = (await getAllWords()) as GetWordAPIResponseDto[];
-  console.log('words num:', words.length);
+  const words: GetWordNumResponseDto = (await getApiAndGetValue('/english/word/num')) as GetWordNumResponseDto;
+  console.log('words max id:', words._max.id);
   return {
-    paths: words.map((word) => {
-      return {
-        params: {
-          id: String(word.id)
-        }
-      };
-    }),
+    paths: new Array(words._max.id)
+      .fill(0)
+      .map((_, i) => i)
+      .map((d) => {
+        return {
+          params: {
+            id: String(d + 1)
+          }
+        };
+      }),
     fallback: false
   };
 }
