@@ -18,6 +18,13 @@ export interface GetWordAPIResponseDto extends ApiResponse {
   deleted_at?: string
 }
 
+//　登録英単語数取得API
+export interface GetWordNumResponseDto extends ApiResponse {
+  _max: {
+    id: number
+  }
+}
+
 // 英単語取得(byname)系APIレスポンス型
 export interface GetWordBynameAPIResponseDto extends ApiResponse {
   id: number
