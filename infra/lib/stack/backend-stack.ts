@@ -21,8 +21,6 @@ type BackendStackProps = {
 }
 
 export class BackendStack extends cdk.Stack {
-  readonly restApi: apigw.RestApi
-
   constructor(scope: Construct, id: string, props: BackendStackProps) {
     super(scope, id, {
       env: { region: process.env.REGION || '' },
@@ -115,17 +113,6 @@ export class BackendStack extends cdk.Stack {
     listenerHTTPS.addTargetGroups('DefaultHTTPSResponse', {
       targetGroups: [targetGroup]
     })
-    // listenerHTTPS.addAction(`albEcsCognitoAutenticateAction`, {
-    //   action:
-    //     new cdk.aws_elasticloadbalancingv2_actions.AuthenticateCognitoAction({
-    //       userPool: props.userPool,
-    //       userPoolClient: props.appClient,
-    //       userPoolDomain: props.domain,
-    //       next: elbv2.ListenerAction.forward([targetGroup])
-    //     }),
-    //   conditions: [elbv2.ListenerCondition.pathPatterns(['/*'])],
-    //   priority: 1
-    // })
 
     //// ECS Cluster
     const cluster = new ecs.Cluster(this, 'Cluster', {

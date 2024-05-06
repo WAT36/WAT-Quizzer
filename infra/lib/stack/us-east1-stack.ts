@@ -10,14 +10,12 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import { makeRecordsToDistribution } from '../service/route53'
-import * as apigw from 'aws-cdk-lib/aws-apigateway'
 
 dotenv.config()
 
 type UsEast1StackProps = {
   env: string
   s3Bucket: s3.Bucket
-  restApi: apigw.RestApi
   frontCertificate: acm.Certificate
   hostedZone: route53.HostedZone
 }
