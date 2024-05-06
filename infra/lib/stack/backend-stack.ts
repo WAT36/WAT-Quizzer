@@ -1,5 +1,4 @@
 import * as cdk from 'aws-cdk-lib'
-import * as apigw from 'aws-cdk-lib/aws-apigateway'
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager'
 import { Construct } from 'constructs'
 import * as dotenv from 'dotenv'
