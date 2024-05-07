@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import * as express from 'express';
+import * as cookieParser from 'cookie-parser';
 // import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 const binaryMimeTypes: string[] = [];
@@ -44,7 +45,7 @@ async function bootstrap() {
   // const config = new DocumentBuilder().build();
   // const document = SwaggerModule.createDocument(app, config);
   // SwaggerModule.setup('api', app, document);
-
+  app.use(cookieParser());
   app.enableCors({
     origin: '*',
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, x-api-key',
