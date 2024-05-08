@@ -4,6 +4,7 @@ import {
   InitiateAuthCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable } from '@nestjs/common';
+import { SignInResultResponse } from 'src/auth/auth.service';
 
 @Injectable()
 export class CognitoService {
@@ -14,7 +15,7 @@ export class CognitoService {
     });
   }
 
-  async signIn(username: string, pass: string): Promise<any> {
+  async signIn(username: string, pass: string): Promise<SignInResultResponse> {
     const input = {
       // TODO USER_SRP_AUTHにする MFA?
       AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
@@ -25,6 +26,7 @@ export class CognitoService {
       },
     };
     const command = new InitiateAuthCommand(input);
+    // TODO パスワード違いエラー(400)が返されない（全部ステータス500になる？）ので調査
     const initiateAuthResult = await this.cognitoClient.send(command);
 
     // TODO: Generate a JWT and return it here
