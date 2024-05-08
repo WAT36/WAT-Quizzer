@@ -5,6 +5,11 @@ export interface MessageState {
   isDisplay?: boolean;
 }
 
+export interface LoginState {
+  username: string;
+  password: string;
+}
+
 export interface PullDownOptionState {
   value: string;
   label: string;
