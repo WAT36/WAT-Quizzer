@@ -35,14 +35,16 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
   const [message, setMessage] = useRecoilState(messageState);
 
   useEffect(() => {
-    !isMock &&
+    if (!isMock) {
+      const accessToken = localStorage.getItem('apiAccessToken') || '';
       Promise.all([
-        getPartOfSpeechListAPI(setMessage, setPosList),
-        getSourceListAPI(setMessage, setSourcelistoption),
-        getWordDetail(id, setMessage, setWordDetail)
+        getPartOfSpeechListAPI(setMessage, setPosList, accessToken),
+        getSourceListAPI(setMessage, setSourcelistoption, accessToken),
+        getWordDetail(id, setMessage, setWordDetail, accessToken)
         // getWordSource(id, setMessage, setWordSourceData),
         // getWordSubSource(id, setMessage, setWordSubSourceData)
       ]);
+    }
   }, [id, isMock, setMessage]);
 
   const contents = () => {
@@ -105,7 +107,11 @@ export async function getStaticProps({ params }: Params) {
 
 // 一番最初に実行される関数
 export async function getStaticPaths() {
-  const words: GetWordNumResponseDto = (await getApiAndGetValue('/english/word/num')) as GetWordNumResponseDto;
+  const words: GetWordNumResponseDto = (await getApiAndGetValue(
+    '/english/word/num',
+    undefined,
+    'no needs'
+  )) as GetWordNumResponseDto;
   console.log('words max id:', words._max.id);
   return {
     paths: new Array(words._max.id)
