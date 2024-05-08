@@ -48,7 +48,8 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: '*',
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, x-api-key',
+    allowedHeaders:
+      'Origin, X-Requested-With, Content-Type, Accept, x-api-key, Authorization',
   });
   await app.listen(4000);
 }
