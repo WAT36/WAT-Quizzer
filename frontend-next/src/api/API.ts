@@ -8,7 +8,8 @@ export const get = async (
   path: string,
   func: (data: ProcessingApiReponse) => any,
   queryParam?: { [key: string]: string },
-  bodyData?: object
+  bodyData?: object,
+  accessToken?: string
 ) => {
   const query = queryParam ? `?${new URLSearchParams(queryParam)}` : '';
 
@@ -17,7 +18,7 @@ export const get = async (
     body: bodyData ? JSON.stringify(bodyData) : null,
     headers: {
       ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + localStorage.getItem('apiAccessToken')
+        Authorization: 'Bearer ' + (accessToken || localStorage.getItem('apiAccessToken'))
       })
     }
   })
@@ -34,14 +35,14 @@ export const get = async (
   return result;
 };
 
-export const getApiAndGetValue = async (path: string, queryParam?: { [key: string]: string }) => {
+export const getApiAndGetValue = async (path: string, queryParam?: { [key: string]: string }, accessToken?: string) => {
   const query = queryParam ? `?${new URLSearchParams(queryParam)}` : '';
 
   return await fetch(baseURL + path + query, {
     method: 'GET',
     headers: {
       ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + localStorage.getItem('apiAccessToken')
+        Authorization: 'Bearer ' + (accessToken || localStorage.getItem('apiAccessToken'))
       })
     }
   })
@@ -52,14 +53,19 @@ export const getApiAndGetValue = async (path: string, queryParam?: { [key: strin
     .then((response) => response.json());
 };
 
-export const post = async (path: string, jsondata: object, func: (data: ProcessingApiReponse) => void) => {
+export const post = async (
+  path: string,
+  jsondata: object,
+  func: (data: ProcessingApiReponse) => void,
+  accessToken?: string
+) => {
   await fetch(baseURL + path, {
     method: 'POST',
     body: JSON.stringify(jsondata),
     headers: {
       'Content-Type': 'application/json',
       ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + localStorage.getItem('apiAccessToken')
+        Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
       })
     }
   })
@@ -76,14 +82,19 @@ export const post = async (path: string, jsondata: object, func: (data: Processi
     .then(func);
 };
 
-export const put = async (path: string, jsondata: object, func: (data: ProcessingApiReponse) => void) => {
+export const put = async (
+  path: string,
+  jsondata: object,
+  func: (data: ProcessingApiReponse) => void,
+  accessToken?: string
+) => {
   await fetch(baseURL + path, {
     method: 'PUT',
     body: JSON.stringify(jsondata),
     headers: {
       'Content-Type': 'application/json',
       ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + localStorage.getItem('apiAccessToken')
+        Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
       })
     }
   })
@@ -99,14 +110,19 @@ export const put = async (path: string, jsondata: object, func: (data: Processin
     });
 };
 
-export const del = async (path: string, jsondata: object, func: (data: ProcessingApiReponse) => void) => {
+export const del = async (
+  path: string,
+  jsondata: object,
+  func: (data: ProcessingApiReponse) => void,
+  accessToken?: string
+) => {
   await fetch(baseURL + path, {
     method: 'DELETE',
     body: JSON.stringify(jsondata),
     headers: {
       'Content-Type': 'application/json',
       ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + localStorage.getItem('apiAccessToken')
+        Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
       })
     }
   })
@@ -122,14 +138,19 @@ export const del = async (path: string, jsondata: object, func: (data: Processin
     });
 };
 
-export const patch = async (path: string, jsondata: object, func: (data: ProcessingApiReponse) => void) => {
+export const patch = async (
+  path: string,
+  jsondata: object,
+  func: (data: ProcessingApiReponse) => void,
+  accessToken?: string
+) => {
   await fetch(baseURL + path, {
     method: 'PATCH',
     body: JSON.stringify(jsondata),
     headers: {
       'Content-Type': 'application/json',
       ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + localStorage.getItem('apiAccessToken')
+        Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
       })
     }
   })

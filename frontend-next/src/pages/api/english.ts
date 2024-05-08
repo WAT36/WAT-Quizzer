@@ -5,7 +5,8 @@ import { MessageState, WordDetailData } from '../../../interfaces/state';
 export const getWordDetail = async (
   id: string,
   setMessageStater: React.Dispatch<React.SetStateAction<MessageState>>,
-  setWordDetail: React.Dispatch<React.SetStateAction<WordDetailData>>
+  setWordDetail: React.Dispatch<React.SetStateAction<WordDetailData>>,
+  accessToken?: string
 ) => {
   get(
     '/english/word/' + id,
@@ -20,6 +21,8 @@ export const getWordDetail = async (
         });
       }
     },
-    {}
+    {},
+    undefined,
+    accessToken
   );
 };
