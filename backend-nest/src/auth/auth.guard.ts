@@ -18,7 +18,10 @@ export class AuthGuard implements CanActivate {
     });
 
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    const token =
+      process.env.APP_ENV === 'local'
+        ? this.extractTokenFromHeader(request)
+        : this.extractJWTFromCookie(request);
     if (!token) {
       throw new UnauthorizedException();
     }
@@ -35,5 +38,13 @@ export class AuthGuard implements CanActivate {
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
+  }
+
+  private extractJWTFromCookie(req: Request): string | null {
+    // TODO COGNITO_USERNAMEはやめる　secret managerとかに入れること
+    if (req.cookies && req.cookies.apiAccessToken) {
+      return req.cookies.apiAccessToken;
+    }
+    return null;
   }
 }
