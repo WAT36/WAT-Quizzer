@@ -1,15 +1,18 @@
 // 追加する英単語のデータ
 export interface EnglishWordDataDto {
   partOfSpeechId: number
-  sourceId: number
   meaning: string
   partOfSpeechName?: string
-  sourceName?: string
 }
 
 // 英単語追加APIリクエスト型
 export interface AddEnglishWordAPIRequestDto {
-  wordName: string
+  inputWord: {
+    wordName: string
+    sourceId: number
+    newSourceName?: string
+    subSourceName: string
+  }
   pronounce: string
   meanArrayData: EnglishWordDataDto[]
 }
@@ -48,18 +51,12 @@ export interface meanOfAddWordDto {
     id: number
     name?: string
   }
-  source: {
-    id: number
-    name?: string
-  }
   mean: string | undefined
 }
 
 // 英単語追加画面で入力した単語、意味のデータを　英単語追加APIに送るためのデータ型
 export interface SendToAddWordApiData {
   partOfSpeechId: number
-  sourceId: number
   meaning: string
   partOfSpeechName?: string
-  sourceName?: string
 }
