@@ -15,20 +15,59 @@ export const prisma: PrismaClient = new PrismaClient();
 export class EnglishWordService {
   // 単語と意味追加
   async addWordAndMeanService(req: AddEnglishWordAPIRequestDto) {
-    const { wordName, pronounce, meanArrayData } = req;
+    const { inputWord, pronounce, meanArrayData } = req;
     try {
       // //トランザクション実行準備
       await prisma.$transaction(async (prisma) => {
         //単語追加
         const addWordResult = await prisma.word.create({
           data: {
-            name: wordName,
+            name: inputWord.wordName,
             pronounce,
           },
         });
 
         // insertされた単語ID取得
         const wordWillId = addWordResult.id;
+
+        // その他　の場合は入力した出典をチェック
+        let sourceId: number = inputWord.sourceId;
+        if (sourceId === -2) {
+          if (!inputWord.newSourceName) {
+            throw new Error(`新規追加する出典が入力されていません`);
+          }
+
+          // 出典名で既に登録されているか検索
+          const sourceData = await prisma.source.findMany({
+            where: {
+              name: inputWord.newSourceName,
+              deleted_at: null,
+            },
+          });
+
+          if (sourceData[0]) {
+            // 既にある -> そのIDを出典IDとして使用
+            sourceId = sourceData[0].id;
+          } else {
+            // 登録されていない -> 新規登録してそのIDを使用
+            const result = await prisma.source.create({
+              data: {
+                name: inputWord.newSourceName,
+              },
+            });
+            sourceId = result.id;
+          }
+        }
+
+        // サブ出典追加
+        if (inputWord.subSourceName && inputWord.subSourceName !== '') {
+          await prisma.word_subsource.create({
+            data: {
+              word_id: wordWillId,
+              subsource: inputWord.subSourceName,
+            },
+          });
+        }
 
         //入力した意味一つ分のデータ作成
         for (let i = 0; i < meanArrayData.length; i++) {
@@ -61,34 +100,6 @@ export class EnglishWordService {
             }
           }
 
-          // その他　の場合は入力した出典をチェック
-          let sourceId: number = meanArrayData[i].sourceId;
-          if (meanArrayData[i].sourceId === -2) {
-            if (!meanArrayData[i].sourceName) {
-              throw new Error(`[${i + 1}]出典が入力されていません`);
-            }
-
-            // 出典名で既に登録されているか検索
-            const sourceData = await prisma.source.findMany({
-              where: {
-                name: meanArrayData[i].sourceName,
-                deleted_at: null,
-              },
-            });
-
-            if (sourceData[0]) {
-              // 既にある -> そのIDを出典IDとして使用
-              sourceId = sourceData[0].id;
-            } else {
-              // 登録されていない -> 新規登録してそのIDを使用
-              const result = await prisma.source.create({
-                data: {
-                  name: meanArrayData[i].sourceName,
-                },
-              });
-              sourceId = result.id;
-            }
-          }
           //意味追加
           const addMeanResult = await prisma.mean.create({
             data: {
@@ -109,6 +120,10 @@ export class EnglishWordService {
           }
         }
       });
+
+      return {
+        result: 'Added!!',
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
