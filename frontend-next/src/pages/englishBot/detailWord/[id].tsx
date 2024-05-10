@@ -18,7 +18,7 @@ type EachWordPageProps = {
   id: string;
   isMock?: boolean;
 };
-
+// TODO dynamic routingだとファイル数膨大・単語追加のたびにデプロイ必要になるので不向き、Next.jsで何か別の使える機能ないか
 export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps) {
   const [wordDetail, setWordDetail] = useState<WordDetailData>({
     id: -1,

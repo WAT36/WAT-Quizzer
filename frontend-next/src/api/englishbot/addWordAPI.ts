@@ -1,12 +1,12 @@
 import { post } from '@/api/API';
 import { ProcessingApiReponse, meanOfAddWordDto, SendToAddWordApiData } from 'quizzer-lib';
-import { MessageState } from '../../../interfaces/state';
+import { InputAddWordState, MessageState } from '../../../interfaces/state';
 
 interface AddWordButtonProps {
-  inputWord: string;
+  inputWord: InputAddWordState;
   meanRowList: meanOfAddWordDto[];
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setInputWord?: React.Dispatch<React.SetStateAction<string>>;
+  setInputWord?: React.Dispatch<React.SetStateAction<InputAddWordState>>;
   setMeanRowList?: React.Dispatch<React.SetStateAction<meanOfAddWordDto[]>>;
 }
 
@@ -22,8 +22,7 @@ export const addWordAPI = async ({
   if (!setMessage || !setInputWord || !setMeanRowList) {
     return;
   }
-
-  if (inputWord === '') {
+  if (inputWord.wordName === '') {
     setMessage({
       message: 'エラー:単語が入力されておりません',
       messageColor: 'error',
@@ -31,7 +30,6 @@ export const addWordAPI = async ({
     });
     return;
   }
-
   for (let i = 0; i < meanRowList.length; i++) {
     if (meanRowList[i].pos.id === -1 || (meanRowList[i].pos.id === -2 && !meanRowList[i].pos.name)) {
       setMessage({
@@ -49,7 +47,6 @@ export const addWordAPI = async ({
       return;
     }
   }
-
   setMessage({
     message: '通信中...',
     messageColor: '#d3d3d3',
@@ -58,29 +55,31 @@ export const addWordAPI = async ({
   await post(
     '/english/word/add',
     {
-      wordName: inputWord,
+      inputWord,
       pronounce: '',
       meanArrayData: meanRowList.reduce((previousValue: SendToAddWordApiData[], currentValue) => {
         if (currentValue.pos.id !== -1) {
           previousValue.push({
             partOfSpeechId: currentValue.pos.id,
-            sourceId: currentValue.source.id,
             meaning: currentValue.mean || '',
-            partOfSpeechName: currentValue.pos.name,
-            sourceName: currentValue.source.name
+            partOfSpeechName: currentValue.pos.name
           });
         }
         return previousValue;
       }, [])
     },
     (data: ProcessingApiReponse) => {
-      if (Math.floor(data.status / 100) === 2) {
+      if (data.status === 200 || data.status === 201) {
         setMessage({
-          message: `単語「${inputWord}」を登録しました`,
+          message: `単語「${inputWord.wordName}」を登録しました`,
           messageColor: 'success.light',
           isDisplay: true
         });
-        setInputWord('');
+        setInputWord({
+          wordName: '',
+          sourceId: -1,
+          subSourceName: ''
+        });
         setMeanRowList([]);
       } else {
         setMessage({

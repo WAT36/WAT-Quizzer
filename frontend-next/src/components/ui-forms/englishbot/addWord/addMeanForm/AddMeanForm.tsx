@@ -81,9 +81,6 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }
           pos: {
             id: -1
           },
-          source: {
-            id: -1
-          },
           mean: undefined
         });
       }
@@ -93,84 +90,9 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }
         id: Number(value),
         name: Number(value) === -2 ? copyMeanRowList[i].pos.name : undefined
       },
-      source: copyMeanRowList[i].source,
       mean: copyMeanRowList[i].mean
     };
     setMeanRowList && setMeanRowList(copyMeanRowList);
-  };
-
-  // 出典プルダウン変更時の入力の更新
-  const changeSourceSelect = (value: string, i: number) => {
-    const copyMeanRowList = [...meanRowList];
-    if (i >= copyMeanRowList.length) {
-      while (i >= copyMeanRowList.length) {
-        copyMeanRowList.push({
-          pos: {
-            id: -1
-          },
-          source: {
-            id: -1
-          },
-          mean: undefined
-        });
-      }
-    }
-    copyMeanRowList[i] = {
-      pos: copyMeanRowList[i].pos,
-      source: {
-        id: Number(value),
-        name: Number(value) === -2 ? copyMeanRowList[i].source.name : undefined
-      },
-      mean: copyMeanRowList[i].mean
-    };
-    setMeanRowList && setMeanRowList(copyMeanRowList);
-  };
-
-  // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
-  const displaySourceInput = (i: number) => {
-    const sourceInput =
-      meanRowList[i] && meanRowList[i].source.id === -2 ? (
-        <>
-          <TextField
-            id="input-pos-01"
-            label="出典"
-            variant="outlined"
-            key={i}
-            sx={{ width: 1 }}
-            onChange={(e) => {
-              inputSource(e.target.value, i);
-            }}
-          />
-        </>
-      ) : (
-        <></>
-      );
-
-    return (
-      <>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          defaultValue={-1}
-          label="source"
-          key={i}
-          sx={{ width: 1 }}
-          onChange={(e) => {
-            changeSourceSelect(String(e.target.value), i);
-          }}
-        >
-          <MenuItem value={-1} key={-1}>
-            選択なし
-          </MenuItem>
-          {sourceList.map((x) => (
-            <MenuItem value={x.value} key={x.value}>
-              {x.label}
-            </MenuItem>
-          ))}
-        </Select>
-        {sourceInput}
-      </>
-    );
   };
 
   // 品詞入力時の処理
@@ -179,21 +101,6 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }
     copyMeanRowList[i] = {
       pos: {
         id: copyMeanRowList[i].pos.id,
-        name: value
-      },
-      source: copyMeanRowList[i].source,
-      mean: copyMeanRowList[i].mean
-    };
-    setMeanRowList && setMeanRowList(copyMeanRowList);
-  };
-
-  // 出典入力時の処理
-  const inputSource = (value: string, i: number) => {
-    const copyMeanRowList = [...meanRowList];
-    copyMeanRowList[i] = {
-      pos: copyMeanRowList[i].pos,
-      source: {
-        id: copyMeanRowList[i].source.id,
         name: value
       },
       mean: copyMeanRowList[i].mean
@@ -210,16 +117,12 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }
           pos: {
             id: -1
           },
-          source: {
-            id: -1
-          },
           mean: undefined
         });
       }
     }
     copyMeanRowList[i] = {
       pos: copyMeanRowList[i].pos,
-      source: copyMeanRowList[i].source,
       mean: value
     };
     setMeanRowList && setMeanRowList(copyMeanRowList);
@@ -230,10 +133,6 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }
     const copyMeanRowList = [...meanRowList];
     copyMeanRowList.push({
       pos: {
-        id: -1,
-        name: undefined
-      },
-      source: {
         id: -1,
         name: undefined
       },
@@ -256,7 +155,6 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }
           <TableHead>
             <TableRow>
               <TableCell sx={{ width: 200 }}>{'品詞'}</TableCell>
-              <TableCell sx={{ width: 200 }}>{'出典'}</TableCell>
               <TableCell>{'意味'}</TableCell>
             </TableRow>
           </TableHead>
@@ -267,10 +165,6 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }
                   <TableCell>
                     <InputLabel id="demo-simple-select-label"></InputLabel>
                     {displayPosInput(index)}
-                  </TableCell>
-                  <TableCell>
-                    <InputLabel id="demo-simple-select-label"></InputLabel>
-                    {displaySourceInput(index)}
                   </TableCell>
                   <TableCell>
                     <TextField
