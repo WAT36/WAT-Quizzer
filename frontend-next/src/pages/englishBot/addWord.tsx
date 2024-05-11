@@ -11,6 +11,7 @@ import { useRecoilState } from 'recoil';
 import { addWordAPI } from '@/api/englishbot/addWordAPI';
 import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
+import { InputAddWordForm } from '@/components/ui-forms/englishbot/addWord/inputAddWordForm/InputAddWordForm';
 
 type Props = {
   isMock?: boolean;
@@ -32,59 +33,7 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
       Promise.all([getPartOfSpeechListAPI(setMessage, setPosList), getSourceListAPI(setMessage, setSourceList)]);
   }, [isMock, setMessage]);
 
-  // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
-  const displaySourceInput = () => {
-    const sourceInput =
-      inputWord.sourceId === -2 ? (
-        <>
-          <TextField
-            id="input-pos-01"
-            label="出典"
-            variant="outlined"
-            key="addWordInputSource"
-            sx={{ width: 1 }}
-            onChange={(e) => {
-              setInputWord({
-                ...inputWord,
-                newSourceName: e.target.value
-              });
-            }}
-          />
-        </>
-      ) : (
-        <></>
-      );
-
-    return (
-      <>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          defaultValue={-1}
-          label="source"
-          key="source"
-          sx={{ width: 1 }}
-          onChange={(e) => {
-            setInputWord({
-              ...inputWord,
-              sourceId: +e.target.value
-            });
-          }}
-        >
-          <MenuItem value={-1} key={-1}>
-            選択なし
-          </MenuItem>
-          {sourceList.map((x) => (
-            <MenuItem value={x.value} key={x.value}>
-              {x.label}
-            </MenuItem>
-          ))}
-        </Select>
-        {sourceInput}
-      </>
-    );
-  };
-
+  // TODO  単語登録入力のとこは別コンポーネントにして切り出す
   const contents = () => {
     return (
       <Container>
@@ -97,35 +46,7 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
           登録
         </Button>
         <FormGroup>
-          <FormControl>
-            <TextField
-              fullWidth
-              label="New Word"
-              id="newWord"
-              value={inputWord.wordName}
-              onChange={(e) =>
-                setInputWord({
-                  ...inputWord,
-                  wordName: e.target.value
-                })
-              }
-            />
-            <InputLabel id="demo-simple-select-label"></InputLabel>
-            {displaySourceInput()}
-            <TextField
-              fullWidth
-              label="サブ出典"
-              id="subSource"
-              value={inputWord.subSourceName}
-              onChange={(e) =>
-                setInputWord({
-                  ...inputWord,
-                  subSourceName: e.target.value
-                })
-              }
-            />
-          </FormControl>
-
+          <InputAddWordForm inputWord={inputWord} sourceList={sourceList} setInputWord={setInputWord} />
           <AddMeanForm
             posList={posList}
             sourceList={sourceList}
