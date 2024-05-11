@@ -7,10 +7,13 @@ interface TextFieldProps {
   variant?: 'standard' | 'filled' | 'outlined';
   className?: string[];
   type?: string;
+  id?: string;
+  key?: string;
+  value?: string;
   setStater?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
 }
 
-export const TextField = ({ label, variant, className, type, setStater }: TextFieldProps) => (
+export const TextField = ({ label, variant, className, type, setStater, id, key, value }: TextFieldProps) => (
   <MuiTextField
     className={[styles.textField].concat(className ? className.map((x) => styles[x] || '') : []).join(' ')}
     variant={variant || 'outlined'}
@@ -21,5 +24,8 @@ export const TextField = ({ label, variant, className, type, setStater }: TextFi
         setStater(e.target.value);
       }
     }}
+    id={id}
+    key={key}
+    value={value}
   />
 );

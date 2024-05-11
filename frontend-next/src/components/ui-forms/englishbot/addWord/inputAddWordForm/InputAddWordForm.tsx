@@ -1,5 +1,7 @@
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { InputAddWordState, PullDownOptionState } from '../../../../../../interfaces/state';
+import { TextField } from '@/components/ui-elements/textField/TextField';
+import { Card } from '@/components/ui-elements/card/Card';
 
 interface InputAddWordFormProps {
   inputWord: InputAddWordState;
@@ -13,19 +15,20 @@ export const InputAddWordForm = ({ inputWord, sourceList, setInputWord }: InputA
     const sourceInput =
       inputWord.sourceId === -2 ? (
         <>
+          <InputLabel id="demo-simple-select-label"></InputLabel>
           <TextField
-            id="input-pos-01"
             label="出典"
             variant="outlined"
-            key="addWordInputSource"
-            sx={{ width: 1 }}
-            onChange={(e) => {
+            setStater={(value: string) => {
               setInputWord &&
                 setInputWord({
                   ...inputWord,
-                  newSourceName: e.target.value
+                  newSourceName: value
                 });
             }}
+            id="input-pos-01"
+            key="addWordInputSource"
+            className={['fullWidth', 'textField']}
           />
         </>
       ) : (
@@ -57,6 +60,9 @@ export const InputAddWordForm = ({ inputWord, sourceList, setInputWord }: InputA
               {x.label}
             </MenuItem>
           ))}
+          <MenuItem value={-2} key={-2}>
+            その他
+          </MenuItem>
         </Select>
         {sourceInput}
       </>
@@ -65,36 +71,35 @@ export const InputAddWordForm = ({ inputWord, sourceList, setInputWord }: InputA
 
   return (
     <>
-      <FormControl>
+      <Card variant={'outlined'} attr={'padding'}>
         <TextField
-          fullWidth
+          className={['fullWidth', 'textField']}
           label="New Word"
           id="newWord"
           value={inputWord.wordName}
-          onChange={(e) =>
+          setStater={(value: string) => {
             setInputWord &&
-            setInputWord({
-              ...inputWord,
-              wordName: e.target.value
-            })
-          }
+              setInputWord({
+                ...inputWord,
+                wordName: value
+              });
+          }}
         />
-        <InputLabel id="demo-simple-select-label"></InputLabel>
         {displaySourceInput()}
         <TextField
-          fullWidth
+          className={['fullWidth', 'textField']}
           label="サブ出典"
           id="subSource"
           value={inputWord.subSourceName}
-          onChange={(e) =>
+          setStater={(value: string) => {
             setInputWord &&
-            setInputWord({
-              ...inputWord,
-              subSourceName: e.target.value
-            })
-          }
+              setInputWord({
+                ...inputWord,
+                subSourceName: value
+              });
+          }}
         />
-      </FormControl>
+      </Card>
     </>
   );
 };
