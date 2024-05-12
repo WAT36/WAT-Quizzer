@@ -230,6 +230,7 @@ export class EnglishWordService {
     }
   }
 
+  // TODO ここと下のLRU 共通してるとこ多い（prismaとか）ので共通化できるとこはしたい
   // 四択問題テストで利用するデータ（ランダム単語・ダミー選択肢）を取得する
   async getTestDataOfFourChoice(
     source: string,
@@ -243,9 +244,11 @@ export class EnglishWordService {
             gte: new Date(getDateForSqlString(startDate)),
           }
         : {};
+      const endDateTomorrow = new Date(getDateForSqlString(endDate));
+      endDateTomorrow.setDate(endDateTomorrow.getDate() + 1);
       const endDateQuery = endDate
         ? {
-            lte: new Date(getDateForSqlString(endDate)),
+            lt: endDateTomorrow,
           }
         : {};
       const subSourceQuery =
@@ -265,25 +268,34 @@ export class EnglishWordService {
         },
         where: {
           mean: {
-            ...(source && {
-              every: {
-                mean_source: {
-                  every: {
-                    source_id: +source,
+            ...(source &&
+              +source !== -1 && {
+                every: {
+                  mean_source: {
+                    some: {},
+                    every: {
+                      source_id: +source,
+                    },
                   },
                 },
-              },
-            }),
+              }),
           },
-          ...(subSourceQuery && {
-            word_subsource: {
+          word_subsource: {
+            ...(subSourceQuery && {
+              some: {},
               every: {
                 created_at: subSourceQuery,
               },
-            },
-          }),
+            }),
+          },
         },
       });
+      if (randomResult.length === 0) {
+        throw new HttpException(
+          '条件に該当するデータはありません',
+          HttpStatus.NOT_FOUND,
+        );
+      }
       // 結果からランダムに1つ取得して返す
       const testWord = getRandomElementsFromArray(randomResult, 1)[0];
 
@@ -319,7 +331,127 @@ export class EnglishWordService {
         })),
       };
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 四択問題テストで利用するデータ（ランダム単語・ダミー選択肢。LRU（最も出題されてないもの））を取得する
+  async getLRUTestDataOfFourChoice(
+    source: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    try {
+      // サブ出典・日時に関するクエリ
+      const startDateQuery = startDate
+        ? {
+            gte: new Date(getDateForSqlString(startDate)),
+          }
+        : {};
+      const endDateTomorrow = new Date(getDateForSqlString(endDate));
+      endDateTomorrow.setDate(endDateTomorrow.getDate() + 1);
+      const endDateQuery = endDate
+        ? {
+            lt: endDateTomorrow,
+          }
+        : {};
+      const subSourceQuery =
+        startDate && endDate
+          ? { ...startDateQuery, ...endDateQuery }
+          : startDate
+          ? startDateQuery
+          : endDate
+          ? endDateQuery
+          : null;
+      // LRU取得
+      const lruResult = await prisma.word.findFirst({
+        select: {
+          id: true,
+          name: true,
+          mean: true,
+        },
+        where: {
+          mean: {
+            ...(source &&
+              +source !== -1 && {
+                every: {
+                  mean_source: {
+                    some: {},
+                    every: {
+                      source_id: +source,
+                    },
+                  },
+                },
+              }),
+          },
+          word_subsource: {
+            ...(subSourceQuery && {
+              some: {},
+              every: {
+                created_at: subSourceQuery,
+              },
+            }),
+          },
+        },
+        orderBy: [
+          {
+            word_statistics_view: {
+              last_answer_log: {
+                sort: 'asc',
+                nulls: 'first',
+              },
+            },
+          },
+        ],
+      });
+      if (!lruResult) {
+        throw new HttpException(
+          '条件に該当するデータはありません',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      // ダミー選択肢用の意味を取得
+      const dummyOptions = getRandomElementsFromArray(
+        await prisma.mean.findMany({
+          select: {
+            id: true,
+            word_id: true,
+            wordmean_id: true,
+            partsofspeech_id: true,
+            meaning: true,
+          },
+          where: {
+            word_id: {
+              not: lruResult.id,
+            },
+          },
+        }),
+        3,
+      );
+
+      return {
+        word: {
+          id: lruResult.id,
+          name: lruResult.name,
+        },
+        correct: {
+          mean: getRandomElementsFromArray(lruResult.mean, 1)[0].meaning,
+        },
+        dummy: dummyOptions.map((x) => ({
+          mean: x.meaning,
+        })),
+      };
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error instanceof Error) {
         throw new HttpException(
           error.message,
           HttpStatus.INTERNAL_SERVER_ERROR,

@@ -73,6 +73,20 @@ export class EnglishWordController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('test/fourchoice/lru')
+  async getLRUTestDataOfFourChoice(
+    @Query('source') source: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return await this.englishWordService.getLRUTestDataOfFourChoice(
+      source,
+      startDate,
+      endDate,
+    );
+  }
+
+  @UseGuards(AuthGuard)
   @Post('test/clear')
   async wordTestCleared(@Body() req: AddWordTestResultLogAPIRequestDto) {
     return await this.englishWordService.wordTestClearedService(req);
