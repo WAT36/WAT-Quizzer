@@ -173,6 +173,58 @@ export class EnglishWordService {
     }
   }
 
+  // ランダムに単語を1つ取得
+  async getRandomWordService() {
+    try {
+      //  現在登録されている単語数を取得
+      const wordNum = (
+        await prisma.word.aggregate({
+          _count: {
+            id: true,
+          },
+        })
+      )._count.id;
+
+      // 単語をランダムに1つ取得
+      const result = await prisma.word.findMany({
+        select: {
+          id: true,
+          name: true,
+          pronounce: true,
+          mean: {
+            select: {
+              meaning: true,
+              partsofspeech: {
+                select: {
+                  name: true,
+                },
+              },
+              mean_source: {
+                select: {
+                  source: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        skip: Math.floor(Math.random() * wordNum),
+        take: 1,
+      });
+      return result[0];
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
   // 単語全取得
   async getAllWordService() {
     try {

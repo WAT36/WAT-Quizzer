@@ -28,6 +28,7 @@ export class EnglishWordController {
     return await this.englishWordService.getWordNumService();
   }
 
+  // TODO これパス名変えたい
   @UseGuards(AuthGuard)
   @Post('add')
   async addWord(@Body() req: AddEnglishWordAPIRequestDto) {
@@ -44,6 +45,12 @@ export class EnglishWordController {
       wordName,
       subSourceName,
     );
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('random')
+  async getRandomWord() {
+    return await this.englishWordService.getRandomWordService();
   }
 
   @UseGuards(AuthGuard)
