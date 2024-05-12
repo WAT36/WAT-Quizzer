@@ -2,6 +2,7 @@ import React from 'react';
 import { DisplayWordTestState, MessageState, QueryOfGetWordState } from '../../../../../../interfaces/state';
 import { Button } from '@/components/ui-elements/button/Button';
 import { getTestDataOfFourChoiceAPI } from '@/api/englishbot/getTestDataOfFourChoiceAPI';
+import { getLRUTestDataOfFourChoiceAPI } from '@/api/englishbot/getLRUTestDataOfFourChoiceAPI';
 
 interface GetWordButtonGroupProps {
   queryOfGetWordState: QueryOfGetWordState;
@@ -22,6 +23,13 @@ export const GetWordButtonGroup = ({
         variant="contained"
         color="primary"
         onClick={(e) => getTestDataOfFourChoiceAPI({ queryOfGetWordState, setMessageStater, setDisplayWordTest })}
+      />
+      <Button
+        label={'LRU'}
+        attr={'button-array'}
+        variant="contained"
+        color="primary"
+        onClick={(e) => getLRUTestDataOfFourChoiceAPI({ queryOfGetWordState, setMessageStater, setDisplayWordTest })}
       />
     </>
   );
