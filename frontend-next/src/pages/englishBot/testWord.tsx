@@ -21,6 +21,8 @@ export default function TestWordPage({ isMock }: Props) {
   const [displayWordTest, setDisplayWordTest] = useState<DisplayWordTestState>({
     wordName: ''
   });
+  // TODO テスト形式の値の管理方法　他のファイルでプロパティ形式で管理した方が良い？ constant.tsみたいなの作って　quizzeer側にもこんなのあったよね
+  const [testType, setTestType] = useState<String>('0');
 
   // 出典リスト取得
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function TestWordPage({ isMock }: Props) {
           sourcelistoption={sourcelistoption}
           queryOfGetWordState={queryOfGetWord}
           setQueryofWordStater={setQueryOfGetWord}
+          setTestType={setTestType}
         />
 
         <GetWordButtonGroup
@@ -46,6 +49,7 @@ export default function TestWordPage({ isMock }: Props) {
 
         <DisplayTestWordSection
           displayWordTest={displayWordTest}
+          testType={testType}
           setMessageStater={setMessage}
           setDisplayWordTestState={setDisplayWordTest}
         />

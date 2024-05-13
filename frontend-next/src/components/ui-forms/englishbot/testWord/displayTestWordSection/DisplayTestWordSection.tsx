@@ -1,16 +1,28 @@
 import React, { memo, useState } from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
 import { DisplayWordTestState, FourChoiceData, MessageState } from '../../../../../../interfaces/state';
-import { CardContent, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import {
+  Button as MuiButton,
+  CardContent,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  CardActions,
+  Collapse,
+  Typography
+} from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
 import { submitEnglishBotTestAPI } from '@/api/englishbot/submitEnglishBotTestAPI';
 
 interface DisplayTestWordSectionProps {
   displayWordTest: DisplayWordTestState;
+  testType: String;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDisplayWordTestState?: React.Dispatch<React.SetStateAction<DisplayWordTestState>>;
 }
 
+// TODO これはlibとかに回したい
 // 英単語テスト四択APIの返り値から問題文を生成する
 interface EnglishWordTestFourChoiceSentenseProps {
   res: FourChoiceData;
@@ -52,36 +64,104 @@ const EnglishWordTestFourChoiceSentense = memo<EnglishWordTestFourChoiceSentense
 
 export const DisplayTestWordSection = ({
   displayWordTest,
+  testType,
   setMessageStater,
   setDisplayWordTestState
 }: DisplayTestWordSectionProps) => {
   const [selectedValue, setValue] = useState<boolean>();
+  const [expanded, setExpanded] = useState<boolean>(false);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
 
   return (
     <>
       <Card variant="outlined">
-        <CardContent>
-          <h2>{displayWordTest.wordName || ''}</h2>
-          {displayWordTest.choice && (
-            <EnglishWordTestFourChoiceSentense res={displayWordTest.choice} setValue={setValue} />
-          )}
-        </CardContent>
-        <CardContent>
-          <Button
-            label={'SUBMIT'}
-            variant="contained"
-            color="primary"
-            onClick={(e) =>
-              submitEnglishBotTestAPI({
-                wordId: displayWordTest.wordId || NaN,
-                selectedValue,
-                setMessageStater,
-                setDisplayWordTestState
-              })
-            }
-            disabled={isNaN(displayWordTest.wordId || NaN)}
-          />
-        </CardContent>
+        {testType === '0' ? (
+          // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
+          <>
+            <CardContent>
+              <h2>{displayWordTest.wordName || ''}</h2>
+
+              <CardActions>
+                <MuiButton size="small" onClick={handleExpandClick} aria-expanded={expanded}>
+                  答え
+                </MuiButton>
+              </CardActions>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography variant="subtitle1" component="h2">
+                    {displayWordTest &&
+                      displayWordTest.wordMean &&
+                      displayWordTest.wordMean.map((mean, index) => {
+                        return <li key={index}>{mean.meaning}</li>;
+                      })}
+                  </Typography>
+                  <Button
+                    label={'正解!!'}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="primary"
+                    onClick={(e) => {
+                      submitEnglishBotTestAPI({
+                        wordId: displayWordTest.wordId || NaN,
+                        selectedValue: true,
+                        testType: 0,
+                        setMessageStater,
+                        setDisplayWordTestState
+                      });
+                      setExpanded(false);
+                    }}
+                  />
+                  <Button
+                    label={'不正解...'}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="secondary"
+                    onClick={(e) => {
+                      submitEnglishBotTestAPI({
+                        wordId: displayWordTest.wordId || NaN,
+                        selectedValue: false,
+                        testType: 0,
+                        setMessageStater,
+                        setDisplayWordTestState
+                      });
+                      setExpanded(false);
+                    }}
+                  />
+                </CardContent>
+              </Collapse>
+            </CardContent>
+          </>
+        ) : (
+          // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
+          <>
+            <CardContent>
+              <h2>{displayWordTest.wordName || ''}</h2>
+              {displayWordTest.choice && (
+                <EnglishWordTestFourChoiceSentense res={displayWordTest.choice} setValue={setValue} />
+              )}
+            </CardContent>
+            <CardContent>
+              <Button
+                label={'SUBMIT'}
+                variant="contained"
+                color="primary"
+                onClick={(e) =>
+                  submitEnglishBotTestAPI({
+                    wordId: displayWordTest.wordId || NaN,
+                    selectedValue,
+                    testType: 1,
+                    setMessageStater,
+                    setDisplayWordTestState
+                  })
+                }
+                disabled={isNaN(displayWordTest.wordId || NaN)}
+              />
+            </CardContent>
+          </>
+        )}
       </Card>
     </>
   );

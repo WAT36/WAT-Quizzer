@@ -17,6 +17,7 @@ export const GetWordButtonGroup = ({
 }: GetWordButtonGroupProps) => {
   return (
     <>
+      {/* TODO 今思ったが下のAPI2つ共通化すべきでは？LRUには特定のパラメータ入れて分岐処理させる。管理が大変  */}
       <Button
         label={'Random Word'}
         attr={'button-array'}
