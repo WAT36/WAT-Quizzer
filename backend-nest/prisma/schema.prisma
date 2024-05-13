@@ -84,6 +84,7 @@ model dummy_choice {
 model englishbot_answer_log {
   id         Int       @id @default(autoincrement())
   word_id    Int
+  test_type  Int       @default(0)
   result     Boolean?
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
