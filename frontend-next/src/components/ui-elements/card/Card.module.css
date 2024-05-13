@@ -8,6 +8,10 @@
   margin-bottom: 20px; 
 }
 
+.through-card {
+  background-color: transparent;
+}
+
 .square-200 {
   width: 200px;
   height: 200px;
@@ -39,4 +43,8 @@
 
 .padding {
   padding: 3px;
+}
+
+.padding-vertical {
+  padding: 5px 3px;
 }
