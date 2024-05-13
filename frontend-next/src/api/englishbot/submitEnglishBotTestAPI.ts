@@ -5,6 +5,7 @@ import { MessageState, DisplayWordTestState } from '../../../interfaces/state';
 interface SubmitEnglishBotTestButtonProps {
   wordId: number;
   selectedValue: boolean | undefined;
+  testType: number;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDisplayWordTestState?: React.Dispatch<React.SetStateAction<DisplayWordTestState>>;
 }
@@ -12,6 +13,7 @@ interface SubmitEnglishBotTestButtonProps {
 export const submitEnglishBotTestAPI = async ({
   wordId,
   selectedValue,
+  testType,
   setMessageStater,
   setDisplayWordTestState
 }: SubmitEnglishBotTestButtonProps) => {
@@ -37,7 +39,8 @@ export const submitEnglishBotTestAPI = async ({
   await post(
     selectedValue ? '/english/word/test/clear' : '/english/word/test/fail',
     {
-      wordId
+      wordId,
+      testType
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {

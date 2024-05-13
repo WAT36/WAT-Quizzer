@@ -20,6 +20,7 @@ export interface AddEnglishWordAPIRequestDto {
 //  英単語テスト結果追加リクエスト型
 export interface AddWordTestResultLogAPIRequestDto {
   wordId: number
+  testType: number
 }
 
 // 英単語出典編集APIリクエスト型
