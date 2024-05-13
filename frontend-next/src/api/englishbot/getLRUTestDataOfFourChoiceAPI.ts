@@ -43,6 +43,7 @@ export const getLRUTestDataOfFourChoiceAPI = async ({
         setDisplayWordTest({
           wordId: res.word.id,
           wordName: res.word.name,
+          wordMean: res.word.mean,
           choice: {
             correct: res.correct,
             dummy: res.dummy

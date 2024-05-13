@@ -374,6 +374,7 @@ export class EnglishWordService {
         word: {
           id: testWord.id,
           name: testWord.name,
+          mean: testWord.mean,
         },
         correct: {
           mean: getRandomElementsFromArray(testWord.mean, 1)[0].meaning,
@@ -492,6 +493,7 @@ export class EnglishWordService {
         word: {
           id: lruResult.id,
           name: lruResult.name,
+          mean: lruResult.mean,
         },
         correct: {
           mean: getRandomElementsFromArray(lruResult.mean, 1)[0].meaning,
@@ -515,11 +517,12 @@ export class EnglishWordService {
   // 正解登録
   async wordTestClearedService(req: AddWordTestResultLogAPIRequestDto) {
     try {
-      const { wordId } = req;
+      const { wordId, testType } = req;
       return await prisma.englishbot_answer_log.create({
         data: {
           word_id: wordId,
           result: true,
+          test_type: testType,
         },
       });
     } catch (error: unknown) {
@@ -535,11 +538,12 @@ export class EnglishWordService {
   // 不正解登録
   async wordTestFailedService(req: AddWordTestResultLogAPIRequestDto) {
     try {
-      const { wordId } = req;
+      const { wordId, testType } = req;
       return await prisma.englishbot_answer_log.create({
         data: {
           word_id: wordId,
           result: false,
+          test_type: testType,
         },
       });
     } catch (error: unknown) {

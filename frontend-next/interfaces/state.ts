@@ -132,6 +132,16 @@ export interface FourChoiceData {
 export interface DisplayWordTestState {
   wordId?: number;
   wordName?: string;
+  wordMean?: {
+    id: number;
+    word_id: number;
+    wordmean_id: number;
+    partsofspeech_id: number;
+    meaning: string;
+    created_at: Date;
+    updated_at: Date;
+    deleted_at: Date;
+  }[];
   choice?: FourChoiceData;
 }
 
