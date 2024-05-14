@@ -114,7 +114,7 @@ export async function getStaticPaths() {
   )) as GetWordNumResponseDto;
   console.log('words max id:', words._max.id);
   return {
-    paths: new Array(words._max.id)
+    paths: new Array(words._max.id + 30)
       .fill(0)
       .map((_, i) => i)
       .map((d) => {
