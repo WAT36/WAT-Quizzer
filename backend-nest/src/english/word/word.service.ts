@@ -143,6 +143,11 @@ export class EnglishWordService {
           id: true,
           name: true,
           pronounce: true,
+          mean: {
+            select: {
+              meaning: true,
+            },
+          },
         },
         where: {
           name: {

@@ -5,6 +5,9 @@ export interface WordSearchAPIResponseDto extends ApiResponse {
   id: number
   name: string
   pronounce: string
+  mean: {
+    meaning: string
+  }[]
 }
 
 // 英単語取得系APIレスポンス型
