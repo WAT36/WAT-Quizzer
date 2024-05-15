@@ -8,6 +8,7 @@ import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { addEnglishWordSubSourceAPI } from '@/api/englishbot/addEnglishWordSubSourceAPI';
+import { deleteEnglishWordSubSourceAPI } from '@/api/englishbot/deleteEnglishWordSubSourceAPI';
 
 interface SubSourceStackProps {
   wordDetail: WordDetailData;
@@ -103,6 +104,23 @@ export const SubSourceStack = ({
                   color="primary"
                   onClick={(e) =>
                     addEnglishWordSubSourceAPI({
+                      wordDetail,
+                      subSourceData: selectedSubSource,
+                      setMessage,
+                      setModalIsOpen,
+                      setSubSourceData: setSelectedSubSource,
+                      setWordDetail
+                    })
+                  }
+                />
+                <Button
+                  label={'サブ出典削除'}
+                  attr={'button-array'}
+                  variant="contained"
+                  color="primary"
+                  disabled={selectedSubSource.id === -1}
+                  onClick={(e) =>
+                    deleteEnglishWordSubSourceAPI({
                       wordDetail,
                       subSourceData: selectedSubSource,
                       setMessage,
