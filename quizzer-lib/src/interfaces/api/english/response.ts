@@ -54,6 +54,7 @@ export interface EnglishWordByIdApiResponse extends ApiResponse {
     meaning: string
   }[]
   word_subsource: {
+    id: number
     subsource: string
   }[]
 }
