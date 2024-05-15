@@ -14,8 +14,8 @@ import {
   AddEnglishWordAPIRequestDto,
   AddWordTestResultLogAPIRequestDto,
   EditWordSourceAPIRequestDto,
-  AddWordSubSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
+  UpsertWordSubSourceAPIRequestDto,
 } from 'quizzer-lib';
 import { AuthGuard } from '../../auth/auth.guard';
 
@@ -112,9 +112,9 @@ export class EnglishWordController {
   }
 
   @UseGuards(AuthGuard)
-  @Put('subsource')
-  async addSubSourceOfWordById(@Body() req: AddWordSubSourceAPIRequestDto) {
-    return await this.englishWordService.addSubSourceOfWordById(req);
+  @Post('subsource')
+  async addSubSourceOfWordById(@Body() req: UpsertWordSubSourceAPIRequestDto) {
+    return await this.englishWordService.upsertSubSourceOfWordById(req);
   }
 
   @UseGuards(AuthGuard)

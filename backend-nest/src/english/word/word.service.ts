@@ -4,9 +4,9 @@ import {
   AddEnglishWordAPIRequestDto,
   AddWordTestResultLogAPIRequestDto,
   EditWordSourceAPIRequestDto,
-  AddWordSubSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
   getRandomElementsFromArray,
+  UpsertWordSubSourceAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -606,12 +606,18 @@ export class EnglishWordService {
     }
   }
 
-  // 単語のサブ出典追加
-  async addSubSourceOfWordById(req: AddWordSubSourceAPIRequestDto) {
+  // 単語のサブ出典追加更新
+  async upsertSubSourceOfWordById(req: UpsertWordSubSourceAPIRequestDto) {
     try {
-      const { wordId, subSource } = req;
-      return await prisma.word_subsource.create({
-        data: {
+      const { id, wordId, subSource } = req;
+      return await prisma.word_subsource.upsert({
+        where: {
+          id,
+        },
+        update: {
+          subsource: subSource,
+        },
+        create: {
           word_id: wordId,
           subsource: subSource,
         },
@@ -743,6 +749,7 @@ export class EnglishWordService {
           },
           word_subsource: {
             select: {
+              id: true,
               subsource: true,
             },
           },
