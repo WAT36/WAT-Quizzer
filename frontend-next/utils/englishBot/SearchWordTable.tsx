@@ -22,6 +22,12 @@ export const searchedDetailColumns = [
         {String(params.value)}
       </Link>
     )
+  },
+  {
+    field: 'meaning',
+    headerName: '意味(先頭のみ表示)',
+    sortable: false,
+    width: 400
   }
 ];
 

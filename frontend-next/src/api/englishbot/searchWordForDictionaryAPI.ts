@@ -33,7 +33,18 @@ export const searchWordForDictionary = ({
     (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body?.length > 0) {
         const result: WordSearchAPIResponseDto[] = data.body as WordSearchAPIResponseDto[];
-        setSearchResult(result || []);
+        setSearchResult(
+          result
+            ? result.map((x) => {
+                return {
+                  id: x.id,
+                  name: x.name,
+                  pronounce: x.pronounce,
+                  meaning: x.mean.length > 0 ? x.mean[0].meaning : ''
+                };
+              })
+            : []
+        );
         setMessage({
           message: 'Success!!' + result.length + '問の問題を取得しました',
           messageColor: 'success.light',
