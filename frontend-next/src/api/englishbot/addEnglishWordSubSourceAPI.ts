@@ -1,41 +1,42 @@
-import { put } from '@/api/API';
+import { post } from '@/api/API';
 import { ProcessingAddApiReponse } from 'quizzer-lib';
-import { MessageState, WordDetailData } from '../../../interfaces/state';
+import { MessageState, WordDetailData, WordSubSourceData } from '../../../interfaces/state';
 import { getWordDetail } from '@/pages/api/english';
 
 interface AddEnglishWordSubSourceButtonProps {
   wordDetail: WordDetailData;
-  subSourceName: string;
+  subSourceData: WordSubSourceData;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  setSubSourceName?: React.Dispatch<React.SetStateAction<string>>;
+  setSubSourceData?: React.Dispatch<React.SetStateAction<WordSubSourceData>>;
   setWordDetail?: React.Dispatch<React.SetStateAction<WordDetailData>>;
 }
 
 // TODO ここのAPI部分は分けたい
 export const addEnglishWordSubSourceAPI = async ({
   wordDetail,
-  subSourceName,
+  subSourceData,
   setMessage,
   setModalIsOpen,
-  setSubSourceName,
+  setSubSourceData,
   setWordDetail
 }: AddEnglishWordSubSourceButtonProps) => {
   if (setModalIsOpen) {
     setModalIsOpen(false);
   }
-  if (!subSourceName || subSourceName === '') {
+  if (!subSourceData.subsource || subSourceData.subsource === '') {
     if (setMessage) {
-      setMessage({ message: 'エラー:出典を選択して下さい', messageColor: 'error', isDisplay: true });
+      setMessage({ message: 'エラー:サブ出典を入力して下さい', messageColor: 'error', isDisplay: true });
     }
     return;
   }
 
-  await put(
+  await post(
     '/english/word/subsource',
     {
+      id: subSourceData.id,
       wordId: wordDetail.id,
-      subSource: subSourceName
+      subSource: subSourceData.subsource
     },
     (data: ProcessingAddApiReponse) => {
       if (data.status === 200 || data.status === 201) {
@@ -47,11 +48,16 @@ export const addEnglishWordSubSourceAPI = async ({
           });
         }
 
+        // 更新後の単語データを再取得する
         if (setWordDetail && setMessage) {
           getWordDetail(String(wordDetail.id), setMessage, setWordDetail);
         }
 
-        setSubSourceName && setSubSourceName('');
+        setSubSourceData &&
+          setSubSourceData({
+            id: -1,
+            subsource: ''
+          });
       } else {
         if (setMessage) {
           setMessage({

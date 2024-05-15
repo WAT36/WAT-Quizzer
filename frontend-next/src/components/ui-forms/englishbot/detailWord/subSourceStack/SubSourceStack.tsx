@@ -24,9 +24,15 @@ export const SubSourceStack = ({
   setMessage,
   setWordDetail
 }: SubSourceStackProps) => {
-  const [inputSubSourceName, setInputSubSourceName] = useState<string>('');
+  const [selectedSubSource, setSelectedSubSource] = useState<WordSubSourceData>({
+    id: -1,
+    subsource: ''
+  });
 
   const handleOpen = (x: WordSubSourceData) => {
+    if (setSelectedSubSource) {
+      setSelectedSubSource(x);
+    }
     if (setModalIsOpen) {
       setModalIsOpen(true);
     }
@@ -50,6 +56,9 @@ export const SubSourceStack = ({
                         {x.subsource}
                       </Typography>
                     </Typography>
+                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
+                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x)}></Button>
+                    </Typography>
                   </Typography>
                 </Item>
               );
@@ -58,6 +67,7 @@ export const SubSourceStack = ({
               <IconButton
                 onClick={(e) =>
                   handleOpen({
+                    id: -1,
                     subsource: ''
                   })
                 }
@@ -65,35 +75,39 @@ export const SubSourceStack = ({
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>
+            {/* TODO このモーダル系別コンポーネントに切り出したい。他のスタックのとこのも同様に */}
             <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
               <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h4" component="h4">
-                  サブ出典追加
+                  {'サブ出典' + (selectedSubSource.id === -1 ? '追加' : '更新')}
                 </Typography>
                 <Typography sx={{ mt: 2 }}>
                   サブ出典：
                   <TextField
                     variant="outlined"
-                    defaultValue={''}
+                    defaultValue={selectedSubSource.subsource}
                     onChange={(e) => {
-                      if (setInputSubSourceName) {
-                        setInputSubSourceName(e.target.value);
+                      if (setSelectedSubSource) {
+                        setSelectedSubSource({
+                          ...selectedSubSource,
+                          subsource: e.target.value
+                        });
                       }
                     }}
                   />
                 </Typography>
                 <Button
-                  label={'サブ出典追加'}
+                  label={'サブ出典' + (selectedSubSource.id === -1 ? '追加' : '更新')}
                   attr={'button-array'}
                   variant="contained"
                   color="primary"
                   onClick={(e) =>
                     addEnglishWordSubSourceAPI({
                       wordDetail,
-                      subSourceName: inputSubSourceName,
+                      subSourceData: selectedSubSource,
                       setMessage,
                       setModalIsOpen,
-                      setSubSourceName: setInputSubSourceName,
+                      setSubSourceData: setSelectedSubSource,
                       setWordDetail
                     })
                   }

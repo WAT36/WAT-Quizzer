@@ -180,6 +180,7 @@ export interface WordSourceData {
 }
 
 export interface WordSubSourceData {
+  id: number;
   subsource: string;
 }
 
