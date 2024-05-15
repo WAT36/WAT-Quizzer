@@ -8,7 +8,7 @@ interface RandomWordDisplayProps {
 
 export const RandomWordDisplay = ({ wordData }: RandomWordDisplayProps) => {
   return (
-    <Card variant="outlined" attr="rect-400 margin-vertical">
+    <Card variant="outlined" attr="margin-vertical">
       <CardContent>
         <Typography variant="h6" component="h6" color="grey.700">
           ランダムに１語
