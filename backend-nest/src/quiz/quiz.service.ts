@@ -2293,7 +2293,8 @@ export class QuizService {
         );
       }
 
-      const { question, answer, img_file, matched_basic_quiz_id } = input_data;
+      const { question, answer, img_file, matched_basic_quiz_id, explanation } =
+        input_data;
 
       // 関連する基礎問題番号リストのバリデーション・取得
       const matched_basic_quiz_id_list: number[] = [];
@@ -2351,6 +2352,16 @@ export class QuizService {
               file_num,
               basis_quiz_id: matched_basic_quiz_id_list[i],
               advanced_quiz_id: new_id,
+            },
+          });
+        }
+
+        // 解説を登録
+        if (explanation) {
+          await prisma.advanced_quiz_explanation.create({
+            data: {
+              advanced_quiz_id: new_id,
+              explanation,
             },
           });
         }
