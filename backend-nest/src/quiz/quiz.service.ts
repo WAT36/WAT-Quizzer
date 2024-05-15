@@ -2387,6 +2387,7 @@ export class QuizService {
         dummy1,
         dummy2,
         dummy3,
+        explanation,
       } = input_data;
 
       if (!dummy1 && !dummy2 && !dummy3) {
@@ -2469,6 +2470,16 @@ export class QuizService {
               file_num,
               basis_quiz_id: matched_basic_quiz_id_list[i],
               advanced_quiz_id: new_id,
+            },
+          });
+        }
+
+        // 解説を登録
+        if (explanation) {
+          await prisma.advanced_quiz_explanation.create({
+            data: {
+              advanced_quiz_id: new_id,
+              explanation,
             },
           });
         }
