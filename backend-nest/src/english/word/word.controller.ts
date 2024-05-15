@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -16,6 +17,7 @@ import {
   EditWordSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
   UpsertWordSubSourceAPIRequestDto,
+  DeleteWordSubSourceAPIRequestDto,
 } from 'quizzer-lib';
 import { AuthGuard } from '../../auth/auth.guard';
 
@@ -115,6 +117,14 @@ export class EnglishWordController {
   @Post('subsource')
   async addSubSourceOfWordById(@Body() req: UpsertWordSubSourceAPIRequestDto) {
     return await this.englishWordService.upsertSubSourceOfWordById(req);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('subsource')
+  async deleteSubSourceOfWordById(
+    @Body() req: DeleteWordSubSourceAPIRequestDto,
+  ) {
+    return await this.englishWordService.deleteSubSourceOfWordById(req);
   }
 
   @UseGuards(AuthGuard)

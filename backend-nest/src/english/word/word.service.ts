@@ -7,6 +7,7 @@ import {
   EditWordMeanAPIRequestDto,
   getRandomElementsFromArray,
   UpsertWordSubSourceAPIRequestDto,
+  DeleteWordSubSourceAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -620,6 +621,25 @@ export class EnglishWordService {
         create: {
           word_id: wordId,
           subsource: subSource,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語のサブ出典削除
+  async deleteSubSourceOfWordById(req: DeleteWordSubSourceAPIRequestDto) {
+    try {
+      const { id } = req;
+      return await prisma.word_subsource.delete({
+        where: {
+          id,
         },
       });
     } catch (error: unknown) {

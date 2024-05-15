@@ -37,6 +37,11 @@ export interface UpsertWordSubSourceAPIRequestDto {
   subSource: string
 }
 
+// 英単語サブ出典削除APIリクエスト型
+export interface DeleteWordSubSourceAPIRequestDto {
+  id: number
+}
+
 // 英単語意味編集APIリクエスト型
 export interface EditWordMeanAPIRequestDto {
   wordId: number
