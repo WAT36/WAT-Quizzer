@@ -285,6 +285,7 @@ model source {
   updated_at  DateTime      @default(now()) @db.Timestamp(6)
   deleted_at  DateTime?     @db.Timestamp(6)
   mean_source mean_source[]
+  word_source word_source[]
 }
 
 model word {
@@ -297,6 +298,7 @@ model word {
   englishbot_answer_log englishbot_answer_log[]
   idiom                 idiom[]
   mean                  mean[]
+  word_source           word_source[]
   word_subsource        word_subsource[]
   word_statistics_view  word_statistics_view?   @relation(fields: [id], references: [id])
 }
@@ -337,6 +339,19 @@ model word_similarity_group {
   created_at                 DateTime  @default(now()) @db.Timestamp(6)
   updated_at                 DateTime  @default(now()) @db.Timestamp(6)
   deleted_at                 DateTime? @db.Timestamp(6)
+}
+
+model word_source {
+  id         Int       @id @default(autoincrement())
+  word_id    Int
+  source_id  Int
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+  word       word      @relation(fields: [word_id], references: [id])
+  source     source    @relation(fields: [source_id], references: [id])
+
+  @@unique([word_id, source_id])
 }
 
 model word_subsource {
