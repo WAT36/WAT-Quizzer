@@ -8,6 +8,7 @@ import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { editEnglishWordMeanAPI } from '@/api/englishbot/editEnglishWordMeanAPI';
+import { deleteEnglishMeanAPI } from '@/api/englishbot/deleteEnglishMeanAPI';
 
 interface MeaningStackProps {
   posList: PullDownOptionState[];
@@ -84,12 +85,14 @@ export const MeaningStack = ({
     meaning: ''
   };
   const [inputEditData, setInputEditData] = useState<WordMeanData>(emptyWordMeanData);
+  const [selectedMeanIndex, setSelectedMeanIndex] = useState<number>(-1); //仮
 
   const handleOpen = (x: WordMeanData, index: number) => {
     if (setModalIsOpen) {
       setModalIsOpen(true);
     }
     setInputEditData(x);
+    setSelectedMeanIndex(index);
   };
   return (
     <>
@@ -143,7 +146,7 @@ export const MeaningStack = ({
             <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
               <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h4" component="h4">
-                  意味編集
+                  {'意味' + (selectedMeanIndex === -1 ? '追加' : '更新')}
                 </Typography>
                 <Typography sx={{ mt: 2 }}>
                   品詞：
@@ -165,7 +168,7 @@ export const MeaningStack = ({
                   />
                 </Typography>
                 <Button
-                  label={'意味更新'}
+                  label={'意味' + (selectedMeanIndex === -1 ? '追加' : '更新')}
                   attr={'button-array'}
                   variant="contained"
                   color="primary"
@@ -177,6 +180,24 @@ export const MeaningStack = ({
                       setModalIsOpen,
                       setInputEditData,
                       setWordDetail
+                    })
+                  }
+                />
+                <Button
+                  label={'意味削除'}
+                  attr={'button-array'}
+                  variant="contained"
+                  color="primary"
+                  disabled={selectedMeanIndex === -1}
+                  onClick={(e) =>
+                    deleteEnglishMeanAPI({
+                      word_id: wordDetail.id,
+                      mean_id: inputEditData.id,
+                      setMessage,
+                      setModalIsOpen,
+                      setWordDetail,
+                      setInputEditData,
+                      setSelectedMeanIndex
                     })
                   }
                 />
