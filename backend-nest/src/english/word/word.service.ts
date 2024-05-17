@@ -9,6 +9,7 @@ import {
   UpsertWordSubSourceAPIRequestDto,
   DeleteWordSubSourceAPIRequestDto,
   DeleteWordSourceAPIRequestDto,
+  DeleteMeanAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -656,6 +657,25 @@ export class EnglishWordService {
       return await prisma.word_subsource.delete({
         where: {
           id,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語の意味削除
+  async deleteMeandById(req: DeleteMeanAPIRequestDto) {
+    try {
+      const { meanId } = req;
+      return await prisma.mean.delete({
+        where: {
+          id: meanId,
         },
       });
     } catch (error: unknown) {
