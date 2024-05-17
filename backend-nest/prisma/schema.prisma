@@ -140,7 +140,6 @@ model mean {
   partsofspeech    partsofspeech  @relation(fields: [partsofspeech_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   word             word           @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   mean_example     mean_example[]
-  mean_source      mean_source[]
 
   @@unique([word_id, wordmean_id])
 }
@@ -155,18 +154,6 @@ model mean_example {
   mean                mean      @relation(fields: [mean_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([example_sentense_id, mean_id])
-}
-
-model mean_source {
-  mean_id    Int
-  source_id  Int
-  created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at DateTime? @db.Timestamp(6)
-  mean       mean      @relation(fields: [mean_id], references: [id])
-  source     source    @relation(fields: [source_id], references: [id])
-
-  @@id([mean_id, source_id])
 }
 
 model partsofspeech {
@@ -284,7 +271,6 @@ model source {
   created_at  DateTime      @default(now()) @db.Timestamp(6)
   updated_at  DateTime      @default(now()) @db.Timestamp(6)
   deleted_at  DateTime?     @db.Timestamp(6)
-  mean_source mean_source[]
   word_source word_source[]
 }
 
