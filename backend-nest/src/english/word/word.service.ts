@@ -8,6 +8,7 @@ import {
   getRandomElementsFromArray,
   UpsertWordSubSourceAPIRequestDto,
   DeleteWordSubSourceAPIRequestDto,
+  DeleteWordSourceAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -590,6 +591,28 @@ export class EnglishWordService {
         }
       });
       return result;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語の出典削除
+  async deleteSourceOfWordById(req: DeleteWordSourceAPIRequestDto) {
+    try {
+      const { word_id, source_id } = req;
+      return await prisma.word_source.delete({
+        where: {
+          word_id_source_id: {
+            word_id,
+            source_id,
+          },
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
