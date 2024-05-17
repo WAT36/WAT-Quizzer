@@ -24,6 +24,7 @@ export const Main: Story = {
       name: 'word',
       pronounce: '発音',
       mean: [],
+      word_source: [],
       word_subsource: []
     },
     modalIsOpen: false
