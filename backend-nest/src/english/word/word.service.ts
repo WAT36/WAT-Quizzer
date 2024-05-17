@@ -102,7 +102,7 @@ export class EnglishWordService {
           }
 
           //意味追加
-          const addMeanResult = await prisma.mean.create({
+          await prisma.mean.create({
             data: {
               word_id: wordWillId,
               wordmean_id: i + 1,
@@ -110,11 +110,11 @@ export class EnglishWordService {
               meaning: meanArrayData[i].meaning,
             },
           });
-          // 意味出典追加（登録されてない場合(-1)は登録しない）
+          // 単語出典追加（登録されてない場合(-1)は登録しない）
           if (sourceId !== -1) {
-            await prisma.mean_source.create({
+            await prisma.word_source.create({
               data: {
-                mean_id: addMeanResult.id,
+                word_id: wordWillId,
                 source_id: sourceId,
               },
             });
@@ -205,13 +205,13 @@ export class EnglishWordService {
                   name: true,
                 },
               },
-              mean_source: {
+            },
+          },
+          word_source: {
+            select: {
+              source: {
                 select: {
-                  source: {
-                    select: {
-                      name: true,
-                    },
-                  },
+                  name: true,
                 },
               },
             },
@@ -325,16 +325,12 @@ export class EnglishWordService {
           mean: true,
         },
         where: {
-          mean: {
+          word_source: {
             ...(source &&
               +source !== -1 && {
+                some: {},
                 every: {
-                  mean_source: {
-                    some: {},
-                    every: {
-                      source_id: +source,
-                    },
-                  },
+                  source_id: +source,
                 },
               }),
           },
@@ -437,16 +433,12 @@ export class EnglishWordService {
           mean: true,
         },
         where: {
-          mean: {
+          word_source: {
             ...(source &&
               +source !== -1 && {
+                some: {},
                 every: {
-                  mean_source: {
-                    some: {},
-                    every: {
-                      source_id: +source,
-                    },
-                  },
+                  source_id: +source,
                 },
               }),
           },
@@ -565,40 +557,36 @@ export class EnglishWordService {
   // 単語の出典追加・更新
   async editSourceOfWordById(req: EditWordSourceAPIRequestDto) {
     try {
-      const { meanId, oldSourceId, newSourceId } = req;
+      const { wordId, oldSourceId, newSourceId } = req;
       const result = [];
       //トランザクション実行準備
       await prisma.$transaction(async (prisma) => {
         if (oldSourceId === -1) {
           // 出典追加
-          for (let i = 0; i < meanId.length; i++) {
-            result.push(
-              await prisma.mean_source.create({
-                data: {
-                  mean_id: meanId[i],
-                  source_id: newSourceId,
-                },
-              }),
-            );
-          }
+          result.push(
+            await prisma.word_source.create({
+              data: {
+                word_id: wordId,
+                source_id: newSourceId,
+              },
+            }),
+          );
         } else {
           // 出典更新
-          for (let i = 0; i < meanId.length; i++) {
-            result.push(
-              await prisma.mean_source.update({
-                data: {
-                  source_id: newSourceId,
-                  updated_at: new Date(),
+          result.push(
+            await prisma.word_source.update({
+              data: {
+                source_id: newSourceId,
+                updated_at: new Date(),
+              },
+              where: {
+                word_id_source_id: {
+                  word_id: wordId,
+                  source_id: oldSourceId,
                 },
-                where: {
-                  mean_id_source_id: {
-                    mean_id: meanId[i],
-                    source_id: oldSourceId,
-                  },
-                },
-              }),
-            );
-          }
+              },
+            }),
+          );
         }
       });
       return result;
@@ -689,16 +677,12 @@ export class EnglishWordService {
         select: {
           id: true,
           name: true,
-          mean: {
+          word_source: {
             select: {
-              mean_source: {
+              source: {
                 select: {
-                  source: {
-                    select: {
-                      id: true,
-                      name: true,
-                    },
-                  },
+                  id: true,
+                  name: true,
                 },
               },
             },
@@ -760,16 +744,12 @@ export class EnglishWordService {
                   name: true,
                 },
               },
-              mean_source: {
-                select: {
-                  source: {
-                    select: {
-                      id: true,
-                      name: true,
-                    },
-                  },
-                },
-              },
+            },
+          },
+          word_source: {
+            select: {
+              id: true,
+              source: true,
             },
           },
           word_subsource: {
