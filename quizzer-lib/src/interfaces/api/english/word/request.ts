@@ -25,7 +25,7 @@ export interface AddWordTestResultLogAPIRequestDto {
 
 // 英単語出典編集APIリクエスト型
 export interface EditWordSourceAPIRequestDto {
-  meanId: number[]
+  wordId: number
   oldSourceId: number
   newSourceId: number
 }

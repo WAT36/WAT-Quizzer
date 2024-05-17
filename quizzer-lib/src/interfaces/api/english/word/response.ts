@@ -110,10 +110,10 @@ export interface GetRandomWordAPIResponse extends ApiResponse {
     partsofspeech: {
       name: string
     }
-    mean_source: {
-      source: {
-        name: string
-      }
-    }[]
+  }[]
+  word_source: {
+    source: {
+      name: string
+    }
   }[]
 }

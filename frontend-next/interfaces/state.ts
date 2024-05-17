@@ -1,4 +1,5 @@
 // TODO stateはAPI responseの型とまとめたい　そしてこれもquizzer-libに持っていきたい
+// TODO というよりかはstateの型をAPIの型と一体化させたい
 export interface MessageState {
   message: string;
   messageColor: string;
@@ -153,12 +154,6 @@ export interface InputAddWordState {
 }
 
 export interface WordMeanData {
-  mean_source: {
-    source: {
-      id: number;
-      name: string;
-    };
-  }[];
   partsofspeech: {
     id: number;
     name: string;
@@ -189,6 +184,12 @@ export interface WordDetailData {
   name: string;
   pronounce: string;
   mean: WordMeanData[];
+  word_source: {
+    source: {
+      id: number;
+      name: string;
+    };
+  }[];
   word_subsource: WordSubSourceData[];
 }
 

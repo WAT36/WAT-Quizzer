@@ -39,12 +39,6 @@ export interface EnglishWordByIdApiResponse extends ApiResponse {
   name: string
   pronounce: string
   mean: {
-    mean_source: {
-      source: {
-        id: number
-        name: string
-      }
-    }[]
     partsofspeech: {
       id: number
       name: string
@@ -52,6 +46,12 @@ export interface EnglishWordByIdApiResponse extends ApiResponse {
     id: number
     wordmean_id: number
     meaning: string
+  }[]
+  word_source: {
+    source: {
+      id: number
+      name: string
+    }
   }[]
   word_subsource: {
     id: number
