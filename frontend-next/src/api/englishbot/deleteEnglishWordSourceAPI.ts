@@ -1,58 +1,52 @@
-import { post, put } from '@/api/API';
-import { ProcessingApiReponse } from 'quizzer-lib';
-import { WordSourceData, MessageState, WordDetailData } from '../../../interfaces/state';
+import { del } from '@/api/API';
+import { ProcessingAddApiReponse } from 'quizzer-lib';
+import { MessageState, WordDetailData, WordSubSourceData } from '../../../interfaces/state';
 import { getWordDetail } from '@/pages/api/english';
 
-interface EditEnglishWordSourceButtonProps {
-  wordDetail: WordDetailData;
-  wordSourceData: WordSourceData;
-  selectedWordSourceIndex: number;
-  inputSourceId: number;
+interface AddEnglishWordSubSourceButtonProps {
+  word_id: number;
+  source_id: number;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   setWordDetail?: React.Dispatch<React.SetStateAction<WordDetailData>>;
+  setSelectedWordSourceIndex?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // TODO ここのAPI部分は分けたい
-export const editEnglishWordSourceAPI = async ({
-  wordDetail,
-  wordSourceData,
-  selectedWordSourceIndex,
-  inputSourceId,
+export const deleteEnglishWordSourceAPI = async ({
+  word_id,
+  source_id,
   setMessage,
   setModalIsOpen,
-  setWordDetail
-}: EditEnglishWordSourceButtonProps) => {
+  setWordDetail,
+  setSelectedWordSourceIndex
+}: AddEnglishWordSubSourceButtonProps) => {
   if (setModalIsOpen) {
     setModalIsOpen(false);
   }
-  if (inputSourceId === -1) {
-    if (setMessage) {
-      setMessage({ message: 'エラー:出典を選択して下さい', messageColor: 'error', isDisplay: true });
-    }
-    return;
-  }
 
-  await post(
+  await del(
     '/english/word/source',
     {
-      wordId: wordDetail.id,
-      oldSourceId: selectedWordSourceIndex === -1 ? -1 : wordSourceData.source[selectedWordSourceIndex].id,
-      newSourceId: inputSourceId
+      word_id,
+      source_id
     },
-    (data: ProcessingApiReponse) => {
+    (data: ProcessingAddApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         if (setMessage) {
           setMessage({
-            message: 'Success!! 編集に成功しました',
+            message: 'Success!! 削除に成功しました',
             messageColor: 'success.light',
             isDisplay: true
           });
         }
-        // 更新確認後、単語の意味を再取得させる
+
+        // 更新後の単語データを再取得する
         if (setWordDetail && setMessage) {
-          getWordDetail(String(wordDetail.id), setMessage, setWordDetail);
+          getWordDetail(String(word_id), setMessage, setWordDetail);
         }
+
+        setSelectedWordSourceIndex && setSelectedWordSourceIndex(-1);
       } else {
         if (setMessage) {
           setMessage({

@@ -8,6 +8,7 @@ import { style } from '../Stack.style';
 import { useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { editEnglishWordSourceAPI } from '@/api/englishbot/editEnglishWordSourceAPI';
+import { deleteEnglishWordSourceAPI } from '@/api/englishbot/deleteEnglishWordSourceAPI';
 
 interface SourceStackProps {
   sourceList: PullDownOptionState[];
@@ -124,14 +125,14 @@ export const SourceStack = ({
             <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
               <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h4" component="h4">
-                  出典編集
+                  {'出典' + (selectedWordSourceIndex === -1 ? '追加' : '更新')}
                 </Typography>
                 <Typography sx={{ mt: 2 }}>
                   出典：
                   {displaySourceInput(3, sourceList, inputSourceId, setInputSourceId)}
                 </Typography>
                 <Button
-                  label={'出典更新'}
+                  label={'出典' + (selectedWordSourceIndex === -1 ? '追加' : '更新')}
                   attr={'button-array'}
                   variant="contained"
                   color="primary"
@@ -144,6 +145,23 @@ export const SourceStack = ({
                       setMessage,
                       setModalIsOpen,
                       setWordDetail
+                    })
+                  }
+                />
+                <Button
+                  label={'出典削除'}
+                  attr={'button-array'}
+                  variant="contained"
+                  color="primary"
+                  disabled={selectedWordSourceIndex === -1}
+                  onClick={(e) =>
+                    deleteEnglishWordSourceAPI({
+                      word_id: wordDetail.id,
+                      source_id: inputSourceId,
+                      setMessage,
+                      setModalIsOpen,
+                      setWordDetail,
+                      setSelectedWordSourceIndex
                     })
                   }
                 />
