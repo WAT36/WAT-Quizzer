@@ -66,7 +66,6 @@ export const editEnglishWordMeanAPI = async ({
 
       if (setInputEditData) {
         setInputEditData({
-          mean_source: [],
           partsofspeech: {
             id: -1,
             name: ''

@@ -19,7 +19,8 @@ export default function EnglishBotTopPage({ isMock }: Props) {
     id: -1,
     name: '',
     pronounce: '',
-    mean: []
+    mean: [],
+    word_source: []
   });
   const setMessage = useSetRecoilState(messageState);
   // 問題ファイルリスト取得

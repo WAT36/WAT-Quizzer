@@ -78,28 +78,11 @@ export const SourceStack = ({
         id: wordDetail.id,
         name: wordDetail.name
       },
-      // TODO wordDetail内のmean内のmean_source内のsourceを重複ないように作り変えているが、
-      source: Array.from(
-        new Map(
-          wordDetail.mean
-            .reduce(
-              (accumulator, currentValue) => {
-                for (let i = 0; i < currentValue.mean_source.length; i++) {
-                  accumulator.push(currentValue.mean_source[i].source);
-                }
-                return accumulator;
-              },
-              [] as {
-                id: number;
-                name: string;
-              }[]
-            )
-            // ここまででwordDetail内のsourceを全て取り出している（重複あり）
-            .map((source) => [source.id, source])
-        ).values()
-      )
+      source: wordDetail.word_source.map((x) => {
+        return x.source;
+      })
     });
-  }, [wordDetail.id, wordDetail.mean, wordDetail.name]);
+  }, [wordDetail.id, wordDetail.name, wordDetail.word_source]);
 
   const handleOpen = (sourceId: number, index: number) => {
     if (setModalIsOpen) {

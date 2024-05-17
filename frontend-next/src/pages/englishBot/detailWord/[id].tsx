@@ -25,6 +25,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     name: '',
     pronounce: '',
     mean: [],
+    word_source: [],
     word_subsource: []
   });
   const [open, setOpen] = useState(false);

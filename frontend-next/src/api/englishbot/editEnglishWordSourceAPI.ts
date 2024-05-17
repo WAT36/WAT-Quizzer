@@ -36,7 +36,7 @@ export const editEnglishWordSourceAPI = async ({
   await put(
     '/english/word/source',
     {
-      meanId: wordDetail.mean.map((x) => x.id),
+      wordId: wordDetail.id,
       oldSourceId: selectedWordSourceIndex === -1 ? -1 : wordSourceData.source[selectedWordSourceIndex].id,
       newSourceId: inputSourceId
     },

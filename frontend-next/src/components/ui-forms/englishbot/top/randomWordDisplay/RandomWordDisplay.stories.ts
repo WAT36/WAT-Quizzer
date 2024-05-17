@@ -28,37 +28,20 @@ export const Main: Story = {
           meaning: '意味１',
           partsofspeech: {
             name: '品詞１'
-          },
-          mean_source: [
-            {
-              source: {
-                name: '出典1-1'
-              }
-            },
-            {
-              source: {
-                name: '出典1-2'
-              }
-            }
-          ]
+          }
         },
         {
           meaning: '意味２',
           partsofspeech: {
             name: '品詞２'
-          },
-          mean_source: [
-            {
-              source: {
-                name: '出典2-1'
-              }
-            },
-            {
-              source: {
-                name: '出典2-2'
-              }
-            }
-          ]
+          }
+        }
+      ],
+      word_source: [
+        {
+          source: {
+            name: '出典１'
+          }
         }
       ]
     }

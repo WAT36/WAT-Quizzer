@@ -75,7 +75,6 @@ export const MeaningStack = ({
   setModalIsOpen
 }: MeaningStackProps) => {
   const emptyWordMeanData = {
-    mean_source: [],
     partsofspeech: {
       id: -1,
       name: ''
