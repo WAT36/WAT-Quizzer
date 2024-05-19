@@ -77,9 +77,16 @@ export const getQuizAPI = async ({
             answer: res.answer,
             category: res.category,
             img_file: res.img_file,
-            matched_basic_quiz_id: res.quiz_basis_advanced_linkage
-              ? JSON.stringify(res.quiz_basis_advanced_linkage)
-              : '',
+            matched_basic_quiz_id:
+              res.quiz_basis_advanced_linkage && res.quiz_basis_advanced_linkage.length > 0
+                ? JSON.stringify(
+                    res.quiz_basis_advanced_linkage.map((x) => {
+                      return x.basis_quiz_id;
+                    })
+                  )
+                    .slice(1)
+                    .slice(0, -1)
+                : '',
             dummy1: res.dummy_choice && res.dummy_choice[0].dummy_choice_sentense, //四択問題のダミー選択肢１
             dummy2: res.dummy_choice && res.dummy_choice[1].dummy_choice_sentense, //四択問題のダミー選択肢２
             dummy3: res.dummy_choice && res.dummy_choice[2].dummy_choice_sentense, //四択問題のダミー選択肢３
