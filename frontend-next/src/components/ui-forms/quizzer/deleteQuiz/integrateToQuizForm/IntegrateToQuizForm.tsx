@@ -60,6 +60,7 @@ export const IntegrateToQuizForm = ({
             <FormControl>
               <TextField
                 label="問題番号"
+                disabled={!(queryOfDeleteQuizState.format === 'basic' || queryOfDeleteQuizState.format === 'applied')}
                 onChange={(e) => {
                   setQueryOfIntegrateToQuizState &&
                     setQueryOfIntegrateToQuizState({

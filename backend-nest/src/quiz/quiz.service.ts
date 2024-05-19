@@ -1845,6 +1845,7 @@ export class QuizService {
           });
           break;
         case 'applied':
+        case '4choice':
           return await prisma.advanced_quiz.update({
             data: {
               updated_at: new Date(),

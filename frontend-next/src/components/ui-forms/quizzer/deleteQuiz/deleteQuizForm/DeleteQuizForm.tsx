@@ -113,6 +113,7 @@ export const DeleteQuizForm = ({
               >
                 <FormControlLabel value="basic" control={<Radio />} label="基礎問題" />
                 <FormControlLabel value="applied" control={<Radio />} label="応用問題" />
+                <FormControlLabel value="4choice" control={<Radio />} label="四択問題" />
               </RadioGroup>
             </FormControl>
           </FormGroup>
