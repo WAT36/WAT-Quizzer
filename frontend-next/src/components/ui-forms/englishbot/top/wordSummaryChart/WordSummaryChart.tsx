@@ -1,5 +1,5 @@
 import Chart from 'react-google-charts';
-import styles from '../Chart.module.css';
+import styles from '../../../../Chart.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
 import { WordSummaryApiResponse } from 'quizzer-lib';
 
