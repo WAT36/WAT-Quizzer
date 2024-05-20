@@ -16,6 +16,11 @@ export class QuizFileController {
     return await this.quizFileService.getFileList();
   }
 
+  @Get('statistics')
+  async getFileStatistics() {
+    return await this.quizFileService.getFileStatisticsData();
+  }
+
   @Post()
   async addFile(@Body() req: AddQuizFileAPIRequestDto) {
     return await this.quizFileService.addFile(req);

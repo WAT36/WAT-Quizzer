@@ -32,6 +32,36 @@ export class QuizFileService {
     });
   }
 
+  // ファイル統計ビューデータ取得
+  async getFileStatisticsData() {
+    const result = await prisma.quiz_file_view.findMany({
+      select: {
+        file_num: true,
+        file_name: true,
+        file_nickname: true,
+        basic_quiz_count: true,
+        basic_clear: true,
+        basic_fail: true,
+        basic_accuracy_rate: true,
+        advanced_quiz_count: true,
+        advanced_clear: true,
+        advanced_fail: true,
+        advanced_accuracy_rate: true,
+      },
+      orderBy: {
+        file_num: 'asc',
+      },
+    });
+
+    return result.map((x) => {
+      return {
+        ...x,
+        basic_quiz_count: Number(x.basic_quiz_count),
+        advanced_quiz_count: Number(x.advanced_quiz_count),
+      };
+    });
+  }
+
   // ファイル追加
   async addFile(req: AddQuizFileAPIRequestDto) {
     try {
