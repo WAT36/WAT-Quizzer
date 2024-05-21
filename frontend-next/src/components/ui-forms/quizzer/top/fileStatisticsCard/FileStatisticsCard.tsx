@@ -16,6 +16,11 @@ export const FileStatisticsCard = ({ quizFileStatisticsData }: FileStatisticsCar
     chart: {
       title: '問題ファイル統計',
       subtitle: '(基礎)問題数,正解不正解数'
+    },
+    vAxis: {
+      viewWindow: {
+        min: 0
+      }
     }
   };
 
