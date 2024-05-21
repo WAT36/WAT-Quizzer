@@ -24,3 +24,9 @@ export interface QuizFileStatisticsApiResponse extends ApiResponse {
   advanced_fail: number
   advanced_accuracy_rate: bigint
 }
+
+// quiz/statistics/weekからの取得結果
+export interface QuizStatisticsWeekApiResponse extends ApiResponse {
+  date: string
+  count: number
+}
