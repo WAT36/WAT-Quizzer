@@ -213,4 +213,9 @@ export class QuizController {
   async addFourChoiceQuiz(@Body() req: AddQuizAPIRequestDto) {
     return await this.quizService.addFourChoiceQuiz(req);
   }
+
+  @Get('/statistics/week')
+  async getAnswerLogStatisticsPastWeek() {
+    return await this.quizService.getAnswerLogStatisticsPastWeek();
+  }
 }

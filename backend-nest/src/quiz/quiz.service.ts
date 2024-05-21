@@ -12,6 +12,8 @@ import {
   DeleteAnswerLogAPIRequestDto,
   getPrismaYesterdayRange,
   getRandomElementFromArray,
+  getPrismaPastDayRange,
+  getPastDate,
 } from 'quizzer-lib';
 import { parseStrToBool } from 'lib/str';
 import { PrismaClient } from '@prisma/client';
@@ -2504,6 +2506,26 @@ export class QuizService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
+    }
+  }
+
+  // 過去１週間各日の回答数取得
+  async getAnswerLogStatisticsPastWeek() {
+    try {
+      const result = [];
+      for (let i = 0; i < 7; i++) {
+        result.push({
+          date: getPastDate(i),
+          count: await prisma.answer_log.count({
+            where: {
+              created_at: getPrismaPastDayRange(i),
+            },
+          }),
+        });
+      }
+      return result;
+    } catch (error) {
+      throw error;
     }
   }
 }
