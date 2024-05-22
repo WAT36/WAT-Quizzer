@@ -1,33 +1,30 @@
 SELECT
-  c.file_num,
-  c.category AS c_category,
+  qc.file_num,
+  qc.category,
   count(*) AS count,
-  sum(a.clear_count) AS sum_of_clear_count,
-  sum(a.fail_count) AS sum_of_fail_count,
+  sum(qv.clear_count) AS sum_of_clear_count,
+  sum(qv.fail_count) AS sum_of_fail_count,
   CASE
     WHEN (
-      (sum(a.clear_count) + sum(a.fail_count)) = (0) :: numeric
+      (sum(qv.clear_count) + sum(qv.fail_count)) = (0) :: numeric
     ) THEN (0) :: numeric
     ELSE (
-      ((100) :: numeric * sum(a.clear_count)) / (sum(a.clear_count) + sum(a.fail_count))
+      ((100) :: numeric * sum(qv.clear_count)) / (sum(qv.clear_count) + sum(qv.fail_count))
     )
   END AS accuracy_rate
 FROM
   (
-    category c
-    CROSS JOIN quiz_view a
-  )
-WHERE
-  (
-    (c.file_num = a.file_num)
-    AND (
-      (a.category) :: text ~~ concat('%', c.category, '%')
+    quiz_category qc
+    JOIN quiz_view qv ON (
+      (
+        (qc.file_num = qv.file_num)
+        AND (qc.quiz_num = qv.quiz_num)
+      )
     )
-    AND (a.deleted_at IS NULL)
   )
 GROUP BY
-  c.file_num,
-  c.category
+  qc.file_num,
+  qc.category
 ORDER BY
-  c.file_num,
-  c.category;
+  qc.file_num,
+  qc.category;

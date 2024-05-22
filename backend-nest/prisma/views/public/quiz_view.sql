@@ -4,7 +4,6 @@ SELECT
   quiz.quiz_num,
   quiz.quiz_sentense,
   quiz.answer,
-  quiz.category,
   quiz.img_file,
   quiz.checked,
   COALESCE(corrected_data.clear_count, (0) :: bigint) AS clear_count,

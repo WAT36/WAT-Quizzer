@@ -84,11 +84,11 @@ model dummy_choice {
 model englishbot_answer_log {
   id         Int       @id @default(autoincrement())
   word_id    Int
-  test_type  Int       @default(0)
   result     Boolean?
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
+  test_type  Int       @default(0)
   word       word      @relation(fields: [word_id], references: [id])
 }
 
@@ -172,13 +172,13 @@ model quiz {
   quiz_num                    Int
   quiz_sentense               String                        @unique @db.VarChar(256)
   answer                      String                        @db.VarChar(256)
-  category                    String?                       @db.VarChar(256)
   img_file                    String?                       @db.VarChar(128)
   checked                     Boolean?                      @default(false)
   created_at                  DateTime                      @default(now()) @db.Timestamp(6)
   updated_at                  DateTime                      @default(now()) @db.Timestamp(6)
   deleted_at                  DateTime?                     @db.Timestamp(6)
   quiz_basis_advanced_linkage quiz_basis_advanced_linkage[]
+  quiz_category               quiz_category[]
   quiz_statistics_view        quiz_statistics_view?         @relation(fields: [id], references: [id])
 
   @@unique([file_num, quiz_num])
@@ -196,6 +196,19 @@ model quiz_basis_advanced_linkage {
   quiz             quiz          @relation(fields: [basis_quiz_id], references: [id])
 
   @@unique([basis_quiz_id, advanced_quiz_id])
+}
+
+model quiz_category {
+  id         Int       @id @default(autoincrement())
+  file_num   Int
+  quiz_num   Int
+  category   String?   @db.VarChar(256)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+  quiz       quiz      @relation(fields: [file_num, quiz_num], references: [file_num, quiz_num])
+
+  @@unique([file_num, quiz_num, category])
 }
 
 model quiz_dependency {
@@ -334,8 +347,8 @@ model word_source {
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
-  word       word      @relation(fields: [word_id], references: [id])
   source     source    @relation(fields: [source_id], references: [id])
+  word       word      @relation(fields: [word_id], references: [id])
 
   @@unique([word_id, source_id])
 }
@@ -385,13 +398,13 @@ view advanced_quiz_view {
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 view category_view {
   file_num           Int
-  c_category         String   @db.VarChar(256)
+  category           String   @db.VarChar(256)
   count              BigInt?
   sum_of_clear_count Decimal? @db.Decimal
   sum_of_fail_count  Decimal? @db.Decimal
   accuracy_rate      Decimal? @db.Decimal
 
-  @@unique([file_num, c_category])
+  @@unique([file_num, category])
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -428,7 +441,6 @@ view quiz_view {
   quiz_num      Int?
   quiz_sentense String?   @db.VarChar(256)
   answer        String?   @db.VarChar(256)
-  category      String?   @db.VarChar(256)
   img_file      String?   @db.VarChar(128)
   checked       Boolean?
   clear_count   BigInt?
