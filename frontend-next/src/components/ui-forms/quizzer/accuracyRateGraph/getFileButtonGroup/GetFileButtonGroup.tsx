@@ -3,7 +3,6 @@ import { MessageState, QueryOfGetAccuracyState } from '../../../../../../interfa
 import { Button } from '@/components/ui-elements/button/Button';
 import { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
 import { getAccuracy } from '@/api/category/getAccuracyAPI';
-import { updateCategory } from '@/api/category/updateCategoryAPI';
 
 interface GetFileButtonGroupProps {
   queryOfGetAccuracy: QueryOfGetAccuracyState;
@@ -20,14 +19,6 @@ export const GetFileButtonGroup = ({ queryOfGetAccuracy, setMessage, setAccuracy
         variant="contained"
         color="primary"
         onClick={(e) => getAccuracy({ queryOfGetAccuracy, setMessage, setAccuracyData })}
-      ></Button>
-
-      <Button
-        label={'カテゴリ更新'}
-        attr={'button-array'}
-        variant="contained"
-        color="primary"
-        onClick={(e) => updateCategory({ queryOfGetAccuracy, setMessage })}
       ></Button>
     </>
   );
