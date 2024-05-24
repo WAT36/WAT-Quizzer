@@ -49,7 +49,11 @@ export const getDeletingQuiz = ({
           quizNum: res.quiz_num,
           sentense: res.quiz_sentense,
           answer: res.answer,
-          category: res.category,
+          category: res.quiz_category
+            ?.map((x) => {
+              return x.category;
+            })
+            .join(','),
           image: res.img_file
         });
         setMessage({

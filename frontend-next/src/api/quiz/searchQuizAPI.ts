@@ -33,7 +33,22 @@ export const searchQuizAPI = ({ queryOfSearchQuizState, setMessage, setSearchRes
     '/quiz/search',
     (data: ProcessingApiReponse) => {
       if ((String(data.status)[0] === '2' || String(data.status)[0] === '3') && data.body?.length > 0) {
-        const res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
+        let res: GetQuizApiResponseDto[] = data.body as GetQuizApiResponseDto[];
+        res = res.map((x) => {
+          return {
+            ...x,
+            category: x.quiz_category
+              ? x.quiz_category
+                  .filter((x) => {
+                    return !x.deleted_at;
+                  })
+                  .map((x) => {
+                    return x.category;
+                  })
+                  .join(',')
+              : ''
+          };
+        });
         setSearchResult(res);
         setMessage({
           message: 'Success!! ' + res.length + '問の問題を取得しました',

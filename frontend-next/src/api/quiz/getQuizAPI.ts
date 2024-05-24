@@ -75,7 +75,11 @@ export const getQuizAPI = async ({
             quizNum: res.quiz_num,
             question: res.quiz_sentense,
             answer: res.answer,
-            category: res.category,
+            quiz_category: res.quiz_category
+              ?.map((x) => {
+                return x.category;
+              })
+              .join(','),
             img_file: res.img_file,
             matched_basic_quiz_id:
               res.quiz_basis_advanced_linkage && res.quiz_basis_advanced_linkage.length > 0

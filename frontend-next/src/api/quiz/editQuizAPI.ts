@@ -42,7 +42,7 @@ export const editQuizAPI = async ({ queryOfEditQuiz, setMessage, setQueryOfEditQ
       quiz_num: queryOfEditQuiz.quizNum,
       question: queryOfEditQuiz.question,
       answer: queryOfEditQuiz.answer,
-      category: queryOfEditQuiz.category,
+      category: queryOfEditQuiz.quiz_category,
       img_file: queryOfEditQuiz.img_file,
       matched_basic_quiz_id: queryOfEditQuiz.matched_basic_quiz_id,
       dummy1: queryOfEditQuiz.dummy1,

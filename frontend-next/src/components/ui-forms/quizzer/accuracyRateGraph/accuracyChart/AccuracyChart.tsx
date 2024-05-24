@@ -38,7 +38,7 @@ export const AccuracyChart = ({ accuracyData }: AccuracyChartProps) => {
       // String(Math.round(parseFloat(category_rate[i].accuracy_rate) * 10) / 10) +
       String(Math.round(+category_rate[i].accuracy_rate * 10) / 10) + '% / ' + String(category_rate[i].count) + '問';
     visualized_data.push([
-      category_rate[i].c_category,
+      category_rate[i].category,
       // parseFloat(category_rate[i].accuracy_rate),
       +category_rate[i].accuracy_rate,
       '#76A7FA',

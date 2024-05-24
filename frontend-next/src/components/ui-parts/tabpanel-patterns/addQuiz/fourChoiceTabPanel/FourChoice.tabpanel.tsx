@@ -65,16 +65,17 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="category"
-          value={queryOfPutQuizState.category || ''}
+          value={queryOfPutQuizState.quiz_category}
           onChange={(e) => {
             if (setQueryofPutQuizStater) {
               setQueryofPutQuizStater((prev) => ({
                 ...prev,
-                ['category']: e.target.value
+                ['quiz_category']: e.target.value
               }));
             }
           }}
         />
+        <p className={styles.notation}>※カテゴリはカンマ(,)区切りで書くこと</p>
       </Typography>
 
       <Typography variant="h6" component="h6" className={styles.messageBox}>
