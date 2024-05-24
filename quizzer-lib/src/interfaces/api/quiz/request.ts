@@ -18,7 +18,7 @@ export interface AddQuizAPIRequestDto {
   input_data: {
     question?: string
     answer?: string
-    category?: string
+    quiz_category?: string
     img_file?: string
     matched_basic_quiz_id?: string
     dummy1?: string //四択問題のダミー選択肢１

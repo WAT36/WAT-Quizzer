@@ -12,7 +12,7 @@ export interface GetCategoryAPIResponseDto extends ApiResponse {
 // (指定ファイルのカテゴリ毎の)正解率が入ったDTO(SQL実行結果)
 export interface AccuracyRateByCategorySqlResultDto extends ApiResponse {
   file_num: number
-  c_category: string
+  category: string
   count: bigint
   accuracy_rate: number
 }

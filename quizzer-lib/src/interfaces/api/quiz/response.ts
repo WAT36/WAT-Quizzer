@@ -7,7 +7,6 @@ export interface GetQuizApiResponseDto extends ApiResponse {
   quiz_num: number
   quiz_sentense: string
   answer: string
-  category?: string
   img_file?: string
   checked?: boolean
   quiz_statistics_view?: {
@@ -15,6 +14,10 @@ export interface GetQuizApiResponseDto extends ApiResponse {
     fail_count: number
     accuracy_rate: number
   }
+  quiz_category?: {
+    category: string
+    deleted_at?: string
+  }[]
   advanced_quiz_statistics_view?: {
     clear_count: number
     fail_count: number
