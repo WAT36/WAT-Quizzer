@@ -10,15 +10,18 @@
     "unit": "jest",
     "lint": "eslint '*.ts' --quiet --fix",
     "compile": "tsc",
-    "test": "npm run compile && npm run unit"
+    "test": "npm run compile && npm run unit",
+    "postinstall": "npx patch-package"
   },
   "dependencies": {
+    "@prisma/client": "^5.14.0",
     "esbuild": "^0.14.14"
   },
   "devDependencies": {
+    "prisma": "^5.14.0",
+    "@jest/globals": "^29.2.0",
     "@types/aws-lambda": "^8.10.92",
     "@types/jest": "^29.2.0",
-    "@jest/globals": "^29.2.0",
     "@types/node": "^20.5.7",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",

@@ -19,11 +19,20 @@ Resources:
       Runtime: nodejs20.x
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          DATABASE_URL: $DATABASE_URL
+          PRISMA_CLI_BINARY_TARGETS: $PRISMA_CLI_BINARY_TARGETS
       Events:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /hello
+            Method: get
+        QuizFileList:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /quiz/file/list
             Method: get
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -33,6 +42,10 @@ Resources:
         Sourcemap: true
         EntryPoints: 
         - app.ts
+        Loader:
+          - .prisma=file
+          - .so.node=file
+        AssetNames: '[name]'
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

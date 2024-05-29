@@ -150,7 +150,8 @@ temp/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -176,7 +177,8 @@ Temporary Items
 # Info: https://aws.amazon.com/serverless/sam/
 # Docs: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-reference.html
 
-**/.aws-sam
+.aws-sam
+patches
 
 ### Windows ###
 # Windows thumbnail cache files

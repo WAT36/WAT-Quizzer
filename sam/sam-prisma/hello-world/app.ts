@@ -1,4 +1,11 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import prisma from './prismaClient';
+import schema from './prisma/schema.prisma';
+import x from './node_modules/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node';
+
+if (process.env.NODE_ENV !== 'production') {
+    console.debug(schema, x);
+}
 
 /**
  *
@@ -12,18 +19,42 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                message: 'hello world',
-            }),
-        };
+        const pathParam = event.path.split('/');
+        if (pathParam.length < 1 || pathParam[1] === 'hello') {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({
+                    message: 'hello world',
+                }),
+            };
+        } else if (pathParam[1] === 'quiz') {
+            return {
+                statusCode: 200,
+                body: JSON.stringify(
+                    await prisma.quiz_file.findMany({
+                        select: {
+                            file_num: true,
+                            file_name: true,
+                            file_nickname: true,
+                        },
+                        where: {
+                            deleted_at: null,
+                        },
+                        orderBy: {
+                            file_num: 'asc',
+                        },
+                    }),
+                ),
+            };
+        } else {
+            throw new Error(`Error: illegal path.:${event.path}`);
+        }
     } catch (err) {
         console.log(err);
         return {
             statusCode: 500,
             body: JSON.stringify({
-                message: 'some error happened',
+                message: err instanceof Error ? err.message : 'some error happened',
             }),
         };
     }
