@@ -20,6 +20,7 @@ resolve_s3 = true
 s3_prefix = "sam-prisma"
 region = "ap-northeast-1"
 image_repositories = []
+parameter_overrides = PrismaTarget=\"native,rhel-openssl-1.0.x,rhel-openssl-3.0.x\""
 
 [default.package.parameters]
 resolve_s3 = true
