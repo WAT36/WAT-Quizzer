@@ -15,6 +15,12 @@ Parameters:
     Type: String
 
 Resources:
+  ApiGatewayRestApi:
+      Type: AWS::Serverless::Api
+      Properties:
+        StageName: Prod
+        Auth:
+          ApiKeyRequired: true # sets for all methods
   SamQuizzerApiFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -33,6 +39,9 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: ANY
+            RestApiId: !Ref ApiGatewayRestApi
+            Auth:
+              ApiKeyRequired: true
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -45,14 +54,40 @@ Resources:
           - .prisma=file
           - .so.node=file
         AssetNames: '[name]'
+  ApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    Properties: 
+      Enabled: true
+      Name: !Sub 'api-key'
+      StageKeys: 
+        - RestApiId: !Ref ApiGatewayRestApi
+          StageName: Prod
+  ApiUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    DependsOn:
+      - ApiKey
+    Properties:
+      ApiStages:
+          - ApiId: !Ref ApiGatewayRestApi
+            Stage: Prod
+      Throttle:
+        BurstLimit: 200
+        RateLimit: 100
+      UsagePlanName: !Sub 'api-plan'
+  ApiUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    DependsOn:
+      - ApiUsagePlan
+      - SamQuizzerApiFunction
+    Properties : 
+      KeyId: !Ref ApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref ApiUsagePlan
 
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  SamQuizzerApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  # SamQuizzerApi:
+  #   Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+  #   Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   SamQuizzerApiFunction:
     Description: "SAM Quizzer Api Lambda Function ARN"
     Value: !GetAtt SamQuizzerApiFunction.Arn
