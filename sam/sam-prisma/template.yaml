@@ -28,16 +28,11 @@ Resources:
           DATABASE_URL: !Ref DbUrl
           PRISMA_CLI_BINARY_TARGETS: !Ref PrismaTarget
       Events:
-        HelloWorld:
+        QuizzerApi:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /hello
-            Method: get
-        QuizFileList:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /quiz/file/list
-            Method: get
+            Path: /{proxy+}
+            Method: ANY
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
