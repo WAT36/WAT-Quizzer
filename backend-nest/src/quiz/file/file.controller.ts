@@ -4,9 +4,9 @@ import {
   AddQuizFileAPIRequestDto,
   DeleteQuizFileAPIRequestDto,
 } from 'quizzer-lib';
-import { AuthGuard } from '../../auth/auth.guard';
+// import { AuthGuard } from '../../auth/auth.guard';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('quiz/file')
 export class QuizFileController {
   constructor(private readonly quizFileService: QuizFileService) {}

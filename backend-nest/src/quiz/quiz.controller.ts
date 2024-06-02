@@ -22,9 +22,9 @@ import {
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
 } from 'quizzer-lib';
-import { AuthGuard } from '../auth/auth.guard';
+// import { AuthGuard } from '../auth/auth.guard';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('quiz')
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
