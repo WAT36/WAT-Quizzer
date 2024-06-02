@@ -11,6 +11,7 @@ import * as ecr from 'aws-cdk-lib/aws-ecr'
 import * as log from 'aws-cdk-lib/aws-logs'
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 import { RemovalPolicy } from 'aws-cdk-lib'
+import * as apigw from 'aws-cdk-lib/aws-apigateway'
 
 dotenv.config()
 
@@ -176,5 +177,12 @@ export class BackendStack extends cdk.Stack {
     //   alb,
     //   props.hostedZone
     // )
+
+    // SAM  API
+    const samApi = apigw.RestApi.fromRestApiId(
+      this,
+      'SamBackendApi',
+      process.env.SAM_APIGATEWAY_ID || ''
+    )
   }
 }
