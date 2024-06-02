@@ -25,9 +25,9 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    # ECR ログイン
-    - uses: aws-actions/amazon-ecr-login@v1
-      id: login-ecr # outputs で参照するために id を設定
+    # # ECR ログイン
+    # - uses: aws-actions/amazon-ecr-login@v1
+    #   id: login-ecr # outputs で参照するために id を設定
 
     - name: Prepare .env file
       run: |
@@ -43,22 +43,22 @@ jobs:
     - name: Next.js Build and Export(Frontend)
       run: cd ./frontend-next && npm run export
 
-    # backendをビルド
-    - name: nest build
-      id: build-api
-      run: cd ./backend-nest && npm run build
+    # # backendをビルド ->  BackendはSAMで別にやる　将来的にはこっちでしたい
+    # - name: nest build
+    #   id: build-api
+    #   run: cd ./backend-nest && npm run build
 
-    # Docker イメージを build・push する
-    - name: build and push docker image to ecr
-      env:
-        # ECR レジストリを `aws-actions/amazon-ecr-login` アクションの `outputs.registry` から取得
-        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        # 任意のイメージタグ
-        # 今回は Git のコミットハッシュにしておく
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        docker build . --tag ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
-        docker push ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+    # # Docker イメージを build・push する
+    # - name: build and push docker image to ecr
+    #   env:
+    #     # ECR レジストリを `aws-actions/amazon-ecr-login` アクションの `outputs.registry` から取得
+    #     REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    #     # 任意のイメージタグ
+    #     # 今回は Git のコミットハッシュにしておく
+    #     IMAGE_TAG: ${{ github.sha }}
+    #   run: |
+    #     docker build . --tag ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+    #     docker push ${{ env.REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
 
     - name: Deploy backend stack
       id: cdk-deploy-backend
