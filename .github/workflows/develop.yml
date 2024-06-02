@@ -39,6 +39,10 @@ jobs:
       id: setup-dependencies
       run: npm ci --production
 
+    - name: Setup dependencies(infra)
+      id: setup-infra-dependencies
+      run: cd ./infra && npm ci --production
+
     # frontendをビルド
     - name: Next.js Build and Export(Frontend)
       run: cd ./frontend-next && npm run export
