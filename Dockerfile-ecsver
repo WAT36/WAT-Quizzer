@@ -1,9 +1,10 @@
-FROM public.ecr.aws/lambda/nodejs:20
+FROM node:18
 
-ENV DATABASE_URL=$DATABASE_URL
+ENV GENERATE_SOURCEMAP=false
+ENV NODE_OPTIONS=--max-old-space-size=16384
 
 # from monorepo root
-WORKDIR ${LAMBDA_TASK_ROOT}
+WORKDIR /app
 
 COPY ./package*.json ./
 
@@ -11,21 +12,22 @@ COPY ./quizzer-lib/package*.json ./quizzer-lib/
 
 COPY ./backend-nest/package*.json ./backend-nest/
 
-RUN npm install --production
+RUN npm ci --production
 
 # build quizzer-lib
-WORKDIR ${LAMBDA_TASK_ROOT}/quizzer-lib
+WORKDIR /app/quizzer-lib
 
 COPY ./quizzer-lib ./
 
 RUN npm run build
 
 # アプリケーションディレクトリを作成する
-WORKDIR ${LAMBDA_TASK_ROOT}/backend-nest
+WORKDIR /app/backend-nest
 
 COPY ./backend-nest ./
 
 RUN npm run build
 
-WORKDIR ${LAMBDA_TASK_ROOT}
-CMD [ "/var/task/backend-nest/dist/src/main.handler" ]
+EXPOSE 4000
+
+CMD [ "npm", "run","start" ]
