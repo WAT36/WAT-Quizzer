@@ -1,4 +1,5 @@
 import { ProcessingApiReponse } from 'quizzer-lib';
+import { getApiKey } from '../../lib/aws/secrets';
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || '';
 
@@ -11,15 +12,17 @@ export const get = async (
   bodyData?: object,
   accessToken?: string
 ) => {
+  const key = await getApiKey();
   const query = queryParam ? `?${new URLSearchParams(queryParam)}` : '';
 
   const result = await fetch(baseURL + path + query, {
     method: 'GET',
     body: bodyData ? JSON.stringify(bodyData) : null,
     headers: {
-      ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + (accessToken || localStorage.getItem('apiAccessToken'))
-      })
+      // ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
+      //   Authorization: 'Bearer ' + (accessToken || localStorage.getItem('apiAccessToken'))
+      // })
+      'x-api-key': key
     }
   })
     .then((response) =>
@@ -36,14 +39,16 @@ export const get = async (
 };
 
 export const getApiAndGetValue = async (path: string, queryParam?: { [key: string]: string }, accessToken?: string) => {
+  const key = await getApiKey();
   const query = queryParam ? `?${new URLSearchParams(queryParam)}` : '';
 
   return await fetch(baseURL + path + query, {
     method: 'GET',
     headers: {
-      ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + (accessToken || localStorage.getItem('apiAccessToken'))
-      })
+      'x-api-key': key
+      // ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
+      //   Authorization: 'Bearer ' + (accessToken || localStorage.getItem('apiAccessToken'))
+      // })
     }
   })
     .catch((error) => {
@@ -59,14 +64,16 @@ export const post = async (
   func: (data: ProcessingApiReponse) => void,
   accessToken?: string
 ) => {
+  const key = await getApiKey();
   await fetch(baseURL + path, {
     method: 'POST',
     body: JSON.stringify(jsondata),
     headers: {
       'Content-Type': 'application/json',
-      ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
-      })
+      'x-api-key': key
+      // ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
+      //   Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
+      // })
     }
   })
     .catch((error) => {
@@ -88,14 +95,16 @@ export const put = async (
   func: (data: ProcessingApiReponse) => void,
   accessToken?: string
 ) => {
+  const key = await getApiKey();
   await fetch(baseURL + path, {
     method: 'PUT',
     body: JSON.stringify(jsondata),
     headers: {
       'Content-Type': 'application/json',
-      ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
-      })
+      'x-api-key': key
+      // ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
+      //   Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
+      // })
     }
   })
     .then((response) =>
@@ -116,14 +125,16 @@ export const del = async (
   func: (data: ProcessingApiReponse) => void,
   accessToken?: string
 ) => {
+  const key = await getApiKey();
   await fetch(baseURL + path, {
     method: 'DELETE',
     body: JSON.stringify(jsondata),
     headers: {
       'Content-Type': 'application/json',
-      ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
-      })
+      'x-api-key': key
+      // ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
+      //   Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
+      // })
     }
   })
     .then((response) =>
@@ -144,14 +155,16 @@ export const patch = async (
   func: (data: ProcessingApiReponse) => void,
   accessToken?: string
 ) => {
+  const key = await getApiKey();
   await fetch(baseURL + path, {
     method: 'PATCH',
     body: JSON.stringify(jsondata),
     headers: {
       'Content-Type': 'application/json',
-      ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
-        Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
-      })
+      'x-api-key': key
+      // ...(process.env.NEXT_PUBLIC_APP_ENV === 'local' && {
+      //   Authorization: 'Bearer ' + (sessionStorage.getItem('apiAccessToken') || localStorage.getItem('apiAccessToken'))
+      // })
     }
   })
     .then((response) =>
