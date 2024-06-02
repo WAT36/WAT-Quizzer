@@ -6,12 +6,13 @@
   "workspaces": [
     "backend-nest",
     "frontend-next",
-    "quizzer-lib",
-    "infra"
+    "quizzer-lib"
   ],
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:backend": "npx -w backend-nest prisma format && npx -w backend-nest prisma generate && npx -w backend-nest nest build",
+    "build:frontend": "npx -w frontend-next next build"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,10 @@
   "bugs": {
     "url": "https://github.com/WAT36/WAT-Quizzer/issues"
   },
-  "homepage": "https://github.com/WAT36/WAT-Quizzer#readme"
+  "homepage": "https://github.com/WAT36/WAT-Quizzer#readme",
+  "dependencies": {
+    "@nestjs/platform-socket.io": "^10.3.8",
+    "@nestjs/websockets": "^10.3.8",
+    "multer": "^1.4.5-lts.1"
+  }
 }

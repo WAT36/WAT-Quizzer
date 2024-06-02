@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # prisma
 migration_lock.toml
+
+# SAM
+.aws-sam

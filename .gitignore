@@ -22,3 +22,8 @@ local_ec2_script/
 # log
 *.log
 log/
+
+#SAM
+.aws-sam
+patch/
+lib-prisma-engine/
