@@ -13,17 +13,34 @@ Parameters:
     Type: String
   PrismaTarget:
     Type: String
+  QuizzerApiCertificateArn:
+    Type: String
+  QuizzerApiDomainName:
+    Type: String
+  HostZoneId:
+    Type: String
   ExternalDependencies:
     Type: String
     Default: "infra frontend-next cdk.out"
 
 Resources:
   ApiGatewayRestApi:
-      Type: AWS::Serverless::Api
-      Properties:
-        StageName: Prod
-        Auth:
-          ApiKeyRequired: true # sets for all methods
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        ApiKeyRequired: true # sets for all methods
+      # AllowHeaders: "*"
+      # AllowMethods: "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT"
+      # AllowOrigin: "*"
+      Domain:
+        CertificateArn: !Ref QuizzerApiCertificateArn
+        DomainName: !Ref QuizzerApiDomainName
+        EndpointConfiguration: EDGE
+        Route53:
+          HostedZoneId: !Ref HostZoneId
+      EndpointConfiguration:
+        Type: EDGE
   SamQuizzerApiFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
