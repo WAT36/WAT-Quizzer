@@ -28,11 +28,20 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
+      OpenApiVersion: 3.0.1
+      ApiKeySourceType: HEADER
       Auth:
         ApiKeyRequired: true # sets for all methods
-      # AllowHeaders: "*"
-      # AllowMethods: "DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT"
-      # AllowOrigin: "*"
+        AddApiKeyRequiredToCorsPreflight: false
+        UsagePlan:
+          CreateUsagePlan: PER_API
+          UsagePlanName: no-required-api-key-in-options-method-usage-plan
+          Quota:
+            Limit: 500
+            Period: MONTH
+          Throttle:
+            BurstLimit: 100
+            RateLimit: 50
       Domain:
         CertificateArn: !Ref QuizzerApiCertificateArn
         DomainName: !Ref QuizzerApiDomainName
@@ -41,6 +50,10 @@ Resources:
           HostedZoneId: !Ref HostZoneId
       EndpointConfiguration:
         Type: EDGE
+      Cors:
+        AllowMethods: "'DELETE,POST,GET,OPTIONS,PUT,PATCH'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'" 
   SamQuizzerApiFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -65,39 +78,6 @@ Resources:
       DockerTag: nodejs20.x-v1
       DockerContext: ./
       Dockerfile: Dockerfile
-  ApiKey:
-    Type: AWS::ApiGateway::ApiKey
-    Properties: 
-      Enabled: true
-      Name: !Sub 'api-key'
-      StageKeys: 
-        - RestApiId: !Ref ApiGatewayRestApi
-          StageName: Prod
-    DependsOn: 
-      - ApiGatewayRestApi
-  ApiUsagePlan:
-    Type: AWS::ApiGateway::UsagePlan
-    DependsOn:
-      - ApiKey
-      - ApiGatewayRestApi
-    Properties:
-      ApiStages:
-          - ApiId: !Ref ApiGatewayRestApi
-            Stage: Prod
-      Throttle:
-        BurstLimit: 200
-        RateLimit: 100
-      UsagePlanName: !Sub 'api-plan'
-  ApiUsagePlanKey:
-    Type: AWS::ApiGateway::UsagePlanKey
-    DependsOn:
-      - ApiUsagePlan
-      - SamQuizzerApiFunction
-      - ApiGatewayRestApi
-    Properties : 
-      KeyId: !Ref ApiKey
-      KeyType: API_KEY
-      UsagePlanId: !Ref ApiUsagePlan
 
 Outputs:
   # SamQuizzerApi:
