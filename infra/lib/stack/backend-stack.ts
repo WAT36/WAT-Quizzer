@@ -36,16 +36,6 @@ export class BackendStack extends cdk.Stack {
       }-${process.env.DB_URL_SUFFIX || ''}`
     })
 
-    // API用Certificate（東京に作る）
-    const apiCertificateAPNorthEast1 = new acm.Certificate(
-      this,
-      `${props.env}-quizzer-api`,
-      {
-        domainName: process.env.API_DOMAIN_NAME || '',
-        validation: acm.CertificateValidation.fromDns(props.hostedZone)
-      }
-    )
-
     // // Api Container
     // //// VPC
     // const vpc = new ec2.Vpc(this, 'Vpc', {

@@ -30,8 +30,15 @@ async function bootstrapServer(): Promise<Server> {
       AppModule,
       new ExpressAdapter(expressApp),
     );
-    nestApp.useGlobalPipes(new ValidationPipe());
-    nestApp.use(eventContext());
+    nestApp.use((req, res, next) => {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Headers', '*');
+      res.header(
+        'Access-Control-Allow-Methods',
+        'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT',
+      );
+      next();
+    });
     await nestApp.init();
     cachedServer = createServer(expressApp, undefined, binaryMimeTypes);
   }
