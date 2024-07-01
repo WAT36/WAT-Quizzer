@@ -37,7 +37,7 @@ Resources:
           CreateUsagePlan: PER_API
           UsagePlanName: no-required-api-key-in-options-method-usage-plan
           Quota:
-            Limit: 500
+            Limit: 10000
             Period: MONTH
           Throttle:
             BurstLimit: 100
