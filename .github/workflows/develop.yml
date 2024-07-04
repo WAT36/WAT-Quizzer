@@ -39,7 +39,7 @@ jobs:
     - name: Build & Deploy API
       run: |
         sam build
-        sam deploy --image-repository $IMAGE_REPOSITORY --parameter-overrides DbUrl=$DATABASE_URL PrismaTarget=$PRISMA_CLI_BINARY_TARGETS QuizzerApiCertificateArn=$QUIZZER_API_CERTIFICATE_ARN QuizzerApiDomainName=$QUIZZER_API_DOMAIN_NAME HostZoneId=$HOSTZONE_ID
+        sam deploy --no-confirm-changeset --image-repository $IMAGE_REPOSITORY --parameter-overrides DbUrl=$DATABASE_URL PrismaTarget=$PRISMA_CLI_BINARY_TARGETS QuizzerApiCertificateArn=$QUIZZER_API_CERTIFICATE_ARN QuizzerApiDomainName=$QUIZZER_API_DOMAIN_NAME HostZoneId=$HOSTZONE_ID
 
     - name: Setup dependencies(all)
       id: setup-dependencies
