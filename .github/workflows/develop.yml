@@ -31,6 +31,16 @@ jobs:
         cut -d= -f2 .env  | xargs -I arg echo ::add-mask::arg
         cat .env >> "$GITHUB_ENV"
 
+    # SAM設定
+    - name: Setup aws-sam
+      uses: aws-actions/setup-sam@v2
+
+    # SAM APIビルド・デプロイ
+    - name: Build & Deploy API
+      run: |
+        sam build
+        sam deploy --image-repository $IMAGE_REPOSITORY --parameter-overrides DbUrl=$DATABASE_URL PrismaTarget=$PRISMA_CLI_BINARY_TARGETS QuizzerApiCertificateArn=$QUIZZER_API_CERTIFICATE_ARN QuizzerApiDomainName=$QUIZZER_API_DOMAIN_NAME HostZoneId=$HOSTZONE_ID
+
     - name: Setup dependencies(all)
       id: setup-dependencies
       run: npm ci --production
