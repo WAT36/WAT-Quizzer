@@ -91,6 +91,7 @@ model example {
   updated_at          DateTime       @default(now()) @db.Timestamp(6)
   deleted_at          DateTime?      @db.Timestamp(6)
   mean_example        mean_example[]
+  word_example        word_example[]
 }
 
 model mean {
@@ -263,6 +264,7 @@ model word {
   word_source           word_source[]
   word_subsource        word_subsource[]
   word_statistics_view  word_statistics_view?   @relation(fields: [id], references: [id])
+  word_example          word_example[]
 }
 
 model word_etymology {
@@ -282,6 +284,18 @@ model word_etymology_group {
   created_at                DateTime  @default(now()) @db.Timestamp(6)
   updated_at                DateTime  @default(now()) @db.Timestamp(6)
   deleted_at                DateTime? @db.Timestamp(6)
+}
+
+model word_example {
+  example_sentense_id Int
+  word_id             Int
+  created_at          DateTime  @default(now()) @db.Timestamp(6)
+  updated_at          DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at          DateTime? @db.Timestamp(6)
+  example             example   @relation(fields: [example_sentense_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  word                word      @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([example_sentense_id, word_id])
 }
 
 model word_similarity {
