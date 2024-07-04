@@ -30,6 +30,7 @@ export const AddExampleSection = ({ inputExampleData, setInputExampleData }: Add
                 }
               }}
               className={['fullWidth']}
+              id={'addExampleEnField'}
             />
           </CardContent>
           <CardHeader subheader="例文(和訳)" />
@@ -46,6 +47,7 @@ export const AddExampleSection = ({ inputExampleData, setInputExampleData }: Add
                 }
               }}
               className={['fullWidth']}
+              id={'addExampleJaField'}
             />
           </CardContent>
         </Card>

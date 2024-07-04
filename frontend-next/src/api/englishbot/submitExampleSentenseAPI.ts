@@ -59,6 +59,15 @@ export const submitExampleSentenseAPI = ({
           isDisplay: true
         });
         setInputExampleData({});
+
+        // 入力データをクリア
+        // TODO javascript形式でやるんじゃなくて　コンポーネントの方に削除する関数とか組み入れてやらせたい
+        ['addExampleEnField', 'addExampleJaField'].forEach((value) => {
+          const inputField = document.getElementById(value) as HTMLTextAreaElement;
+          if (inputField) {
+            inputField.value = '';
+          }
+        });
       } else {
         setMessage({
           message: 'エラー:外部APIとの連携に失敗しました',
