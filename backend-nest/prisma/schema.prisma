@@ -90,36 +90,22 @@ model example {
   created_at          DateTime       @default(now()) @db.Timestamp(6)
   updated_at          DateTime       @default(now()) @db.Timestamp(6)
   deleted_at          DateTime?      @db.Timestamp(6)
-  mean_example        mean_example[]
   word_example        word_example[]
 }
 
 model mean {
-  id               Int            @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   word_id          Int
   wordmean_id      Int
   partsofspeech_id Int
-  meaning          String         @db.VarChar(256)
-  created_at       DateTime       @default(now()) @db.Timestamp(6)
-  updated_at       DateTime       @default(now()) @db.Timestamp(6)
-  deleted_at       DateTime?      @db.Timestamp(6)
-  partsofspeech    partsofspeech  @relation(fields: [partsofspeech_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  word             word           @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  mean_example     mean_example[]
+  meaning          String        @db.VarChar(256)
+  created_at       DateTime      @default(now()) @db.Timestamp(6)
+  updated_at       DateTime      @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime?     @db.Timestamp(6)
+  partsofspeech    partsofspeech @relation(fields: [partsofspeech_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  word             word          @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([word_id, wordmean_id])
-}
-
-model mean_example {
-  example_sentense_id Int
-  mean_id             Int
-  created_at          DateTime  @default(now()) @db.Timestamp(6)
-  updated_at          DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at          DateTime? @db.Timestamp(6)
-  example             example   @relation(fields: [example_sentense_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  mean                mean      @relation(fields: [mean_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([example_sentense_id, mean_id])
 }
 
 model partsofspeech {
