@@ -34,7 +34,7 @@ export const submitExampleSentenseAPI = ({
       isDisplay: true
     });
     return;
-  } else if (!inputExampleData.meanId || inputExampleData.meanId.length === 0) {
+  } else if (!inputExampleData.wordName || inputExampleData.wordName === '') {
     setMessage({
       message: 'エラー:単語または意味へのチェック指定がありません',
       messageColor: 'error',
@@ -44,12 +44,14 @@ export const submitExampleSentenseAPI = ({
   }
 
   setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
+  // TODO ここに限らずだが ブログでPromise学んだんだから api系の関数の処理見直したい
   post(
     '/english/example',
+    // TODO ↓inputExampleData だけでいいのでは？　と言うよりステートとAPIの方を共通化して持たせた方がやりやすそう
     {
       exampleEn: inputExampleData.exampleEn,
       exampleJa: inputExampleData.exampleJa,
-      meanId: inputExampleData.meanId
+      wordName: inputExampleData.wordName
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
@@ -62,13 +64,14 @@ export const submitExampleSentenseAPI = ({
 
         // 入力データをクリア
         // TODO javascript形式でやるんじゃなくて　コンポーネントの方に削除する関数とか組み入れてやらせたい
-        ['addExampleEnField', 'addExampleJaField'].forEach((value) => {
+        ['addExampleEnField', 'addExampleJaField', 'addExampleToWordName'].forEach((value) => {
           const inputField = document.getElementById(value) as HTMLTextAreaElement;
           if (inputField) {
             inputField.value = '';
           }
         });
       } else {
+        // TODO APIからのエラーこれで固定じゃなくて　APIからのエラーメッセージをちゃんと表示するようにしたい（もう上げてる？）
         setMessage({
           message: 'エラー:外部APIとの連携に失敗しました',
           messageColor: 'error',

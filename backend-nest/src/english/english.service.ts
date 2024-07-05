@@ -59,7 +59,24 @@ export class EnglishService {
 
   // 例文追加
   async addExampleService(req: AddExampleAPIRequestDto) {
-    const { exampleEn, exampleJa, meanId } = req;
+    const { exampleEn, exampleJa, wordName } = req;
+
+    // 入力単語存在チェック
+    const wordData = await prisma.word.findUnique({
+      where: {
+        name: wordName,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!wordData) {
+      throw new HttpException(
+        `エラー：入力した単語名「${wordName}は存在しません」`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     try {
       //トランザクション実行
       await prisma.$transaction(async (prisma) => {
@@ -71,15 +88,13 @@ export class EnglishService {
           },
         });
 
-        for (let i = 0; i < meanId.length; i++) {
-          //  mean_exampleにデータ追加
-          await prisma.mean_example.create({
-            data: {
-              example_sentense_id: createdExampleData.id,
-              mean_id: meanId[i],
-            },
-          });
-        }
+        //  word_exampleにデータ追加
+        await prisma.word_example.create({
+          data: {
+            example_sentense_id: createdExampleData.id,
+            word_id: wordData.id,
+          },
+        });
       });
       return {
         result: 'Added!',

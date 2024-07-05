@@ -16,6 +16,23 @@ export const AddExampleSection = ({ inputExampleData, setInputExampleData }: Add
     <>
       <CardContent>
         <Card variant="outlined">
+          <CardHeader subheader="英単語名" />
+          <CardContent className={commonStyles.cardContent}>
+            <TextField
+              label="英単語名"
+              variant="outlined"
+              setStater={(value: string) => {
+                if (setInputExampleData) {
+                  setInputExampleData({
+                    ...inputExampleData,
+                    wordName: value
+                  });
+                }
+              }}
+              className={['fullWidth']}
+              id={'addExampleToWordName'}
+            />
+          </CardContent>
           <CardHeader subheader="例文(英文)" />
           <CardContent className={commonStyles.cardContent}>
             <TextField

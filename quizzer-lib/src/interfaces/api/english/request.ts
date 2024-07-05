@@ -2,5 +2,5 @@
 export interface AddExampleAPIRequestDto {
   exampleEn: string
   exampleJa: string
-  meanId: number[]
+  wordName: string
 }
