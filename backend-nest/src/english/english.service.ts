@@ -108,4 +108,34 @@ export class EnglishService {
       }
     }
   }
+
+  // 例文検索
+  async searchExampleService(query: string) {
+    try {
+      const data = await prisma.example.findMany({
+        where: {
+          en_example_sentense: {
+            contains: query,
+          },
+          deleted_at: null,
+        },
+        select: {
+          id: true,
+          en_example_sentense: true,
+          ja_example_sentense: true,
+        },
+        orderBy: {
+          id: 'asc',
+        },
+      });
+      return data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }
