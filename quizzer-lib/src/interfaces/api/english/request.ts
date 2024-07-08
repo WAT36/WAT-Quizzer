@@ -4,3 +4,10 @@ export interface AddExampleAPIRequestDto {
   exampleJa: string
   wordName: string
 }
+
+//
+export interface ChangeAssociationOfExampleRequestDto {
+  wordName: string
+  checkedId: number
+  isAssociation: boolean
+}
