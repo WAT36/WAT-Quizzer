@@ -324,7 +324,23 @@ export class EnglishWordService {
         select: {
           id: true,
           name: true,
-          mean: true,
+          mean: {
+            select: {
+              id: true,
+              word_id: true,
+              wordmean_id: true,
+              meaning: true,
+              created_at: true,
+              updated_at: true,
+              deleted_at: true,
+              partsofspeech: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
         where: {
           word_source: {
@@ -362,8 +378,13 @@ export class EnglishWordService {
             id: true,
             word_id: true,
             wordmean_id: true,
-            partsofspeech_id: true,
             meaning: true,
+            partsofspeech: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
           where: {
             word_id: {
@@ -432,7 +453,23 @@ export class EnglishWordService {
         select: {
           id: true,
           name: true,
-          mean: true,
+          mean: {
+            select: {
+              id: true,
+              word_id: true,
+              wordmean_id: true,
+              meaning: true,
+              created_at: true,
+              updated_at: true,
+              deleted_at: true,
+              partsofspeech: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
         where: {
           word_source: {
@@ -477,8 +514,13 @@ export class EnglishWordService {
             id: true,
             word_id: true,
             wordmean_id: true,
-            partsofspeech_id: true,
             meaning: true,
+            partsofspeech: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
           where: {
             word_id: {
