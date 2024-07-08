@@ -1,5 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { AddExampleAPIRequestDto } from 'quizzer-lib';
+import {
+  AddExampleAPIRequestDto,
+  ChangeAssociationOfExampleRequestDto,
+} from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
 
@@ -110,24 +113,113 @@ export class EnglishService {
   }
 
   // 例文検索
-  async searchExampleService(query: string) {
+  async searchExampleService(query: string, isLinked: string) {
     try {
-      const data = await prisma.example.findMany({
-        where: {
-          en_example_sentense: {
-            contains: query,
-          },
-          deleted_at: null,
-        },
-        select: {
-          id: true,
-          en_example_sentense: true,
-          ja_example_sentense: true,
-        },
-        orderBy: {
-          id: 'asc',
-        },
-      });
+      // TODO pipeでboolean対応
+      const data =
+        isLinked === 'true'
+          ? await prisma.example.findMany({
+              where: {
+                word_example: {
+                  every: {
+                    word: {
+                      name: query,
+                    },
+                    deleted_at: null,
+                  },
+                },
+                deleted_at: null,
+              },
+              select: {
+                id: true,
+                en_example_sentense: true,
+                ja_example_sentense: true,
+              },
+              orderBy: {
+                id: 'asc',
+              },
+            })
+          : isLinked === 'false'
+          ? await prisma.example.findMany({
+              where: {
+                en_example_sentense: {
+                  contains: query,
+                },
+                deleted_at: null,
+              },
+              select: {
+                id: true,
+                en_example_sentense: true,
+                ja_example_sentense: true,
+              },
+              orderBy: {
+                id: 'asc',
+              },
+            })
+          : undefined;
+      return data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 例文紐付け更新
+  async changeAssociationOfExampleService(
+    req: ChangeAssociationOfExampleRequestDto,
+  ) {
+    const { wordName, checkedId, isAssociation } = req;
+
+    // 入力単語存在チェック
+    const wordData = await prisma.word.findUnique({
+      where: {
+        name: wordName,
+        deleted_at: null,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!wordData) {
+      throw new HttpException(
+        `エラー：入力した単語名「${wordName}は存在しません」`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    try {
+      // isAssociation:true->紐付け false->解除
+      const data = isAssociation
+        ? await prisma.word_example.upsert({
+            create: {
+              example_sentense_id: checkedId,
+              word_id: wordData.id,
+            },
+            update: {
+              deleted_at: null,
+            },
+            where: {
+              example_sentense_id_word_id: {
+                example_sentense_id: checkedId,
+                word_id: wordData.id,
+              },
+            },
+          })
+        : await prisma.word_example.update({
+            where: {
+              example_sentense_id_word_id: {
+                example_sentense_id: checkedId,
+                word_id: wordData.id,
+              },
+            },
+            data: {
+              deleted_at: new Date(),
+            },
+          });
       return data;
     } catch (error: unknown) {
       if (error instanceof Error) {
