@@ -9,6 +9,7 @@ import { Title } from '@/components/ui-elements/title/Title';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
 import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
+import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
 
 type Props = {
   isMock?: boolean;
@@ -16,6 +17,8 @@ type Props = {
 
 export default function TestWordPage({ isMock }: Props) {
   const [message, setMessage] = useRecoilState(messageState);
+  // TODO テスト用単語出題のためにposListは使ってるだけ　ほんとはテスト用単語取る時のAPIで品詞名もとるようにしてそこからとって表示したい
+  const [posList, setPosList] = useState<PullDownOptionState[]>([]);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
   const [queryOfGetWord, setQueryOfGetWord] = useState<QueryOfGetWordState>({});
   const [displayWordTest, setDisplayWordTest] = useState<DisplayWordTestState>({
@@ -26,7 +29,8 @@ export default function TestWordPage({ isMock }: Props) {
 
   // 出典リスト取得
   useEffect(() => {
-    !isMock && getSourceListAPI(setMessage, setSourcelistoption);
+    !isMock &&
+      Promise.all([getPartOfSpeechListAPI(setMessage, setPosList), getSourceListAPI(setMessage, setSourcelistoption)]);
   }, [isMock, setMessage]);
 
   const contents = () => {

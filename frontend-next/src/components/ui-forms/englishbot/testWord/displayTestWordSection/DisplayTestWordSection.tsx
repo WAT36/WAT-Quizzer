@@ -95,7 +95,12 @@ export const DisplayTestWordSection = ({
                     {displayWordTest &&
                       displayWordTest.wordMean &&
                       displayWordTest.wordMean.map((mean, index) => {
-                        return <li key={index}>{mean.meaning}</li>;
+                        return (
+                          <li key={index}>
+                            {`[${mean.partsofspeech.name}]`}
+                            {mean.meaning}
+                          </li>
+                        );
                       })}
                   </Typography>
                   <Button

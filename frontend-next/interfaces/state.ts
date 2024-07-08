@@ -137,11 +137,14 @@ export interface DisplayWordTestState {
     id: number;
     word_id: number;
     wordmean_id: number;
-    partsofspeech_id: number;
     meaning: string;
     created_at: Date;
     updated_at: Date;
     deleted_at: Date;
+    partsofspeech: {
+      id: number;
+      name: string;
+    };
   }[];
   choice?: FourChoiceData;
 }
