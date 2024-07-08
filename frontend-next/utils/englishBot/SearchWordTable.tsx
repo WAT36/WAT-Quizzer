@@ -39,21 +39,15 @@ export const meanColumns = [
     width: 100
   },
   {
-    field: 'wordmean_id',
-    headerName: '単語内意味ID',
-    sortable: true,
-    width: 100
+    field: 'en_example_sentense',
+    headerName: '例文(英)',
+    sortable: false,
+    width: 400
   },
   {
-    field: 'partsofspeech',
-    headerName: '品詞',
+    field: 'ja_example_sentense',
+    headerName: '例文(日)',
     sortable: false,
-    width: 100
-  },
-  {
-    field: 'meaning',
-    headerName: '意味',
-    sortable: false,
-    width: 300
+    width: 400
   }
 ];

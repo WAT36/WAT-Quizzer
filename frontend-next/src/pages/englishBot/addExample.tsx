@@ -8,6 +8,7 @@ import { useSetRecoilState } from 'recoil';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
 import { submitExampleSentenseAPI } from '@/api/englishbot/submitExampleSentenseAPI';
+import { AssociateExampleandWordSection } from '@/components/ui-forms/englishbot/addExample/searchRelatedWordSection/AssociateExampleandWordSection';
 
 // TODO 共通libに持っていく
 export type InputExampleData = {
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export default function EnglishBotAddExamplePage({ isMock }: Props) {
+  // TODO ↓のステート　コンポーネント内に入れる Button含めて　Cardからコンポーネントに入れる
   const [inputExampleData, setInputExampleData] = useState<InputExampleData>({});
   const setMessage = useSetRecoilState(messageState);
 
@@ -38,6 +40,7 @@ export default function EnglishBotAddExamplePage({ isMock }: Props) {
             onClick={(e) => submitExampleSentenseAPI({ inputExampleData, setMessage, setInputExampleData })}
           />
         </Card>
+        <AssociateExampleandWordSection setMessage={setMessage} />
       </Container>
     );
   };
