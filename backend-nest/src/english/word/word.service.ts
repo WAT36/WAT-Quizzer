@@ -341,6 +341,16 @@ export class EnglishWordService {
               },
             },
           },
+          word_source: {
+            select: {
+              source: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
         where: {
           word_source: {
@@ -400,6 +410,7 @@ export class EnglishWordService {
           id: testWord.id,
           name: testWord.name,
           mean: testWord.mean,
+          word_source: testWord.word_source,
         },
         correct: {
           mean: getRandomElementsFromArray(testWord.mean, 1)[0].meaning,
