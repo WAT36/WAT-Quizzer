@@ -2,6 +2,7 @@ import Chart from 'react-google-charts';
 import styles from '../../../../Chart.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
 import { WordSummaryApiResponse } from 'quizzer-lib';
+import { CircularProgress } from '@mui/material';
 
 interface WordSummaryChartProps {
   wordSummaryData: WordSummaryApiResponse[];
@@ -25,7 +26,11 @@ export const WordSummaryChart = ({ wordSummaryData }: WordSummaryChartProps) => 
 
   return (
     <Card variant="outlined" attr="rect-400 margin-vertical">
-      <Chart chartType="PieChart" data={data} options={options} className={styles.chart} />
+      {data.length > 0 ? (
+        <Chart chartType="PieChart" data={data} options={options} className={styles.chart} />
+      ) : (
+        <CircularProgress />
+      )}
     </Card>
   );
 };
