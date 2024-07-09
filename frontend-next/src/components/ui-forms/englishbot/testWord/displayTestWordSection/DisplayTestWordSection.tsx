@@ -150,7 +150,13 @@ export const DisplayTestWordSection = ({
           // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
           <>
             <CardContent>
-              <h2>{displayWordTest.wordName || ''}</h2>
+              <div>
+                <h2>{displayWordTest.wordName || ''}</h2>
+                {displayWordTest.wordSource &&
+                  displayWordTest.wordSource.map((value) => {
+                    return <Chip label={value.source.name} />;
+                  })}
+              </div>
               {displayWordTest.choice && (
                 <EnglishWordTestFourChoiceSentense res={displayWordTest.choice} setValue={setValue} />
               )}

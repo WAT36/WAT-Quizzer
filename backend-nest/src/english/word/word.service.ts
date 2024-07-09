@@ -481,6 +481,16 @@ export class EnglishWordService {
               },
             },
           },
+          word_source: {
+            select: {
+              source: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
         where: {
           word_source: {
@@ -547,6 +557,7 @@ export class EnglishWordService {
           id: lruResult.id,
           name: lruResult.name,
           mean: lruResult.mean,
+          word_source: lruResult.word_source,
         },
         correct: {
           mean: getRandomElementsFromArray(lruResult.mean, 1)[0].meaning,
