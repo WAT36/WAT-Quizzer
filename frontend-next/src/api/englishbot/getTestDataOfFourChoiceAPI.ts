@@ -44,6 +44,7 @@ export const getTestDataOfFourChoiceAPI = async ({
           wordId: res.word.id,
           wordName: res.word.name,
           wordMean: res.word.mean,
+          wordSource: res.word.word_source,
           choice: {
             correct: res.correct,
             dummy: res.dummy

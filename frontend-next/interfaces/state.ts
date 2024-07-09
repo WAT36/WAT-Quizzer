@@ -146,6 +146,12 @@ export interface DisplayWordTestState {
       name: string;
     };
   }[];
+  wordSource?: {
+    source: {
+      id: number;
+      name: string;
+    };
+  }[];
   choice?: FourChoiceData;
 }
 

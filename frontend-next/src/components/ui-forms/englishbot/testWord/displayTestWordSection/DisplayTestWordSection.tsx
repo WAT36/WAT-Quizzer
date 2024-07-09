@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
 import { submitEnglishBotTestAPI } from '@/api/englishbot/submitEnglishBotTestAPI';
+import { Chip } from '@/components/ui-elements/chip/Chip';
 
 interface DisplayTestWordSectionProps {
   displayWordTest: DisplayWordTestState;
@@ -82,7 +83,13 @@ export const DisplayTestWordSection = ({
           // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
           <>
             <CardContent>
-              <h2>{displayWordTest.wordName || ''}</h2>
+              <div>
+                <h2>{displayWordTest.wordName || ''}</h2>
+                {displayWordTest.wordSource &&
+                  displayWordTest.wordSource.map((value) => {
+                    return <Chip label={value.source.name} />;
+                  })}
+              </div>
 
               <CardActions>
                 <MuiButton size="small" onClick={handleExpandClick} aria-expanded={expanded}>
