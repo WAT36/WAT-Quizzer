@@ -15,20 +15,20 @@ import {
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { PullDownOptionState } from '../../../../../../interfaces/state';
-import { meanOfAddWordDto } from 'quizzer-lib';
+import { AddWordAPIRequestDto } from 'quizzer-lib';
+// TODO @mui/material はなくす
 
 interface AddMeanFormProps {
   posList: PullDownOptionState[];
-  sourceList: PullDownOptionState[];
-  meanRowList: meanOfAddWordDto[];
-  setMeanRowList?: React.Dispatch<React.SetStateAction<meanOfAddWordDto[]>>;
+  addWordState: AddWordAPIRequestDto;
+  setAddWordState?: React.Dispatch<React.SetStateAction<AddWordAPIRequestDto>>;
 }
 
-export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }: AddMeanFormProps) => {
+export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanFormProps) => {
   // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
   const displayPosInput = (i: number) => {
     const posInput =
-      meanRowList[i] && meanRowList[i].pos.id === -2 ? (
+      addWordState.meanArrayData[i] && addWordState.meanArrayData[i].partOfSpeechId === -2 ? (
         <>
           <TextField
             id="input-pos-01"
@@ -74,78 +74,89 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }
 
   // 品詞プルダウン変更時の入力の更新
   const changePosSelect = (value: string, i: number) => {
-    const copyMeanRowList = [...meanRowList];
+    const copyMeanRowList = [...addWordState.meanArrayData];
     if (i >= copyMeanRowList.length) {
       while (i >= copyMeanRowList.length) {
         copyMeanRowList.push({
-          pos: {
-            id: -1
-          },
-          mean: undefined
+          partOfSpeechId: -1,
+          meaning: ''
         });
       }
     }
     copyMeanRowList[i] = {
-      pos: {
-        id: Number(value),
-        name: Number(value) === -2 ? copyMeanRowList[i].pos.name : undefined
-      },
-      mean: copyMeanRowList[i].mean
+      partOfSpeechId: Number(value),
+      partOfSpeechName: Number(value) === -2 ? copyMeanRowList[i].partOfSpeechName : undefined,
+      meaning: copyMeanRowList[i].meaning
     };
-    setMeanRowList && setMeanRowList(copyMeanRowList);
+    setAddWordState &&
+      setAddWordState({
+        ...addWordState,
+        meanArrayData: copyMeanRowList
+      });
   };
 
   // 品詞入力時の処理
   const inputPos = (value: string, i: number) => {
-    const copyMeanRowList = [...meanRowList];
+    const copyMeanRowList = [...addWordState.meanArrayData];
     copyMeanRowList[i] = {
-      pos: {
-        id: copyMeanRowList[i].pos.id,
-        name: value
-      },
-      mean: copyMeanRowList[i].mean
+      partOfSpeechId: copyMeanRowList[i].partOfSpeechId,
+      partOfSpeechName: value,
+      meaning: copyMeanRowList[i].meaning
     };
-    setMeanRowList && setMeanRowList(copyMeanRowList);
+    setAddWordState &&
+      setAddWordState({
+        ...addWordState,
+        meanArrayData: copyMeanRowList
+      });
   };
 
   // 単語の意味入力時の更新
   const inputMean = (value: string, i: number) => {
-    const copyMeanRowList = [...meanRowList];
+    const copyMeanRowList = [...addWordState.meanArrayData];
     if (i >= copyMeanRowList.length) {
       while (i >= copyMeanRowList.length) {
         copyMeanRowList.push({
-          pos: {
-            id: -1
-          },
-          mean: undefined
+          partOfSpeechId: -1,
+          meaning: ''
         });
       }
     }
     copyMeanRowList[i] = {
-      pos: copyMeanRowList[i].pos,
-      mean: value
+      partOfSpeechId: copyMeanRowList[i].partOfSpeechId,
+      partOfSpeechName: copyMeanRowList[i].partOfSpeechName,
+      meaning: value
     };
-    setMeanRowList && setMeanRowList(copyMeanRowList);
+    setAddWordState &&
+      setAddWordState({
+        ...addWordState,
+        meanArrayData: copyMeanRowList
+      });
   };
 
   // 列を(ステートに)追加
   const addTableRow = () => {
-    const copyMeanRowList = [...meanRowList];
+    const copyMeanRowList = [...addWordState.meanArrayData];
     copyMeanRowList.push({
-      pos: {
-        id: -1,
-        name: undefined
-      },
-      mean: undefined
+      partOfSpeechId: -1,
+      partOfSpeechName: undefined,
+      meaning: ''
     });
-    setMeanRowList && setMeanRowList(copyMeanRowList);
+    setAddWordState &&
+      setAddWordState({
+        ...addWordState,
+        meanArrayData: copyMeanRowList
+      });
   };
 
   // 最終列を削除
   const decrementTableRow = () => {
-    const copyMeanRowList = [...meanRowList];
+    const copyMeanRowList = [...addWordState.meanArrayData];
     copyMeanRowList.pop();
-    setMeanRowList && setMeanRowList(copyMeanRowList);
+    setAddWordState &&
+      setAddWordState({
+        ...addWordState,
+        meanArrayData: copyMeanRowList
+      });
   };
 
   return (
@@ -159,7 +170,7 @@ export const AddMeanForm = ({ posList, sourceList, meanRowList, setMeanRowList }
             </TableRow>
           </TableHead>
           <TableBody>
-            {meanRowList.map((meanDto, index) => {
+            {addWordState.meanArrayData.map((meanDto, index) => {
               return (
                 <TableRow key={index}>
                   <TableCell>

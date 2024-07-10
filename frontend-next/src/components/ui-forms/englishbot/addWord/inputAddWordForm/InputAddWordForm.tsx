@@ -1,29 +1,36 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { InputAddWordState, PullDownOptionState } from '../../../../../../interfaces/state';
+import { InputLabel, MenuItem, Select } from '@mui/material';
+import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Card } from '@/components/ui-elements/card/Card';
+import { Button } from '@/components/ui-elements/button/Button';
+
+import { addWordAPI, AddWordAPIRequestDto, Message } from 'quizzer-lib';
 
 interface InputAddWordFormProps {
-  inputWord: InputAddWordState;
   sourceList: PullDownOptionState[];
-  setInputWord?: React.Dispatch<React.SetStateAction<InputAddWordState>>;
+  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  addWordState: AddWordAPIRequestDto;
+  setAddWordState?: React.Dispatch<React.SetStateAction<AddWordAPIRequestDto>>;
 }
 
-export const InputAddWordForm = ({ inputWord, sourceList, setInputWord }: InputAddWordFormProps) => {
+export const InputAddWordForm = ({ sourceList, addWordState, setMessage, setAddWordState }: InputAddWordFormProps) => {
   // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
   const displaySourceInput = () => {
     const sourceInput =
-      inputWord.sourceId === -2 ? (
+      addWordState.inputWord.sourceId === -2 ? (
         <>
           <InputLabel id="demo-simple-select-label"></InputLabel>
           <TextField
             label="出典"
             variant="outlined"
             setStater={(value: string) => {
-              setInputWord &&
-                setInputWord({
-                  ...inputWord,
-                  newSourceName: value
+              setAddWordState &&
+                setAddWordState({
+                  ...addWordState,
+                  inputWord: {
+                    ...addWordState.inputWord,
+                    newSourceName: value
+                  }
                 });
             }}
             id="input-pos-01"
@@ -45,10 +52,13 @@ export const InputAddWordForm = ({ inputWord, sourceList, setInputWord }: InputA
           key="source"
           sx={{ width: 1 }}
           onChange={(e) => {
-            setInputWord &&
-              setInputWord({
-                ...inputWord,
-                sourceId: +e.target.value
+            setAddWordState &&
+              setAddWordState({
+                ...addWordState,
+                inputWord: {
+                  ...addWordState.inputWord,
+                  sourceId: +e.target.value
+                }
               });
           }}
         >
@@ -71,17 +81,48 @@ export const InputAddWordForm = ({ inputWord, sourceList, setInputWord }: InputA
 
   return (
     <>
+      <Button
+        label="登録"
+        variant="contained"
+        attr="button-array"
+        onClick={async (e) => {
+          setMessage &&
+            setMessage({
+              message: '通信中...',
+              messageColor: '#d3d3d3',
+              isDisplay: true
+            });
+          const message: Message = await addWordAPI({ addWordData: addWordState });
+          setMessage && setMessage(message);
+          // TODO 成功時の条件
+          if (message.messageColor === 'success.light') {
+            setAddWordState &&
+              setAddWordState({
+                inputWord: {
+                  wordName: '',
+                  sourceId: -1,
+                  subSourceName: ''
+                },
+                pronounce: '',
+                meanArrayData: []
+              });
+          }
+        }}
+      />
       <Card variant={'outlined'} attr={'padding'}>
         <TextField
           className={['fullWidth', 'textField']}
           label="New Word"
           id="newWord"
-          value={inputWord.wordName}
+          value={addWordState.inputWord.wordName}
           setStater={(value: string) => {
-            setInputWord &&
-              setInputWord({
-                ...inputWord,
-                wordName: value
+            setAddWordState &&
+              setAddWordState({
+                ...addWordState,
+                inputWord: {
+                  ...addWordState.inputWord,
+                  wordName: value
+                }
               });
           }}
         />
@@ -90,12 +131,15 @@ export const InputAddWordForm = ({ inputWord, sourceList, setInputWord }: InputA
           className={['fullWidth', 'textField']}
           label="サブ出典"
           id="subSource"
-          value={inputWord.subSourceName}
+          value={addWordState.inputWord.subSourceName}
           setStater={(value: string) => {
-            setInputWord &&
-              setInputWord({
-                ...inputWord,
-                subSourceName: value
+            setAddWordState &&
+              setAddWordState({
+                ...addWordState,
+                inputWord: {
+                  ...addWordState.inputWord,
+                  subSourceName: value
+                }
               });
           }}
         />

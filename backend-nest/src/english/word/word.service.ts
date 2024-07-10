@@ -20,7 +20,7 @@ export class EnglishWordService {
   async addWordAndMeanService(req: AddEnglishWordAPIRequestDto) {
     const { inputWord, pronounce, meanArrayData } = req;
     try {
-      // //トランザクション実行準備
+      // トランザクション実行準備
       await prisma.$transaction(async (prisma) => {
         //単語追加
         const addWordResult = await prisma.word.create({
@@ -60,6 +60,16 @@ export class EnglishWordService {
             });
             sourceId = result.id;
           }
+        }
+
+        // 単語出典追加（登録されてない場合(-1)は登録しない）
+        if (sourceId !== -1) {
+          await prisma.word_source.create({
+            data: {
+              word_id: wordWillId,
+              source_id: sourceId,
+            },
+          });
         }
 
         // サブ出典追加
@@ -112,15 +122,6 @@ export class EnglishWordService {
               meaning: meanArrayData[i].meaning,
             },
           });
-          // 単語出典追加（登録されてない場合(-1)は登録しない）
-          if (sourceId !== -1) {
-            await prisma.word_source.create({
-              data: {
-                word_id: wordWillId,
-                source_id: sourceId,
-              },
-            });
-          }
         }
       });
 

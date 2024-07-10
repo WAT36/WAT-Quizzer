@@ -155,13 +155,6 @@ export interface DisplayWordTestState {
   choice?: FourChoiceData;
 }
 
-export interface InputAddWordState {
-  wordName: string;
-  sourceId: number;
-  newSourceName?: string;
-  subSourceName: string;
-}
-
 export interface WordMeanData {
   partsofspeech: {
     id: number;

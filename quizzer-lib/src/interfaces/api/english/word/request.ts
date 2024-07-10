@@ -62,16 +62,6 @@ export interface EditWordMeanAPIRequestDto {
   meaning: string
 }
 
-// TODO 以下は書き換えたい
-// 英単語追加画面で利用する、入力した単語の意味のデータ型
-export interface meanOfAddWordDto {
-  pos: {
-    id: number
-    name?: string
-  }
-  mean: string | undefined
-}
-
 // 英単語追加画面で入力した単語、意味のデータを　英単語追加APIに送るためのデータ型
 export interface SendToAddWordApiData {
   partOfSpeechId: number

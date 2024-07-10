@@ -32,9 +32,8 @@ export class EnglishWordController {
     return await this.englishWordService.getWordNumService();
   }
 
-  // TODO これパス名変えたい
   // @UseGuards(AuthGuard)
-  @Post('add')
+  @Post()
   async addWord(@Body() req: AddEnglishWordAPIRequestDto) {
     return await this.englishWordService.addWordAndMeanService(req);
   }

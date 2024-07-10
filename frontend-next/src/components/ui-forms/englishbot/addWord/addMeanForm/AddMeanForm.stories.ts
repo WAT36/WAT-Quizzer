@@ -20,7 +20,14 @@ type Story = StoryObj<typeof meta>;
 export const Main: Story = {
   args: {
     posList: [],
-    sourceList: [],
-    meanRowList: []
+    addWordState: {
+      inputWord: {
+        wordName: '',
+        sourceId: -1,
+        subSourceName: ''
+      },
+      pronounce: '',
+      meanArrayData: []
+    }
   }
 };
