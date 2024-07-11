@@ -1,4 +1,4 @@
-import { Container, Typography } from '@mui/material';
+import { CircularProgress, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getApiAndGetValue } from '@/api/API';
 import { Layout } from '@/components/templates/layout/Layout';
@@ -53,9 +53,13 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
       <Container>
         <Title label="WAT Quizzer - englishBot"></Title>
 
-        <Typography variant="h1" component="h1" color="common.black">
-          {wordDetail.name}
-        </Typography>
+        {wordDetail.id === -1 ? (
+          <CircularProgress />
+        ) : (
+          <Typography variant="h1" component="h1" color="common.black">
+            {wordDetail.name}
+          </Typography>
+        )}
 
         <MeaningStack
           posList={posList}

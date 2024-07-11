@@ -2,7 +2,7 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Modal } from '@/components/ui-elements/modal/Modal';
-import { Box, IconButton, MenuItem, Select, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, IconButton, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { MessageState, PullDownOptionState, WordDetailData, WordSourceData } from '../../../../../../interfaces/state';
 import { style } from '../Stack.style';
 import { useEffect, useState } from 'react';
@@ -99,75 +99,79 @@ export const SourceStack = ({
           {'出典'}
         </Typography>
         <Box sx={{ width: '100%', padding: '4px' }}>
-          <Stack spacing={2}>
-            {wordSourceData.source.map((x, index) => {
-              return (
-                // eslint-disable-next-line react/jsx-key
-                <Item key={x.id}>
-                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography component="div">
-                      <Typography align="left" variant="h5" component="p">
-                        {x.name}
+          {wordDetail.id === -1 ? (
+            <CircularProgress />
+          ) : (
+            <Stack spacing={2}>
+              {wordSourceData.source.map((x, index) => {
+                return (
+                  // eslint-disable-next-line react/jsx-key
+                  <Item key={x.id}>
+                    <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Typography component="div">
+                        <Typography align="left" variant="h5" component="p">
+                          {x.name}
+                        </Typography>
+                      </Typography>
+                      <Typography component="div" sx={{ marginLeft: 'auto' }}>
+                        <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x.id, index)} />
                       </Typography>
                     </Typography>
-                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x.id, index)} />
-                    </Typography>
+                  </Item>
+                );
+              })}
+              <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+                <IconButton onClick={(e) => handleOpen(-1, -1)}>
+                  <AddCircleOutlineIcon />
+                </IconButton>
+              </Stack>
+              <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
+                <Box sx={style}>
+                  <Typography id="modal-modal-title" variant="h4" component="h4">
+                    {'出典' + (selectedWordSourceIndex === -1 ? '追加' : '更新')}
                   </Typography>
-                </Item>
-              );
-            })}
-            <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton onClick={(e) => handleOpen(-1, -1)}>
-                <AddCircleOutlineIcon />
-              </IconButton>
+                  <Typography sx={{ mt: 2 }}>
+                    出典：
+                    {displaySourceInput(3, sourceList, inputSourceId, setInputSourceId)}
+                  </Typography>
+                  <Button
+                    label={'出典' + (selectedWordSourceIndex === -1 ? '追加' : '更新')}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="primary"
+                    onClick={(e) =>
+                      editEnglishWordSourceAPI({
+                        wordDetail,
+                        wordSourceData,
+                        selectedWordSourceIndex,
+                        inputSourceId,
+                        setMessage,
+                        setModalIsOpen,
+                        setWordDetail
+                      })
+                    }
+                  />
+                  <Button
+                    label={'出典削除'}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="primary"
+                    disabled={selectedWordSourceIndex === -1}
+                    onClick={(e) =>
+                      deleteEnglishWordSourceAPI({
+                        word_id: wordDetail.id,
+                        source_id: inputSourceId,
+                        setMessage,
+                        setModalIsOpen,
+                        setWordDetail,
+                        setSelectedWordSourceIndex
+                      })
+                    }
+                  />
+                </Box>
+              </Modal>
             </Stack>
-            <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
-              <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h4" component="h4">
-                  {'出典' + (selectedWordSourceIndex === -1 ? '追加' : '更新')}
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  出典：
-                  {displaySourceInput(3, sourceList, inputSourceId, setInputSourceId)}
-                </Typography>
-                <Button
-                  label={'出典' + (selectedWordSourceIndex === -1 ? '追加' : '更新')}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  onClick={(e) =>
-                    editEnglishWordSourceAPI({
-                      wordDetail,
-                      wordSourceData,
-                      selectedWordSourceIndex,
-                      inputSourceId,
-                      setMessage,
-                      setModalIsOpen,
-                      setWordDetail
-                    })
-                  }
-                />
-                <Button
-                  label={'出典削除'}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  disabled={selectedWordSourceIndex === -1}
-                  onClick={(e) =>
-                    deleteEnglishWordSourceAPI({
-                      word_id: wordDetail.id,
-                      source_id: inputSourceId,
-                      setMessage,
-                      setModalIsOpen,
-                      setWordDetail,
-                      setSelectedWordSourceIndex
-                    })
-                  }
-                />
-              </Box>
-            </Modal>
-          </Stack>
+          )}
         </Box>
       </Card>
     </>

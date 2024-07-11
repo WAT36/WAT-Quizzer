@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
-import { Box, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { Box, CircularProgress, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { MessageState, PullDownOptionState, WordDetailData, WordMeanData } from '../../../../../../interfaces/state';
 import { style } from '../Stack.style';
@@ -101,109 +101,114 @@ export const MeaningStack = ({
           {'意味'}
         </Typography>
         <Box sx={{ width: '100%', padding: '4px' }}>
-          <Stack spacing={2}>
-            {wordDetail.mean.map((x, index) => {
-              return (
-                // eslint-disable-next-line react/jsx-key
-                <Item key={x.wordmean_id}>
-                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography component="div">
-                      <Typography align="left" sx={{ fontSize: 14 }} color="text.secondary" component="p">
-                        {`[${x.partsofspeech.name}]`}
+          {wordDetail.id === -1 ? (
+            <CircularProgress />
+          ) : (
+            <Stack spacing={2}>
+              {wordDetail.mean.map((x, index) => {
+                return (
+                  // eslint-disable-next-line react/jsx-key
+                  <Item key={x.wordmean_id}>
+                    <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Typography component="div">
+                        <Typography align="left" sx={{ fontSize: 14 }} color="text.secondary" component="p">
+                          {`[${x.partsofspeech.name}]`}
+                        </Typography>
+                        <Typography align="left" variant="h5" component="p">
+                          {x.meaning}
+                        </Typography>
                       </Typography>
-                      <Typography align="left" variant="h5" component="p">
-                        {x.meaning}
+                      <Typography component="div" sx={{ marginLeft: 'auto' }}>
+                        <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x, index)}></Button>
                       </Typography>
                     </Typography>
-                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x, index)}></Button>
-                    </Typography>
+                  </Item>
+                );
+              })}
+              {/* 意味の新規追加ボタン */}
+              <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+                <IconButton
+                  onClick={(e) =>
+                    handleOpen(
+                      {
+                        ...emptyWordMeanData,
+                        wordmean_id:
+                          wordDetail.mean.reduce(
+                            (previousValue, currentValue) => Math.max(previousValue, currentValue.wordmean_id),
+                            -1
+                          ) + 1
+                      },
+                      -1
+                    )
+                  }
+                >
+                  <AddCircleOutlineIcon />
+                </IconButton>
+              </Stack>
+              {/* TODO  このモーダルは別コンポーネントにしたい */}
+              {/* 意味新規追加ボタン押すと出る意味編集モーダル */}
+              <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
+                <Box sx={style}>
+                  <Typography id="modal-modal-title" variant="h4" component="h4">
+                    {'意味' + (selectedMeanIndex === -1 ? '追加' : '更新')}
                   </Typography>
-                </Item>
-              );
-            })}
-            {/* 意味の新規追加ボタン */}
-            <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton
-                onClick={(e) =>
-                  handleOpen(
-                    {
-                      ...emptyWordMeanData,
-                      wordmean_id:
-                        wordDetail.mean.reduce(
-                          (previousValue, currentValue) => Math.max(previousValue, currentValue.wordmean_id),
-                          -1
-                        ) + 1
-                    },
-                    -1
-                  )
-                }
-              >
-                <AddCircleOutlineIcon />
-              </IconButton>
-            </Stack>
-            {/* 意味新規追加ボタン押すと出る意味編集モーダル */}
-            <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
-              <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h4" component="h4">
-                  {'意味' + (selectedMeanIndex === -1 ? '追加' : '更新')}
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  品詞：
-                  {displayPosInput(1, posList, inputEditData, setInputEditData)}
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  意味：
-                  <TextField
-                    variant="outlined"
-                    defaultValue={inputEditData?.meaning || ''}
-                    onChange={(e) => {
-                      if (setInputEditData) {
-                        setInputEditData({
-                          ...inputEditData,
-                          meaning: e.target.value
-                        });
-                      }
-                    }}
+                  <Typography sx={{ mt: 2 }}>
+                    品詞：
+                    {displayPosInput(1, posList, inputEditData, setInputEditData)}
+                  </Typography>
+                  <Typography sx={{ mt: 2 }}>
+                    意味：
+                    <TextField
+                      variant="outlined"
+                      defaultValue={inputEditData?.meaning || ''}
+                      onChange={(e) => {
+                        if (setInputEditData) {
+                          setInputEditData({
+                            ...inputEditData,
+                            meaning: e.target.value
+                          });
+                        }
+                      }}
+                    />
+                  </Typography>
+                  <Button
+                    label={'意味' + (selectedMeanIndex === -1 ? '追加' : '更新')}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="primary"
+                    onClick={(e) =>
+                      editEnglishWordMeanAPI({
+                        wordDetail,
+                        inputEditData,
+                        setMessage,
+                        setModalIsOpen,
+                        setInputEditData,
+                        setWordDetail
+                      })
+                    }
                   />
-                </Typography>
-                <Button
-                  label={'意味' + (selectedMeanIndex === -1 ? '追加' : '更新')}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  onClick={(e) =>
-                    editEnglishWordMeanAPI({
-                      wordDetail,
-                      inputEditData,
-                      setMessage,
-                      setModalIsOpen,
-                      setInputEditData,
-                      setWordDetail
-                    })
-                  }
-                />
-                <Button
-                  label={'意味削除'}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  disabled={selectedMeanIndex === -1}
-                  onClick={(e) =>
-                    deleteEnglishMeanAPI({
-                      word_id: wordDetail.id,
-                      mean_id: inputEditData.id,
-                      setMessage,
-                      setModalIsOpen,
-                      setWordDetail,
-                      setInputEditData,
-                      setSelectedMeanIndex
-                    })
-                  }
-                />
-              </Box>
-            </Modal>
-          </Stack>
+                  <Button
+                    label={'意味削除'}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="primary"
+                    disabled={selectedMeanIndex === -1}
+                    onClick={(e) =>
+                      deleteEnglishMeanAPI({
+                        word_id: wordDetail.id,
+                        mean_id: inputEditData.id,
+                        setMessage,
+                        setModalIsOpen,
+                        setWordDetail,
+                        setInputEditData,
+                        setSelectedMeanIndex
+                      })
+                    }
+                  />
+                </Box>
+              </Modal>
+            </Stack>
+          )}
         </Box>
       </Card>
     </>
