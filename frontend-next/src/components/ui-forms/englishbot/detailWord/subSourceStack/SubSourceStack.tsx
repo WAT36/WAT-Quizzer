@@ -27,7 +27,8 @@ export const SubSourceStack = ({
 }: SubSourceStackProps) => {
   const [selectedSubSource, setSelectedSubSource] = useState<WordSubSourceData>({
     id: -1,
-    subsource: ''
+    subsource: '',
+    created_at: ''
   });
 
   const handleOpen = (x: WordSubSourceData) => {
@@ -59,6 +60,9 @@ export const SubSourceStack = ({
                         <Typography align="left" variant="h5" component="p">
                           {x.subsource}
                         </Typography>
+                        <Typography align="left" sx={{ fontSize: 14 }} color="text.secondary" component="p">
+                          {`[${x.created_at.replaceAll('-', '/').replaceAll(/T.*/gi, '')}]`}
+                        </Typography>
                       </Typography>
                       <Typography component="div" sx={{ marginLeft: 'auto' }}>
                         <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x)}></Button>
@@ -72,7 +76,8 @@ export const SubSourceStack = ({
                   onClick={(e) =>
                     handleOpen({
                       id: -1,
-                      subsource: ''
+                      subsource: '',
+                      created_at: ''
                     })
                   }
                 >

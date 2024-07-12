@@ -179,6 +179,7 @@ export interface WordSourceData {
 export interface WordSubSourceData {
   id: number;
   subsource: string;
+  created_at: string;
 }
 
 export interface WordDetailData {

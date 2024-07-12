@@ -864,6 +864,7 @@ export class EnglishWordService {
             select: {
               id: true,
               subsource: true,
+              created_at: true,
             },
           },
         },
