@@ -63,6 +63,27 @@ const EnglishWordTestFourChoiceSentense = memo<EnglishWordTestFourChoiceSentense
   );
 });
 
+// 意味から単語当てテスト用 ランダム取得した単語の意味を1つ選んで出題する
+// TODO これもlib移すか？
+const getRandomMeanOfSelectedWord = (displayWordTest: DisplayWordTestState) => {
+  if (!displayWordTest.wordMean) {
+    return <></>;
+  }
+
+  return (
+    displayWordTest &&
+    displayWordTest.wordMean &&
+    displayWordTest.wordMean.map((mean, index) => {
+      return (
+        <li key={index}>
+          {`[${mean.partsofspeech.name}]`}
+          {mean.meaning}
+        </li>
+      );
+    })
+  );
+};
+
 export const DisplayTestWordSection = ({
   displayWordTest,
   testType,
@@ -146,7 +167,7 @@ export const DisplayTestWordSection = ({
               </Collapse>
             </CardContent>
           </>
-        ) : (
+        ) : testType === '1' ? (
           // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
           <>
             <CardContent>
@@ -179,6 +200,62 @@ export const DisplayTestWordSection = ({
               />
             </CardContent>
           </>
+        ) : testType === '2' ? (
+          // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
+          <>
+            <CardContent>
+              <Typography variant="subtitle1" component="h2">
+                {getRandomMeanOfSelectedWord(displayWordTest)}
+              </Typography>
+
+              <CardActions>
+                <MuiButton size="small" onClick={handleExpandClick} aria-expanded={expanded}>
+                  答え
+                </MuiButton>
+              </CardActions>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <div>
+                    <h2>{displayWordTest && displayWordTest.wordName}</h2>
+                  </div>
+                  <Button
+                    label={'正解!!'}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="primary"
+                    onClick={(e) => {
+                      submitEnglishBotTestAPI({
+                        wordId: displayWordTest.wordId || NaN,
+                        selectedValue: true,
+                        testType: 2,
+                        setMessageStater,
+                        setDisplayWordTestState
+                      });
+                      setExpanded(false);
+                    }}
+                  />
+                  <Button
+                    label={'不正解...'}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="secondary"
+                    onClick={(e) => {
+                      submitEnglishBotTestAPI({
+                        wordId: displayWordTest.wordId || NaN,
+                        selectedValue: false,
+                        testType: 2,
+                        setMessageStater,
+                        setDisplayWordTestState
+                      });
+                      setExpanded(false);
+                    }}
+                  />
+                </CardContent>
+              </Collapse>
+            </CardContent>
+          </>
+        ) : (
+          <></>
         )}
       </Card>
     </>
