@@ -42,10 +42,12 @@ export class EnglishWordController {
   @Get('search')
   async searchWord(
     @Query('wordName') wordName: string,
+    @Query('meanQuery') meanQuery: string,
     @Query('subSourceName') subSourceName: string,
   ) {
     return await this.englishWordService.searchWordService(
       wordName,
+      meanQuery,
       subSourceName,
     );
   }

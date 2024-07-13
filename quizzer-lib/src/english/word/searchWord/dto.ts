@@ -2,7 +2,8 @@ import { ApiResponse } from '../../../..'
 
 // 英単語検索APIリクエスト型
 export interface SearchWordAPIRequestDto {
-  wordName: string
+  wordName?: string
+  meanQuery?: string
   subSourceName?: string
 }
 

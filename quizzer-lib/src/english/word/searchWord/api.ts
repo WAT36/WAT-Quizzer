@@ -8,7 +8,12 @@ interface SearchWordAPIProps {
 export const searchWordAPI = async ({
   searchWordData
 }: SearchWordAPIProps): Promise<ApiResult> => {
-  if (!searchWordData.wordName || searchWordData.wordName === '') {
+  const isEmptyQuery =
+    (!searchWordData.wordName || searchWordData.wordName === '') &&
+    (!searchWordData.wordName || searchWordData.wordName === '') &&
+    (!searchWordData.meanQuery || searchWordData.meanQuery === '')
+
+  if (isEmptyQuery) {
     return {
       message: {
         message: 'エラー:検索語句を入力して下さい',

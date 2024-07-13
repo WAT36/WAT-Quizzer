@@ -28,6 +28,18 @@ export const SearchInputSection = ({ setMessage, setSearchResult }: SearchInputS
           />
         </FormControl>
 
+        <FormControl>
+          <TextField
+            label="意味検索"
+            onChange={(e) => {
+              setQueryOfSearchWord({
+                ...queryOfSearchWord,
+                meanQuery: e.target.value
+              });
+            }}
+          />
+        </FormControl>
+
         <FormControl className={styles.row}>
           サブ出典：
           <TextField

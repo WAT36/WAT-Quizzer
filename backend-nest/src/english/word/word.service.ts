@@ -139,7 +139,11 @@ export class EnglishWordService {
   }
 
   // 単語検索
-  async searchWordService(wordName: string, subSourceName: string) {
+  async searchWordService(
+    wordName: string,
+    meanQuery: string,
+    subSourceName: string,
+  ) {
     try {
       const result = await prisma.word.findMany({
         select: {
@@ -155,9 +159,20 @@ export class EnglishWordService {
         where: {
           AND: [
             {
-              name: {
-                contains: wordName,
-              },
+              ...(wordName && {
+                name: {
+                  contains: wordName,
+                },
+              }),
+              ...(meanQuery && {
+                mean: {
+                  some: {
+                    meaning: {
+                      contains: meanQuery,
+                    },
+                  },
+                },
+              }),
               ...(subSourceName && {
                 word_subsource: {
                   some: {
