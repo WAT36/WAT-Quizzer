@@ -92,10 +92,10 @@ export const InputAddWordForm = ({ sourceList, addWordState, setMessage, setAddW
               messageColor: '#d3d3d3',
               isDisplay: true
             });
-          const message: Message = await addWordAPI({ addWordData: addWordState });
-          setMessage && setMessage(message);
+          const result = await addWordAPI({ addWordData: addWordState });
+          setMessage && setMessage(result.message);
           // TODO 成功時の条件
-          if (message.messageColor === 'success.light') {
+          if (result.message.messageColor === 'success.light') {
             setAddWordState &&
               setAddWordState({
                 inputWord: {

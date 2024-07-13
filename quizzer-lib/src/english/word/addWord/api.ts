@@ -1,4 +1,4 @@
-import { post } from '../../../api/API'
+import { post, ApiResult } from '../../../api'
 import { AddWordAPIRequestDto } from './dto'
 import { Message } from '../../../common'
 import { ProcessingApiReponse } from '../../../interfaces'
@@ -8,13 +8,17 @@ interface AddWordAPIProps {
 }
 
 // 登録ボタン押下後。単語と意味をDBに登録
-export const addWordAPI = async ({ addWordData }: AddWordAPIProps) => {
+export const addWordAPI = async ({
+  addWordData
+}: AddWordAPIProps): Promise<ApiResult> => {
   if (addWordData.inputWord.wordName === '') {
     return {
-      message: 'エラー:単語が入力されておりません',
-      messageColor: 'error',
-      isDisplay: true
-    } as Message
+      message: {
+        message: 'エラー:単語が入力されておりません',
+        messageColor: 'error',
+        isDisplay: true
+      }
+    }
   }
   for (let i = 0; i < addWordData.meanArrayData.length; i++) {
     if (
@@ -23,19 +27,23 @@ export const addWordAPI = async ({ addWordData }: AddWordAPIProps) => {
         !addWordData.meanArrayData[i].partOfSpeechName)
     ) {
       return {
-        message: `エラー:${i + 1}行目の品詞を入力してください`,
-        messageColor: 'error',
-        isDisplay: true
-      } as Message
+        message: {
+          message: `エラー:${i + 1}行目の品詞を入力してください`,
+          messageColor: 'error',
+          isDisplay: true
+        }
+      }
     } else if (
       !addWordData.meanArrayData[i].meaning ||
       addWordData.meanArrayData[i].meaning === ''
     ) {
       return {
-        message: `エラー:${i + 1}行目の意味を入力してください`,
-        messageColor: 'error',
-        isDisplay: true
-      } as Message
+        message: {
+          message: `エラー:${i + 1}行目の意味を入力してください`,
+          messageColor: 'error',
+          isDisplay: true
+        }
+      }
     }
   }
 
@@ -45,24 +53,30 @@ export const addWordAPI = async ({ addWordData }: AddWordAPIProps) => {
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         return {
-          message: `単語「${addWordData.inputWord.wordName}」を登録しました`,
-          messageColor: 'success.light',
-          isDisplay: true
-        } as Message
+          message: {
+            message: `単語「${addWordData.inputWord.wordName}」を登録しました`,
+            messageColor: 'success.light',
+            isDisplay: true
+          }
+        }
       } else {
         return {
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error',
-          isDisplay: true
-        } as Message
+          message: {
+            message: 'エラー:外部APIとの連携に失敗しました',
+            messageColor: 'error',
+            isDisplay: true
+          }
+        }
       }
     }
   ).catch((err: Error) => {
     return {
-      message: err.message,
-      messageColor: 'error',
-      isDisplay: true
-    } as Message
+      message: {
+        message: err.message,
+        messageColor: 'error',
+        isDisplay: true
+      }
+    }
   })
   return result
 }

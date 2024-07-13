@@ -73,7 +73,7 @@ export const getApiAndGetValue = async (
 export const post = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => Message,
+  func: (data: ProcessingApiReponse) => ApiResult,
   accessToken?: string
 ) => {
   const key = await getApiKey()
@@ -97,10 +97,12 @@ export const post = async (
     .then(func)
     .catch((error) => {
       return {
-        message: error.message,
-        messageColor: 'error',
-        isDisplay: true
-      } as Message
+        message: {
+          message: String(error.message),
+          messageColor: 'error',
+          isDisplay: true
+        }
+      } as ApiResult
     })
 }
 
