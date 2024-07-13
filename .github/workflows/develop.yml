@@ -63,5 +63,5 @@ jobs:
 
     - name: Frontend Deploy  # S3にデプロイ 
       run: 
-        cd ./frontend-next && aws s3 sync --region ap-northeast-1 ./out s3://dev-quizzer-front-bucket --delete
+        cd ./frontend-next && aws s3 sync --size-only --region ap-northeast-1 ./out s3://dev-quizzer-front-bucket
 
