@@ -113,7 +113,12 @@ export const DisplayTestWordSection = ({
               </div>
 
               <CardActions>
-                <MuiButton size="small" onClick={handleExpandClick} aria-expanded={expanded}>
+                <MuiButton
+                  size="small"
+                  onClick={handleExpandClick}
+                  aria-expanded={expanded}
+                  disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
+                >
                   答え
                 </MuiButton>
               </CardActions>
@@ -136,6 +141,7 @@ export const DisplayTestWordSection = ({
                     attr={'button-array'}
                     variant="contained"
                     color="primary"
+                    disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
                     onClick={(e) => {
                       submitEnglishBotTestAPI({
                         wordId: displayWordTest.wordId || NaN,
@@ -152,6 +158,7 @@ export const DisplayTestWordSection = ({
                     attr={'button-array'}
                     variant="contained"
                     color="secondary"
+                    disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
                     onClick={(e) => {
                       submitEnglishBotTestAPI({
                         wordId: displayWordTest.wordId || NaN,
@@ -196,7 +203,9 @@ export const DisplayTestWordSection = ({
                     setDisplayWordTestState
                   })
                 }
-                disabled={isNaN(displayWordTest.wordId || NaN)}
+                disabled={
+                  isNaN(displayWordTest.wordId || NaN) || !displayWordTest.wordName || displayWordTest.wordName === ''
+                }
               />
             </CardContent>
           </>
@@ -209,7 +218,12 @@ export const DisplayTestWordSection = ({
               </Typography>
 
               <CardActions>
-                <MuiButton size="small" onClick={handleExpandClick} aria-expanded={expanded}>
+                <MuiButton
+                  size="small"
+                  onClick={handleExpandClick}
+                  aria-expanded={expanded}
+                  disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
+                >
                   答え
                 </MuiButton>
               </CardActions>
@@ -223,6 +237,7 @@ export const DisplayTestWordSection = ({
                     attr={'button-array'}
                     variant="contained"
                     color="primary"
+                    disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
                     onClick={(e) => {
                       submitEnglishBotTestAPI({
                         wordId: displayWordTest.wordId || NaN,
@@ -239,6 +254,7 @@ export const DisplayTestWordSection = ({
                     attr={'button-array'}
                     variant="contained"
                     color="secondary"
+                    disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
                     onClick={(e) => {
                       submitEnglishBotTestAPI({
                         wordId: displayWordTest.wordId || NaN,
