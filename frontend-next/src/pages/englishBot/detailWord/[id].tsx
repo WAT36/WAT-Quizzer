@@ -2,17 +2,16 @@ import { CircularProgress, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getApiAndGetValue } from '@/api/API';
 import { Layout } from '@/components/templates/layout/Layout';
-import { PullDownOptionState, WordDetailData } from '../../../../interfaces/state';
+import { PullDownOptionState } from '../../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
-import { getWordDetail } from '@/pages/api/english';
 import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceStack/SourceStack';
 import { SubSourceStack } from '@/components/ui-forms/englishbot/detailWord/subSourceStack/SubSourceStack';
 import { messageState } from '@/atoms/Message';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
-import { GetWordNumResponseDto } from 'quizzer-lib';
+import { GetWordNumResponseDto, GetWordDetailAPIResponseDto, getWordDetailAPI } from 'quizzer-lib';
 
 type EachWordPageProps = {
   id: string;
@@ -20,31 +19,33 @@ type EachWordPageProps = {
 };
 // TODO dynamic routingだとファイル数膨大・単語追加のたびにデプロイ必要になるので不向き、Next.jsで何か別の使える機能ないか
 export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps) {
-  const [wordDetail, setWordDetail] = useState<WordDetailData>({
+  const initWordDetailData = {
     id: -1,
     name: '',
     pronounce: '',
     mean: [],
     word_source: [],
     word_subsource: []
-  });
-  const [open, setOpen] = useState(false);
-  const [subSourceModalOpen, setSubSourceModalOpen] = useState(false);
+  };
+  const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(initWordDetailData);
+  const [meaningModalopen, setMeaningModalOpen] = useState(false);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
+  const [subSourceModalOpen, setSubSourceModalOpen] = useState(false);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
-  const [message, setMessage] = useRecoilState(messageState);
+  const setMessage = useSetRecoilState(messageState);
 
   useEffect(() => {
     if (!isMock) {
       const accessToken = localStorage.getItem('apiAccessToken') || '';
       Promise.all([
         getPartOfSpeechListAPI(setMessage, setPosList, accessToken),
-        getSourceListAPI(setMessage, setSourcelistoption, accessToken),
-        getWordDetail(id, setMessage, setWordDetail, accessToken)
-        // getWordSource(id, setMessage, setWordSourceData),
-        // getWordSubSource(id, setMessage, setWordSubSourceData)
+        getSourceListAPI(setMessage, setSourcelistoption, accessToken)
       ]);
+      (async () => {
+        const result = (await getWordDetailAPI({ id })).result as GetWordDetailAPIResponseDto;
+        setWordDetail(result);
+      })();
     }
   }, [id, isMock, setMessage]);
 
@@ -64,10 +65,10 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         <MeaningStack
           posList={posList}
           wordDetail={wordDetail}
-          modalIsOpen={open}
+          modalIsOpen={meaningModalopen}
           setMessage={setMessage}
           setWordDetail={setWordDetail}
-          setModalIsOpen={setOpen}
+          setModalIsOpen={setMeaningModalOpen}
         />
         <SourceStack
           sourceList={sourcelistoption}

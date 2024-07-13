@@ -1,7 +1,6 @@
 import { del } from '@/api/API';
-import { ProcessingAddApiReponse } from 'quizzer-lib';
+import { getWordDetailAPI, GetWordDetailAPIResponseDto, ProcessingAddApiReponse } from 'quizzer-lib';
 import { MessageState, WordDetailData, WordSubSourceData } from '../../../interfaces/state';
-import { getWordDetail } from '@/pages/api/english';
 
 interface AddEnglishWordSubSourceButtonProps {
   wordDetail: WordDetailData;
@@ -36,7 +35,7 @@ export const deleteEnglishWordSubSourceAPI = async ({
     {
       id: subSourceData.id
     },
-    (data: ProcessingAddApiReponse) => {
+    async (data: ProcessingAddApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         if (setMessage) {
           setMessage({
@@ -47,8 +46,9 @@ export const deleteEnglishWordSubSourceAPI = async ({
         }
 
         // 更新後の単語データを再取得する
-        if (setWordDetail && setMessage) {
-          getWordDetail(String(wordDetail.id), setMessage, setWordDetail);
+        if (setWordDetail) {
+          const result = (await getWordDetailAPI({ id: String(wordDetail.id) })).result as GetWordDetailAPIResponseDto;
+          setWordDetail(result);
         }
 
         setSubSourceData &&

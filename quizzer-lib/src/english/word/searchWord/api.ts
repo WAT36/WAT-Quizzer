@@ -1,5 +1,4 @@
-import { ProcessingApiReponse } from 'quizzer-lib'
-import { get, ApiResult } from '../../../api'
+import { get, ApiResult, ProcessingApiReponse } from '../../../api'
 import { SearchWordAPIRequestDto, SearchWordAPIResponseDto } from './dto'
 
 interface SearchWordAPIProps {
@@ -22,7 +21,11 @@ export const searchWordAPI = async ({
   const result = await get(
     '/english/word/search',
     (data: ProcessingApiReponse) => {
-      if (data.status === 200 && data.body?.length > 0) {
+      if (
+        data.status === 200 &&
+        Array.isArray(data.body) &&
+        data.body?.length > 0
+      ) {
         const result: SearchWordAPIResponseDto[] =
           data.body as SearchWordAPIResponseDto[]
         return {
@@ -33,7 +36,10 @@ export const searchWordAPI = async ({
           },
           result
         }
-      } else if (data.status === 404 || data.body?.length === 0) {
+      } else if (
+        data.status === 404 ||
+        (Array.isArray(data.body) && data.body?.length === 0)
+      ) {
         return {
           message: {
             message: 'エラー:条件に合致するデータはありません',

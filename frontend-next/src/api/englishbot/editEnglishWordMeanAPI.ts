@@ -1,7 +1,6 @@
 import { patch } from '@/api/API';
-import { ProcessingAddApiReponse } from 'quizzer-lib';
+import { getWordDetailAPI, GetWordDetailAPIResponseDto, ProcessingAddApiReponse } from 'quizzer-lib';
 import { WordMeanData, MessageState, WordDetailData } from '../../../interfaces/state';
-import { getWordDetail } from '@/pages/api/english';
 
 interface EditEnglishWordMeanButtonProps {
   wordDetail: WordDetailData;
@@ -40,7 +39,7 @@ export const editEnglishWordMeanAPI = async ({
       partofspeechId: inputEditData.partsofspeech.id,
       meaning: inputEditData.meaning
     },
-    (data: ProcessingAddApiReponse) => {
+    async (data: ProcessingAddApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         if (setMessage) {
           setMessage({
@@ -51,8 +50,9 @@ export const editEnglishWordMeanAPI = async ({
         }
 
         // 更新確認後、単語の意味を再取得させる
-        if (setWordDetail && setMessage) {
-          getWordDetail(String(wordDetail.id), setMessage, setWordDetail);
+        if (setWordDetail) {
+          const result = (await getWordDetailAPI({ id: String(wordDetail.id) })).result as GetWordDetailAPIResponseDto;
+          setWordDetail(result);
         }
       } else {
         if (setMessage) {

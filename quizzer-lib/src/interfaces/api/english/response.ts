@@ -33,33 +33,6 @@ export interface WordSummaryApiResponse extends ApiResponse {
   count: number
 }
 
-// 英単語（単語IDで）取得APIの返り値
-export interface EnglishWordByIdApiResponse extends ApiResponse {
-  id: number
-  name: string
-  pronounce: string
-  mean: {
-    partsofspeech: {
-      id: number
-      name: string
-    }
-    id: number
-    wordmean_id: number
-    meaning: string
-  }[]
-  word_source: {
-    source: {
-      id: number
-      name: string
-    }
-  }[]
-  word_subsource: {
-    id: number
-    subsource: string
-    created_at: string
-  }[]
-}
-
 // 英単語の出典（単語IDで）取得APIの返り値
 export interface EnglishWordSourceByIdApiResponse extends ApiResponse {
   word_id: number

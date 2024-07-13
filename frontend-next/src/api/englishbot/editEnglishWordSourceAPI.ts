@@ -1,7 +1,6 @@
 import { post, put } from '@/api/API';
-import { ProcessingApiReponse } from 'quizzer-lib';
+import { getWordDetailAPI, GetWordDetailAPIResponseDto, ProcessingApiReponse } from 'quizzer-lib';
 import { WordSourceData, MessageState, WordDetailData } from '../../../interfaces/state';
-import { getWordDetail } from '@/pages/api/english';
 
 interface EditEnglishWordSourceButtonProps {
   wordDetail: WordDetailData;
@@ -40,7 +39,7 @@ export const editEnglishWordSourceAPI = async ({
       oldSourceId: selectedWordSourceIndex === -1 ? -1 : wordSourceData.source[selectedWordSourceIndex].id,
       newSourceId: inputSourceId
     },
-    (data: ProcessingApiReponse) => {
+    async (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         if (setMessage) {
           setMessage({
@@ -50,8 +49,9 @@ export const editEnglishWordSourceAPI = async ({
           });
         }
         // 更新確認後、単語の意味を再取得させる
-        if (setWordDetail && setMessage) {
-          getWordDetail(String(wordDetail.id), setMessage, setWordDetail);
+        if (setWordDetail) {
+          const result = (await getWordDetailAPI({ id: String(wordDetail.id) })).result as GetWordDetailAPIResponseDto;
+          setWordDetail(result);
         }
       } else {
         if (setMessage) {
