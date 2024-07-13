@@ -56,7 +56,8 @@ export const addEnglishWordSubSourceAPI = async ({
         setSubSourceData &&
           setSubSourceData({
             id: -1,
-            subsource: ''
+            subsource: '',
+            created_at: ''
           });
       } else {
         if (setMessage) {

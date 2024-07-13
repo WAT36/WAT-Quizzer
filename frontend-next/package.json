@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.369.0",
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@eslint/eslintrc": "^3.0.2",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.13",

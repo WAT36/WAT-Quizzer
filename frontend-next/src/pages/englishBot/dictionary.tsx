@@ -7,7 +7,7 @@ import { Title } from '@/components/ui-elements/title/Title';
 import { SearchInputSection } from '@/components/ui-forms/englishbot/dictionary/searchInputSection/SearchInputSection';
 import { SearchResultTable } from '@/components/ui-elements/searchResultTable/SearchResultTable';
 import { messageState } from '@/atoms/Message';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 type Props = {
   isMock?: boolean;
@@ -15,7 +15,7 @@ type Props = {
 
 export default function EnglishBotDictionaryPage({ isMock }: Props) {
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
-  const [message, setMessage] = useRecoilState(messageState);
+  const setMessage = useSetRecoilState(messageState);
 
   const contents = () => {
     return (

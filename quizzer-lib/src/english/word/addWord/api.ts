@@ -3,12 +3,12 @@ import { AddWordAPIRequestDto } from './dto'
 import { Message } from '../../../common'
 import { ProcessingApiReponse } from '../../../interfaces'
 
-interface AddWordButtonProps {
+interface AddWordAPIProps {
   addWordData: AddWordAPIRequestDto
 }
 
 // 登録ボタン押下後。単語と意味をDBに登録
-export const addWordAPI = async ({ addWordData }: AddWordButtonProps) => {
+export const addWordAPI = async ({ addWordData }: AddWordAPIProps) => {
   if (addWordData.inputWord.wordName === '') {
     return {
       message: 'エラー:単語が入力されておりません',

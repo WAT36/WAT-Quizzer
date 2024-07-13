@@ -115,13 +115,6 @@ export interface QueryOfGetWordState {
   };
 }
 
-export interface QueryOfSearchWordState {
-  query: string;
-  subSource?: {
-    query?: string;
-  };
-}
-
 export interface FourChoiceData {
   correct: {
     mean: string;
