@@ -139,11 +139,11 @@ export const put = async (
 export const del = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => void,
+  func: (data: ProcessingApiReponse) => ApiResult,
   accessToken?: string
 ) => {
   const key = await getApiKey()
-  await fetch(baseURL + path, {
+  return await fetch(baseURL + path, {
     method: 'DELETE',
     body: JSON.stringify(jsondata),
     headers: {
@@ -162,18 +162,24 @@ export const del = async (
     )
     .then(func)
     .catch((error) => {
-      console.error(`DELETE(${path}): ${error}`)
+      return {
+        message: {
+          message: String(error.message),
+          messageColor: 'error',
+          isDisplay: true
+        }
+      } as ApiResult
     })
 }
 
 export const patch = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => void,
+  func: (data: ProcessingApiReponse) => ApiResult,
   accessToken?: string
 ) => {
   const key = await getApiKey()
-  await fetch(baseURL + path, {
+  return await fetch(baseURL + path, {
     method: 'PATCH',
     body: JSON.stringify(jsondata),
     headers: {
@@ -192,6 +198,12 @@ export const patch = async (
     )
     .then(func)
     .catch((error) => {
-      console.error(`PATCH(${path}): ${error}`)
+      return {
+        message: {
+          message: String(error.message),
+          messageColor: 'error',
+          isDisplay: true
+        }
+      } as ApiResult
     })
 }

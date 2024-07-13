@@ -48,20 +48,6 @@ export interface DeleteWordSubSourceAPIRequestDto {
   id: number
 }
 
-// 英単語意味削除APIリクエスト型
-export interface DeleteMeanAPIRequestDto {
-  meanId: number
-}
-
-// 英単語意味編集APIリクエスト型
-export interface EditWordMeanAPIRequestDto {
-  wordId: number
-  wordMeanId: number
-  meanId: number
-  partofspeechId: number
-  meaning: string
-}
-
 // 英単語追加画面で入力した単語、意味のデータを　英単語追加APIに送るためのデータ型
 export interface SendToAddWordApiData {
   partOfSpeechId: number
