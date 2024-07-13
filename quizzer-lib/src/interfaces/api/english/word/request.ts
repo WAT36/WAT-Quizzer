@@ -23,18 +23,6 @@ export interface AddWordTestResultLogAPIRequestDto {
   testType: number
 }
 
-// 英単語サブ出典追加更新APIリクエスト型
-export interface UpsertWordSubSourceAPIRequestDto {
-  id: number
-  wordId: number
-  subSource: string
-}
-
-// 英単語サブ出典削除APIリクエスト型
-export interface DeleteWordSubSourceAPIRequestDto {
-  id: number
-}
-
 // 英単語追加画面で入力した単語、意味のデータを　英単語追加APIに送るためのデータ型
 export interface SendToAddWordApiData {
   partOfSpeechId: number

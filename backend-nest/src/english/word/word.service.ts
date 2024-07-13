@@ -6,7 +6,7 @@ import {
   EditWordSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
   getRandomElementsFromArray,
-  UpsertWordSubSourceAPIRequestDto,
+  EditWordSubSourceAPIRequestDto,
   DeleteWordSubSourceAPIRequestDto,
   DeleteWordSourceAPIRequestDto,
   DeleteMeanAPIRequestDto,
@@ -709,7 +709,7 @@ export class EnglishWordService {
   }
 
   // 単語のサブ出典追加更新
-  async upsertSubSourceOfWordById(req: UpsertWordSubSourceAPIRequestDto) {
+  async upsertSubSourceOfWordById(req: EditWordSubSourceAPIRequestDto) {
     try {
       const { id, wordId, subSource } = req;
       return await prisma.word_subsource.upsert({

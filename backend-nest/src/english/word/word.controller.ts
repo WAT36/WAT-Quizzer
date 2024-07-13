@@ -6,9 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { EnglishWordService } from './word.service';
 import {
@@ -16,7 +14,7 @@ import {
   AddWordTestResultLogAPIRequestDto,
   EditWordSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
-  UpsertWordSubSourceAPIRequestDto,
+  EditWordSubSourceAPIRequestDto,
   DeleteWordSubSourceAPIRequestDto,
   DeleteWordSourceAPIRequestDto,
   DeleteMeanAPIRequestDto,
@@ -124,7 +122,7 @@ export class EnglishWordController {
 
   // @UseGuards(AuthGuard)
   @Post('subsource')
-  async addSubSourceOfWordById(@Body() req: UpsertWordSubSourceAPIRequestDto) {
+  async addSubSourceOfWordById(@Body() req: EditWordSubSourceAPIRequestDto) {
     return await this.englishWordService.upsertSubSourceOfWordById(req);
   }
 
