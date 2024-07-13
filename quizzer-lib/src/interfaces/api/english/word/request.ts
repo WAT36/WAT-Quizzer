@@ -23,19 +23,6 @@ export interface AddWordTestResultLogAPIRequestDto {
   testType: number
 }
 
-// 英単語出典編集APIリクエスト型
-export interface EditWordSourceAPIRequestDto {
-  wordId: number
-  oldSourceId: number
-  newSourceId: number
-}
-
-// 英単語サブ出典削除APIリクエスト型
-export interface DeleteWordSourceAPIRequestDto {
-  word_id: number
-  source_id: number
-}
-
 // 英単語サブ出典追加更新APIリクエスト型
 export interface UpsertWordSubSourceAPIRequestDto {
   id: number

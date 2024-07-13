@@ -3,42 +3,46 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { Box, CircularProgress, IconButton, MenuItem, Select, Stack, Typography } from '@mui/material';
-import { MessageState, PullDownOptionState, WordDetailData, WordSourceData } from '../../../../../../interfaces/state';
+import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
 import { style } from '../Stack.style';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { editEnglishWordSourceAPI } from '@/api/englishbot/editEnglishWordSourceAPI';
-import { deleteEnglishWordSourceAPI } from '@/api/englishbot/deleteEnglishWordSourceAPI';
+import {
+  deleteEnglishWordSourceAPI,
+  editEnglishWordSourceAPI,
+  EditWordSourceAPIRequestDto,
+  getWordDetailAPI,
+  GetWordDetailAPIResponseDto
+} from 'quizzer-lib';
 
 interface SourceStackProps {
   sourceList: PullDownOptionState[];
-  wordDetail: WordDetailData;
-  modalIsOpen: boolean;
-  setModalIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<WordDetailData>>;
+  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
 }
 
 // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
 const displaySourceInput = (
-  i: number,
+  i: number, // TODO iはキーだけ使ってるんでuuidとかで代用できるので消す
   sourceList: PullDownOptionState[],
-  inputSourceId: number,
-  setInputSourceId?: React.Dispatch<React.SetStateAction<number>>
+  editWordSourceData: EditWordSourceAPIRequestDto,
+  setEditWordSourceData: React.Dispatch<React.SetStateAction<EditWordSourceAPIRequestDto>>
 ) => {
   return (
     <>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
-        defaultValue={inputSourceId || -1}
+        defaultValue={editWordSourceData.oldSourceId || -1}
         label="source"
         key={i}
         sx={{ width: 1 }}
         onChange={(e) => {
-          if (setInputSourceId) {
-            setInputSourceId(+e.target.value);
-          }
+          setEditWordSourceData({
+            ...editWordSourceData,
+            newSourceId: +e.target.value
+          });
         }}
       >
         <MenuItem value={-1} key={-1}>
@@ -54,43 +58,26 @@ const displaySourceInput = (
   );
 };
 
-export const SourceStack = ({
-  sourceList,
-  wordDetail,
-  modalIsOpen,
-  setModalIsOpen,
-  setMessage,
-  setWordDetail
-}: SourceStackProps) => {
+export const SourceStack = ({ sourceList, wordDetail, setMessage, setWordDetail }: SourceStackProps) => {
+  // TODO 初期データはlibに持っていく
+  const initEditWordSourceData = {
+    wordId: -1,
+    oldSourceId: -1,
+    newSourceId: -1
+  };
   // TODO word-sourceの構造変えたらここも直したい
+  const [sourceModalOpen, setSourceModalOpen] = useState(false);
+  const [editWordSourceData, setEditWordSourceData] = useState<EditWordSourceAPIRequestDto>(initEditWordSourceData);
   const [selectedWordSourceIndex, setSelectedWordSourceIndex] = useState<number>(-1); //仮
-  const [inputSourceId, setInputSourceId] = useState<number>(-1);
-  const [wordSourceData, setWordSourceData] = useState<WordSourceData>({
-    word: {
-      id: -1,
-      name: ''
-    },
-    source: []
-  });
 
-  useEffect(() => {
-    setWordSourceData({
-      word: {
-        id: wordDetail.id,
-        name: wordDetail.name
-      },
-      source: wordDetail.word_source.map((x) => {
-        return x.source;
-      })
-    });
-  }, [wordDetail.id, wordDetail.name, wordDetail.word_source]);
-
-  const handleOpen = (sourceId: number, index: number) => {
-    if (setModalIsOpen) {
-      setModalIsOpen(true);
-    }
+  const handleOpen = (index: number) => {
+    setSourceModalOpen(true);
     setSelectedWordSourceIndex(index);
-    setInputSourceId(sourceId);
+    setEditWordSourceData({
+      wordId: wordDetail.id,
+      oldSourceId: index === -1 ? index : wordDetail.word_source[index].source.id,
+      newSourceId: index === -1 ? index : wordDetail.word_source[index].source.id
+    });
   };
   return (
     <>
@@ -103,53 +90,58 @@ export const SourceStack = ({
             <CircularProgress />
           ) : (
             <Stack spacing={2}>
-              {wordSourceData.source.map((x, index) => {
+              {wordDetail.word_source.map((x, index) => {
                 return (
                   // eslint-disable-next-line react/jsx-key
-                  <Item key={x.id}>
+                  <Item key={index}>
                     <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
                       <Typography component="div">
                         <Typography align="left" variant="h5" component="p">
-                          {x.name}
+                          {x.source.name}
                         </Typography>
                       </Typography>
                       <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                        <Button label="編集" variant="outlined" onClick={(e) => handleOpen(x.id, index)} />
+                        <Button label="編集" variant="outlined" onClick={(e) => handleOpen(index)} />
                       </Typography>
                     </Typography>
                   </Item>
                 );
               })}
               <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-                <IconButton onClick={(e) => handleOpen(-1, -1)}>
+                <IconButton onClick={(e) => handleOpen(-1)}>
                   <AddCircleOutlineIcon />
                 </IconButton>
               </Stack>
-              <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen}>
+              <Modal isOpen={sourceModalOpen} setIsOpen={setSourceModalOpen}>
                 <Box sx={style}>
                   <Typography id="modal-modal-title" variant="h4" component="h4">
                     {'出典' + (selectedWordSourceIndex === -1 ? '追加' : '更新')}
                   </Typography>
                   <Typography sx={{ mt: 2 }}>
                     出典：
-                    {displaySourceInput(3, sourceList, inputSourceId, setInputSourceId)}
+                    {displaySourceInput(3, sourceList, editWordSourceData, setEditWordSourceData)}
                   </Typography>
                   <Button
                     label={'出典' + (selectedWordSourceIndex === -1 ? '追加' : '更新')}
                     attr={'button-array'}
                     variant="contained"
                     color="primary"
-                    onClick={(e) =>
-                      editEnglishWordSourceAPI({
-                        wordDetail,
-                        wordSourceData,
-                        selectedWordSourceIndex,
-                        inputSourceId,
-                        setMessage,
-                        setModalIsOpen,
-                        setWordDetail
-                      })
-                    }
+                    onClick={async (e) => {
+                      setSourceModalOpen(false);
+                      const result = await editEnglishWordSourceAPI({
+                        editWordSourceData
+                      });
+                      setMessage && setMessage(result.message);
+                      // TODO 成功時の判定法
+                      // 更新確認後、単語の意味を再取得させる
+                      if (result.message.messageColor === 'success.light') {
+                        const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
+                          .result as GetWordDetailAPIResponseDto;
+                        setWordDetail && setWordDetail(newWordDetail);
+                      }
+                      setEditWordSourceData(initEditWordSourceData);
+                      setSelectedWordSourceIndex(-1);
+                    }}
                   />
                   <Button
                     label={'出典削除'}
@@ -157,16 +149,25 @@ export const SourceStack = ({
                     variant="contained"
                     color="primary"
                     disabled={selectedWordSourceIndex === -1}
-                    onClick={(e) =>
-                      deleteEnglishWordSourceAPI({
-                        word_id: wordDetail.id,
-                        source_id: inputSourceId,
-                        setMessage,
-                        setModalIsOpen,
-                        setWordDetail,
-                        setSelectedWordSourceIndex
-                      })
-                    }
+                    onClick={async (e) => {
+                      setSourceModalOpen(false);
+                      const result = await deleteEnglishWordSourceAPI({
+                        deleteWordSourceData: {
+                          word_id: wordDetail.id,
+                          source_id: wordDetail.word_source[selectedWordSourceIndex].source.id
+                        }
+                      });
+                      setMessage && setMessage(result.message);
+                      // TODO 成功時の判定法
+                      // 更新確認後、単語の意味を再取得させる
+                      if (result.message.messageColor === 'success.light') {
+                        const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
+                          .result as GetWordDetailAPIResponseDto;
+                        setWordDetail && setWordDetail(newWordDetail);
+                      }
+                      setEditWordSourceData(initEditWordSourceData);
+                      setSelectedWordSourceIndex(-1);
+                    }}
                   />
                 </Box>
               </Modal>

@@ -26,8 +26,6 @@ interface MeaningStackProps {
 const displayPosInput = (
   i: number,
   posList: PullDownOptionState[],
-  // inputEditData: WordMeanData,
-  // setInputEditData?: React.Dispatch<React.SetStateAction<WordMeanData>>
   editMeanData: EditWordMeanAPIRequestDto,
   setEditMeanData: React.Dispatch<React.SetStateAction<EditWordMeanAPIRequestDto>>
 ) => {
@@ -52,10 +50,6 @@ const displayPosInput = (
             setEditMeanData({
               ...editMeanData,
               partofspeechId: +posData.value
-              // partsofspeech: {
-              //   id: +posData.value,
-              //   name: posData.label
-              // }
             });
           }
         }}
@@ -84,6 +78,7 @@ export const MeaningStack = ({ posList, wordDetail, setMessage, setWordDetail }:
   };
   const [meaningModalopen, setMeaningModalOpen] = useState(false);
   const [editMeanData, setEditMeanData] = useState<EditWordMeanAPIRequestDto>(initEditMeanData);
+  // TODO これいる？（sourcestackも）
   const [selectedMeanIndex, setSelectedMeanIndex] = useState<number>(-1); //仮
 
   const handleOpen = (wordMeanIndex: number) => {
@@ -144,21 +139,7 @@ export const MeaningStack = ({ posList, wordDetail, setMessage, setWordDetail }:
               })}
               {/* 意味の新規追加ボタン */}
               <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-                <IconButton
-                  onClick={(e) =>
-                    handleOpen(
-                      // {
-                      //   ...emptyWordMeanData,
-                      //   wordmean_id:
-                      //     wordDetail.mean.reduce(
-                      //       (previousValue, currentValue) => Math.max(previousValue, currentValue.wordmean_id),
-                      //       -1
-                      //     ) + 1
-                      // },
-                      -1
-                    )
-                  }
-                >
+                <IconButton onClick={(e) => handleOpen(-1)}>
                   <AddCircleOutlineIcon />
                 </IconButton>
               </Stack>

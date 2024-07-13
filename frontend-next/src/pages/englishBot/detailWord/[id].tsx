@@ -28,7 +28,6 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     word_subsource: []
   };
   const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(initWordDetailData);
-  const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [subSourceModalOpen, setSubSourceModalOpen] = useState(false);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
@@ -65,8 +64,6 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         <SourceStack
           sourceList={sourcelistoption}
           wordDetail={wordDetail}
-          modalIsOpen={sourceModalOpen}
-          setModalIsOpen={setSourceModalOpen}
           setMessage={setMessage}
           setWordDetail={setWordDetail}
         />
