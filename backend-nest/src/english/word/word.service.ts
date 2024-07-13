@@ -153,18 +153,22 @@ export class EnglishWordService {
           },
         },
         where: {
-          name: {
-            contains: wordName,
-          },
-          ...(subSourceName && {
-            word_subsource: {
-              every: {
-                subsource: {
-                  contains: subSourceName,
-                },
+          AND: [
+            {
+              name: {
+                contains: wordName,
               },
+              ...(subSourceName && {
+                word_subsource: {
+                  some: {
+                    subsource: {
+                      contains: subSourceName,
+                    },
+                  },
+                },
+              }),
             },
-          }),
+          ],
         },
         orderBy: {
           name: 'asc',
