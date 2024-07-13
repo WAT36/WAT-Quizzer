@@ -26,7 +26,6 @@ export const Main: Story = {
       mean: [],
       word_source: [],
       word_subsource: []
-    },
-    modalIsOpen: false
+    }
   }
 };
