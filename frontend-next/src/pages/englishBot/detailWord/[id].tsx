@@ -59,6 +59,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
           </Typography>
         )}
 
+        {/* TODO スタックは共通化できる？ */}
         <MeaningStack posList={posList} wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
         <SourceStack
           sourceList={sourcelistoption}

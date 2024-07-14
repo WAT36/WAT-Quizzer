@@ -284,23 +284,23 @@ model word_example {
   @@id([example_sentense_id, word_id])
 }
 
-model word_similarity {
-  id                       Int       @id @default(autoincrement())
-  word_similarity_group_id Int
-  word_id                  Int
-  created_at               DateTime  @default(now()) @db.Timestamp(6)
-  updated_at               DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at               DateTime? @db.Timestamp(6)
+model synonym {
+  id               Int       @id @default(autoincrement())
+  synonym_group_id Int
+  word_id          Int
+  created_at       DateTime  @default(now()) @db.Timestamp(6)
+  updated_at       DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime? @db.Timestamp(6)
 
-  @@unique([word_similarity_group_id, word_id])
+  @@unique([synonym_group_id, word_id])
 }
 
-model word_similarity_group {
-  id                         Int       @id @default(autoincrement())
-  word_similarity_group_name String    @db.VarChar(256)
-  created_at                 DateTime  @default(now()) @db.Timestamp(6)
-  updated_at                 DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at                 DateTime? @db.Timestamp(6)
+model synonym_group {
+  id                 Int       @id @default(autoincrement())
+  synonym_group_name String    @db.VarChar(256)
+  created_at         DateTime  @default(now()) @db.Timestamp(6)
+  updated_at         DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at         DateTime? @db.Timestamp(6)
 }
 
 model word_source {
