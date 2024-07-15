@@ -19,6 +19,7 @@ import {
   DeleteWordSourceAPIRequestDto,
   DeleteMeanAPIRequestDto,
   AddSynonymGroupAPIRequestDto,
+  AddSynonymAPIRequestDto,
 } from 'quizzer-lib';
 // import { AuthGuard } from '../../auth/auth.guard';
 
@@ -151,6 +152,12 @@ export class EnglishWordController {
   @Post('synonym/group')
   async addSynonymGroup(@Body() req: AddSynonymGroupAPIRequestDto) {
     return await this.englishWordService.addSynonymGroupService(req);
+  }
+
+  // @UseGuards(AuthGuard)
+  @Post('synonym')
+  async addSynonym(@Body() req: AddSynonymAPIRequestDto) {
+    return await this.englishWordService.addSynonymService(req);
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */

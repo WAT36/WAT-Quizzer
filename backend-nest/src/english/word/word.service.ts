@@ -11,6 +11,7 @@ import {
   DeleteWordSourceAPIRequestDto,
   DeleteMeanAPIRequestDto,
   AddSynonymGroupAPIRequestDto,
+  AddSynonymAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -999,6 +1000,44 @@ export class EnglishWordService {
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 類義語を追加する
+  async addSynonymService(req: AddSynonymAPIRequestDto) {
+    try {
+      const { synonymGroupId, wordName } = req;
+      // まず入力単語あるか確認;
+      const result = await prisma.word.findFirst({
+        where: {
+          name: wordName,
+        },
+      });
+      // 存在しない場合エラー
+      if (!result) {
+        throw new HttpException(
+          `入力単語(${wordName})は存在しません`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const wordId = result.id;
+      // 作成した類義語グループに、指定単語を登録する
+      return await prisma.synonym.create({
+        data: {
+          synonym_group_id: synonymGroupId,
+          word_id: wordId,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error instanceof Error) {
         throw new HttpException(
           error.message,
           HttpStatus.INTERNAL_SERVER_ERROR,
