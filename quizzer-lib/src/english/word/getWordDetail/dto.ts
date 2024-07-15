@@ -25,4 +25,15 @@ export interface GetWordDetailAPIResponseDto extends ApiResponse {
     subsource: string
     created_at: string
   }[]
+  synonym: {
+    synonym_group_id: number
+    synonym_group: {
+      synonym: {
+        word_id: number
+        word: {
+          name: string
+        }
+      }[]
+    }
+  }[]
 }

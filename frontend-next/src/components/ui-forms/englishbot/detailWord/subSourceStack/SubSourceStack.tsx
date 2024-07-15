@@ -18,7 +18,7 @@ import {
 interface SubSourceStackProps {
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<WordDetailData>>;
+  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
 }
 
 export const SubSourceStack = ({ wordDetail, setMessage, setWordDetail }: SubSourceStackProps) => {

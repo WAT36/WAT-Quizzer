@@ -12,6 +12,7 @@ import { useSetRecoilState } from 'recoil';
 import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
 import { GetWordNumResponseDto, GetWordDetailAPIResponseDto, getWordDetailAPI } from 'quizzer-lib';
+import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
 
 type EachWordPageProps = {
   id: string;
@@ -25,7 +26,8 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     pronounce: '',
     mean: [],
     word_source: [],
-    word_subsource: []
+    word_subsource: [],
+    synonym: []
   };
   const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(initWordDetailData);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
@@ -68,6 +70,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
           setWordDetail={setWordDetail}
         />
         <SubSourceStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
+        <SynonymStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
       </Container>
     );
   };
