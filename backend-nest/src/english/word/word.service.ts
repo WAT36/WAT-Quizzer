@@ -10,6 +10,7 @@ import {
   DeleteWordSubSourceAPIRequestDto,
   DeleteWordSourceAPIRequestDto,
   DeleteMeanAPIRequestDto,
+  AddSynonymGroupAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -886,6 +887,25 @@ export class EnglishWordService {
               created_at: true,
             },
           },
+          synonym: {
+            select: {
+              synonym_group_id: true,
+              synonym_group: {
+                select: {
+                  synonym: {
+                    select: {
+                      word_id: true,
+                      word: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         where: {
           id,
@@ -947,6 +967,34 @@ export class EnglishWordService {
       return await prisma.word.aggregate({
         _max: {
           id: true,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 類義語グループを追加する
+  async addSynonymGroupService(req: AddSynonymGroupAPIRequestDto) {
+    try {
+      const { synonymGroupName, wordId } = req;
+      // まず類義語グループ作成;
+      const result = await prisma.synonym_group.create({
+        data: {
+          synonym_group_name: synonymGroupName,
+        },
+      });
+      const synonymGroupId = result.id;
+      // 作成した類義語グループに、指定単語を登録する
+      return await prisma.synonym.create({
+        data: {
+          synonym_group_id: synonymGroupId,
+          word_id: wordId,
         },
       });
     } catch (error: unknown) {
