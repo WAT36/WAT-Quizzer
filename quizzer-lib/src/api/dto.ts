@@ -9,6 +9,11 @@ export interface ProcessingApiReponse {
 // APIから得られるデータ(抽象クラス)
 export interface ApiResponse {}
 
+export interface ErrorResponse extends ApiResponse {
+  statusCode: number
+  message: string
+}
+
 // このquizzer-libのAPIが返すデータ型（Messageを付加する）
 export interface ApiResult {
   message: Message
