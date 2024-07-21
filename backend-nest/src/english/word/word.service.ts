@@ -12,6 +12,7 @@ import {
   DeleteMeanAPIRequestDto,
   AddSynonymGroupAPIRequestDto,
   AddSynonymAPIRequestDto,
+  AddAntonymAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -907,6 +908,28 @@ export class EnglishWordService {
               },
             },
           },
+          antonym_original: {
+            select: {
+              word_id: true,
+              antonym_word_id: true,
+              antonym_word: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          antonym_word: {
+            select: {
+              word_id: true,
+              antonym_word_id: true,
+              antonym_original: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
         },
         where: {
           id,
@@ -1032,6 +1055,58 @@ export class EnglishWordService {
         data: {
           synonym_group_id: synonymGroupId,
           word_id: wordId,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 対義語を追加する
+  async addAntonymService(req: AddAntonymAPIRequestDto) {
+    try {
+      const { wordId, antonymWordName } = req;
+      // まず入力単語あるか確認;
+      const antonymWordData = await prisma.word.findFirst({
+        where: {
+          name: antonymWordName,
+        },
+      });
+      // 存在しない場合エラー
+      if (!antonymWordData) {
+        throw new HttpException(
+          `入力単語(${antonymWordName}})は存在しません`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      // 逆の組み合わせで登録されていたらエラー出す
+      const isReverseData = await prisma.antonym.findUnique({
+        where: {
+          word_id_antonym_word_id: {
+            word_id: antonymWordData.id,
+            antonym_word_id: wordId,
+          },
+        },
+      });
+      if (isReverseData) {
+        throw new HttpException(
+          `その組み合わせはすでに登録されています`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      // 対義語データ登録
+      return await prisma.antonym.create({
+        data: {
+          word_id: wordId,
+          antonym_word_id: antonymWordData.id,
         },
       });
     } catch (error: unknown) {
