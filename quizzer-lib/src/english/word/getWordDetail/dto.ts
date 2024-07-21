@@ -36,4 +36,18 @@ export interface GetWordDetailAPIResponseDto extends ApiResponse {
       }[]
     }
   }[]
+  antonym_original: {
+    word_id: number
+    antonym_word_id: number
+    antonym_word: {
+      name: string
+    }
+  }[]
+  antonym_word: {
+    word_id: number
+    antonym_word_id: number
+    antonym_original: {
+      name: string
+    }
+  }[]
 }

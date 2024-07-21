@@ -13,6 +13,7 @@ import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
 import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
 import { GetWordNumResponseDto, GetWordDetailAPIResponseDto, getWordDetailAPI } from 'quizzer-lib';
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
+import { AntonymStack } from '@/components/ui-forms/englishbot/detailWord/antonymStack/AntonymStack';
 
 type EachWordPageProps = {
   id: string;
@@ -27,7 +28,9 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     mean: [],
     word_source: [],
     word_subsource: [],
-    synonym: []
+    synonym: [],
+    antonym_original: [],
+    antonym_word: []
   };
   const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(initWordDetailData);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
@@ -71,6 +74,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         />
         <SubSourceStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
         <SynonymStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
+        <AntonymStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
       </Container>
     );
   };
