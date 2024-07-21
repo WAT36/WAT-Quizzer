@@ -252,6 +252,8 @@ model word {
   word_statistics_view  word_statistics_view?   @relation(fields: [id], references: [id])
   word_example          word_example[]
   synonym               synonym[]
+  antonym_original      antonym[]               @relation("antonym_original_id")
+  antonym_word          antonym[]               @relation("antonym_word_id")
 }
 
 model word_etymology {
@@ -305,6 +307,19 @@ model synonym_group {
   updated_at         DateTime  @default(now()) @db.Timestamp(6)
   deleted_at         DateTime? @db.Timestamp(6)
   synonym            synonym[]
+}
+
+model antonym {
+  id               Int       @id @default(autoincrement())
+  word_id          Int
+  antonym_word_id  Int
+  created_at       DateTime  @default(now()) @db.Timestamp(6)
+  updated_at       DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime? @db.Timestamp(6)
+  antonym_original word?     @relation("antonym_original_id", fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  antonym_word     word?     @relation("antonym_word_id", fields: [antonym_word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([word_id, antonym_word_id])
 }
 
 model word_source {
