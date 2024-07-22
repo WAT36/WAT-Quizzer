@@ -8,8 +8,8 @@ import { MessageState } from '../../../../../../interfaces/state';
 import { meanColumns } from '../../../../../../utils/englishBot/SearchWordTable';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
-import { searchExampleAPI } from '@/api/englishbot/searchExampleAPI';
 import { submitAssociationExampleAPI } from '@/api/englishbot/submitAssociationExampleAPI';
+import { searchExampleAPI } from 'quizzer-lib';
 
 // TODO 共通libに持っていく
 export type AssociateExampleandWordData = {
@@ -55,7 +55,7 @@ export const AssociateExampleandWordSection = ({ setMessage }: AssociateExamplea
           variant="contained"
           color="primary"
           attr={'after-inline'}
-          onClick={(e) => {
+          onClick={async (e) => {
             if (!associateExampleandWord.wordName || associateExampleandWord.wordName === '') {
               setMessage &&
                 setMessage({
@@ -65,15 +65,25 @@ export const AssociateExampleandWordSection = ({ setMessage }: AssociateExamplea
                 });
               return;
             }
+            setMessage &&
+              setMessage({
+                message: '通信中...',
+                messageColor: '#d3d3d3',
+                isDisplay: true
+              });
             setSearchResult([]);
             setCanRelease(true);
             setCanAssociation(false);
-            searchExampleAPI({
-              query: associateExampleandWord.wordName || '',
-              isLinked: 'true',
-              setMessage,
-              setSearchResult
+            const result = await searchExampleAPI({
+              searchExampleData: {
+                query: associateExampleandWord.wordName || '',
+                isLinked: 'true'
+              }
             });
+            setMessage && setMessage(result.message);
+            if (result.result && Array.isArray(result.result)) {
+              setSearchResult(result.result);
+            }
           }}
         />
       </CardContent>
@@ -92,7 +102,7 @@ export const AssociateExampleandWordSection = ({ setMessage }: AssociateExamplea
           variant="contained"
           color="primary"
           attr={'after-inline'}
-          onClick={(e) => {
+          onClick={async (e) => {
             if (!searchExampleWord || searchExampleWord === '') {
               setMessage &&
                 setMessage({
@@ -102,10 +112,25 @@ export const AssociateExampleandWordSection = ({ setMessage }: AssociateExamplea
                 });
               return;
             }
+            setMessage &&
+              setMessage({
+                message: '通信中...',
+                messageColor: '#d3d3d3',
+                isDisplay: true
+              });
             setSearchResult([]);
             setCanRelease(false);
             setCanAssociation(true);
-            searchExampleAPI({ query: searchExampleWord, isLinked: 'false', setMessage, setSearchResult });
+            const result = await searchExampleAPI({
+              searchExampleData: {
+                query: searchExampleWord || '',
+                isLinked: 'false'
+              }
+            });
+            setMessage && setMessage(result.message);
+            if (result.result && Array.isArray(result.result)) {
+              setSearchResult(result.result);
+            }
           }}
         />
       </CardContent>

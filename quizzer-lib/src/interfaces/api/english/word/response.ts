@@ -44,13 +44,6 @@ export interface GetWordBynameAPIResponseDto extends ApiResponse {
   }[]
 }
 
-// 例文検索APIレスポンス型
-export interface SearchExampleAPIResponseDto extends ApiResponse {
-  id: number
-  en_example_sentense: string
-  ja_example_sentense: string
-}
-
 // 英単語ランダム取得APIレスポンス型
 export interface GetRandomWordAPIResponseDto extends ApiResponse {
   id: number
