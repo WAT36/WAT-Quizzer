@@ -8,8 +8,7 @@ import { MessageState } from '../../../../../../interfaces/state';
 import { meanColumns } from '../../../../../../utils/englishBot/SearchWordTable';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
-import { submitAssociationExampleAPI } from '@/api/englishbot/submitAssociationExampleAPI';
-import { searchExampleAPI } from 'quizzer-lib';
+import { searchExampleAPI, submitAssociationExampleAPI } from 'quizzer-lib';
 
 // TODO 共通libに持っていく
 export type AssociateExampleandWordData = {
@@ -153,16 +152,24 @@ export const AssociateExampleandWordSection = ({ setMessage }: AssociateExamplea
           color="primary"
           attr={'after-inline'}
           disabled={!canAssociation}
-          onClick={(e) => {
-            submitAssociationExampleAPI({
-              wordName: associateExampleandWord.wordName || '',
-              checkedIdList: associateExampleandWord.checkedIdList || [],
-              isAssociation: true,
-              setMessageStater: setMessage
+          onClick={async (e) => {
+            setMessage &&
+              setMessage({
+                message: '通信中...',
+                messageColor: '#d3d3d3',
+                isDisplay: true
+              });
+            const result = await submitAssociationExampleAPI({
+              submitAssociationExampleData: {
+                wordName: associateExampleandWord.wordName || '',
+                checkedIdList: associateExampleandWord.checkedIdList || [],
+                isAssociation: true
+              }
             });
             setSearchResult([]);
             setCanRelease(false);
             setCanAssociation(false);
+            setMessage && setMessage(result.message);
           }}
         />
         <Button
@@ -171,16 +178,24 @@ export const AssociateExampleandWordSection = ({ setMessage }: AssociateExamplea
           color="primary"
           attr={'after-inline'}
           disabled={!canRelease}
-          onClick={(e) => {
-            submitAssociationExampleAPI({
-              wordName: associateExampleandWord.wordName || '',
-              checkedIdList: associateExampleandWord.checkedIdList || [],
-              isAssociation: false,
-              setMessageStater: setMessage
+          onClick={async (e) => {
+            setMessage &&
+              setMessage({
+                message: '通信中...',
+                messageColor: '#d3d3d3',
+                isDisplay: true
+              });
+            const result = await submitAssociationExampleAPI({
+              submitAssociationExampleData: {
+                wordName: associateExampleandWord.wordName || '',
+                checkedIdList: associateExampleandWord.checkedIdList || [],
+                isAssociation: false
+              }
             });
             setSearchResult([]);
             setCanRelease(false);
             setCanAssociation(false);
+            setMessage && setMessage(result.message);
           }}
         />
       </CardContent>
