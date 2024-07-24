@@ -14,6 +14,7 @@ import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI'
 import { GetWordNumResponseDto, GetWordDetailAPIResponseDto, getWordDetailAPI } from 'quizzer-lib';
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
 import { AntonymStack } from '@/components/ui-forms/englishbot/detailWord/antonymStack/AntonymStack';
+import { DerivativeStack } from '@/components/ui-forms/englishbot/detailWord/derivativeStack/DerivativeStack';
 
 type EachWordPageProps = {
   id: string;
@@ -30,7 +31,8 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     word_subsource: [],
     synonym: [],
     antonym_original: [],
-    antonym_word: []
+    antonym_word: [],
+    derivative: []
   };
   const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(initWordDetailData);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
@@ -75,6 +77,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         <SubSourceStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
         <SynonymStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
         <AntonymStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
+        <DerivativeStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
       </Container>
     );
   };

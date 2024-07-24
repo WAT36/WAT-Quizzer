@@ -50,4 +50,15 @@ export interface GetWordDetailAPIResponseDto extends ApiResponse {
       name: string
     }
   }[]
+  derivative: {
+    derivative_group_id: number
+    derivative_group: {
+      derivative: {
+        word_id: number
+        word: {
+          name: string
+        }
+      }[]
+    }
+  }[]
 }
