@@ -21,6 +21,7 @@ import {
   AddSynonymGroupAPIRequestDto,
   AddSynonymAPIRequestDto,
   AddAntonymAPIRequestDto,
+  AddDerivativeAPIRequestDto,
 } from 'quizzer-lib';
 // import { AuthGuard } from '../../auth/auth.guard';
 
@@ -165,6 +166,12 @@ export class EnglishWordController {
   @Post('antonym')
   async addAntonym(@Body() req: AddAntonymAPIRequestDto) {
     return await this.englishWordService.addAntonymService(req);
+  }
+
+  // @UseGuards(AuthGuard)
+  @Post('derivative')
+  async addDerivative(@Body() req: AddDerivativeAPIRequestDto) {
+    return await this.englishWordService.addDerivativeService(req);
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
