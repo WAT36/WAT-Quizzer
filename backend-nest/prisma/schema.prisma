@@ -255,6 +255,32 @@ model word {
   antonym_original      antonym[]               @relation("antonym_original_id")
   antonym_word          antonym[]               @relation("antonym_word_id")
   derivative            derivative[]
+  word_etymology        word_etymology[]
+}
+
+model word_etymology {
+  id           Int       @id @default(autoincrement())
+  etymology_id Int
+  word_id      Int
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at   DateTime? @db.Timestamp(6)
+  etymology    etymology @relation(fields: [etymology_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  word         word      @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([etymology_id, word_id])
+}
+
+model etymology {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(256)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at DateTime? @db.Timestamp(6)
+
+  word_etymology word_etymology[]
+
+  @@unique([name])
 }
 
 model word_example {
