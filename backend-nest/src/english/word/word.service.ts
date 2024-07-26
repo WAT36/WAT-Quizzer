@@ -14,6 +14,7 @@ import {
   AddSynonymAPIRequestDto,
   AddAntonymAPIRequestDto,
   AddDerivativeAPIRequestDto,
+  LinkWordEtymologyAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -950,6 +951,16 @@ export class EnglishWordService {
               },
             },
           },
+          word_etymology: {
+            select: {
+              etymology: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
         where: {
           id,
@@ -1221,6 +1232,43 @@ export class EnglishWordService {
       });
 
       return result;
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語と語源を紐付けする
+  async linkWordEtymologyService(req: LinkWordEtymologyAPIRequestDto) {
+    try {
+      const { etymologyName, wordId } = req;
+      // まず入力語源名あるか確認;
+      const etymologyData = await prisma.etymology.findUnique({
+        where: {
+          name: etymologyName,
+        },
+      });
+      // 存在しない場合エラー
+      if (!etymologyData) {
+        throw new HttpException(
+          `入力語源名(${etymologyName}})は存在しません`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      // 単語-語源紐付けデータ登録
+      return await prisma.word_etymology.create({
+        data: {
+          etymology_id: etymologyData.id,
+          word_id: wordId,
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         throw error;

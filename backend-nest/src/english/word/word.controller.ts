@@ -22,6 +22,7 @@ import {
   AddSynonymAPIRequestDto,
   AddAntonymAPIRequestDto,
   AddDerivativeAPIRequestDto,
+  LinkWordEtymologyAPIRequestDto,
 } from 'quizzer-lib';
 // import { AuthGuard } from '../../auth/auth.guard';
 
@@ -172,6 +173,12 @@ export class EnglishWordController {
   @Post('derivative')
   async addDerivative(@Body() req: AddDerivativeAPIRequestDto) {
     return await this.englishWordService.addDerivativeService(req);
+  }
+
+  // @UseGuards(AuthGuard)
+  @Post('etymology/link')
+  async linkWordEtymology(@Body() req: LinkWordEtymologyAPIRequestDto) {
+    return await this.englishWordService.linkWordEtymologyService(req);
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */
