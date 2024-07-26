@@ -15,6 +15,7 @@ import { GetWordNumResponseDto, GetWordDetailAPIResponseDto, getWordDetailAPI } 
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
 import { AntonymStack } from '@/components/ui-forms/englishbot/detailWord/antonymStack/AntonymStack';
 import { DerivativeStack } from '@/components/ui-forms/englishbot/detailWord/derivativeStack/DerivativeStack';
+import { EtymologyStack } from '@/components/ui-forms/englishbot/detailWord/etymologyStack/EtymologyStack';
 
 type EachWordPageProps = {
   id: string;
@@ -32,7 +33,8 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     synonym: [],
     antonym_original: [],
     antonym_word: [],
-    derivative: []
+    derivative: [],
+    word_etymology: []
   };
   const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(initWordDetailData);
   const [posList, setPosList] = useState<PullDownOptionState[]>([]);
@@ -78,6 +80,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         <SynonymStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
         <AntonymStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
         <DerivativeStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
+        <EtymologyStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
       </Container>
     );
   };
