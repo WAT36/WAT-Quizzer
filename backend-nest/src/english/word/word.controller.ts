@@ -23,6 +23,7 @@ import {
   AddAntonymAPIRequestDto,
   AddDerivativeAPIRequestDto,
   LinkWordEtymologyAPIRequestDto,
+  AddEtymologyAPIRequestDto,
 } from 'quizzer-lib';
 // import { AuthGuard } from '../../auth/auth.guard';
 
@@ -173,6 +174,12 @@ export class EnglishWordController {
   @Post('derivative')
   async addDerivative(@Body() req: AddDerivativeAPIRequestDto) {
     return await this.englishWordService.addDerivativeService(req);
+  }
+
+  // @UseGuards(AuthGuard)
+  @Post('etymology')
+  async addEtymology(@Body() req: AddEtymologyAPIRequestDto) {
+    return await this.englishWordService.addEtymologyService(req);
   }
 
   // @UseGuards(AuthGuard)

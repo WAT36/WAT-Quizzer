@@ -8,8 +8,10 @@ import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {
+  AddEtymologyAPIRequestDto,
   GetWordDetailAPIResponseDto,
   LinkWordEtymologyAPIRequestDto,
+  addEtymologyAPI,
   getWordDetailAPI,
   linkWordEtymologyAPI
 } from 'quizzer-lib';
@@ -22,10 +24,21 @@ interface EtymologyStackProps {
 
 export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: EtymologyStackProps) => {
   const [etymologyModalOpen, setEtymologyModalOpen] = useState<boolean>(false);
+  const [addEtymologyModalOpen, setAddEtymologyModalOpen] = useState<boolean>(false);
   const [linkWordEtymologyData, setLinkWordEtymologyData] = useState<LinkWordEtymologyAPIRequestDto>({
     etymologyName: '',
     wordId: -1
   });
+  const [addEtymologyData, setAddEtymologyData] = useState<AddEtymologyAPIRequestDto>({
+    etymologyName: ''
+  });
+
+  const handleAddEtymologyModalOpen = () => {
+    setAddEtymologyData({
+      etymologyName: ''
+    });
+    setAddEtymologyModalOpen(true);
+  };
 
   const handleEtymologyModalOpen = () => {
     setLinkWordEtymologyData({
@@ -40,6 +53,9 @@ export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: Etymol
       <Card variant="outlined" attr={'silver-card'}>
         <Typography align="left" variant="h4" component="p">
           {'語源'}
+          <IconButton onClick={(e) => handleAddEtymologyModalOpen()}>
+            <AddCircleOutlineIcon />
+          </IconButton>
         </Typography>
         <Box sx={{ width: '100%', padding: '4px' }}>
           {wordDetail.id === -1 ? (
@@ -117,6 +133,41 @@ export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: Etymol
             </Stack>
           )}
         </Box>
+        <Modal isOpen={addEtymologyModalOpen} setIsOpen={setAddEtymologyModalOpen}>
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h4" component="h4">
+              {'語源追加'}
+            </Typography>
+            <Typography sx={{ mt: 2 }}>
+              語源名：
+              <TextField
+                variant="outlined"
+                defaultValue={linkWordEtymologyData.etymologyName}
+                onChange={(e) => {
+                  setAddEtymologyData({
+                    etymologyName: e.target.value
+                  });
+                }}
+              />
+            </Typography>
+            <Button
+              label={'語源追加'}
+              attr={'button-array'}
+              variant="contained"
+              color="primary"
+              onClick={async (e) => {
+                setAddEtymologyModalOpen(false);
+                const result = await addEtymologyAPI({
+                  addEtymologyData
+                });
+                setMessage && setMessage(result.message);
+                setAddEtymologyData({
+                  etymologyName: ''
+                });
+              }}
+            />
+          </Box>
+        </Modal>
       </Card>
     </>
   );

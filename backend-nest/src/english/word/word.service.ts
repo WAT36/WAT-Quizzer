@@ -15,6 +15,7 @@ import {
   AddAntonymAPIRequestDto,
   AddDerivativeAPIRequestDto,
   LinkWordEtymologyAPIRequestDto,
+  AddEtymologyAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -1267,6 +1268,28 @@ export class EnglishWordService {
         data: {
           etymology_id: etymologyData.id,
           word_id: wordId,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 語源を追加する
+  async addEtymologyService(req: AddEtymologyAPIRequestDto) {
+    try {
+      const { etymologyName } = req;
+      // 語源新規登録
+      return await prisma.etymology.create({
+        data: {
+          name: etymologyName,
         },
       });
     } catch (error: unknown) {
