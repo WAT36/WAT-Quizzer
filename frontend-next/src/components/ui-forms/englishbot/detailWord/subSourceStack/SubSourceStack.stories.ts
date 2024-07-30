@@ -25,7 +25,12 @@ export const Main: Story = {
       pronounce: '発音',
       mean: [],
       word_source: [],
-      word_subsource: []
+      word_subsource: [],
+      synonym: [],
+      antonym_original: [],
+      antonym_word: [],
+      derivative: [],
+      word_etymology: []
     }
   }
 };
