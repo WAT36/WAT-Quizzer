@@ -251,7 +251,8 @@ model word {
   word_subsource        word_subsource[]
   word_statistics_view  word_statistics_view?   @relation(fields: [id], references: [id])
   word_example          word_example[]
-  synonym               synonym[]
+  synonym_original      synonym[]               @relation("synonym_original_id")
+  synonym_word          synonym[]               @relation("synonym_word_id")
   antonym_original      antonym[]               @relation("antonym_original_id")
   antonym_word          antonym[]               @relation("antonym_word_id")
   derivative            derivative[]
@@ -296,25 +297,16 @@ model word_example {
 }
 
 model synonym {
-  id               Int           @id @default(autoincrement())
-  synonym_group_id Int
+  id               Int       @id @default(autoincrement())
   word_id          Int
-  created_at       DateTime      @default(now()) @db.Timestamp(6)
-  updated_at       DateTime      @default(now()) @db.Timestamp(6)
-  deleted_at       DateTime?     @db.Timestamp(6)
-  word             word          @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  synonym_group    synonym_group @relation(fields: [synonym_group_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  synonym_word_id  Int
+  created_at       DateTime  @default(now()) @db.Timestamp(6)
+  updated_at       DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at       DateTime? @db.Timestamp(6)
+  synonym_original word?     @relation("synonym_original_id", fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  synonym_word     word?     @relation("synonym_word_id", fields: [synonym_word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@unique([synonym_group_id, word_id])
-}
-
-model synonym_group {
-  id                 Int       @id @default(autoincrement())
-  synonym_group_name String    @db.VarChar(256)
-  created_at         DateTime  @default(now()) @db.Timestamp(6)
-  updated_at         DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at         DateTime? @db.Timestamp(6)
-  synonym            synonym[]
+  @@unique([word_id, synonym_word_id])
 }
 
 model antonym {
