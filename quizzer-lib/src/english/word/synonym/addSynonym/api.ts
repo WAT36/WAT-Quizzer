@@ -6,16 +6,6 @@ interface AddSynonymAPIProps {
 }
 
 export const addSynonymAPI = async ({ addSynonymData }: AddSynonymAPIProps) => {
-  if (!addSynonymData.wordName || addSynonymData.wordName === '') {
-    return {
-      message: {
-        message: 'エラー:追加する単語名を入力して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
-
   const result = await post(
     '/english/word/synonym',
     addSynonymData,

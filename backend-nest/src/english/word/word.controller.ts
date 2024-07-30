@@ -18,7 +18,6 @@ import {
   DeleteWordSubSourceAPIRequestDto,
   DeleteWordSourceAPIRequestDto,
   DeleteMeanAPIRequestDto,
-  AddSynonymGroupAPIRequestDto,
   AddSynonymAPIRequestDto,
   AddAntonymAPIRequestDto,
   AddDerivativeAPIRequestDto,
@@ -150,12 +149,6 @@ export class EnglishWordController {
   @Get('summary')
   async getSummary() {
     return await this.englishWordService.getSummary();
-  }
-
-  // @UseGuards(AuthGuard)
-  @Post('synonym/group')
-  async addSynonymGroup(@Body() req: AddSynonymGroupAPIRequestDto) {
-    return await this.englishWordService.addSynonymGroupService(req);
   }
 
   // @UseGuards(AuthGuard)

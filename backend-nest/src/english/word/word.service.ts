@@ -10,7 +10,6 @@ import {
   DeleteWordSubSourceAPIRequestDto,
   DeleteWordSourceAPIRequestDto,
   DeleteMeanAPIRequestDto,
-  AddSynonymGroupAPIRequestDto,
   AddSynonymAPIRequestDto,
   AddAntonymAPIRequestDto,
   AddDerivativeAPIRequestDto,
@@ -892,21 +891,24 @@ export class EnglishWordService {
               created_at: true,
             },
           },
-          synonym: {
+          synonym_original: {
             select: {
-              synonym_group_id: true,
-              synonym_group: {
+              word_id: true,
+              synonym_word_id: true,
+              synonym_word: {
                 select: {
-                  synonym: {
-                    select: {
-                      word_id: true,
-                      word: {
-                        select: {
-                          name: true,
-                        },
-                      },
-                    },
-                  },
+                  name: true,
+                },
+              },
+            },
+          },
+          synonym_word: {
+            select: {
+              word_id: true,
+              synonym_word_id: true,
+              synonym_original: {
+                select: {
+                  name: true,
                 },
               },
             },
@@ -1035,58 +1037,44 @@ export class EnglishWordService {
     }
   }
 
-  // 類義語グループを追加する
-  async addSynonymGroupService(req: AddSynonymGroupAPIRequestDto) {
-    try {
-      const { synonymGroupName, wordId } = req;
-      // まず類義語グループ作成;
-      const result = await prisma.synonym_group.create({
-        data: {
-          synonym_group_name: synonymGroupName,
-        },
-      });
-      const synonymGroupId = result.id;
-      // 作成した類義語グループに、指定単語を登録する
-      return await prisma.synonym.create({
-        data: {
-          synonym_group_id: synonymGroupId,
-          word_id: wordId,
-        },
-      });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
-  }
-
   // 類義語を追加する
   async addSynonymService(req: AddSynonymAPIRequestDto) {
     try {
-      const { synonymGroupId, wordName } = req;
+      const { wordId, synonymWordName } = req;
       // まず入力単語あるか確認;
-      const result = await prisma.word.findFirst({
+      const synonymWordData = await prisma.word.findFirst({
         where: {
-          name: wordName,
+          name: synonymWordName,
         },
       });
       // 存在しない場合エラー
-      if (!result) {
+      if (!synonymWordData) {
         throw new HttpException(
-          `入力単語(${wordName})は存在しません`,
+          `入力単語(${synonymWordName}})は存在しません`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      // 逆の組み合わせで登録されていたらエラー出す
+      const isReverseData = await prisma.synonym.findUnique({
+        where: {
+          word_id_synonym_word_id: {
+            word_id: synonymWordData.id,
+            synonym_word_id: wordId,
+          },
+        },
+      });
+      if (isReverseData) {
+        throw new HttpException(
+          `その組み合わせはすでに登録されています`,
           HttpStatus.BAD_REQUEST,
         );
       }
 
-      const wordId = result.id;
-      // 作成した類義語グループに、指定単語を登録する
+      // 類義語データ登録
       return await prisma.synonym.create({
         data: {
-          synonym_group_id: synonymGroupId,
           word_id: wordId,
+          synonym_word_id: synonymWordData.id,
         },
       });
     } catch (error: unknown) {
