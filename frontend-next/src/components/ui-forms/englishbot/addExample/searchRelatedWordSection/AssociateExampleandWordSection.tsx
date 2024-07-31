@@ -9,6 +9,8 @@ import { meanColumns } from '../../../../../../utils/englishBot/SearchWordTable'
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
 import { searchExampleAPI, submitAssociationExampleAPI } from 'quizzer-lib';
+import { messageState } from '@/atoms/Message';
+import { useSetRecoilState } from 'recoil';
 
 // TODO 共通libに持っていく
 export type AssociateExampleandWordData = {
@@ -16,16 +18,15 @@ export type AssociateExampleandWordData = {
   checkedIdList?: number[];
 };
 
-interface AssociateExampleandWordSectionProps {
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-}
+interface AssociateExampleandWordSectionProps {}
 
-export const AssociateExampleandWordSection = ({ setMessage }: AssociateExampleandWordSectionProps) => {
+export const AssociateExampleandWordSection = ({}: AssociateExampleandWordSectionProps) => {
   const [associateExampleandWord, setAssociateExampleandWord] = useState<AssociateExampleandWordData>({});
   const [searchExampleWord, setSearchExampleWord] = useState<string>('');
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
   const [canAssociation, setCanAssociation] = useState<boolean>(false);
   const [canRelease, setCanRelease] = useState<boolean>(false);
+  const setMessage = useSetRecoilState(messageState);
 
   // チェックした問題のIDをステートに登録
   const registerCheckedIdList = (selectionModel: GridRowSelectionModel) => {

@@ -5,18 +5,19 @@ import commonStyles from '../../../../common.module.css';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { AddExampleAPIRequestDto, submitExampleSentenseAPI } from 'quizzer-lib';
 import { Button } from '@/components/ui-elements/button/Button';
-import { MessageState } from '../../../../../../interfaces/state';
+import { messageState } from '@/atoms/Message';
+import { useSetRecoilState } from 'recoil';
 
 interface AddExampleSectionProps {
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
 }
 
-export const AddExampleSection = ({ setMessage }: AddExampleSectionProps) => {
+export const AddExampleSection = ({  }: AddExampleSectionProps) => {
   const [addExampleData, setAddExampleData] = useState<AddExampleAPIRequestDto>({
     exampleEn: '',
     exampleJa: '',
     wordName: ''
   });
+  const setMessage = useSetRecoilState(messageState);
 
   return (
     <>
