@@ -122,6 +122,12 @@ export class EnglishWordController {
   }
 
   // @UseGuards(AuthGuard)
+  @Get('test/statistics/week')
+  async getWordTestLogStatisticsPastWeek() {
+    return await this.englishWordTestService.getWordTestLogStatisticsPastWeek();
+  }
+
+  // @UseGuards(AuthGuard)
   @Post('source')
   async editSourceOfWordById(@Body() req: EditWordSourceAPIRequestDto) {
     return await this.englishWordService.editSourceOfWordById(req);

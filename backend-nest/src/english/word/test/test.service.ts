@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { getDateForSqlString } from 'lib/str';
 import { PrismaClient } from '@prisma/client';
-import { getRandomElementsFromArray } from 'quizzer-lib';
+import {
+  getPastDate,
+  getPrismaPastDayRange,
+  getRandomElementsFromArray,
+} from 'quizzer-lib';
 export const prisma: PrismaClient = new PrismaClient();
 
 @Injectable()
@@ -290,6 +294,26 @@ export class EnglishWordTestService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
+    }
+  }
+
+  // 過去１週間各日の回答数取得
+  async getWordTestLogStatisticsPastWeek() {
+    try {
+      const result = [];
+      for (let i = 0; i < 7; i++) {
+        result.push({
+          date: getPastDate(i),
+          count: await prisma.englishbot_answer_log.count({
+            where: {
+              created_at: getPrismaPastDayRange(i),
+            },
+          }),
+        });
+      }
+      return result;
+    } catch (error) {
+      throw error;
     }
   }
 }
