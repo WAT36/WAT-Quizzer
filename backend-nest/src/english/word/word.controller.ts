@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -24,11 +26,15 @@ import {
   LinkWordEtymologyAPIRequestDto,
   AddEtymologyAPIRequestDto,
 } from 'quizzer-lib';
+import { EnglishWordTestService } from './test/test.service';
 // import { AuthGuard } from '../../auth/auth.guard';
 
 @Controller('english/word')
 export class EnglishWordController {
-  constructor(private readonly englishWordService: EnglishWordService) {}
+  constructor(
+    private readonly englishWordService: EnglishWordService,
+    private readonly englishWordTestService: EnglishWordTestService,
+  ) {}
 
   @Get('num')
   async getWordNum() {
@@ -74,31 +80,33 @@ export class EnglishWordController {
   }
 
   // @UseGuards(AuthGuard)
-  @Get('test/fourchoice')
-  async getTestDataOfFourChoice(
+  @Get('test')
+  async getEnglishWordTestData(
+    @Query('format') format: string,
     @Query('source') source: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
-    return await this.englishWordService.getTestDataOfFourChoice(
-      source,
-      startDate,
-      endDate,
-    );
-  }
-
-  // @UseGuards(AuthGuard)
-  @Get('test/fourchoice/lru')
-  async getLRUTestDataOfFourChoice(
-    @Query('source') source: string,
-    @Query('startDate') startDate: string,
-    @Query('endDate') endDate: string,
-  ) {
-    return await this.englishWordService.getLRUTestDataOfFourChoice(
-      source,
-      startDate,
-      endDate,
-    );
+    switch (format) {
+      // TODO ここのcaseの値もどこかの定数定義ファイルなどから持ってきたい
+      case 'random':
+        return await this.englishWordTestService.getTestDataOfFourChoice(
+          source,
+          startDate,
+          endDate,
+        );
+      case 'lru':
+        return await this.englishWordTestService.getLRUTestDataOfFourChoice(
+          source,
+          startDate,
+          endDate,
+        );
+      default:
+        throw new HttpException(
+          `Error: Incorrect test format`,
+          HttpStatus.BAD_REQUEST,
+        );
+    }
   }
 
   // @UseGuards(AuthGuard)
