@@ -4,14 +4,14 @@ import { Container } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
-import { getWordSummaryDataAPI } from '@/api/englishbot/getWordSummaryDataAPI';
 import {
   GetPastWeekTestStatisticsAPIResponseDto,
+  getRandomWordAPI,
   GetRandomWordAPIResponse,
+  getWordSummaryDataAPI,
   getWordTestStatisticsWeekDataAPI,
   WordSummaryApiResponse
 } from 'quizzer-lib';
-import { getRandomWordAPI } from '@/api/englishbot/getRandomWordAPI';
 import { RandomWordDisplay } from '@/components/ui-forms/englishbot/top/randomWordDisplay/RandomWordDisplay';
 import { TestLogPastWeekChart } from '@/components/ui-forms/englishbot/top/testLogPastWeekCharrt/TestLogPastWeekChart';
 
@@ -36,9 +36,15 @@ export default function EnglishBotTopPage({ isMock }: Props) {
   useEffect(() => {
     !isMock &&
       Promise.all([
-        // TODO これ　各コンポーネント内に置けられないか？　ステートも分けたい
-        getWordSummaryDataAPI(setMessage, setWordSummaryData),
-        getRandomWordAPI(setMessage, setRandomWord),
+        // TODO これ　各コンポーネント内に分けて置けられないか？　ステートも分けたい
+        (async () => {
+          const result = await getWordSummaryDataAPI();
+          Array.isArray(result.result) && setWordSummaryData(result.result as WordSummaryApiResponse[]);
+        })(),
+        (async () => {
+          const result = await getRandomWordAPI();
+          !Array.isArray(result.result) && setRandomWord(result.result as GetRandomWordAPIResponse);
+        })(),
         (async () => {
           const result = await getWordTestStatisticsWeekDataAPI({});
           Array.isArray(result.result) &&

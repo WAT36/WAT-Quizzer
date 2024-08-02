@@ -27,12 +27,6 @@ export interface PartofSpeechApiResponse extends ApiResponse {
   deleted_at: string | undefined
 }
 
-// word_summarizeからの取得結果
-export interface WordSummaryApiResponse extends ApiResponse {
-  name: string
-  count: number
-}
-
 // 英単語の出典（単語IDで）取得APIの返り値
 export interface EnglishWordSourceByIdApiResponse extends ApiResponse {
   word_id: number
