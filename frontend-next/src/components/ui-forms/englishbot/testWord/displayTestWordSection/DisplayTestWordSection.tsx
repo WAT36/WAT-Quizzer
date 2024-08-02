@@ -1,6 +1,5 @@
-import React, { memo, useState } from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
-import { DisplayWordTestState, FourChoiceData, MessageState } from '../../../../../../interfaces/state';
 import {
   Button as MuiButton,
   CardContent,
@@ -13,85 +12,20 @@ import {
   Typography
 } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
-import { submitEnglishBotTestAPI } from '@/api/englishbot/submitEnglishBotTestAPI';
 import { Chip } from '@/components/ui-elements/chip/Chip';
+import { generateFourChoiceSentense, GetEnglishWordTestDataAPIResponseDto, submitEnglishBotTestAPI } from 'quizzer-lib';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
 
 interface DisplayTestWordSectionProps {
-  displayWordTest: DisplayWordTestState;
-  testType: String;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setDisplayWordTestState?: React.Dispatch<React.SetStateAction<DisplayWordTestState>>;
+  displayTestData: GetEnglishWordTestDataAPIResponseDto;
+  setDisplayTestData?: React.Dispatch<React.SetStateAction<GetEnglishWordTestDataAPIResponseDto>>;
 }
 
-// TODO これはlibとかに回したい
-// 英単語テスト四択APIの返り値から問題文を生成する
-interface EnglishWordTestFourChoiceSentenseProps {
-  res: FourChoiceData;
-  setValue: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-}
-// eslint-disable-next-line react/display-name
-const EnglishWordTestFourChoiceSentense = memo<EnglishWordTestFourChoiceSentenseProps>((props) => {
-  const { res, setValue } = props;
-  const correctIndex = Math.floor(Math.random() * 4);
-  const dummyChoice = res.dummy;
-  // ダミー選択肢の配列をランダムに並び替える
-  dummyChoice.sort((a, b) => 0.5 - Math.random());
-
-  const choices = dummyChoice.map((x, i) => ({
-    isCorrect: `false${i}`,
-    sentense: x.mean
-  }));
-  choices.splice(correctIndex, 0, {
-    isCorrect: 'true',
-    sentense: res.correct.mean
-  });
-
-  return (
-    <FormControl>
-      <RadioGroup
-        aria-labelledby="demo-radio-buttons-group-label"
-        name="radio-buttons-group"
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setValue((event.target as HTMLInputElement).value === 'true' ? true : false);
-        }}
-      >
-        {choices.map((x, index) => (
-          <FormControlLabel key={index} value={x.isCorrect} control={<Radio />} label={x.sentense} />
-        ))}
-      </RadioGroup>
-    </FormControl>
-  );
-});
-
-// 意味から単語当てテスト用 ランダム取得した単語の意味を1つ選んで出題する
-// TODO これもlib移すか？
-const getRandomMeanOfSelectedWord = (displayWordTest: DisplayWordTestState) => {
-  if (!displayWordTest.wordMean) {
-    return <></>;
-  }
-
-  return (
-    displayWordTest &&
-    displayWordTest.wordMean &&
-    displayWordTest.wordMean.map((mean, index) => {
-      return (
-        <li key={index}>
-          {`[${mean.partsofspeech.name}]`}
-          {mean.meaning}
-        </li>
-      );
-    })
-  );
-};
-
-export const DisplayTestWordSection = ({
-  displayWordTest,
-  testType,
-  setMessageStater,
-  setDisplayWordTestState
-}: DisplayTestWordSectionProps) => {
-  const [selectedValue, setValue] = useState<boolean>();
+export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: DisplayTestWordSectionProps) => {
+  const setMessage = useSetRecoilState(messageState);
   const [expanded, setExpanded] = useState<boolean>(false);
+  let isFourchoiceCorrect: boolean | undefined = undefined;
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -100,14 +34,14 @@ export const DisplayTestWordSection = ({
   return (
     <>
       <Card variant="outlined">
-        {testType === '0' ? (
+        {displayTestData.testType === '0' ? (
           // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
           <>
             <CardContent>
               <div>
-                <h2>{displayWordTest.wordName || ''}</h2>
-                {displayWordTest.wordSource &&
-                  displayWordTest.wordSource.map((value) => {
+                <h2>{displayTestData.word?.name || ''}</h2>
+                {displayTestData.word?.word_source &&
+                  displayTestData.word?.word_source.map((value) => {
                     return <Chip label={value.source.name} />;
                   })}
               </div>
@@ -117,7 +51,7 @@ export const DisplayTestWordSection = ({
                   size="small"
                   onClick={handleExpandClick}
                   aria-expanded={expanded}
-                  disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
+                  disabled={!displayTestData.word?.name || displayTestData.word?.name === ''}
                 >
                   答え
                 </MuiButton>
@@ -125,9 +59,8 @@ export const DisplayTestWordSection = ({
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <Typography variant="subtitle1" component="h2">
-                    {displayWordTest &&
-                      displayWordTest.wordMean &&
-                      displayWordTest.wordMean.map((mean, index) => {
+                    {displayTestData.word?.mean &&
+                      displayTestData.word?.mean.map((mean, index) => {
                         return (
                           <li key={index}>
                             {`[${mean.partsofspeech.name}]`}
@@ -141,15 +74,24 @@ export const DisplayTestWordSection = ({
                     attr={'button-array'}
                     variant="contained"
                     color="primary"
-                    disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
-                    onClick={(e) => {
-                      submitEnglishBotTestAPI({
-                        wordId: displayWordTest.wordId || NaN,
-                        selectedValue: true,
-                        testType: 0,
-                        setMessageStater,
-                        setDisplayWordTestState
+                    disabled={!displayTestData.word?.name || displayTestData.word?.name === ''}
+                    onClick={async (e) => {
+                      setMessage({
+                        message: '通信中...',
+                        messageColor: '#d3d3d3',
+                        isDisplay: true
                       });
+                      const result = await submitEnglishBotTestAPI({
+                        testResult: {
+                          wordId: displayTestData.word?.id || NaN,
+                          testType: 0
+                        },
+                        selectedValue: true
+                      });
+                      setMessage(result.message);
+                      if (result.message.messageColor === 'success.light') {
+                        setDisplayTestData && setDisplayTestData({});
+                      }
                       setExpanded(false);
                     }}
                   />
@@ -158,15 +100,24 @@ export const DisplayTestWordSection = ({
                     attr={'button-array'}
                     variant="contained"
                     color="secondary"
-                    disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
-                    onClick={(e) => {
-                      submitEnglishBotTestAPI({
-                        wordId: displayWordTest.wordId || NaN,
-                        selectedValue: false,
-                        testType: 0,
-                        setMessageStater,
-                        setDisplayWordTestState
+                    disabled={!displayTestData.word?.name || displayTestData.word?.name === ''}
+                    onClick={async (e) => {
+                      setMessage({
+                        message: '通信中...',
+                        messageColor: '#d3d3d3',
+                        isDisplay: true
                       });
+                      const result = await submitEnglishBotTestAPI({
+                        testResult: {
+                          wordId: displayTestData.word?.id || NaN,
+                          testType: 0
+                        },
+                        selectedValue: false
+                      });
+                      setMessage(result.message);
+                      if (result.message.messageColor === 'success.light') {
+                        setDisplayTestData && setDisplayTestData({});
+                      }
                       setExpanded(false);
                     }}
                   />
@@ -174,19 +125,33 @@ export const DisplayTestWordSection = ({
               </Collapse>
             </CardContent>
           </>
-        ) : testType === '1' ? (
+        ) : displayTestData.testType === '1' ? (
           // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
           <>
             <CardContent>
               <div>
-                <h2>{displayWordTest.wordName || ''}</h2>
-                {displayWordTest.wordSource &&
-                  displayWordTest.wordSource.map((value) => {
+                <h2>{displayTestData.word?.name || ''}</h2>
+                {displayTestData.word?.word_source &&
+                  displayTestData.word?.word_source.map((value) => {
                     return <Chip label={value.source.name} />;
                   })}
               </div>
-              {displayWordTest.choice && (
-                <EnglishWordTestFourChoiceSentense res={displayWordTest.choice} setValue={setValue} />
+              {displayTestData.correct && displayTestData.dummy && (
+                <FormControl>
+                  <RadioGroup
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    name="radio-buttons-group"
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      isFourchoiceCorrect = (event.target as HTMLInputElement).value === 'true' ? true : false;
+                    }}
+                  >
+                    {generateFourChoiceSentense({ correct: displayTestData.correct, dummy: displayTestData.dummy }).map(
+                      (x, index) => (
+                        <FormControlLabel key={index} value={x.isCorrect} control={<Radio />} label={x.sentense} />
+                      )
+                    )}
+                  </RadioGroup>
+                </FormControl>
               )}
             </CardContent>
             <CardContent>
@@ -194,27 +159,51 @@ export const DisplayTestWordSection = ({
                 label={'SUBMIT'}
                 variant="contained"
                 color="primary"
-                onClick={(e) =>
-                  submitEnglishBotTestAPI({
-                    wordId: displayWordTest.wordId || NaN,
-                    selectedValue,
-                    testType: 1,
-                    setMessageStater,
-                    setDisplayWordTestState
-                  })
-                }
+                onClick={async (e) => {
+                  setMessage({
+                    message: '通信中...',
+                    messageColor: '#d3d3d3',
+                    isDisplay: true
+                  });
+                  const result = await submitEnglishBotTestAPI({
+                    testResult: {
+                      wordId: displayTestData.word?.id || NaN,
+                      testType: 1
+                    },
+                    selectedValue: isFourchoiceCorrect
+                  });
+                  setMessage(result.message);
+                  if (result.message.messageColor === 'success.light') {
+                    setDisplayTestData && setDisplayTestData({});
+                  }
+                  setExpanded(false);
+                  isFourchoiceCorrect = undefined;
+                }}
                 disabled={
-                  isNaN(displayWordTest.wordId || NaN) || !displayWordTest.wordName || displayWordTest.wordName === ''
+                  isNaN(displayTestData.word?.id || NaN) ||
+                  !displayTestData.word?.name ||
+                  displayTestData.word?.name === ''
                 }
               />
             </CardContent>
           </>
-        ) : testType === '2' ? (
+        ) : displayTestData.testType === '2' ? (
           // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
           <>
             <CardContent>
               <Typography variant="subtitle1" component="h2">
-                {getRandomMeanOfSelectedWord(displayWordTest)}
+                {displayTestData.word?.mean ? (
+                  displayTestData.word?.mean.map((mean, index) => {
+                    return (
+                      <li key={index}>
+                        {`[${mean.partsofspeech.name}]`}
+                        {mean.meaning}
+                      </li>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
               </Typography>
 
               <CardActions>
@@ -222,7 +211,7 @@ export const DisplayTestWordSection = ({
                   size="small"
                   onClick={handleExpandClick}
                   aria-expanded={expanded}
-                  disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
+                  disabled={!displayTestData.word?.name || displayTestData.word?.name === ''}
                 >
                   答え
                 </MuiButton>
@@ -230,22 +219,31 @@ export const DisplayTestWordSection = ({
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                   <div>
-                    <h2>{displayWordTest && displayWordTest.wordName}</h2>
+                    <h2>{displayTestData.word?.name || ''}</h2>
                   </div>
                   <Button
                     label={'正解!!'}
                     attr={'button-array'}
                     variant="contained"
                     color="primary"
-                    disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
-                    onClick={(e) => {
-                      submitEnglishBotTestAPI({
-                        wordId: displayWordTest.wordId || NaN,
-                        selectedValue: true,
-                        testType: 2,
-                        setMessageStater,
-                        setDisplayWordTestState
+                    disabled={!displayTestData.word?.name || displayTestData.word?.name === ''}
+                    onClick={async (e) => {
+                      setMessage({
+                        message: '通信中...',
+                        messageColor: '#d3d3d3',
+                        isDisplay: true
                       });
+                      const result = await submitEnglishBotTestAPI({
+                        testResult: {
+                          wordId: displayTestData.word?.id || NaN,
+                          testType: 2
+                        },
+                        selectedValue: true
+                      });
+                      setMessage(result.message);
+                      if (result.message.messageColor === 'success.light') {
+                        setDisplayTestData && setDisplayTestData({});
+                      }
                       setExpanded(false);
                     }}
                   />
@@ -254,15 +252,24 @@ export const DisplayTestWordSection = ({
                     attr={'button-array'}
                     variant="contained"
                     color="secondary"
-                    disabled={!displayWordTest.wordName || displayWordTest.wordName === ''}
-                    onClick={(e) => {
-                      submitEnglishBotTestAPI({
-                        wordId: displayWordTest.wordId || NaN,
-                        selectedValue: false,
-                        testType: 2,
-                        setMessageStater,
-                        setDisplayWordTestState
+                    disabled={!displayTestData.word?.name || displayTestData.word?.name === ''}
+                    onClick={async (e) => {
+                      setMessage({
+                        message: '通信中...',
+                        messageColor: '#d3d3d3',
+                        isDisplay: true
                       });
+                      const result = await submitEnglishBotTestAPI({
+                        testResult: {
+                          wordId: displayTestData.word?.id || NaN,
+                          testType: 2
+                        },
+                        selectedValue: false
+                      });
+                      setMessage(result.message);
+                      if (result.message.messageColor === 'success.light') {
+                        setDisplayTestData && setDisplayTestData({});
+                      }
                       setExpanded(false);
                     }}
                   />

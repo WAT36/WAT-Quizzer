@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormControl, FormGroup } from '@mui/material';
-import { DisplayWordTestState, PullDownOptionState, QueryOfGetWordState } from '../../../../../../interfaces/state';
+import { PullDownOptionState } from '../../../../../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -9,20 +9,26 @@ import styles from './GetWordQueryForm.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
 import { RadioGroup } from '@/components/ui-parts/radioGroup/RadioGroup';
 import { Button } from '@/components/ui-elements/button/Button';
-import { getTestDataOfFourChoiceAPI } from '@/api/englishbot/getTestDataOfFourChoiceAPI';
-import { getLRUTestDataOfFourChoiceAPI } from '@/api/englishbot/getLRUTestDataOfFourChoiceAPI';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
+import {
+  getDateForSqlString,
+  getEnglishWordTestDataAPI,
+  GetEnglishWordTestDataAPIRequestDto,
+  GetEnglishWordTestDataAPIResponseDto
+} from 'quizzer-lib';
 
 interface GetWordQueryFormProps {
   sourcelistoption: PullDownOptionState[];
-  setTestType?: React.Dispatch<React.SetStateAction<String>>;
-  setDisplayWordTest?: React.Dispatch<React.SetStateAction<DisplayWordTestState>>;
+  setDisplayTestData?: React.Dispatch<React.SetStateAction<GetEnglishWordTestDataAPIResponseDto>>;
 }
 
-export const GetWordQueryForm = ({ sourcelistoption, setTestType, setDisplayWordTest }: GetWordQueryFormProps) => {
-  const [queryOfGetWord, setQueryOfGetWord] = useState<QueryOfGetWordState>({});
+export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWordQueryFormProps) => {
+  const [queryOfTestData, setQueryOfTestData] = useState<GetEnglishWordTestDataAPIRequestDto>({ format: '' });
   const setMessage = useSetRecoilState(messageState);
+  // TODO テスト形式の値の管理方法　他のファイルでプロパティ形式で管理した方が良い？ constant.tsみたいなの作って　quizzeer側にもこんなのあったよね
+  const [testType, setTestType] = useState<string>('0');
+
   return (
     <>
       <Card attr={'through-card padding-vertical'}>
@@ -32,8 +38,8 @@ export const GetWordQueryForm = ({ sourcelistoption, setTestType, setDisplayWord
               label={'出典'}
               optionList={sourcelistoption}
               onChange={(e) => {
-                setQueryOfGetWord({
-                  ...queryOfGetWord,
+                setQueryOfTestData({
+                  ...queryOfTestData,
                   source: String(e.target.value)
                 });
               }}
@@ -46,12 +52,9 @@ export const GetWordQueryForm = ({ sourcelistoption, setTestType, setDisplayWord
                 label="Start Date"
                 className={styles.datePicker}
                 onChange={(newValue) => {
-                  setQueryOfGetWord({
-                    ...queryOfGetWord,
-                    subSource: {
-                      ...queryOfGetWord.subSource,
-                      startDate: newValue as Date
-                    }
+                  setQueryOfTestData({
+                    ...queryOfTestData,
+                    startDate: getDateForSqlString(newValue as Date)
                   });
                 }}
               />
@@ -62,12 +65,9 @@ export const GetWordQueryForm = ({ sourcelistoption, setTestType, setDisplayWord
                 label="End Date"
                 className={styles.datePicker}
                 onChange={(newValue) => {
-                  setQueryOfGetWord({
-                    ...queryOfGetWord,
-                    subSource: {
-                      ...queryOfGetWord.subSource,
-                      endDate: newValue as Date
-                    }
+                  setQueryOfTestData({
+                    ...queryOfTestData,
+                    endDate: getDateForSqlString(newValue as Date)
                   });
                 }}
               />
@@ -92,38 +92,54 @@ export const GetWordQueryForm = ({ sourcelistoption, setTestType, setDisplayWord
               ]}
               defaultValue={'0'}
               setQueryofQuizStater={(value: string) => {
-                setTestType && setTestType(value);
+                setTestType(value);
               }}
             />
           </FormControl>
         </FormGroup>
       </Card>
-      {/* TODO 今思ったが下のAPI2つ共通化すべきでは？LRUには特定のパラメータ入れて分岐処理させる。管理が大変  */}
+      {/* TODO API共通化した結果処理同じようなボタン２つ並ぶことになった　これコンポーネントまとめれないか？  */}
       <Button
         label={'Random Word'}
         attr={'button-array'}
         variant="contained"
         color="primary"
-        onClick={(e) =>
-          getTestDataOfFourChoiceAPI({
-            queryOfGetWordState: queryOfGetWord,
-            setMessageStater: setMessage,
-            setDisplayWordTest
-          })
-        }
+        onClick={async (e) => {
+          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+          const result = await getEnglishWordTestDataAPI({
+            getEnglishWordTestData: {
+              ...queryOfTestData,
+              format: 'random'
+            }
+          });
+          setMessage(result.message);
+          if (result.message.messageColor === 'common.black') {
+            setDisplayTestData &&
+              setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
+            setQueryOfTestData({ format: '' });
+          }
+        }}
       />
       <Button
         label={'LRU'}
         attr={'button-array'}
         variant="contained"
         color="primary"
-        onClick={(e) =>
-          getLRUTestDataOfFourChoiceAPI({
-            queryOfGetWordState: queryOfGetWord,
-            setMessageStater: setMessage,
-            setDisplayWordTest
-          })
-        }
+        onClick={async (e) => {
+          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+          const result = await getEnglishWordTestDataAPI({
+            getEnglishWordTestData: {
+              ...queryOfTestData,
+              format: 'lru'
+            }
+          });
+          setMessage(result.message);
+          if (result.message.messageColor === 'common.black') {
+            setDisplayTestData &&
+              setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
+            setQueryOfTestData({ format: '' });
+          }
+        }}
       />
     </>
   );
