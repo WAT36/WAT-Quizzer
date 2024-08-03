@@ -18,15 +18,6 @@ export interface AddDataApiResponse extends ApiResponse {
   insertId: number
 }
 
-// partofspeechからの取得結果
-export interface PartofSpeechApiResponse extends ApiResponse {
-  id: number
-  name: string
-  created_at: string
-  updated_at: string
-  deleted_at: string | undefined
-}
-
 // 英単語の出典（単語IDで）取得APIの返り値
 export interface EnglishWordSourceByIdApiResponse extends ApiResponse {
   word_id: number

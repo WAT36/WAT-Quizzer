@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Container, FormGroup } from '@mui/material';
-import { AddWordAPIRequestDto } from 'quizzer-lib';
+import {
+  AddWordAPIRequestDto,
+  apiResponsePullDownAdapter,
+  getPartOfSpeechListAPI,
+  getSourceListAPI,
+  PartofSpeechApiResponse,
+  PullDownOptionDto,
+  SourceApiResponse
+} from 'quizzer-lib';
 import { Layout } from '@/components/templates/layout/Layout';
-import { PullDownOptionState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanForm/AddMeanForm';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
-import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
-import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
 import { InputAddWordForm } from '@/components/ui-forms/englishbot/addWord/inputAddWordForm/InputAddWordForm';
 
 type Props = {
@@ -17,8 +22,8 @@ type Props = {
 
 export default function EnglishBotAddWordPage({ isMock }: Props) {
   const setMessage = useSetRecoilState(messageState);
-  const [posList, setPosList] = useState<PullDownOptionState[]>([]);
-  const [sourceList, setSourceList] = useState<PullDownOptionState[]>([]);
+  const [posList, setPosList] = useState<PullDownOptionDto[]>([]);
+  const [sourceList, setSourceList] = useState<PullDownOptionDto[]>([]);
 
   const [addWordState, setAddWordState] = useState<AddWordAPIRequestDto>({
     inputWord: {
@@ -32,7 +37,16 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
 
   useEffect(() => {
     !isMock &&
-      Promise.all([getPartOfSpeechListAPI(setMessage, setPosList), getSourceListAPI(setMessage, setSourceList)]);
+      Promise.all([
+        (async () => {
+          const result = await getPartOfSpeechListAPI();
+          result.result && setPosList(apiResponsePullDownAdapter(result.result as PartofSpeechApiResponse[]));
+        })(),
+        (async () => {
+          const result = await getSourceListAPI();
+          result.result && setSourceList(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
+        })()
+      ]);
   }, [isMock, setMessage]);
 
   // TODO  単語登録入力のとこは別コンポーネントにして切り出す

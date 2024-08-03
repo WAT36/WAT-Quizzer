@@ -2,16 +2,23 @@ import { CircularProgress, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { getApiAndGetValue } from '@/api/API';
 import { Layout } from '@/components/templates/layout/Layout';
-import { PullDownOptionState } from '../../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
 import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceStack/SourceStack';
 import { SubSourceStack } from '@/components/ui-forms/englishbot/detailWord/subSourceStack/SubSourceStack';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
-import { getSourceListAPI } from '@/api/englishbot/getSourceListAPI';
-import { getPartOfSpeechListAPI } from '@/api/englishbot/getPartOfSpeechListAPI';
-import { GetWordNumResponseDto, GetWordDetailAPIResponseDto, getWordDetailAPI } from 'quizzer-lib';
+import {
+  GetWordNumResponseDto,
+  GetWordDetailAPIResponseDto,
+  getWordDetailAPI,
+  PullDownOptionDto,
+  getPartOfSpeechListAPI,
+  apiResponsePullDownAdapter,
+  PartofSpeechApiResponse,
+  getSourceListAPI,
+  SourceApiResponse
+} from 'quizzer-lib';
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
 import { AntonymStack } from '@/components/ui-forms/englishbot/detailWord/antonymStack/AntonymStack';
 import { DerivativeStack } from '@/components/ui-forms/englishbot/detailWord/derivativeStack/DerivativeStack';
@@ -38,16 +45,22 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     word_etymology: []
   };
   const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(initWordDetailData);
-  const [posList, setPosList] = useState<PullDownOptionState[]>([]);
-  const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionState[]>([]);
+  const [posList, setPosList] = useState<PullDownOptionDto[]>([]);
+  const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionDto[]>([]);
   const setMessage = useSetRecoilState(messageState);
 
   useEffect(() => {
     if (!isMock) {
       const accessToken = localStorage.getItem('apiAccessToken') || '';
       Promise.all([
-        getPartOfSpeechListAPI(setMessage, setPosList, accessToken),
-        getSourceListAPI(setMessage, setSourcelistoption, accessToken)
+        (async () => {
+          const result = await getPartOfSpeechListAPI();
+          result.result && setPosList(apiResponsePullDownAdapter(result.result as PartofSpeechApiResponse[]));
+        })(),
+        (async () => {
+          const result = await getSourceListAPI();
+          result.result && setSourcelistoption(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
+        })()
       ]);
       (async () => {
         const result = (await getWordDetailAPI({ id })).result as GetWordDetailAPIResponseDto;
