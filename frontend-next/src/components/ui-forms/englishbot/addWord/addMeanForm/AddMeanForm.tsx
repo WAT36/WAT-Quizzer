@@ -26,6 +26,7 @@ interface AddMeanFormProps {
 
 export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanFormProps) => {
   // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
+  // TODO こういう系もlibに回すべきか
   const displayPosInput = (i: number) => {
     const posInput =
       addWordState.meanArrayData[i] && addWordState.meanArrayData[i].partOfSpeechId === -2 ? (

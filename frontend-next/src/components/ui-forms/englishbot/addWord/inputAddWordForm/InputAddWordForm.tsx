@@ -15,6 +15,7 @@ interface InputAddWordFormProps {
 
 export const InputAddWordForm = ({ sourceList, addWordState, setMessage, setAddWordState }: InputAddWordFormProps) => {
   // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
+  // TODO これもlibいく？
   const displaySourceInput = () => {
     const sourceInput =
       addWordState.inputWord.sourceId === -2 ? (
@@ -48,6 +49,7 @@ export const InputAddWordForm = ({ sourceList, addWordState, setMessage, setAddW
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           defaultValue={-1}
+          value={addWordState.inputWord.sourceId}
           label="source"
           key="source"
           sx={{ width: 1 }}
