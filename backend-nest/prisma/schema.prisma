@@ -84,13 +84,24 @@ model englishbot_answer_log {
 }
 
 model example {
-  id                  Int            @id @default(autoincrement())
-  en_example_sentense String         @db.VarChar(256)
-  ja_example_sentense String         @db.VarChar(256)
-  created_at          DateTime       @default(now()) @db.Timestamp(6)
-  updated_at          DateTime       @default(now()) @db.Timestamp(6)
-  deleted_at          DateTime?      @db.Timestamp(6)
+  id                  Int                   @id @default(autoincrement())
+  en_example_sentense String                @db.VarChar(256)
+  ja_example_sentense String                @db.VarChar(256)
+  created_at          DateTime              @default(now()) @db.Timestamp(6)
+  updated_at          DateTime              @default(now()) @db.Timestamp(6)
+  deleted_at          DateTime?             @db.Timestamp(6)
   word_example        word_example[]
+  example_explanation example_explanation[]
+}
+
+model example_explanation {
+  id          Int       @id @default(autoincrement())
+  example_id  Int
+  explanation String    @db.VarChar(256)
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at  DateTime? @db.Timestamp(6)
+  example     example   @relation(fields: [example_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model mean {
