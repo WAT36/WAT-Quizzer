@@ -2,5 +2,6 @@
 export interface AddExampleAPIRequestDto {
   exampleEn: string
   exampleJa: string
-  wordName: string
+  explanation?: string
+  wordName?: string
 }
