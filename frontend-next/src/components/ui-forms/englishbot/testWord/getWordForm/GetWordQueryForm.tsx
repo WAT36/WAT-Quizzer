@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormControl, FormGroup } from '@mui/material';
+import { FormControl, FormGroup, Typography } from '@mui/material';
 import { PullDownOptionState } from '../../../../../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -31,6 +31,9 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWo
 
   return (
     <>
+      <Typography variant="h3" component="h3" color="common.black">
+        {'~Word~'}
+      </Typography>
       <Card attr={'through-card padding-vertical'}>
         <FormGroup>
           <FormControl>
