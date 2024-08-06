@@ -13,6 +13,7 @@ import {
   PullDownOptionDto,
   SourceApiResponse
 } from 'quizzer-lib';
+import { RadioGroup } from '@/components/ui-parts/radioGroup/RadioGroup';
 
 type Props = {
   isMock?: boolean;
@@ -22,6 +23,7 @@ export default function TestWordPage({ isMock }: Props) {
   const setMessage = useSetRecoilState(messageState);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionDto[]>([]);
   const [displayTestData, setDisplayTestData] = useState<GetEnglishWordTestDataAPIResponseDto>({});
+  const [testType, setTestType] = useState<string>('0');
 
   // 出典リスト取得
   useEffect(() => {
@@ -38,8 +40,34 @@ export default function TestWordPage({ isMock }: Props) {
     return (
       <Container>
         <Title label="WAT Quizzer - englishBot"></Title>
-        <GetWordQueryForm sourcelistoption={sourcelistoption} setDisplayTestData={setDisplayTestData} />
-        <DisplayTestWordSection displayTestData={displayTestData} setDisplayTestData={setDisplayTestData} />
+        <>
+          {/**TODO RadioGroup ラベルの要素入れたい　あと中のqueryOfQuiz も名前変えたい */}
+          テスト：
+          <RadioGroup
+            radioButtonProps={[
+              {
+                value: '0',
+                label: 'Word'
+              },
+              {
+                value: '1',
+                label: 'Grammer'
+              }
+            ]}
+            defaultValue={'0'}
+            setQueryofQuizStater={(value: string) => {
+              setTestType(value);
+            }}
+          />
+        </>
+        {testType === '0' ? (
+          <>
+            <GetWordQueryForm sourcelistoption={sourcelistoption} setDisplayTestData={setDisplayTestData} />
+            <DisplayTestWordSection displayTestData={displayTestData} setDisplayTestData={setDisplayTestData} />
+          </>
+        ) : (
+          <></>
+        )}
       </Container>
     );
   };
