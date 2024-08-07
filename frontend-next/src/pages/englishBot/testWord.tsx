@@ -7,6 +7,7 @@ import { useSetRecoilState } from 'recoil';
 import { apiResponsePullDownAdapter, getSourceListAPI, PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
 import { RadioGroup } from '@/components/ui-parts/radioGroup/RadioGroup';
 import { WordTestSection } from '@/components/ui-forms/englishbot/testWord/WordTestSection/WordTestSection';
+import { ExampleTestSection } from '@/components/ui-forms/englishbot/testWord/ExampleTestSection/ExampleTestSection';
 
 type Props = {
   isMock?: boolean;
@@ -43,7 +44,7 @@ export default function TestWordPage({ isMock }: Props) {
               },
               {
                 value: '1',
-                label: 'Grammer'
+                label: 'Example'
               }
             ]}
             defaultValue={'0'}
@@ -52,7 +53,7 @@ export default function TestWordPage({ isMock }: Props) {
             }}
           />
         </>
-        {testType === '0' ? <WordTestSection sourcelistoption={sourcelistoption} /> : <></>}
+        {testType === '0' ? <WordTestSection sourcelistoption={sourcelistoption} /> : <ExampleTestSection />}
       </Container>
     );
   };
