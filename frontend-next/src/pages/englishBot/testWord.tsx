@@ -1,19 +1,12 @@
 import { Layout } from '@/components/templates/layout/Layout';
 import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { GetWordQueryForm } from '@/components/ui-forms/englishbot/testWord/getWordForm/GetWordQueryForm';
-import { DisplayTestWordSection } from '@/components/ui-forms/englishbot/testWord/displayTestWordSection/DisplayTestWordSection';
 import { Title } from '@/components/ui-elements/title/Title';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
-import {
-  apiResponsePullDownAdapter,
-  GetEnglishWordTestDataAPIResponseDto,
-  getSourceListAPI,
-  PullDownOptionDto,
-  SourceApiResponse
-} from 'quizzer-lib';
+import { apiResponsePullDownAdapter, getSourceListAPI, PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
 import { RadioGroup } from '@/components/ui-parts/radioGroup/RadioGroup';
+import { WordTestSection } from '@/components/ui-forms/englishbot/testWord/WordTestSection/WordTestSection';
 
 type Props = {
   isMock?: boolean;
@@ -22,7 +15,6 @@ type Props = {
 export default function TestWordPage({ isMock }: Props) {
   const setMessage = useSetRecoilState(messageState);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionDto[]>([]);
-  const [displayTestData, setDisplayTestData] = useState<GetEnglishWordTestDataAPIResponseDto>({});
   const [testType, setTestType] = useState<string>('0');
 
   // 出典リスト取得
@@ -60,14 +52,7 @@ export default function TestWordPage({ isMock }: Props) {
             }}
           />
         </>
-        {testType === '0' ? (
-          <>
-            <GetWordQueryForm sourcelistoption={sourcelistoption} setDisplayTestData={setDisplayTestData} />
-            <DisplayTestWordSection displayTestData={displayTestData} setDisplayTestData={setDisplayTestData} />
-          </>
-        ) : (
-          <></>
-        )}
+        {testType === '0' ? <WordTestSection sourcelistoption={sourcelistoption} /> : <></>}
       </Container>
     );
   };
