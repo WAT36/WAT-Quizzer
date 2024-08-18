@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AddMeanForm } from './AddMeanForm';
+import { initAddWordRequestData } from 'quizzer-lib';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -20,14 +21,6 @@ type Story = StoryObj<typeof meta>;
 export const Main: Story = {
   args: {
     posList: [],
-    addWordState: {
-      inputWord: {
-        wordName: '',
-        sourceId: -1,
-        subSourceName: ''
-      },
-      pronounce: '',
-      meanArrayData: []
-    }
+    addWordState: initAddWordRequestData
   }
 };

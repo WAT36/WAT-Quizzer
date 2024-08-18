@@ -17,7 +17,8 @@ import {
   apiResponsePullDownAdapter,
   PartofSpeechApiResponse,
   getSourceListAPI,
-  SourceApiResponse
+  SourceApiResponse,
+  initWordDetailResponseData
 } from 'quizzer-lib';
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
 import { AntonymStack } from '@/components/ui-forms/englishbot/detailWord/antonymStack/AntonymStack';
@@ -30,23 +31,7 @@ type EachWordPageProps = {
 };
 // TODO dynamic routingだとファイル数膨大・単語追加のたびにデプロイ必要になるので不向き、Next.jsで何か別の使える機能ないか
 export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps) {
-  // TODO この初期データはlibに持っていく　他storybookで使ってるのも
-  const initWordDetailData = {
-    id: -1,
-    name: '',
-    pronounce: '',
-    checked: false,
-    mean: [],
-    word_source: [],
-    word_subsource: [],
-    synonym_original: [],
-    synonym_word: [],
-    antonym_original: [],
-    antonym_word: [],
-    derivative: [],
-    word_etymology: []
-  };
-  const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(initWordDetailData);
+  const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(initWordDetailResponseData);
   const [posList, setPosList] = useState<PullDownOptionDto[]>([]);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionDto[]>([]);
   const setMessage = useSetRecoilState(messageState);

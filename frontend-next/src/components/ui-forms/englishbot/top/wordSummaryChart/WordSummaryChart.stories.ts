@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { WordSummaryChart } from './WordSummaryChart';
+import { initGetWordSummaryData } from 'quizzer-lib';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -19,15 +20,6 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Main: Story = {
   args: {
-    wordSummaryData: [
-      {
-        name: '単語',
-        count: 300
-      },
-      {
-        name: '熟語',
-        count: 200
-      }
-    ]
+    wordSummaryData: initGetWordSummaryData
   }
 };
