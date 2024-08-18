@@ -43,6 +43,7 @@ export class EnglishWordTestService {
         select: {
           id: true,
           name: true,
+          checked: true,
           mean: {
             select: {
               id: true,
@@ -129,6 +130,7 @@ export class EnglishWordTestService {
           id: testWord.id,
           name: testWord.name,
           mean: testWord.mean,
+          checked: testWord.checked,
           word_source: testWord.word_source,
         },
         correct: {
@@ -183,6 +185,7 @@ export class EnglishWordTestService {
         select: {
           id: true,
           name: true,
+          checked: true,
           mean: {
             select: {
               id: true,
@@ -276,6 +279,7 @@ export class EnglishWordTestService {
           id: lruResult.id,
           name: lruResult.name,
           mean: lruResult.mean,
+          checked: lruResult.checked,
           word_source: lruResult.word_source,
         },
         correct: {

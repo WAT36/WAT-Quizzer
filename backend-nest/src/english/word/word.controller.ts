@@ -25,6 +25,7 @@ import {
   AddDerivativeAPIRequestDto,
   LinkWordEtymologyAPIRequestDto,
   AddEtymologyAPIRequestDto,
+  ToggleCheckAPIRequestDto,
 } from 'quizzer-lib';
 import { EnglishWordTestService } from './test/test.service';
 // import { AuthGuard } from '../../auth/auth.guard';
@@ -193,6 +194,12 @@ export class EnglishWordController {
   @Post('etymology/link')
   async linkWordEtymology(@Body() req: LinkWordEtymologyAPIRequestDto) {
     return await this.englishWordService.linkWordEtymologyService(req);
+  }
+
+  // @UseGuards(AuthGuard)
+  @Post('check/toggle')
+  async toggleCheck(@Body() req: ToggleCheckAPIRequestDto) {
+    return await this.englishWordService.toggleCheckService(req);
   }
 
   /* 注 以下APIは一番最後に置くこと パスが上書きされて全てこのAPIが使われてしまうため */

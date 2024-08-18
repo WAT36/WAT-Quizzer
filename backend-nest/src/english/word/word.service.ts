@@ -13,6 +13,7 @@ import {
   AddDerivativeAPIRequestDto,
   LinkWordEtymologyAPIRequestDto,
   AddEtymologyAPIRequestDto,
+  ToggleCheckAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -575,6 +576,7 @@ export class EnglishWordService {
           id: true,
           name: true,
           pronounce: true,
+          checked: true,
           mean: {
             select: {
               id: true,
@@ -988,6 +990,42 @@ export class EnglishWordService {
       return await prisma.etymology.create({
         data: {
           name: etymologyName,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 単語のチェックを反転する
+  async toggleCheckService(req: ToggleCheckAPIRequestDto) {
+    try {
+      const { wordId } = req;
+      // 現在のチェック状態を取得
+      const checked = (
+        await prisma.word.findUnique({
+          select: {
+            checked: true,
+          },
+          where: {
+            id: wordId,
+          },
+        })
+      ).checked;
+      // チェック反転して更新
+      return await prisma.word.update({
+        data: {
+          checked: !checked,
+        },
+        where: {
+          id: wordId,
         },
       });
     } catch (error: unknown) {
