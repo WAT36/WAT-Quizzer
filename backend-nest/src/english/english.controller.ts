@@ -41,4 +41,9 @@ export class EnglishController {
   ) {
     return await this.englishService.changeAssociationOfExampleService(req);
   }
+
+  @Get('/example/test')
+  async getExampleTest() {
+    return await this.englishService.getExampleTestService();
+  }
 }

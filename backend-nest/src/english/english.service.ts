@@ -242,4 +242,25 @@ export class EnglishService {
       }
     }
   }
+
+  // 例文テスト取得
+  async getExampleTestService() {
+    try {
+      const data = await prisma.example.findMany({
+        where: {
+          example_explanation: {
+            none: {},
+          },
+        },
+      });
+      return data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }
