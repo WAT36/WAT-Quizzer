@@ -30,10 +30,12 @@ type EachWordPageProps = {
 };
 // TODO dynamic routingだとファイル数膨大・単語追加のたびにデプロイ必要になるので不向き、Next.jsで何か別の使える機能ないか
 export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps) {
+  // TODO この初期データはlibに持っていく　他storybookで使ってるのも
   const initWordDetailData = {
     id: -1,
     name: '',
     pronounce: '',
+    checked: false,
     mean: [],
     word_source: [],
     word_subsource: [],

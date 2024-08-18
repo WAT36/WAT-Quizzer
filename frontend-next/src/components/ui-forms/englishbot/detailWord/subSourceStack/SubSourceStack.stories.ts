@@ -23,6 +23,7 @@ export const Main: Story = {
       id: 0,
       name: 'word',
       pronounce: '発音',
+      checked: false,
       mean: [],
       word_source: [],
       word_subsource: [],
