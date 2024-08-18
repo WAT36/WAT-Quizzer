@@ -5,6 +5,7 @@ export interface GetWordDetailAPIResponseDto extends ApiResponse {
   id: number
   name: string
   pronounce: string
+  checked: boolean
   mean: {
     partsofspeech: {
       id: number

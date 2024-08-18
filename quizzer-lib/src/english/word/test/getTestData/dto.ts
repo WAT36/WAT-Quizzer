@@ -11,6 +11,7 @@ export interface GetEnglishWordTestDataAPIResponseDto extends FourChoiceData {
   word?: {
     id: number
     name: string
+    checked: boolean
     mean: EnglishWordTestMeanData[]
     word_source: {
       source: {
