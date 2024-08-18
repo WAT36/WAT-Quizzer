@@ -85,6 +85,7 @@ export class EnglishWordController {
   async getEnglishWordTestData(
     @Query('format') format: string,
     @Query('source') source: string,
+    @Query('checked') checked: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
@@ -95,12 +96,14 @@ export class EnglishWordController {
           source,
           startDate,
           endDate,
+          checked,
         );
       case 'lru':
         return await this.englishWordTestService.getLRUTestDataOfFourChoice(
           source,
           startDate,
           endDate,
+          checked,
         );
       default:
         throw new HttpException(

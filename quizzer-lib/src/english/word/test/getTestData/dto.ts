@@ -1,6 +1,7 @@
 // 英単語テストデータ取得APIリクエスト型
 export interface GetEnglishWordTestDataAPIRequestDto {
   format: string
+  checked?: string
   source?: string
   startDate?: string
   endDate?: string

@@ -5,6 +5,7 @@ import {
   getPastDate,
   getPrismaPastDayRange,
   getRandomElementsFromArray,
+  parseStrToBool,
 } from 'quizzer-lib';
 export const prisma: PrismaClient = new PrismaClient();
 
@@ -15,6 +16,7 @@ export class EnglishWordTestService {
     source: string,
     startDate: string,
     endDate: string,
+    checked: string,
   ) {
     try {
       // サブ出典・日時に関するクエリ
@@ -90,6 +92,11 @@ export class EnglishWordTestService {
               },
             }),
           },
+          ...(parseStrToBool(checked)
+            ? {
+                checked: true,
+              }
+            : {}),
         },
       });
       if (randomResult.length === 0) {
@@ -157,6 +164,7 @@ export class EnglishWordTestService {
     source: string,
     startDate: string,
     endDate: string,
+    checked: string,
   ) {
     try {
       // サブ出典・日時に関するクエリ
@@ -232,6 +240,11 @@ export class EnglishWordTestService {
               },
             }),
           },
+          ...(parseStrToBool(checked)
+            ? {
+                checked: true,
+              }
+            : {}),
         },
         orderBy: [
           {

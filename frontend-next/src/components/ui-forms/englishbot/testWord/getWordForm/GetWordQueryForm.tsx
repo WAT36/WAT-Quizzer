@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormControl, FormGroup, Typography } from '@mui/material';
+import { Checkbox, FormControl, FormControlLabel, FormGroup, Typography } from '@mui/material';
 import { PullDownOptionState } from '../../../../../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -15,7 +15,8 @@ import {
   getDateForSqlString,
   getEnglishWordTestDataAPI,
   GetEnglishWordTestDataAPIRequestDto,
-  GetEnglishWordTestDataAPIResponseDto
+  GetEnglishWordTestDataAPIResponseDto,
+  parseStrToBool
 } from 'quizzer-lib';
 
 interface GetWordQueryFormProps {
@@ -74,6 +75,26 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWo
             </LocalizationProvider>
           </FormControl>
           <FormControl>
+            {/**TODO 画面だと何故か右に行くので、左寄せしましょう。。 */}
+            <FormControlLabel
+              value="only-checked"
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={parseStrToBool(queryOfTestData.checked || 'false')}
+                  onChange={(e) => {
+                    setQueryOfTestData({
+                      ...queryOfTestData,
+                      checked: String(e.target.checked)
+                    });
+                  }}
+                />
+              }
+              label="チェック済から出題"
+              labelPlacement="start"
+            />
+          </FormControl>
+          <FormControl>
             テスト形式：
             <RadioGroup
               radioButtonProps={[
@@ -116,7 +137,7 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWo
           if (result.message.messageColor === 'common.black') {
             setDisplayTestData &&
               setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
-            setQueryOfTestData({ format: '' });
+            setQueryOfTestData({ format: '', checked: queryOfTestData.checked });
           }
         }}
       />
@@ -137,7 +158,7 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWo
           if (result.message.messageColor === 'common.black') {
             setDisplayTestData &&
               setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
-            setQueryOfTestData({ format: '' });
+            setQueryOfTestData({ format: '', checked: queryOfTestData.checked });
           }
         }}
       />
