@@ -13,7 +13,12 @@ import {
 } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
 import { Chip } from '@/components/ui-elements/chip/Chip';
-import { generateFourChoiceSentense, GetEnglishWordTestDataAPIResponseDto, submitEnglishBotTestAPI } from 'quizzer-lib';
+import {
+  generateFourChoiceSentense,
+  GetEnglishWordTestDataAPIResponseDto,
+  submitEnglishBotTestAPI,
+  toggleWordCheckAPI
+} from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 
@@ -39,7 +44,10 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
           <>
             <CardContent>
               <div>
-                <h2>{displayTestData.word?.name || ''}</h2>
+                <h2>
+                  {displayTestData.word?.name || ''}
+                  {displayTestData.word?.checked ? '✅' : ''}
+                </h2>
                 {displayTestData.word?.word_source &&
                   displayTestData.word?.word_source.map((value) => {
                     return <Chip label={value.source.name} />;
@@ -119,6 +127,36 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                         setDisplayTestData && setDisplayTestData({});
                       }
                       setExpanded(false);
+                    }}
+                  />
+                  <Button
+                    label={'チェック反転'}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="warning"
+                    disabled={!displayTestData.word?.name || displayTestData.word?.name === ''}
+                    onClick={async (e) => {
+                      setMessage({
+                        message: '通信中...',
+                        messageColor: '#d3d3d3',
+                        isDisplay: true
+                      });
+                      const result = await toggleWordCheckAPI({
+                        toggleCheckData: {
+                          wordId: displayTestData.word?.id || NaN
+                        }
+                      });
+                      setMessage(result.message);
+                      setDisplayTestData &&
+                        setDisplayTestData({
+                          ...displayTestData,
+                          word: displayTestData.word
+                            ? {
+                                ...displayTestData.word,
+                                checked: !displayTestData.word?.checked
+                              }
+                            : undefined
+                        });
                     }}
                   />
                 </CardContent>
@@ -271,6 +309,36 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                         setDisplayTestData && setDisplayTestData({});
                       }
                       setExpanded(false);
+                    }}
+                  />
+                  <Button
+                    label={'チェック反転'}
+                    attr={'button-array'}
+                    variant="contained"
+                    color="warning"
+                    disabled={!displayTestData.word?.name || displayTestData.word?.name === ''}
+                    onClick={async (e) => {
+                      setMessage({
+                        message: '通信中...',
+                        messageColor: '#d3d3d3',
+                        isDisplay: true
+                      });
+                      const result = await toggleWordCheckAPI({
+                        toggleCheckData: {
+                          wordId: displayTestData.word?.id || NaN
+                        }
+                      });
+                      setMessage(result.message);
+                      setDisplayTestData &&
+                        setDisplayTestData({
+                          ...displayTestData,
+                          word: displayTestData.word
+                            ? {
+                                ...displayTestData.word,
+                                checked: !displayTestData.word?.checked
+                              }
+                            : undefined
+                        });
                     }}
                   />
                 </CardContent>

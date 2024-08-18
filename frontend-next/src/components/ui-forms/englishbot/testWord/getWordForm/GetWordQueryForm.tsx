@@ -31,9 +31,6 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWo
 
   return (
     <>
-      <Typography variant="h3" component="h3" color="common.black">
-        {'~Word~'}
-      </Typography>
       <Card attr={'through-card padding-vertical'}>
         <FormGroup>
           <FormControl>
