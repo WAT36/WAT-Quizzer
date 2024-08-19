@@ -67,7 +67,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
           <CircularProgress />
         ) : (
           <>
-            <Typography variant="h1" component="h1" color={wordDetail.checked ? 'common.green' : 'common.black'}>
+            <Typography variant="h1" component="h1" color={'common.black'}>
               {wordDetail.name}
               <Typography variant="h4" component="span">
                 {wordDetail.checked ? '✅' : ''}
