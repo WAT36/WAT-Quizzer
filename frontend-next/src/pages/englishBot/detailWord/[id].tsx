@@ -18,12 +18,14 @@ import {
   PartofSpeechApiResponse,
   getSourceListAPI,
   SourceApiResponse,
-  initWordDetailResponseData
+  initWordDetailResponseData,
+  toggleWordCheckAPI
 } from 'quizzer-lib';
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
 import { AntonymStack } from '@/components/ui-forms/englishbot/detailWord/antonymStack/AntonymStack';
 import { DerivativeStack } from '@/components/ui-forms/englishbot/detailWord/derivativeStack/DerivativeStack';
 import { EtymologyStack } from '@/components/ui-forms/englishbot/detailWord/etymologyStack/EtymologyStack';
+import { Button } from '@/components/ui-elements/button/Button';
 
 type EachWordPageProps = {
   id: string;
@@ -64,9 +66,39 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         {wordDetail.id === -1 ? (
           <CircularProgress />
         ) : (
-          <Typography variant="h1" component="h1" color="common.black">
-            {wordDetail.name}
-          </Typography>
+          <>
+            <Typography variant="h1" component="h1" color={wordDetail.checked ? 'common.green' : 'common.black'}>
+              {wordDetail.name}
+              <Typography variant="h4" component="span">
+                {wordDetail.checked ? '✅' : ''}
+              </Typography>
+            </Typography>
+            <Button
+              label={'チェック反転'}
+              attr={'button-array'}
+              variant="contained"
+              color="warning"
+              disabled={wordDetail.id === -1}
+              onClick={async (e) => {
+                setMessage({
+                  message: '通信中...',
+                  messageColor: '#d3d3d3',
+                  isDisplay: true
+                });
+                const result = await toggleWordCheckAPI({
+                  toggleCheckData: {
+                    wordId: wordDetail.id
+                  }
+                });
+                setMessage(result.message);
+                if (result.message.messageColor === 'success.light') {
+                  const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
+                    .result as GetWordDetailAPIResponseDto;
+                  setWordDetail && setWordDetail(newWordDetail);
+                }
+              }}
+            />
+          </>
         )}
 
         {/* TODO スタックは共通化できる？ */}
