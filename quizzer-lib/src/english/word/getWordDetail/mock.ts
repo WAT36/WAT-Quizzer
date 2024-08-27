@@ -12,6 +12,11 @@ export const initWordDetailResponseData: GetWordDetailAPIResponseDto = {
   synonym_word: [],
   antonym_original: [],
   antonym_word: [],
-  derivative: [],
+  derivative: {
+    derivative_group_id: -1,
+    derivative_group: {
+      derivative: []
+    }
+  },
   word_etymology: []
 }

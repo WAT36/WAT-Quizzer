@@ -893,7 +893,7 @@ export class EnglishWordService {
       // TODO もし元単語と派生語が既にグループIDを持っていてかつ両方違うものだった場合・・エラー起こる
       const result = [];
       await prisma.$transaction(async (prisma) => {
-        if (wordData.derivative.length > 0) {
+        if (wordData.derivative) {
           // 元単語にすでに派生語データがあるとき -> その派生語グループに登録
           result.push(
             await prisma.derivative.create({

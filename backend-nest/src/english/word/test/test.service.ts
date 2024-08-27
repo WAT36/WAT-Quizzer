@@ -73,6 +73,11 @@ export class EnglishWordTestService {
               },
             },
           },
+          word_statistics_view: {
+            select: {
+              accuracy_rate: true,
+            },
+          },
         },
         where: {
           word_source: {
@@ -139,6 +144,10 @@ export class EnglishWordTestService {
           mean: testWord.mean,
           checked: testWord.checked,
           word_source: testWord.word_source,
+          word_statistics_view: {
+            accuracy_rate:
+              testWord.word_statistics_view.accuracy_rate.toString(),
+          },
         },
         correct: {
           mean: getRandomElementsFromArray(testWord.mean, 1)[0].meaning,
@@ -221,6 +230,11 @@ export class EnglishWordTestService {
               },
             },
           },
+          word_statistics_view: {
+            select: {
+              accuracy_rate: true,
+            },
+          },
         },
         where: {
           word_source: {
@@ -294,6 +308,10 @@ export class EnglishWordTestService {
           mean: lruResult.mean,
           checked: lruResult.checked,
           word_source: lruResult.word_source,
+          word_statistics_view: {
+            accuracy_rate:
+              lruResult.word_statistics_view.accuracy_rate.toString(),
+          },
         },
         correct: {
           mean: getRandomElementsFromArray(lruResult.mean, 1)[0].meaning,

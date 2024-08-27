@@ -20,6 +20,9 @@ export interface GetEnglishWordTestDataAPIResponseDto extends FourChoiceData {
         name: string
       }
     }[]
+    word_statistics_view: {
+      accuracy_rate: string
+    }
   }
   testType?: string
 }

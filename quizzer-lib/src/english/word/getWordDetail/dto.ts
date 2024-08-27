@@ -54,7 +54,7 @@ export interface GetWordDetailAPIResponseDto extends ApiResponse {
       name: string
     }
   }[]
-  derivative: {
+  derivative?: {
     derivative_group_id: number
     derivative_group: {
       derivative: {
@@ -64,7 +64,7 @@ export interface GetWordDetailAPIResponseDto extends ApiResponse {
         }
       }[]
     }
-  }[]
+  }
   word_etymology: {
     etymology: {
       id: true

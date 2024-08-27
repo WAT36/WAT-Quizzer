@@ -52,6 +52,9 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                   displayTestData.word?.word_source.map((value) => {
                     return <Chip label={value.source.name} />;
                   })}
+                {displayTestData.word?.word_statistics_view.accuracy_rate
+                  ? `（正解率 ${displayTestData.word?.word_statistics_view.accuracy_rate}%）`
+                  : ''}
               </div>
 
               <CardActions>
