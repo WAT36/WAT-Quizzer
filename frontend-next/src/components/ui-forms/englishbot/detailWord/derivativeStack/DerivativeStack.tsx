@@ -46,8 +46,8 @@ export const DerivativeStack = ({ wordDetail, setMessage, setWordDetail }: Deriv
             <CircularProgress />
           ) : (
             <Stack spacing={2}>
-              {wordDetail.derivative.length > 0 ? (
-                wordDetail.derivative[0].derivative_group.derivative.map((x, xindex) => {
+              {wordDetail.derivative ? (
+                wordDetail.derivative.derivative_group.derivative.map((x, xindex) => {
                   return x.word_id !== wordDetail.id ? (
                     // TODO ここも別コンポーネント化できない？
                     <Item key={xindex}>
