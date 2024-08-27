@@ -90,8 +90,8 @@ model example {
   created_at          DateTime              @default(now()) @db.Timestamp(6)
   updated_at          DateTime              @default(now()) @db.Timestamp(6)
   deleted_at          DateTime?             @db.Timestamp(6)
-  word_example        word_example[]
   example_explanation example_explanation[]
+  word_example        word_example[]
 }
 
 model example_explanation {
@@ -253,22 +253,22 @@ model word {
   id                    Int                     @id @default(autoincrement())
   name                  String                  @unique @db.VarChar(256)
   pronounce             String                  @db.VarChar(256)
-  checked               Boolean                 @default(false)
   created_at            DateTime                @default(now()) @db.Timestamp(6)
   updated_at            DateTime                @default(now()) @db.Timestamp(6)
   deleted_at            DateTime?               @db.Timestamp(6)
+  checked               Boolean                 @default(false)
+  antonym_word          antonym[]               @relation("antonym_word_id")
+  antonym_original      antonym[]               @relation("antonym_original_id")
+  derivative            derivative?
   englishbot_answer_log englishbot_answer_log[]
   mean                  mean[]
+  synonym_word          synonym[]               @relation("synonym_word_id")
+  synonym_original      synonym[]               @relation("synonym_original_id")
+  word_etymology        word_etymology[]
+  word_example          word_example[]
   word_source           word_source[]
   word_subsource        word_subsource[]
   word_statistics_view  word_statistics_view?   @relation(fields: [id], references: [id])
-  word_example          word_example[]
-  synonym_original      synonym[]               @relation("synonym_original_id")
-  synonym_word          synonym[]               @relation("synonym_word_id")
-  antonym_original      antonym[]               @relation("antonym_original_id")
-  antonym_word          antonym[]               @relation("antonym_word_id")
-  derivative            derivative[]
-  word_etymology        word_etymology[]
 }
 
 model word_etymology {
@@ -285,15 +285,12 @@ model word_etymology {
 }
 
 model etymology {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(256)
-  created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at DateTime? @db.Timestamp(6)
-
+  id             Int              @id @default(autoincrement())
+  name           String           @unique @db.VarChar(256)
+  created_at     DateTime         @default(now()) @db.Timestamp(6)
+  updated_at     DateTime         @default(now()) @db.Timestamp(6)
+  deleted_at     DateTime?        @db.Timestamp(6)
   word_etymology word_etymology[]
-
-  @@unique([name])
 }
 
 model word_example {
@@ -315,8 +312,8 @@ model synonym {
   created_at       DateTime  @default(now()) @db.Timestamp(6)
   updated_at       DateTime  @default(now()) @db.Timestamp(6)
   deleted_at       DateTime? @db.Timestamp(6)
-  synonym_original word?     @relation("synonym_original_id", fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  synonym_word     word?     @relation("synonym_word_id", fields: [synonym_word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  synonym_word     word      @relation("synonym_word_id", fields: [synonym_word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  synonym_original word      @relation("synonym_original_id", fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([word_id, synonym_word_id])
 }
@@ -328,8 +325,8 @@ model antonym {
   created_at       DateTime  @default(now()) @db.Timestamp(6)
   updated_at       DateTime  @default(now()) @db.Timestamp(6)
   deleted_at       DateTime? @db.Timestamp(6)
-  antonym_original word?     @relation("antonym_original_id", fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  antonym_word     word?     @relation("antonym_word_id", fields: [antonym_word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  antonym_word     word      @relation("antonym_word_id", fields: [antonym_word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  antonym_original word      @relation("antonym_original_id", fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([word_id, antonym_word_id])
 }
@@ -337,14 +334,12 @@ model antonym {
 model derivative {
   id                  Int              @id @default(autoincrement())
   derivative_group_id Int
-  word_id             Int
+  word_id             Int              @unique
   created_at          DateTime         @default(now()) @db.Timestamp(6)
   updated_at          DateTime         @default(now()) @db.Timestamp(6)
   deleted_at          DateTime?        @db.Timestamp(6)
-  word                word             @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   derivative_group    derivative_group @relation(fields: [derivative_group_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([word_id])
+  word                word             @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model derivative_group {
@@ -479,6 +474,7 @@ view word_statistics_view {
   name            String?   @db.VarChar(256)
   clear_count     BigInt?
   fail_count      BigInt?
+  accuracy_rate   BigInt?
   last_answer_log DateTime? @db.Timestamp(6)
   word            word[]
 }

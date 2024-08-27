@@ -3,6 +3,20 @@ SELECT
   word.name,
   COALESCE(clear_stat.clear_count, (0) :: bigint) AS clear_count,
   COALESCE(fail_stat.fail_count, (0) :: bigint) AS fail_count,
+  CASE
+    WHEN (
+      (
+        COALESCE(clear_stat.clear_count, (0) :: bigint) + COALESCE(fail_stat.fail_count, (0) :: bigint)
+      ) = 0
+    ) THEN (0) :: bigint
+    ELSE (
+      (
+        100 * COALESCE(clear_stat.clear_count, (0) :: bigint)
+      ) / (
+        COALESCE(clear_stat.clear_count, (0) :: bigint) + COALESCE(fail_stat.fail_count, (0) :: bigint)
+      )
+    )
+  END AS accuracy_rate,
   last_answer_stat.last_answer_log
 FROM
   (
