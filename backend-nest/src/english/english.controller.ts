@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { EnglishService } from './english.service';
 import {
   AddExampleAPIRequestDto,
-  ChangeAssociationOfExampleRequestDto,
+  SubmitAssociationExampleAPIRequestDto,
 } from 'quizzer-lib';
 // import { AuthGuard } from '../auth/auth.guard';
 
@@ -37,7 +37,7 @@ export class EnglishController {
 
   @Post('/example/association')
   async changeAssociationOfExample(
-    @Body() req: ChangeAssociationOfExampleRequestDto,
+    @Body() req: SubmitAssociationExampleAPIRequestDto,
   ) {
     return await this.englishService.changeAssociationOfExampleService(req);
   }

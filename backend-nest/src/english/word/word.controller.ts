@@ -12,8 +12,6 @@ import {
 } from '@nestjs/common';
 import { EnglishWordService } from './word.service';
 import {
-  AddEnglishWordAPIRequestDto,
-  AddWordTestResultLogAPIRequestDto,
   EditWordSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
   EditWordSubSourceAPIRequestDto,
@@ -26,6 +24,8 @@ import {
   LinkWordEtymologyAPIRequestDto,
   AddEtymologyAPIRequestDto,
   ToggleCheckAPIRequestDto,
+  AddWordAPIRequestDto,
+  SubmitEnglishWordTestDataAPIRequestDto,
 } from 'quizzer-lib';
 import { EnglishWordTestService } from './test/test.service';
 // import { AuthGuard } from '../../auth/auth.guard';
@@ -44,7 +44,7 @@ export class EnglishWordController {
 
   // @UseGuards(AuthGuard)
   @Post()
-  async addWord(@Body() req: AddEnglishWordAPIRequestDto) {
+  async addWord(@Body() req: AddWordAPIRequestDto) {
     return await this.englishWordService.addWordAndMeanService(req);
   }
 
@@ -115,13 +115,13 @@ export class EnglishWordController {
 
   // @UseGuards(AuthGuard)
   @Post('test/clear')
-  async wordTestCleared(@Body() req: AddWordTestResultLogAPIRequestDto) {
+  async wordTestCleared(@Body() req: SubmitEnglishWordTestDataAPIRequestDto) {
     return await this.englishWordService.wordTestClearedService(req);
   }
 
   // @UseGuards(AuthGuard)
   @Post('test/fail')
-  async wordTestFailed(@Body() req: AddWordTestResultLogAPIRequestDto) {
+  async wordTestFailed(@Body() req: SubmitEnglishWordTestDataAPIRequestDto) {
     return await this.englishWordService.wordTestFailedService(req);
   }
 

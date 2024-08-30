@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   AddExampleAPIRequestDto,
-  ChangeAssociationOfExampleRequestDto,
+  SubmitAssociationExampleAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -182,7 +182,7 @@ export class EnglishService {
 
   // 例文紐付け更新
   async changeAssociationOfExampleService(
-    req: ChangeAssociationOfExampleRequestDto,
+    req: SubmitAssociationExampleAPIRequestDto,
   ) {
     const { wordName, checkedId, isAssociation } = req;
 

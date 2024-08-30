@@ -1,7 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
-  AddEnglishWordAPIRequestDto,
-  AddWordTestResultLogAPIRequestDto,
   EditWordSourceAPIRequestDto,
   EditWordMeanAPIRequestDto,
   EditWordSubSourceAPIRequestDto,
@@ -14,6 +12,8 @@ import {
   LinkWordEtymologyAPIRequestDto,
   AddEtymologyAPIRequestDto,
   ToggleCheckAPIRequestDto,
+  AddWordAPIRequestDto,
+  SubmitEnglishWordTestDataAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -21,7 +21,7 @@ export const prisma: PrismaClient = new PrismaClient();
 @Injectable()
 export class EnglishWordService {
   // 単語と意味追加
-  async addWordAndMeanService(req: AddEnglishWordAPIRequestDto) {
+  async addWordAndMeanService(req: AddWordAPIRequestDto) {
     const { inputWord, pronounce, meanArrayData } = req;
     try {
       // トランザクション実行準備
@@ -315,7 +315,7 @@ export class EnglishWordService {
   }
 
   // 正解登録
-  async wordTestClearedService(req: AddWordTestResultLogAPIRequestDto) {
+  async wordTestClearedService(req: SubmitEnglishWordTestDataAPIRequestDto) {
     try {
       const { wordId, testType } = req;
       return await prisma.englishbot_answer_log.create({
@@ -336,7 +336,7 @@ export class EnglishWordService {
   }
 
   // 不正解登録
-  async wordTestFailedService(req: AddWordTestResultLogAPIRequestDto) {
+  async wordTestFailedService(req: SubmitEnglishWordTestDataAPIRequestDto) {
     try {
       const { wordId, testType } = req;
       return await prisma.englishbot_answer_log.create({
