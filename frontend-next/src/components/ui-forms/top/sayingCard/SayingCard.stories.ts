@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { SayingCard } from './SayingCard';
+import { initSayingResponseData } from 'quizzer-lib';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -20,11 +21,6 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Saying: Story = {
   args: {
-    sayingState: {
-      saying: '格言',
-      color: 'black',
-      explanation: '説明',
-      name: '本の名前'
-    }
+    sayingResponse: initSayingResponseData
   }
 };

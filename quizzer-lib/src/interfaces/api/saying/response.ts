@@ -15,14 +15,6 @@ export interface GetBookAPIResponseDto extends ApiResponse {
 }
 
 /// 以下、格言(saying)系
-export interface GetRandomSayingResponse extends ApiResponse {
-  saying: string
-  explanation: string
-  selfhelp_book: {
-    name: string
-  }
-}
-
 export interface SearchSayingResponse extends ApiResponse {
   id: number
   saying: string
