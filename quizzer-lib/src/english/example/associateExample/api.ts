@@ -12,10 +12,19 @@ export const submitAssociationExampleAPI = async ({
 }: SubmitAssociationExampleButtonProps) => {
   const { wordName, checkedIdList, isAssociation } =
     submitAssociationExampleData
-  if (!submitAssociationExampleData.wordName) {
+  if (!wordName) {
     return {
       message: {
         message: 'エラー:単語が入力されていません',
+        messageColor: 'error',
+        isDisplay: true
+      }
+    }
+  }
+  if (!checkedIdList) {
+    return {
+      message: {
+        message: 'エラー:チェックしたIDリストがありません',
         messageColor: 'error',
         isDisplay: true
       }

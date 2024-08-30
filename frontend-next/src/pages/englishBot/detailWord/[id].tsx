@@ -19,7 +19,8 @@ import {
   getSourceListAPI,
   SourceApiResponse,
   initWordDetailResponseData,
-  toggleWordCheckAPI
+  toggleWordCheckAPI,
+  getWordNumAPI
 } from 'quizzer-lib';
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
 import { AntonymStack } from '@/components/ui-forms/englishbot/detailWord/antonymStack/AntonymStack';
@@ -142,11 +143,7 @@ export async function getStaticProps({ params }: Params) {
 
 // 一番最初に実行される関数
 export async function getStaticPaths() {
-  const words: GetWordNumResponseDto = (await getApiAndGetValue(
-    '/english/word/num',
-    undefined,
-    'no needs'
-  )) as GetWordNumResponseDto;
+  const words: GetWordNumResponseDto = (await getWordNumAPI({})).result as GetWordNumResponseDto;
   console.log('words max id:', words._max.id);
   return {
     paths: new Array(words._max.id + 30)

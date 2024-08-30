@@ -1,6 +1,7 @@
 //
 export interface SubmitAssociationExampleAPIRequestDto {
   wordName: string
-  checkedIdList: number[]
+  checkedId?: number
+  checkedIdList?: number[]
   isAssociation: boolean
 }
