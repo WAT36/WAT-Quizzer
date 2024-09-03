@@ -1,11 +1,14 @@
-import { getQuizFileStatisticsDataAPI } from '@/api/quiz/getQuizFileStatisticsDataAPI';
 import { getQuizStatisticsWeekDataAPI } from '@/api/quiz/getQuizStatisticsWeekDataAPI';
 import { messageState } from '@/atoms/Message';
 import { Layout } from '@/components/templates/layout/Layout';
 import { FileStatisticsCard } from '@/components/ui-forms/quizzer/top/fileStatisticsCard/FileStatisticsCard';
 import { PastWeekAnswerDataCard } from '@/components/ui-forms/quizzer/top/PastWeekAnswerDataCard/PastWeekAnswerDataCard';
 import { Container } from '@mui/material';
-import { QuizFileStatisticsApiResponse, QuizStatisticsWeekApiResponse } from 'quizzer-lib';
+import {
+  getQuizFileStatisticsDataAPI,
+  QuizFileStatisticsApiResponse,
+  QuizStatisticsWeekApiResponse
+} from 'quizzer-lib';
 import React, { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 
@@ -23,6 +26,10 @@ export default function QuizzerTopPage({ isMock }: Props) {
     !isMock &&
       Promise.all([
         getQuizFileStatisticsDataAPI({ setMessage, setQuizFileStatisticsData }),
+        (async () => {
+          const result = await getQuizFileStatisticsDataAPI({});
+          result.result && setQuizFileStatisticsData(result.result as QuizFileStatisticsApiResponse[]);
+        })(),
         getQuizStatisticsWeekDataAPI({ setMessage, setQuizStatisticsWeekData })
       ]);
   }, [isMock, setMessage]);
