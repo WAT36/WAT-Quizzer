@@ -1,13 +1,21 @@
 import Chart from 'react-google-charts';
 import styles from '../../../../Chart.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
-import { QuizFileStatisticsApiResponse } from 'quizzer-lib';
+import { getQuizFileStatisticsDataAPI, QuizFileStatisticsApiResponse } from 'quizzer-lib';
+import { useEffect, useState } from 'react';
 
-interface FileStatisticsCardProps {
-  quizFileStatisticsData: QuizFileStatisticsApiResponse[];
-}
+interface FileStatisticsCardProps {}
 
-export const FileStatisticsCard = ({ quizFileStatisticsData }: FileStatisticsCardProps) => {
+export const FileStatisticsCard = ({}: FileStatisticsCardProps) => {
+  const [quizFileStatisticsData, setQuizFileStatisticsData] = useState<QuizFileStatisticsApiResponse[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const result = await getQuizFileStatisticsDataAPI({});
+      result.result && setQuizFileStatisticsData(result.result as QuizFileStatisticsApiResponse[]);
+    })();
+  }, []);
+
   const data: [string, string | number, string | number, string | number][] = quizFileStatisticsData.map((x) => {
     return [x.file_nickname, x.basic_quiz_count, x.basic_clear, x.basic_fail];
   });
