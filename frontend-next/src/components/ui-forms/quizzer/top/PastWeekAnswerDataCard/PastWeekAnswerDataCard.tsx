@@ -1,13 +1,21 @@
 import Chart from 'react-google-charts';
 import styles from '../../../../Chart.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
-import { QuizStatisticsWeekApiResponse } from 'quizzer-lib';
+import { useEffect, useState } from 'react';
+import { getQuizStatisticsWeekDataAPI, QuizStatisticsWeekApiResponse } from 'quizzer-lib';
 
-interface PastWeekAnswerDataCardProps {
-  quizStatisticsWeekData: QuizStatisticsWeekApiResponse[];
-}
+interface PastWeekAnswerDataCardProps {}
 
-export const PastWeekAnswerDataCard = ({ quizStatisticsWeekData }: PastWeekAnswerDataCardProps) => {
+export const PastWeekAnswerDataCard = ({}: PastWeekAnswerDataCardProps) => {
+  const [quizStatisticsWeekData, setQuizStatisticsWeekData] = useState<QuizStatisticsWeekApiResponse[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const result = await getQuizStatisticsWeekDataAPI({});
+      result.result && setQuizStatisticsWeekData(result.result as QuizStatisticsWeekApiResponse[]);
+    })();
+  }, []);
+
   const data: [string, string | number][] = quizStatisticsWeekData.map((x) => {
     return [x.date, x.count];
   });
