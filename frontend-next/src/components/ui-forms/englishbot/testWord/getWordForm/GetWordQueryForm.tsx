@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Checkbox, FormControl, FormControlLabel, FormGroup, Typography } from '@mui/material';
-import { PullDownOptionState } from '../../../../../../interfaces/state';
+import { Checkbox, FormControl, FormControlLabel, FormGroup } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -16,11 +15,12 @@ import {
   getEnglishWordTestDataAPI,
   GetEnglishWordTestDataAPIRequestDto,
   GetEnglishWordTestDataAPIResponseDto,
-  parseStrToBool
+  parseStrToBool,
+  PullDownOptionDto
 } from 'quizzer-lib';
 
 interface GetWordQueryFormProps {
-  sourcelistoption: PullDownOptionState[];
+  sourcelistoption: PullDownOptionDto[];
   setDisplayTestData?: React.Dispatch<React.SetStateAction<GetEnglishWordTestDataAPIResponseDto>>;
 }
 

@@ -1,19 +1,15 @@
 import React, { useState } from 'react';
-import {
-  MessageState,
-  PullDownOptionState,
-  QueryOfPutQuizState,
-  QueryOfQuizState
-} from '../../../../../../interfaces/state';
+import { MessageState, QueryOfPutQuizState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { FormControl, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 import { Button } from '@/components/ui-elements/button/Button';
 import { getQuizAPI } from '@/api/quiz/getQuizAPI';
+import { PullDownOptionDto } from 'quizzer-lib';
 
 interface InputQueryForEditFormProps {
-  filelistoption: PullDownOptionState[];
+  filelistoption: PullDownOptionDto[];
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setQueryOfEditQuizStater?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
 }

@@ -1,10 +1,11 @@
 import React from 'react';
 import { FormControl, FormGroup } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { PullDownOptionState, QueryOfGetAccuracyState } from '../../../../../../interfaces/state';
+import { QueryOfGetAccuracyState } from '../../../../../../interfaces/state';
+import { PullDownOptionDto } from 'quizzer-lib';
 
 interface GetFileFormProps {
-  filelistoption: PullDownOptionState[];
+  filelistoption: PullDownOptionDto[];
   queryOfGetAccuracy: QueryOfGetAccuracyState;
   setQueryOfGetAccuracy?: React.Dispatch<React.SetStateAction<QueryOfGetAccuracyState>>;
 }

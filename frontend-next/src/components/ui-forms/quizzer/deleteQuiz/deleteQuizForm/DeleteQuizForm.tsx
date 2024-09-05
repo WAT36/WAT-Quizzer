@@ -15,7 +15,6 @@ import {
 import {
   DeleteQuizInfoState,
   MessageState,
-  PullDownOptionState,
   QueryOfDeleteQuizState,
   QueryOfIntegrateToQuizState
 } from '../../../../../../interfaces/state';
@@ -23,12 +22,13 @@ import { Button } from '@/components/ui-elements/button/Button';
 import styles from '../DeleteQuizForm.module.css';
 import { getDeletingQuiz } from '@/api/quiz/getDeletingQuizAPI';
 import { deleteQuiz } from '@/api/quiz/deleteQuizAPI';
+import { PullDownOptionDto } from 'quizzer-lib';
 
 interface DeleteQuizFormProps {
   queryOfDeleteQuizState: QueryOfDeleteQuizState;
   queryOfIntegrateToQuizState: QueryOfIntegrateToQuizState;
   deleteQuizInfoState: DeleteQuizInfoState;
-  filelistoption: PullDownOptionState[];
+  filelistoption: PullDownOptionDto[];
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setQueryOfDeleteQuizState?: React.Dispatch<React.SetStateAction<QueryOfDeleteQuizState>>;
   setDeleteQuizInfoState?: React.Dispatch<React.SetStateAction<DeleteQuizInfoState>>;

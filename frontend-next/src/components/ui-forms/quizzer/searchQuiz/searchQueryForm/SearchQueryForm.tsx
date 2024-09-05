@@ -1,19 +1,19 @@
 import React from 'react';
-import { MessageState, PullDownOptionState, QueryOfSearchQuizState } from '../../../../../../interfaces/state';
+import { MessageState, QueryOfSearchQuizState } from '../../../../../../interfaces/state';
 import { Checkbox, FormControl, FormControlLabel, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 import { get } from '@/api/API';
-import { GetCategoryAPIResponseDto, ProcessingApiReponse } from 'quizzer-lib';
+import { GetCategoryAPIResponseDto, ProcessingApiReponse, PullDownOptionDto } from 'quizzer-lib';
 
 interface SearchQueryFormProps {
-  filelistoption: PullDownOptionState[];
-  categorylistoption: PullDownOptionState[];
+  filelistoption: PullDownOptionDto[];
+  categorylistoption: PullDownOptionDto[];
   queryOfSearchQuizState: QueryOfSearchQuizState;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setCategorylistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
+  setCategorylistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
   setQueryofSearchQuizState?: React.Dispatch<React.SetStateAction<QueryOfSearchQuizState>>;
 }
 
@@ -39,7 +39,7 @@ export const SearchQueryForm = ({
       (data: ProcessingApiReponse) => {
         if (data.status === 200) {
           const res: GetCategoryAPIResponseDto[] = data.body as GetCategoryAPIResponseDto[];
-          let categorylist: PullDownOptionState[] = [];
+          let categorylist: PullDownOptionDto[] = [];
           for (var i = 0; i < res.length; i++) {
             categorylist.push({
               value: res[i].category,

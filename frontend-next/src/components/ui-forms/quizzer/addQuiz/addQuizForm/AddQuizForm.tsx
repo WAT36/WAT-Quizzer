@@ -1,11 +1,12 @@
 import React from 'react';
 import { FormControl, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { PullDownOptionState, QueryOfPutQuizState } from '../../../../../../interfaces/state';
+import { QueryOfPutQuizState } from '../../../../../../interfaces/state';
 import { PutQuizForm } from '../../forms/putQuizForm/PutQuizForm';
+import { PullDownOptionDto } from 'quizzer-lib';
 
 interface AddQuizFormProps {
-  filelistoption: PullDownOptionState[];
+  filelistoption: PullDownOptionDto[];
   value: number;
   queryOfPutQuizState: QueryOfPutQuizState;
   setValue?: React.Dispatch<React.SetStateAction<number>>;

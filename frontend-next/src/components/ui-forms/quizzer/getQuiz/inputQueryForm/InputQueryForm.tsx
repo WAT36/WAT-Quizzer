@@ -1,25 +1,20 @@
 import React from 'react';
-import {
-  DisplayQuizState,
-  MessageState,
-  PullDownOptionState,
-  QueryOfQuizState
-} from '../../../../../../interfaces/state';
+import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { Checkbox, FormControl, FormControlLabel, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 import { get } from '@/api/API';
-import { GetCategoryAPIResponseDto, ProcessingApiReponse } from 'quizzer-lib';
+import { GetCategoryAPIResponseDto, ProcessingApiReponse, PullDownOptionDto } from 'quizzer-lib';
 
 interface InputQueryFormProps {
-  filelistoption: PullDownOptionState[];
-  categorylistoption: PullDownOptionState[];
+  filelistoption: PullDownOptionDto[];
+  categorylistoption: PullDownOptionDto[];
   queryOfQuizState: QueryOfQuizState;
   displayQuizState: DisplayQuizState;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setCategorylistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
+  setCategorylistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
   setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
 }
@@ -49,7 +44,7 @@ export const InputQueryForm = ({
       (data: ProcessingApiReponse) => {
         if (data.status === 200) {
           const res: GetCategoryAPIResponseDto[] = data.body as GetCategoryAPIResponseDto[];
-          let categorylist: PullDownOptionState[] = [];
+          let categorylist: PullDownOptionDto[] = [];
           for (var i = 0; i < res.length; i++) {
             categorylist.push({
               value: res[i].category,

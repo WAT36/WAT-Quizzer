@@ -3,7 +3,7 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { Box, CircularProgress, IconButton, MenuItem, Select, Stack, Typography } from '@mui/material';
-import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
+import { MessageState } from '../../../../../../interfaces/state';
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -12,11 +12,12 @@ import {
   editEnglishWordSourceAPI,
   EditWordSourceAPIRequestDto,
   getWordDetailAPI,
-  GetWordDetailAPIResponseDto
+  GetWordDetailAPIResponseDto,
+  PullDownOptionDto
 } from 'quizzer-lib';
 
 interface SourceStackProps {
-  sourceList: PullDownOptionState[];
+  sourceList: PullDownOptionDto[];
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
@@ -25,7 +26,7 @@ interface SourceStackProps {
 // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
 const displaySourceInput = (
   i: number, // TODO iはキーだけ使ってるんでuuidとかで代用できるので消す
-  sourceList: PullDownOptionState[],
+  sourceList: PullDownOptionDto[],
   editWordSourceData: EditWordSourceAPIRequestDto,
   setEditWordSourceData: React.Dispatch<React.SetStateAction<EditWordSourceAPIRequestDto>>
 ) => {
