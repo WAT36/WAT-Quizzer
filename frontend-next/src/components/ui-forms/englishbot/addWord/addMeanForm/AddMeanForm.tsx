@@ -14,12 +14,11 @@ import {
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { PullDownOptionState } from '../../../../../../interfaces/state';
-import { AddWordAPIRequestDto } from 'quizzer-lib';
+import { AddWordAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
 // TODO @mui/material はなくす
 
 interface AddMeanFormProps {
-  posList: PullDownOptionState[];
+  posList: PullDownOptionDto[];
   addWordState: AddWordAPIRequestDto;
   setAddWordState?: React.Dispatch<React.SetStateAction<AddWordAPIRequestDto>>;
 }

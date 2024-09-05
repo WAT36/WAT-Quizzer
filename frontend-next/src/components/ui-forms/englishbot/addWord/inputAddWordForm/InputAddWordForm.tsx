@@ -1,13 +1,13 @@
 import { InputLabel, MenuItem, Select } from '@mui/material';
-import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
+import { MessageState } from '../../../../../../interfaces/state';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
 
-import { addWordAPI, AddWordAPIRequestDto, Message } from 'quizzer-lib';
+import { addWordAPI, AddWordAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
 
 interface InputAddWordFormProps {
-  sourceList: PullDownOptionState[];
+  sourceList: PullDownOptionDto[];
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   addWordState: AddWordAPIRequestDto;
   setAddWordState?: React.Dispatch<React.SetStateAction<AddWordAPIRequestDto>>;

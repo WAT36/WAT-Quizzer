@@ -1,13 +1,13 @@
 import { post } from '@/api/API';
-import { ProcessingApiReponse } from 'quizzer-lib';
-import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import { ProcessingApiReponse, PullDownOptionDto } from 'quizzer-lib';
+import { MessageState } from '../../../interfaces/state';
 import { getBook } from './getBookListAPI';
 
 interface AddBookButtonProps {
   bookName: string;
   attr?: string;
   setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setBooklistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
+  setBooklistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
 }
 
 export const addBookAPI = async ({ bookName, setMessageStater, setBooklistoption }: AddBookButtonProps) => {

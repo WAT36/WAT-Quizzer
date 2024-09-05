@@ -3,7 +3,7 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Box, CircularProgress, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { Modal } from '@/components/ui-elements/modal/Modal';
-import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
+import { MessageState } from '../../../../../../interfaces/state';
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -12,11 +12,12 @@ import {
   editEnglishWordMeanAPI,
   EditWordMeanAPIRequestDto,
   getWordDetailAPI,
-  GetWordDetailAPIResponseDto
+  GetWordDetailAPIResponseDto,
+  PullDownOptionDto
 } from 'quizzer-lib';
 
 interface MeaningStackProps {
-  posList: PullDownOptionState[];
+  posList: PullDownOptionDto[];
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
@@ -25,7 +26,7 @@ interface MeaningStackProps {
 // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
 const displayPosInput = (
   i: number,
-  posList: PullDownOptionState[],
+  posList: PullDownOptionDto[],
   editMeanData: EditWordMeanAPIRequestDto,
   setEditMeanData: React.Dispatch<React.SetStateAction<EditWordMeanAPIRequestDto>>
 ) => {

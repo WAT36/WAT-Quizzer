@@ -1,17 +1,17 @@
-import { ProcessingApiReponse, GetSelfHelpBookResponse } from 'quizzer-lib';
-import { MessageState, PullDownOptionState } from '../../../interfaces/state';
+import { ProcessingApiReponse, GetSelfHelpBookResponse, PullDownOptionDto } from 'quizzer-lib';
+import { MessageState } from '../../../interfaces/state';
 import { get } from '@/api/API';
 
 // 設定ページ用 啓発本名リストをapi通信して取ってくる
 export const getBook = (
   setMessageStater: React.Dispatch<React.SetStateAction<MessageState>>,
-  setBooklistoption: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>
+  setBooklistoption: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>
 ) => {
   setMessageStater({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
   get('/saying/book', (data: ProcessingApiReponse) => {
     if (data.status === 200) {
       const result: GetSelfHelpBookResponse[] = data.body as GetSelfHelpBookResponse[];
-      let booklist: PullDownOptionState[] = [];
+      let booklist: PullDownOptionDto[] = [];
       for (var i = 0; i < result.length; i++) {
         booklist.push({
           value: String(result[i].id),
