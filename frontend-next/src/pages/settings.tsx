@@ -1,9 +1,8 @@
-import Head from 'next/head';
 import { CardContent, Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
-import { InputSayingState, PullDownOptionState } from '../../interfaces/state';
+import { InputSayingState } from '../../interfaces/state';
 import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookForm';
 import { AddSayingForm } from '@/components/ui-forms/settings/addSayingForm/AddSayingForm';
 import { SearchSayingSection } from '@/components/ui-forms/settings/searchSayingSection/SearchSayingSection';
@@ -12,13 +11,14 @@ import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
 import { Card } from '@/components/ui-elements/card/Card';
 import { getBook } from '@/api/saying/getBookListAPI';
+import { PullDownOptionDto } from 'quizzer-lib';
 
 type Props = {
   isMock?: boolean;
 };
 
 export default function Settings({ isMock }: Props) {
-  const [booklistoption, setBooklistoption] = useState<PullDownOptionState[]>([]);
+  const [booklistoption, setBooklistoption] = useState<PullDownOptionDto[]>([]);
   const [bookName, setBookName] = useState<string>('');
   const [queryOfSaying, setQueryOfSaying] = useState<string>('');
   const [inputSaying, setInputSaying] = useState<InputSayingState>({

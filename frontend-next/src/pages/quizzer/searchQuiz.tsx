@@ -3,7 +3,7 @@ import { GridRowsProp } from '@mui/x-data-grid';
 import { columns } from '../../../utils/quizzer/SearchTable';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
-import { PullDownOptionState, QueryOfSearchQuizState } from '../../../interfaces/state';
+import { QueryOfSearchQuizState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { SearchQueryForm } from '@/components/ui-forms/quizzer/searchQuiz/searchQueryForm/SearchQueryForm';
 import { Button } from '@/components/ui-elements/button/Button';
@@ -12,7 +12,12 @@ import { EditSearchResultForm } from '@/components/ui-forms/quizzer/searchQuiz/e
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
 import { searchQuizAPI } from '@/api/quiz/searchQuizAPI';
-import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
+import {
+  PullDownOptionDto,
+  quizFileListAPIResponseToPullDownAdapter,
+  getQuizFileListAPI,
+  GetQuizFileApiResponseDto
+} from 'quizzer-lib';
 
 type Props = {
   isMock?: boolean;
@@ -26,13 +31,27 @@ export default function SearchQuizPage({ isMock }: Props) {
   });
   const [message, setMessage] = useRecoilState(messageState);
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
-  const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
-  const [categorylistoption, setCategorylistoption] = useState<PullDownOptionState[]>([]);
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
+  const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
   const [checkedIdList, setCheckedIdList] = useState<number[]>([] as number[]);
   const [changedCategory, setChangedCategory] = useState<string>('');
 
   useEffect(() => {
-    !isMock && getQuizFileListAPI(setMessage, setFilelistoption);
+    if (!isMock) {
+      (async () => {
+        setMessage({
+          message: '通信中...',
+          messageColor: '#d3d3d3',
+          isDisplay: true
+        });
+        const result = await getQuizFileListAPI();
+        setMessage(result.message);
+        const pullDownOption = result.result
+          ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
+          : [];
+        setFilelistoption(pullDownOption);
+      })();
+    }
   }, [isMock, setMessage]);
 
   const contents = () => {

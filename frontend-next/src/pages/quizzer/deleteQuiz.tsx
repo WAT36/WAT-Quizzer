@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
-import {
-  DeleteQuizInfoState,
-  PullDownOptionState,
-  QueryOfDeleteQuizState,
-  QueryOfIntegrateToQuizState
-} from '../../../interfaces/state';
+import { DeleteQuizInfoState, QueryOfDeleteQuizState, QueryOfIntegrateToQuizState } from '../../../interfaces/state';
 import { DeleteQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/deleteQuizForm/DeleteQuizForm';
 import { IntegrateToQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/integrateToQuizForm/IntegrateToQuizForm';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
-import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
+import {
+  PullDownOptionDto,
+  getQuizFileListAPI,
+  quizFileListAPIResponseToPullDownAdapter,
+  GetQuizFileApiResponseDto
+} from 'quizzer-lib';
 
 type Props = {
   isMock?: boolean;
@@ -31,10 +31,24 @@ export default function DeleteQuizPage({ isMock }: Props) {
   });
   const [deleteQuizInfoState, setDeleteQuizInfoState] = useState<DeleteQuizInfoState>({});
   const [message, setMessage] = useRecoilState(messageState);
-  const [filelistoption, setFilelistoption] = useState<PullDownOptionState[]>([]);
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
 
   useEffect(() => {
-    !isMock && getQuizFileListAPI(setMessage, setFilelistoption);
+    if (!isMock) {
+      (async () => {
+        setMessage({
+          message: '通信中...',
+          messageColor: '#d3d3d3',
+          isDisplay: true
+        });
+        const result = await getQuizFileListAPI();
+        setMessage(result.message);
+        const pullDownOption = result.result
+          ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
+          : [];
+        setFilelistoption(pullDownOption);
+      })();
+    }
   }, [isMock, setMessage]);
 
   const contents = () => {
