@@ -2,16 +2,17 @@ import { Card, CardContent, CardHeader } from '@mui/material';
 import { AddFileSection } from '../addFileSection/AddFileSection';
 import styles from '../Settings.module.css';
 import { DeleteFileSection } from '../deleteFileSection/DeleteFileSection';
-import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
+import { MessageState } from '../../../../../../interfaces/state';
+import { PullDownOptionDto } from 'quizzer-lib';
 
 interface FileConfigSectionProps {
   fileName: string;
   deleteFileNum: number;
-  filelistoption: PullDownOptionState[];
+  filelistoption: PullDownOptionDto[];
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDeleteFileNum?: React.Dispatch<React.SetStateAction<number>>;
   setFileName?: React.Dispatch<React.SetStateAction<string>>;
-  setFilelistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
+  setFilelistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
 }
 
 export const FileConfigSection = ({

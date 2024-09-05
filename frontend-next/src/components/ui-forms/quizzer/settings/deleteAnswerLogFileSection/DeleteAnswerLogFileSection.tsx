@@ -9,15 +9,15 @@ import {
   DialogTitle
 } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
-import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
+import { MessageState } from '../../../../../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { patch } from '@/api/API';
-import { ProcessingApiReponse } from 'quizzer-lib';
+import { ProcessingApiReponse, PullDownOptionDto } from 'quizzer-lib';
 
 interface DeleteAnswerLogFileSectionProps {
   deleteLogOfFileNum: number;
   deleteLogOfFileAlertOpen: boolean;
-  filelistoption: PullDownOptionState[];
+  filelistoption: PullDownOptionDto[];
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDeleteLogOfFileNum?: React.Dispatch<React.SetStateAction<number>>;
   setDeleteLogOfFileAlertOpen?: React.Dispatch<React.SetStateAction<boolean>>;

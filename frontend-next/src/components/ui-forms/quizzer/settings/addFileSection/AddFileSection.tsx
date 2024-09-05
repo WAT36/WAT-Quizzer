@@ -2,20 +2,26 @@ import styles from '../Settings.module.css';
 import { CardContent, CardHeader } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
-import { MessageState, PullDownOptionState } from '../../../../../../interfaces/state';
+import { MessageState } from '../../../../../../interfaces/state';
 import { post } from '@/api/API';
-import { getQuizFileListAPI } from '@/api/quiz/getQuizFileListAPI';
-import { getRandomStr, ProcessingApiReponse } from 'quizzer-lib';
+import {
+  getRandomStr,
+  ProcessingApiReponse,
+  PullDownOptionDto,
+  quizFileListAPIResponseToPullDownAdapter,
+  GetQuizFileApiResponseDto,
+  getQuizFileListAPI
+} from 'quizzer-lib';
 
 interface AddFileSectionProps {
   fileName: string;
   setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
   setFileName?: React.Dispatch<React.SetStateAction<string>>;
-  setFilelistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
+  setFilelistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
 }
 
 export const AddFileSection = ({ fileName, setMessage, setFileName, setFilelistoption }: AddFileSectionProps) => {
-  const addFile = () => {
+  const addFile = async () => {
     // 設定ステートない場合はreturn(storybook表示用に設定)
     if (!setMessage || !setFilelistoption) {
       return;
@@ -48,7 +54,13 @@ export const AddFileSection = ({ fileName, setMessage, setFileName, setFilelisto
         }
       }
     );
-    getQuizFileListAPI(setMessage, setFilelistoption);
+    // 問題ファイル再取得
+    const result = await getQuizFileListAPI();
+    setMessage(result.message);
+    const pullDownOption = result.result
+      ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
+      : [];
+    setFilelistoption(pullDownOption);
   };
 
   return (
@@ -56,7 +68,7 @@ export const AddFileSection = ({ fileName, setMessage, setFileName, setFilelisto
       <CardHeader subheader="ファイル新規追加" />
       <CardContent className={styles.cardContent}>
         <TextField label="新規ファイル名" setStater={setFileName} className={['flex']} />
-        <Button label="追加" variant="contained" attr="after-inline" onClick={(e) => addFile()} />
+        <Button label="追加" variant="contained" attr="after-inline" onClick={async (e) => await addFile()} />
       </CardContent>
     </>
   );

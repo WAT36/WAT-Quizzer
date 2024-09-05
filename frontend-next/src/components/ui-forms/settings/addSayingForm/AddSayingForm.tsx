@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputSayingState, MessageState, PullDownOptionState } from '../../../../../interfaces/state';
+import { InputSayingState } from '../../../../../interfaces/state';
 import { CardContent, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Button } from '@/components/ui-elements/button/Button';
@@ -9,10 +9,11 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { addSayingAPI } from '@/api/saying/addSayingAPI';
+import { PullDownOptionDto } from 'quizzer-lib';
 
 interface AddSayingFormProps {
   inputSaying: InputSayingState;
-  booklistoption: PullDownOptionState[];
+  booklistoption: PullDownOptionDto[];
   setInputSaying?: React.Dispatch<React.SetStateAction<InputSayingState>>;
 }
 

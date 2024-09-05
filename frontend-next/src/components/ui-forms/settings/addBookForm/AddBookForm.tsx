@@ -1,5 +1,4 @@
 import React from 'react';
-import { PullDownOptionState } from '../../../../../interfaces/state';
 import { CardContent } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
@@ -8,11 +7,12 @@ import styles from '../Settings.module.css';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { addBookAPI } from '@/api/saying/addBookAPI';
+import { PullDownOptionDto } from 'quizzer-lib';
 
 interface AddBookFormProps {
   bookName: string;
   setBookName?: React.Dispatch<React.SetStateAction<string>>;
-  setBooklistoption?: React.Dispatch<React.SetStateAction<PullDownOptionState[]>>;
+  setBooklistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
 }
 
 export const AddBookForm = ({ bookName, setBookName, setBooklistoption }: AddBookFormProps) => {
