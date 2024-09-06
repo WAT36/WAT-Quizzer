@@ -20,15 +20,15 @@ export const Example: Story = {
     label: 'プルダウンテスト',
     optionList: [
       {
-        value: 0,
+        value: '0',
         label: '選択肢テスト０'
       },
       {
-        value: 1,
+        value: '1',
         label: '選択肢テスト１'
       },
       {
-        value: 2,
+        value: '2',
         label: '選択肢テスト２'
       }
     ]

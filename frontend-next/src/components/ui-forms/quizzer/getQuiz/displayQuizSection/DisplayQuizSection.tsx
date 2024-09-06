@@ -6,20 +6,22 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { clearQuizAPI } from '@/api/quiz/clearQuizAPI';
 import { failQuizAPI } from '@/api/quiz/failQuizAPI';
 import { reverseCheckQuizAPI } from '@/api/quiz/reverseCheckQuizAPI';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
 
 interface DisplayQuizSectionProps {
   queryOfQuizState: QueryOfQuizState;
   displayQuizState: DisplayQuizState;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
 }
 
 export const DisplayQuizSection = ({
   queryOfQuizState,
   displayQuizState,
-  setMessageStater,
   setDisplayQuizStater
 }: DisplayQuizSectionProps) => {
+  const setMessage = useSetRecoilState(messageState);
+
   const handleExpandClick = () => {
     if (setDisplayQuizStater) {
       setDisplayQuizStater({
@@ -66,7 +68,7 @@ export const DisplayQuizSection = ({
                 clearQuizAPI({
                   queryOfQuizState,
                   displayQuizState,
-                  setMessageStater,
+                  setMessageStater: setMessage,
                   setDisplayQuizStater
                 })
               }
@@ -80,7 +82,7 @@ export const DisplayQuizSection = ({
                 failQuizAPI({
                   queryOfQuizState,
                   displayQuizState,
-                  setMessageStater,
+                  setMessageStater: setMessage,
                   setDisplayQuizStater
                 })
               }
@@ -94,7 +96,7 @@ export const DisplayQuizSection = ({
                 reverseCheckQuizAPI({
                   queryOfQuizState,
                   displayQuizState,
-                  setMessageStater,
+                  setMessageStater: setMessage,
                   setDisplayQuizStater
                 })
               }

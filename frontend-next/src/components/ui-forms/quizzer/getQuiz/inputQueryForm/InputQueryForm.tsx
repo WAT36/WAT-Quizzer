@@ -1,40 +1,65 @@
-import React from 'react';
-import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
+import React, { useEffect, useState } from 'react';
+import { DisplayQuizState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { Checkbox, FormControl, FormControlLabel, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 import { get } from '@/api/API';
-import { GetCategoryAPIResponseDto, ProcessingApiReponse, PullDownOptionDto } from 'quizzer-lib';
+import {
+  GetCategoryAPIResponseDto,
+  GetQuizFileApiResponseDto,
+  getQuizFileListAPI,
+  ProcessingApiReponse,
+  PullDownOptionDto,
+  quizFileListAPIResponseToPullDownAdapter
+} from 'quizzer-lib';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
 
 interface InputQueryFormProps {
-  filelistoption: PullDownOptionDto[];
   categorylistoption: PullDownOptionDto[];
   queryOfQuizState: QueryOfQuizState;
-  displayQuizState: DisplayQuizState;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setCategorylistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
   setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
 }
 
 export const InputQueryForm = ({
-  filelistoption,
   categorylistoption,
   queryOfQuizState,
-  displayQuizState,
-  setMessageStater,
   setCategorylistoption,
   setQueryofQuizStater,
   setDisplayQuizStater
 }: InputQueryFormProps) => {
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
+
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (!setMessageStater || !setCategorylistoption || !setDisplayQuizStater || !setQueryofQuizStater) {
+    const setMessage = useSetRecoilState(messageState);
+
+    // 問題ファイルリスト取得
+    useEffect(() => {
+      // TODO これ　別関数にしたい
+      (async () => {
+        setMessage({
+          message: '通信中...',
+          messageColor: '#d3d3d3',
+          isDisplay: true
+        });
+        const result = await getQuizFileListAPI();
+        setMessage(result.message);
+        const pullDownOption = result.result
+          ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
+          : [];
+        setFilelistoption(pullDownOption);
+      })();
+    }, [setMessage]);
+
+    if (!setCategorylistoption || !setDisplayQuizStater || !setQueryofQuizStater) {
       return;
     }
 
-    setMessageStater({
+    setMessage({
       message: '通信中...',
       messageColor: '#d3d3d3',
       isDisplay: true
@@ -56,13 +81,13 @@ export const InputQueryForm = ({
             fileNum: +e.target.value
           });
           setCategorylistoption(categorylist);
-          setMessageStater({
+          setMessage({
             message: '　',
             messageColor: 'common.black',
             isDisplay: false
           });
         } else {
-          setMessageStater({
+          setMessage({
             message: 'エラー:外部APIとの連携に失敗しました',
             messageColor: 'error',
             isDisplay: true

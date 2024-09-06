@@ -8,20 +8,22 @@ import { getReviewQuizAPI } from '@/api/quiz/getReviewQuizAPI';
 import { getQuizAPI } from '@/api/quiz/getQuizAPI';
 import { getRandomQuizAPI } from '@/api/quiz/getRandomQuizAPI';
 import { getWorstRateQuizAPI } from '@/api/quiz/getWorstRateQuizAPI';
+import { messageState } from '@/atoms/Message';
+import { useSetRecoilState } from 'recoil';
 
 interface GetQuizButtonGroupProps {
   queryOfQuizState: QueryOfQuizState;
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
   setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
 }
 
 export const GetQuizButtonGroup = ({
   queryOfQuizState,
-  setMessageStater,
   setDisplayQuizStater,
   setQueryofQuizStater
 }: GetQuizButtonGroupProps) => {
+  const setMessage = useSetRecoilState(messageState);
+
   return (
     <>
       <Button
@@ -29,7 +31,7 @@ export const GetQuizButtonGroup = ({
         attr={'button-array'}
         variant="contained"
         color="primary"
-        onClick={(e) => getQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater })}
+        onClick={(e) => getQuizAPI({ queryOfQuizState, setMessageStater: setMessage, setDisplayQuizStater })}
       />
       <Button
         label={'ランダム出題'}
@@ -37,7 +39,12 @@ export const GetQuizButtonGroup = ({
         variant="contained"
         color="secondary"
         onClick={(e) =>
-          getRandomQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+          getRandomQuizAPI({
+            queryOfQuizState,
+            setMessageStater: setMessage,
+            setDisplayQuizStater,
+            setQueryofQuizStater
+          })
         }
       />
       <Button
@@ -45,7 +52,12 @@ export const GetQuizButtonGroup = ({
         variant="contained"
         color="secondary"
         onClick={(e) =>
-          getWorstRateQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+          getWorstRateQuizAPI({
+            queryOfQuizState,
+            setMessageStater: setMessage,
+            setDisplayQuizStater,
+            setQueryofQuizStater
+          })
         }
       />
       <Button
@@ -54,7 +66,12 @@ export const GetQuizButtonGroup = ({
         variant="contained"
         color="secondary"
         onClick={(e) =>
-          getMinimumClearQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+          getMinimumClearQuizAPI({
+            queryOfQuizState,
+            setMessageStater: setMessage,
+            setDisplayQuizStater,
+            setQueryofQuizStater
+          })
         }
       />
       <Button
@@ -63,7 +80,7 @@ export const GetQuizButtonGroup = ({
         variant="contained"
         color="secondary"
         onClick={(e) =>
-          getLRUQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+          getLRUQuizAPI({ queryOfQuizState, setMessageStater: setMessage, setDisplayQuizStater, setQueryofQuizStater })
         }
       />
       <Button
@@ -72,7 +89,12 @@ export const GetQuizButtonGroup = ({
         variant="contained"
         color="secondary"
         onClick={(e) =>
-          getReviewQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+          getReviewQuizAPI({
+            queryOfQuizState,
+            setMessageStater: setMessage,
+            setDisplayQuizStater,
+            setQueryofQuizStater
+          })
         }
       />
       <Button
@@ -82,7 +104,12 @@ export const GetQuizButtonGroup = ({
         color="info"
         disabled={true}
         onClick={(e) =>
-          getImageOfQuizAPI({ queryOfQuizState, setMessageStater, setDisplayQuizStater, setQueryofQuizStater })
+          getImageOfQuizAPI({
+            queryOfQuizState,
+            setMessageStater: setMessage,
+            setDisplayQuizStater,
+            setQueryofQuizStater
+          })
         }
       />
     </>
