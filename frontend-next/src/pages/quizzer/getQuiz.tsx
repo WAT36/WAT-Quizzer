@@ -6,14 +6,12 @@ import { DisplayQuizState, QueryOfQuizState } from '../../../interfaces/state';
 import { GetQuizButtonGroup } from '@/components/ui-forms/quizzer/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
 import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displayQuizSection/DisplayQuizSection';
 import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
-import { PullDownOptionDto } from 'quizzer-lib';
 
 type Props = {
   isMock?: boolean;
 };
 
 export default function GetQuizPage({ isMock }: Props) {
-  const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
   const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
     fileNum: -1,
     quizNum: -1,
@@ -34,9 +32,7 @@ export default function GetQuizPage({ isMock }: Props) {
         <Title label="WAT Quizzer"></Title>
 
         <InputQueryForm
-          categorylistoption={categorylistoption}
           queryOfQuizState={queryOfQuiz}
-          setCategorylistoption={setCategorylistoption}
           setQueryofQuizStater={setQueryOfQuiz}
           setDisplayQuizStater={setDisplayQuiz}
         />

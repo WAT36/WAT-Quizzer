@@ -18,21 +18,18 @@ import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 
 interface InputQueryFormProps {
-  categorylistoption: PullDownOptionDto[];
   queryOfQuizState: QueryOfQuizState;
-  setCategorylistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
   setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
   setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
 }
 
 export const InputQueryForm = ({
-  categorylistoption,
   queryOfQuizState,
-  setCategorylistoption,
   setQueryofQuizStater,
   setDisplayQuizStater
 }: InputQueryFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
+  const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
     const setMessage = useSetRecoilState(messageState);
