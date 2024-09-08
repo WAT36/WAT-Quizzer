@@ -5,12 +5,12 @@ import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
-import { get } from '@/api/API';
 import {
   GetCategoryAPIResponseDto,
+  getCategoryListAPI,
+  getCategoryListAPIResponseToPullDownAdapter,
   GetQuizFileApiResponseDto,
   getQuizFileListAPI,
-  ProcessingApiReponse,
   PullDownOptionDto,
   quizFileListAPIResponseToPullDownAdapter
 } from 'quizzer-lib';
@@ -51,7 +51,7 @@ export const InputQueryForm = ({
   }, [setMessage]);
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (!setCategorylistoption || !setDisplayQuizStater || !setQueryofQuizStater) {
+    if (!setDisplayQuizStater || !setQueryofQuizStater) {
       return;
     }
 
@@ -60,40 +60,25 @@ export const InputQueryForm = ({
       messageColor: '#d3d3d3',
       isDisplay: true
     });
-    get(
-      '/category',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
-          const res: GetCategoryAPIResponseDto[] = data.body as GetCategoryAPIResponseDto[];
-          let categorylist: PullDownOptionDto[] = [];
-          for (var i = 0; i < res.length; i++) {
-            categorylist.push({
-              value: res[i].category,
-              label: res[i].category
-            });
-          }
-          setQueryofQuizStater({
-            ...queryOfQuizState,
-            fileNum: +e.target.value
-          });
-          setCategorylistoption(categorylist);
-          setMessage({
-            message: '　',
-            messageColor: 'common.black',
-            isDisplay: false
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          });
-        }
-      },
-      {
-        file_num: String(e.target.value)
-      }
-    );
+    setQueryofQuizStater({
+      ...queryOfQuizState,
+      fileNum: +e.target.value
+    });
+
+    // TODO カテゴリリスト取得 これ　別関数にしたい
+    (async () => {
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3',
+        isDisplay: true
+      });
+      const result = await getCategoryListAPI({ getCategoryListData: { file_num: String(e.target.value) } });
+      setMessage(result.message);
+      const pullDownOption = result.result
+        ? getCategoryListAPIResponseToPullDownAdapter(result.result as GetCategoryAPIResponseDto[])
+        : [];
+      setCategorylistoption(pullDownOption);
+    })();
   };
 
   return (
