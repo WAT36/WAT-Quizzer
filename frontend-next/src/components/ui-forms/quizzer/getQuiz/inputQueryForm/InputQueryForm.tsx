@@ -30,28 +30,27 @@ export const InputQueryForm = ({
 }: InputQueryFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
+  const setMessage = useSetRecoilState(messageState);
+
+  // 問題ファイルリスト取得
+  useEffect(() => {
+    // TODO これ　別関数にしたい
+    (async () => {
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3',
+        isDisplay: true
+      });
+      const result = await getQuizFileListAPI();
+      setMessage(result.message);
+      const pullDownOption = result.result
+        ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
+        : [];
+      setFilelistoption(pullDownOption);
+    })();
+  }, [setMessage]);
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    const setMessage = useSetRecoilState(messageState);
-
-    // 問題ファイルリスト取得
-    useEffect(() => {
-      // TODO これ　別関数にしたい
-      (async () => {
-        setMessage({
-          message: '通信中...',
-          messageColor: '#d3d3d3',
-          isDisplay: true
-        });
-        const result = await getQuizFileListAPI();
-        setMessage(result.message);
-        const pullDownOption = result.result
-          ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
-          : [];
-        setFilelistoption(pullDownOption);
-      })();
-    }, [setMessage]);
-
     if (!setCategorylistoption || !setDisplayQuizStater || !setQueryofQuizStater) {
       return;
     }
