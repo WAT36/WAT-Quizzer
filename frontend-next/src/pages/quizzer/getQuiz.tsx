@@ -31,11 +31,7 @@ export default function GetQuizPage({ isMock }: Props) {
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <InputQueryForm
-          queryOfQuizState={queryOfQuiz}
-          setQueryofQuizStater={setQueryOfQuiz}
-          setDisplayQuizStater={setDisplayQuiz}
-        />
+        <InputQueryForm queryOfQuizState={queryOfQuiz} setQueryofQuizStater={setQueryOfQuiz} />
 
         <GetQuizButtonGroup
           queryOfQuizState={queryOfQuiz}
