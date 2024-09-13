@@ -1,34 +1,22 @@
-import React from 'react';
-import { DisplayQuizState, MessageState, QueryOfQuizState } from '../../../../../../interfaces/state';
+import React, { useState } from 'react';
 import { Button as MuiButton, CardActions, CardContent, Collapse, Typography } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
-import { clearQuizAPI } from '@/api/quiz/clearQuizAPI';
-import { failQuizAPI } from '@/api/quiz/failQuizAPI';
-import { reverseCheckQuizAPI } from '@/api/quiz/reverseCheckQuizAPI';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
+import { checkQuizAPI, clearQuizAPI, failQuizAPI, GetQuizApiResponseDto, initGetQuizResponseData } from 'quizzer-lib';
 
 interface DisplayQuizSectionProps {
-  queryOfQuizState: QueryOfQuizState;
-  displayQuizState: DisplayQuizState;
-  setDisplayQuizStater?: React.Dispatch<React.SetStateAction<DisplayQuizState>>;
+  getQuizResponseData: GetQuizApiResponseDto;
+  setQuizResponseData?: React.Dispatch<React.SetStateAction<GetQuizApiResponseDto>>;
 }
 
-export const DisplayQuizSection = ({
-  queryOfQuizState,
-  displayQuizState,
-  setDisplayQuizStater
-}: DisplayQuizSectionProps) => {
+export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }: DisplayQuizSectionProps) => {
   const setMessage = useSetRecoilState(messageState);
+  const [expanded, setExpanded] = useState<boolean>(false);
 
   const handleExpandClick = () => {
-    if (setDisplayQuizStater) {
-      setDisplayQuizStater({
-        ...displayQuizState,
-        expanded: !displayQuizState.expanded
-      });
-    }
+    setExpanded(!expanded);
   };
 
   return (
@@ -39,67 +27,79 @@ export const DisplayQuizSection = ({
             問題
           </Typography>
           <Typography variant="subtitle1" component="h2">
-            {displayQuizState.checked ? '✅' : ''}
-            {displayQuizState.quizSentense.split(/(\n)/).map((item, index) => {
+            {getQuizResponseData.checked ? '✅' : ''}
+            {getQuizResponseData.quiz_sentense.split(/(\n)/).map((item, index) => {
               return <React.Fragment key={index}>{item.match(/\n/) ? <br /> : item}</React.Fragment>;
             })}
           </Typography>
         </CardContent>
 
         <CardActions>
-          <MuiButton size="small" onClick={handleExpandClick} aria-expanded={displayQuizState.expanded}>
+          <MuiButton size="small" onClick={handleExpandClick} aria-expanded={expanded}>
             答え
           </MuiButton>
         </CardActions>
-        <Collapse in={displayQuizState.expanded} timeout="auto" unmountOnExit>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
             <Typography variant="subtitle1" component="h2">
-              {displayQuizState.quizAnswer}
+              {getQuizResponseData.answer /* {displayQuizState.quizAnswer} */}
             </Typography>
             <Typography variant="subtitle2" component="h3">
-              {'解説：' + displayQuizState.explanation}
+              {'解説：' + getQuizResponseData.advanced_quiz_explanation?.explanation}
             </Typography>
             <Button
               label={'正解!!'}
               attr={'button-array'}
               variant="contained"
               color="primary"
-              onClick={(e) =>
-                clearQuizAPI({
-                  queryOfQuizState,
-                  displayQuizState,
-                  setMessageStater: setMessage,
-                  setDisplayQuizStater
-                })
-              }
+              onClick={async (e) => {
+                setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+                const result = await clearQuizAPI({
+                  getQuizResponseData
+                });
+                setMessage(result.message);
+                // TODO 成功時の判定法
+                result.message.messageColor === 'success.light' &&
+                  setQuizResponseData &&
+                  setQuizResponseData(initGetQuizResponseData);
+              }}
             />
             <Button
               label={'不正解...'}
               attr={'button-array'}
               variant="contained"
               color="secondary"
-              onClick={(e) =>
-                failQuizAPI({
-                  queryOfQuizState,
-                  displayQuizState,
-                  setMessageStater: setMessage,
-                  setDisplayQuizStater
-                })
-              }
+              onClick={async (e) => {
+                setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+                const result = await failQuizAPI({
+                  getQuizResponseData
+                });
+                setMessage(result.message);
+                // TODO 成功時の判定法
+                result.message.messageColor === 'success.light' &&
+                  setQuizResponseData &&
+                  setQuizResponseData(initGetQuizResponseData);
+              }}
             />
             <Button
               label={'チェックつける/外す'}
               attr={'button-array'}
               variant="contained"
               color="warning"
-              onClick={(e) =>
-                reverseCheckQuizAPI({
-                  queryOfQuizState,
-                  displayQuizState,
-                  setMessageStater: setMessage,
-                  setDisplayQuizStater
-                })
-              }
+              onClick={async (e) => {
+                setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+                const result = await checkQuizAPI({
+                  getQuizResponseData
+                });
+                setMessage(result.message);
+                // TODO 成功時の判定法
+                result.message.messageColor === 'success.light' &&
+                  setQuizResponseData &&
+                  setQuizResponseData((prev) => ({
+                    ...prev,
+                    checked: result.result ? (result.result as GetQuizApiResponseDto).checked : false
+                  }));
+              }}
             />
           </CardContent>
         </Collapse>
