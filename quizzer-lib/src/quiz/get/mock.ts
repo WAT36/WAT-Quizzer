@@ -1,6 +1,6 @@
 export const initGetQuizRequestData = {
-  fileNum: '',
-  quizNum: '',
+  file_num: '',
+  quiz_num: '',
   format: 'basic'
 }
 

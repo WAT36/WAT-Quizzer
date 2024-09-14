@@ -11,7 +11,7 @@ export const getQuizAPI = async ({
   getQuizRequestData,
   getQuizType
 }: GetQuizAPIProps): Promise<ApiResult> => {
-  if (getQuizRequestData.fileNum === '') {
+  if (getQuizRequestData.file_num === '') {
     return {
       message: {
         message: 'エラー:問題ファイルを選択して下さい',
@@ -21,7 +21,7 @@ export const getQuizAPI = async ({
     }
   } else if (
     !getQuizType &&
-    (!getQuizRequestData.quizNum || getQuizRequestData.quizNum === '')
+    (!getQuizRequestData.quiz_num || getQuizRequestData.quiz_num === '')
   ) {
     return {
       message: {
@@ -32,8 +32,9 @@ export const getQuizAPI = async ({
     }
   }
 
+  const path = getQuizType === 'random' ? '/quiz/random' : '/quiz'
   const result = await get(
-    '/quiz',
+    path,
     (data: ProcessingApiSingleReponse) => {
       if (data.status === 404) {
         return {

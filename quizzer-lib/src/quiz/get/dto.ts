@@ -2,11 +2,11 @@ import { ApiResponse } from '../../..'
 
 // TODO numberにできるところはそうしたい
 export interface GetQuizAPIRequestDto {
-  fileNum: string
-  quizNum?: string
+  file_num: string
+  quiz_num?: string
   format: string
-  minRate?: string
-  maxRate?: string
+  min_rate?: string
+  max_rate?: string
   category?: string
   checked?: string //booleanにしたい
 }
