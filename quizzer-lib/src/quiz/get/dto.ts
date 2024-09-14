@@ -3,7 +3,7 @@ import { ApiResponse } from '../../..'
 // TODO numberにできるところはそうしたい
 export interface GetQuizAPIRequestDto {
   fileNum: string
-  quizNum: string
+  quizNum?: string
   format: string
   minRate?: string
   maxRate?: string
