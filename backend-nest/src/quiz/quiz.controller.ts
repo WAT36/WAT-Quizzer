@@ -35,7 +35,11 @@ export class QuizController {
     @Query('quiz_num') quiz_num: number,
     @Query('format') format: string,
   ) {
-    return await this.quizService.getQuiz(+file_num, +quiz_num, format);
+    return await this.quizService.getQuiz({
+      file_num: +file_num,
+      quiz_num: +quiz_num,
+      format,
+    });
   }
 
   @Get('/random')
@@ -47,14 +51,15 @@ export class QuizController {
     @Query('checked') checked: string,
     @Query('format') format: string,
   ) {
-    return await this.quizService.getRandomQuiz(
-      +file_num,
-      +min_rate,
-      +max_rate,
+    return await this.quizService.getQuiz({
+      file_num: +file_num,
+      min_rate: +min_rate,
+      max_rate: +max_rate,
       category,
       checked,
       format,
-    );
+      method: 'random',
+    });
   }
 
   @Get('/worst')
