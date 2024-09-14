@@ -4,12 +4,12 @@ import { ApiResult, get } from '../../api'
 
 interface GetQuizAPIProps {
   getQuizRequestData: GetQuizAPIRequestDto
-  getQuizType?: 'random'
+  getQuizMethod?: 'random'
 }
 
 export const getQuizAPI = async ({
   getQuizRequestData,
-  getQuizType
+  getQuizMethod
 }: GetQuizAPIProps): Promise<ApiResult> => {
   if (getQuizRequestData.file_num === '') {
     return {
@@ -20,7 +20,7 @@ export const getQuizAPI = async ({
       }
     }
   } else if (
-    !getQuizType &&
+    !getQuizMethod &&
     (!getQuizRequestData.quiz_num || getQuizRequestData.quiz_num === '')
   ) {
     return {
@@ -32,7 +32,7 @@ export const getQuizAPI = async ({
     }
   }
 
-  const path = getQuizType === 'random' ? '/quiz/random' : '/quiz'
+  const path = getQuizMethod === 'random' ? '/quiz/random' : '/quiz'
   const result = await get(
     path,
     (data: ProcessingApiSingleReponse) => {

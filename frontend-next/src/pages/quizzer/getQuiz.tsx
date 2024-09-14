@@ -6,6 +6,12 @@ import { DisplayQuizState, QueryOfQuizState } from '../../../interfaces/state';
 import { GetQuizButtonGroup } from '@/components/ui-forms/quizzer/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
 import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displayQuizSection/DisplayQuizSection';
 import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
+import {
+  GetQuizAPIRequestDto,
+  GetQuizApiResponseDto,
+  initGetQuizRequestData,
+  initGetQuizResponseData
+} from 'quizzer-lib';
 
 type Props = {
   isMock?: boolean;
@@ -25,25 +31,25 @@ export default function GetQuizPage({ isMock }: Props) {
     checked: false,
     expanded: false
   });
+  const [getQuizRequestData, setQuizRequestData] = useState<GetQuizAPIRequestDto>(initGetQuizRequestData);
+  const [getQuizResponseData, setQuizResponseData] = useState<GetQuizApiResponseDto>(initGetQuizResponseData);
 
   const contents = () => {
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
 
-        <InputQueryForm queryOfQuizState={queryOfQuiz} setQueryofQuizStater={setQueryOfQuiz} />
+        <InputQueryForm getQuizRequestData={getQuizRequestData} setQuizRequestData={setQuizRequestData} />
 
         <GetQuizButtonGroup
+          getQuizRequestData={getQuizRequestData}
+          setQuizResponseData={setQuizResponseData}
           queryOfQuizState={queryOfQuiz}
           setDisplayQuizStater={setDisplayQuiz}
           setQueryofQuizStater={setQueryOfQuiz}
         />
 
-        <DisplayQuizSection
-          queryOfQuizState={queryOfQuiz}
-          displayQuizState={displayQuiz}
-          setDisplayQuizStater={setDisplayQuiz}
-        />
+        <DisplayQuizSection getQuizResponseData={getQuizResponseData} setQuizResponseData={setQuizResponseData} />
       </Container>
     );
   };
