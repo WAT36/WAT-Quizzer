@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { DisplayQuizState, QueryOfQuizState } from '../../../../../../interfaces/state';
 import { Checkbox, FormControl, FormControlLabel, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
@@ -9,6 +8,7 @@ import {
   GetCategoryAPIResponseDto,
   getCategoryListAPI,
   getCategoryListAPIResponseToPullDownAdapter,
+  GetQuizAPIRequestDto,
   GetQuizFileApiResponseDto,
   getQuizFileListAPI,
   PullDownOptionDto,
@@ -18,11 +18,11 @@ import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 
 interface InputQueryFormProps {
-  queryOfQuizState: QueryOfQuizState;
-  setQueryofQuizStater?: React.Dispatch<React.SetStateAction<QueryOfQuizState>>;
+  getQuizRequestData: GetQuizAPIRequestDto;
+  setQuizRequestData?: React.Dispatch<React.SetStateAction<GetQuizAPIRequestDto>>;
 }
 
-export const InputQueryForm = ({ queryOfQuizState, setQueryofQuizStater }: InputQueryFormProps) => {
+export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: InputQueryFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
   const setMessage = useSetRecoilState(messageState);
@@ -46,7 +46,7 @@ export const InputQueryForm = ({ queryOfQuizState, setQueryofQuizStater }: Input
   }, [setMessage]);
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (!setQueryofQuizStater) {
+    if (!setQuizRequestData) {
       return;
     }
 
@@ -55,9 +55,9 @@ export const InputQueryForm = ({ queryOfQuizState, setQueryofQuizStater }: Input
       messageColor: '#d3d3d3',
       isDisplay: true
     });
-    setQueryofQuizStater({
-      ...queryOfQuizState,
-      fileNum: +e.target.value
+    setQuizRequestData({
+      ...getQuizRequestData,
+      file_num: String(e.target.value)
     });
 
     // TODO カテゴリリスト取得 これ　別関数にしたい
@@ -86,12 +86,11 @@ export const InputQueryForm = ({ queryOfQuizState, setQueryofQuizStater }: Input
         <TextField
           label="問題番号"
           setStater={(value: string) => {
-            if (setQueryofQuizStater) {
-              setQueryofQuizStater({
-                ...queryOfQuizState,
-                quizNum: +value
+            setQuizRequestData &&
+              setQuizRequestData({
+                ...getQuizRequestData,
+                quiz_num: String(value)
               });
-            }
           }}
         />
       </FormControl>
@@ -101,12 +100,11 @@ export const InputQueryForm = ({ queryOfQuizState, setQueryofQuizStater }: Input
           label={'カテゴリ'}
           optionList={categorylistoption}
           onChange={(e) => {
-            if (setQueryofQuizStater) {
-              setQueryofQuizStater({
-                ...queryOfQuizState,
+            setQuizRequestData &&
+              setQuizRequestData({
+                ...getQuizRequestData,
                 category: String(e.target.value)
               });
-            }
           }}
         />
       </FormControl>
@@ -115,13 +113,12 @@ export const InputQueryForm = ({ queryOfQuizState, setQueryofQuizStater }: Input
         <RangeSliderSection
           sectionTitle={'正解率(%)指定'}
           setStater={(value: number[] | number) => {
-            if (setQueryofQuizStater) {
-              setQueryofQuizStater({
-                ...queryOfQuizState,
-                minRate: Array.isArray(value) ? value[0] : value,
-                maxRate: Array.isArray(value) ? value[1] : value
+            setQuizRequestData &&
+              setQuizRequestData({
+                ...getQuizRequestData,
+                min_rate: Array.isArray(value) ? String(value[0]) : String(value),
+                max_rate: Array.isArray(value) ? String(value[1]) : String(value)
               });
-            }
           }}
         />
       </FormControl>
@@ -146,12 +143,11 @@ export const InputQueryForm = ({ queryOfQuizState, setQueryofQuizStater }: Input
             ],
             defaultValue: 'basic',
             setQueryofQuizStater: (value: string) => {
-              if (setQueryofQuizStater) {
-                setQueryofQuizStater({
-                  ...queryOfQuizState,
+              setQuizRequestData &&
+                setQuizRequestData({
+                  ...getQuizRequestData,
                   format: value
                 });
-              }
             }
           }}
         />
@@ -164,12 +160,11 @@ export const InputQueryForm = ({ queryOfQuizState, setQueryofQuizStater }: Input
             <Checkbox
               color="primary"
               onChange={(e) => {
-                if (setQueryofQuizStater) {
-                  setQueryofQuizStater({
-                    ...queryOfQuizState,
-                    checked: e.target.checked
+                setQuizRequestData &&
+                  setQuizRequestData({
+                    ...getQuizRequestData,
+                    checked: String(e.target.checked)
                   });
-                }
               }}
             />
           }
