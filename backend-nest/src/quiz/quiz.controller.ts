@@ -85,12 +85,13 @@ export class QuizController {
     @Query('checked') checked: string,
     @Query('format') format: string,
   ) {
-    return await this.quizService.getMinimumAnsweredQuiz(
-      +file_num,
+    return await this.quizService.getQuiz({
+      file_num: +file_num,
       category,
       checked,
       format,
-    );
+      method: 'leastClear',
+    });
   }
 
   @Get('/lru')
