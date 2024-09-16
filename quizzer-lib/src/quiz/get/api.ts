@@ -4,7 +4,7 @@ import { ApiResult, get } from '../../api'
 
 interface GetQuizAPIProps {
   getQuizRequestData: GetQuizAPIRequestDto
-  getQuizMethod?: 'random' | 'worstRate' | 'leastClear'
+  getQuizMethod?: 'random' | 'worstRate' | 'leastClear' | 'LRU'
 }
 
 export const getQuizAPI = async ({
@@ -39,6 +39,8 @@ export const getQuizAPI = async ({
       ? '/quiz/worst'
       : getQuizMethod === 'leastClear'
       ? '/quiz/minimum'
+      : getQuizMethod === 'LRU'
+      ? '/quiz/lru'
       : '/quiz'
   const result = await get(
     path,

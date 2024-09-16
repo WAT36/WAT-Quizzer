@@ -101,12 +101,13 @@ export class QuizController {
     @Query('checked') checked: string,
     @Query('format') format: string,
   ) {
-    return await this.quizService.getLRUQuiz(
-      +file_num,
+    return await this.quizService.getQuiz({
+      file_num: +file_num,
       category,
       checked,
       format,
-    );
+      method: 'LRU',
+    });
   }
 
   @Get('/review')
