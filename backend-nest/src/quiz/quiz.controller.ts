@@ -117,12 +117,13 @@ export class QuizController {
     @Query('checked') checked: string,
     @Query('format') format: string,
   ) {
-    return await this.quizService.getReviewQuiz(
-      +file_num,
+    return await this.quizService.getQuiz({
+      file_num: +file_num,
       category,
       checked,
       format,
-    );
+      method: 'review',
+    });
   }
 
   @Post('/clear')
