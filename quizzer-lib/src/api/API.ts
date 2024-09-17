@@ -10,12 +10,22 @@ export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || ''
 export const get = async (
   path: string,
   func: (data: ProcessingApiReponse) => ApiResult,
-  queryParam?: { [key: string]: string },
+  queryParam?: { [key: string]: string | number },
   bodyData?: object,
   accessToken?: string
 ) => {
   const key = await getApiKey()
-  const query = queryParam ? `?${new URLSearchParams(queryParam)}` : ''
+  const query = queryParam
+    ? `?${new URLSearchParams(
+        Object.keys(queryParam).reduce(
+          (after, key) => ({
+            ...after,
+            [key]: String(queryParam[key])
+          }),
+          {}
+        )
+      )}`
+    : ''
 
   const result = await fetch(baseURL + path + query, {
     method: 'GET',

@@ -11,7 +11,7 @@ export const getQuizAPI = async ({
   getQuizRequestData,
   getQuizMethod
 }: GetQuizAPIProps): Promise<ApiResult> => {
-  if (getQuizRequestData.file_num === '') {
+  if (getQuizRequestData.file_num === -1) {
     return {
       message: {
         message: 'エラー:問題ファイルを選択して下さい',
@@ -21,7 +21,7 @@ export const getQuizAPI = async ({
     }
   } else if (
     !getQuizMethod &&
-    (!getQuizRequestData.quiz_num || getQuizRequestData.quiz_num === '')
+    (!getQuizRequestData.quiz_num || getQuizRequestData.quiz_num === -1)
   ) {
     return {
       message: {
