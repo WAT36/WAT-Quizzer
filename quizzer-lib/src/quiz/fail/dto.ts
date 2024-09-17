@@ -1,5 +1,5 @@
 import { GetQuizAPIRequestDto } from '../get'
 
 export type FailQuizAPIRequestDto = Required<
-  Pick<GetQuizAPIRequestDto, 'fileNum' | 'quizNum' | 'format'>
+  Pick<GetQuizAPIRequestDto, 'file_num' | 'quiz_num' | 'format'>
 >

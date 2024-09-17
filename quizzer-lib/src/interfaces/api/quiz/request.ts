@@ -1,17 +1,3 @@
-// 問題正解登録APIリクエスト型
-export interface ClearQuizAPIRequestDto {
-  format: string // TODO number, format_idを使いたい
-  file_num: number
-  quiz_num: number
-}
-
-// 問題正解登録APIリクエスト型
-export interface FailQuizAPIRequestDto {
-  format: string // TODO number, format_idを使いたい
-  file_num: number
-  quiz_num: number
-}
-
 // 問題追加APIリクエスト型
 export interface AddQuizAPIRequestDto {
   file_num: number
@@ -71,13 +57,6 @@ export interface RemoveCategoryOfQuizAPIRequestDto {
   file_num: number
   quiz_num: number
   category: string
-}
-
-// 問題へのチェック操作系APIリクエスト型
-export interface CheckQuizAPIRequestDto {
-  format: string // TODO number, format_idを使いたい
-  file_num: number
-  quiz_num: number
 }
 
 // 問題ファイル削除系APIリクエスト型
