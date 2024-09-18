@@ -1,5 +1,6 @@
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 
+// TODO libへ移動　リージョンやキーは引数で指定する？
 export const getApiKey = async () => {
   if (process.env.NEXT_PUBLIC_API_KEY_VALUE) {
     return process.env.NEXT_PUBLIC_API_KEY_VALUE || '';
