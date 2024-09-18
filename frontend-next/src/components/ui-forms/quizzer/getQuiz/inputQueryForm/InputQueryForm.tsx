@@ -57,7 +57,7 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
     });
     setQuizRequestData({
       ...getQuizRequestData,
-      file_num: String(e.target.value)
+      file_num: +e.target.value
     });
 
     // TODO カテゴリリスト取得 これ　別関数にしたい
@@ -89,7 +89,7 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
             setQuizRequestData &&
               setQuizRequestData({
                 ...getQuizRequestData,
-                quiz_num: String(value)
+                quiz_num: +value
               });
           }}
         />

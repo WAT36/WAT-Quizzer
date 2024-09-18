@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { GetQuizButtonGroup } from './GetQuizButtonGroup';
+import { initGetQuizRequestData } from 'quizzer-lib';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -20,10 +21,6 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const GetQuizButtons: Story = {
   args: {
-    queryOfQuizState: {
-      fileNum: 0,
-      quizNum: 0,
-      format: 'basic'
-    }
+    getQuizRequestData: initGetQuizRequestData
   }
 };
