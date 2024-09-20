@@ -14,7 +14,6 @@ export interface GetQuizAPIRequestDto {
 // 問題取得APIのレスポンス（基礎応用込み）、フォーマット込み
 export interface GetQuizApiResponseDto extends ApiResponse {
   format: string
-  //formatValue: string
 
   id: number
   file_num: number

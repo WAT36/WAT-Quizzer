@@ -30,10 +30,14 @@ export const getDateForSqlString = (date: Date) => {
 
 // 問題取得系APIの返り値から問題文を生成する
 export const generateQuizSentense = (
-  format: string,
   res: GetQuizApiResponseDto
-) => {
-  if (format === '4choice') {
+): Partial<
+  Pick<
+    GetQuizApiResponseDto,
+    'quiz_sentense' | 'answer' | 'advanced_quiz_explanation'
+  >
+> => {
+  if (res.format === '4choice') {
     const choices = []
     choices.push(res.answer)
     if (res.dummy_choice) {
@@ -46,45 +50,51 @@ export const generateQuizSentense = (
     choiceName.sort((a, b) => 0.5 - Math.random())
 
     return {
-      quizSentense: `[${res.file_num}-${res.quiz_num}]${res.quiz_sentense}${
-        res.advanced_quiz_statistics_view?.accuracy_rate
-          ? '(正解率' +
-            Number(res.advanced_quiz_statistics_view.accuracy_rate).toFixed(2) +
-            '%)'
-          : ''
-      }
+      quiz_sentense:
+        res.file_num !== -1 && res.quiz_num !== -1
+          ? `[${res.file_num}-${res.quiz_num}]${res.quiz_sentense}${
+              res.advanced_quiz_statistics_view?.accuracy_rate
+                ? '(正解率' +
+                  Number(
+                    res.advanced_quiz_statistics_view.accuracy_rate
+                  ).toFixed(2) +
+                  '%)'
+                : ''
+            }
         A: ${choices[choiceName.indexOf('A')]}
         B: ${choices[choiceName.indexOf('B')]}
         C: ${choices[choiceName.indexOf('C')]}
-        D: ${choices[choiceName.indexOf('D')]}`,
-      quizAnswer: `${choiceName[0]}: ${res.answer}`,
-      explanation: res.advanced_quiz_explanation
-        ? res.advanced_quiz_explanation.explanation
-            .replaceAll('{c}', choiceName[0])
-            .replaceAll('{d1}', choiceName[1])
-            .replaceAll('{d2}', choiceName[2])
-            .replaceAll('{d3}', choiceName[3])
-        : ''
+        D: ${choices[choiceName.indexOf('D')]}`
+          : '',
+      answer: `${choiceName[0]}: ${res.answer}`,
+      advanced_quiz_explanation: {
+        explanation: res.advanced_quiz_explanation
+          ? res.advanced_quiz_explanation.explanation
+              .replaceAll('{c}', choiceName[0])
+              .replaceAll('{d1}', choiceName[1])
+              .replaceAll('{d2}', choiceName[2])
+              .replaceAll('{d3}', choiceName[3])
+          : ''
+      }
     }
   } else {
     return {
-      quizSentense: `[${res.file_num}-${res.quiz_num}]${res.quiz_sentense}${
-        res.quiz_statistics_view
-          ? '(正解率' +
-            Number(
+      quiz_sentense:
+        res.file_num !== -1 && res.quiz_num !== -1
+          ? `[${res.file_num}-${res.quiz_num}]${res.quiz_sentense}${
               res.quiz_statistics_view
-                ? res.quiz_statistics_view.accuracy_rate
-                : res.advanced_quiz_statistics_view
-                ? res.advanced_quiz_statistics_view.accuracy_rate
-                : NaN
-            ).toFixed(2) +
-            '%)'
+                ? '(正解率' +
+                  Number(
+                    res.quiz_statistics_view
+                      ? res.quiz_statistics_view.accuracy_rate
+                      : res.advanced_quiz_statistics_view
+                      ? res.advanced_quiz_statistics_view.accuracy_rate
+                      : NaN
+                  ).toFixed(2) +
+                  '%)'
+                : ''
+            }`
           : ''
-      }`,
-      quizAnswer: res.answer,
-      explanation: res.advanced_quiz_explanation
-        ? res.advanced_quiz_explanation.explanation
-        : '(なし)'
     }
   }
 }
