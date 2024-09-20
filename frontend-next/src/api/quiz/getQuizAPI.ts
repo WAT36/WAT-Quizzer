@@ -64,7 +64,10 @@ export const getQuizAPI = async ({
             quizNum: res.quiz_num,
             checked: res.checked || false,
             expanded: false,
-            ...generateQuizSentense(queryOfQuizState.format, res)
+            // TODO いずれ消すファイルなのでその場しのぎ用に
+            quizSentense: '',
+            quizAnswer: '',
+            ...generateQuizSentense(res)
           });
         }
         if (setQueryofPutQuiz) {

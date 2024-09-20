@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button as MuiButton, CardActions, CardContent, Collapse, Typography } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { checkQuizAPI, clearQuizAPI, failQuizAPI, GetQuizApiResponseDto, initGetQuizResponseData } from 'quizzer-lib';
+import {
+  checkQuizAPI,
+  clearQuizAPI,
+  failQuizAPI,
+  generateQuizSentense,
+  GetQuizApiResponseDto,
+  initGetQuizResponseData
+} from 'quizzer-lib';
 
 interface DisplayQuizSectionProps {
   getQuizResponseData: GetQuizApiResponseDto;
@@ -14,10 +21,21 @@ interface DisplayQuizSectionProps {
 export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }: DisplayQuizSectionProps) => {
   const setMessage = useSetRecoilState(messageState);
   const [expanded, setExpanded] = useState<boolean>(false);
+  const displayQuiz = useMemo(() => {
+    return {
+      ...getQuizResponseData,
+      ...generateQuizSentense(getQuizResponseData)
+    };
+  }, [getQuizResponseData]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  // 出題変わったら閉じる
+  useEffect(() => {
+    setExpanded(false);
+  }, [getQuizResponseData]);
 
   return (
     <>
@@ -27,8 +45,8 @@ export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }:
             問題
           </Typography>
           <Typography variant="subtitle1" component="h2">
-            {getQuizResponseData.checked ? '✅' : ''}
-            {getQuizResponseData.quiz_sentense.split(/(\n)/).map((item, index) => {
+            {displayQuiz.checked ? '✅' : ''}
+            {displayQuiz.quiz_sentense.split(/(\n)/).map((item, index) => {
               return <React.Fragment key={index}>{item.match(/\n/) ? <br /> : item}</React.Fragment>;
             })}
           </Typography>
@@ -42,10 +60,10 @@ export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }:
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
             <Typography variant="subtitle1" component="h2">
-              {getQuizResponseData.answer /* {displayQuizState.quizAnswer} */}
+              {displayQuiz.answer}
             </Typography>
             <Typography variant="subtitle2" component="h3">
-              {'解説：' + getQuizResponseData.advanced_quiz_explanation?.explanation}
+              {'解説：' + displayQuiz.advanced_quiz_explanation?.explanation}
             </Typography>
             <Button
               label={'正解!!'}
@@ -59,9 +77,10 @@ export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }:
                 });
                 setMessage(result.message);
                 // TODO 成功時の判定法
-                result.message.messageColor === 'success.light' &&
-                  setQuizResponseData &&
+                if (result.message.messageColor === 'success.light' && setQuizResponseData) {
                   setQuizResponseData(initGetQuizResponseData);
+                  setExpanded(false);
+                }
               }}
             />
             <Button
@@ -76,9 +95,10 @@ export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }:
                 });
                 setMessage(result.message);
                 // TODO 成功時の判定法
-                result.message.messageColor === 'success.light' &&
-                  setQuizResponseData &&
+                if (result.message.messageColor === 'success.light' && setQuizResponseData) {
                   setQuizResponseData(initGetQuizResponseData);
+                  setExpanded(false);
+                }
               }}
             />
             <Button

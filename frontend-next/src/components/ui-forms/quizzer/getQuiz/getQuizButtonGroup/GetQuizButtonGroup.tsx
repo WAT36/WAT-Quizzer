@@ -23,8 +23,9 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData });
           setMessage(result.message);
-          setQuizResponseData &&
+          if (setQuizResponseData && result.result) {
             setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          }
         }}
       />
       <Button
@@ -36,8 +37,9 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'random' });
           setMessage(result.message);
-          setQuizResponseData &&
+          if (setQuizResponseData && result.result) {
             setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          }
         }}
       />
       <Button
@@ -48,8 +50,9 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'worstRate' });
           setMessage(result.message);
-          setQuizResponseData &&
+          if (setQuizResponseData && result.result) {
             setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          }
         }}
       />
       <Button
@@ -61,8 +64,9 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'leastClear' });
           setMessage(result.message);
-          setQuizResponseData &&
+          if (setQuizResponseData && result.result) {
             setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          }
         }}
       />
       <Button
@@ -74,8 +78,9 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'LRU' });
           setMessage(result.message);
-          setQuizResponseData &&
+          if (setQuizResponseData && result.result) {
             setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          }
         }}
       />
       <Button
@@ -87,8 +92,9 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'review' });
           setMessage(result.message);
-          setQuizResponseData &&
+          if (setQuizResponseData && result.result) {
             setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          }
         }}
       />
       <Button
