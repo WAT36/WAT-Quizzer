@@ -92,14 +92,16 @@ export class EnglishWordController {
     switch (format) {
       // TODO ここのcaseの値もどこかの定数定義ファイルなどから持ってきたい
       case 'random':
-        return await this.englishWordTestService.getTestDataOfFourChoice(
+        return await this.englishWordTestService.getTestData(
+          'random',
           source,
           startDate,
           endDate,
           checked,
         );
       case 'lru':
-        return await this.englishWordTestService.getLRUTestDataOfFourChoice(
+        return await this.englishWordTestService.getTestData(
+          'lru',
           source,
           startDate,
           endDate,

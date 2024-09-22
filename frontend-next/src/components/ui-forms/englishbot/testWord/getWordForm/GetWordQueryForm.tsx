@@ -137,7 +137,6 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWo
           if (result.message.messageColor === 'common.black') {
             setDisplayTestData &&
               setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
-            setQueryOfTestData({ format: '', checked: queryOfTestData.checked });
           }
         }}
       />
@@ -158,7 +157,6 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWo
           if (result.message.messageColor === 'common.black') {
             setDisplayTestData &&
               setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
-            setQueryOfTestData({ format: '', checked: queryOfTestData.checked });
           }
         }}
       />
