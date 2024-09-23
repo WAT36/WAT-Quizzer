@@ -5,6 +5,8 @@ export interface GetEnglishWordTestDataAPIRequestDto {
   source?: string
   startDate?: string
   endDate?: string
+  min_rate?: string
+  max_rate?: string
 }
 
 // 英単語テストデータ取得APIレスポンス型

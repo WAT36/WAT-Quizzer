@@ -16,9 +16,11 @@ export class EnglishWordTestService {
   async getTestData(
     format: 'random' | 'lru',
     source: string,
-    startDate: string,
-    endDate: string,
-    checked: string,
+    startDate?: string,
+    endDate?: string,
+    checked?: string,
+    min_rate?: number,
+    max_rate?: number,
   ) {
     try {
       // サブ出典・日時に関するクエリ
@@ -60,6 +62,12 @@ export class EnglishWordTestService {
               created_at: subSourceQuery,
             },
           }),
+        },
+        word_statistics_view: {
+          accuracy_rate: {
+            gte: min_rate || 0,
+            lte: max_rate || 100,
+          },
         },
         ...(parseStrToBool(checked)
           ? {

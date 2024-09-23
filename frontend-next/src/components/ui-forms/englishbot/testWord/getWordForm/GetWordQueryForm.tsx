@@ -18,6 +18,7 @@ import {
   parseStrToBool,
   PullDownOptionDto
 } from 'quizzer-lib';
+import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 
 interface GetWordQueryFormProps {
   sourcelistoption: PullDownOptionDto[];
@@ -92,6 +93,18 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWo
               }
               label="チェック済から出題"
               labelPlacement="start"
+            />
+          </FormControl>
+          <FormControl>
+            <RangeSliderSection
+              sectionTitle={'正解率(%)指定'}
+              setStater={(value: number[] | number) => {
+                setQueryOfTestData({
+                  ...queryOfTestData,
+                  min_rate: Array.isArray(value) ? String(value[0]) : String(value),
+                  max_rate: Array.isArray(value) ? String(value[1]) : String(value)
+                });
+              }}
             />
           </FormControl>
           <FormControl>
