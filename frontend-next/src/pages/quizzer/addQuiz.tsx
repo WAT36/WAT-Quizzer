@@ -10,13 +10,13 @@ type Props = {
 };
 
 export default function AddQuizPage({ isMock }: Props) {
-  const [addLog, setAddLog] = useState<string>('');
+  const [log, setLog] = useState<string>('');
   const contents = () => {
     return (
       <Container>
         <Title label="WAT Quizzer"></Title>
-        <AddQuizForm setAddLog={setAddLog} />
-        <AddQuizLogSection log={addLog} />
+        <AddQuizForm setAddLog={setLog} />
+        <AddQuizLogSection log={log} />
       </Container>
     );
   };
