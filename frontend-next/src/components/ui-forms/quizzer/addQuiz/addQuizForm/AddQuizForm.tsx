@@ -11,16 +11,20 @@ import {
 } from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
+import { Button } from '@/components/ui-elements/button/Button';
+import { addQuizAPI } from '@/api/quiz/addQuizAPI';
 
 interface AddQuizFormProps {
-  value: number;
-  queryOfPutQuizState: QueryOfPutQuizState;
-  setValue?: React.Dispatch<React.SetStateAction<number>>;
-  setQueryofPutQuizStater?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
+  setAddLog?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const AddQuizForm = ({ value, queryOfPutQuizState, setValue, setQueryofPutQuizStater }: AddQuizFormProps) => {
+export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
+  const [queryOfAddQuiz, setQueryOfAddQuiz] = useState<QueryOfPutQuizState>({
+    fileNum: -1,
+    quizNum: -1
+  });
+  const [value, setValue] = React.useState(0);
   const setMessage = useSetRecoilState(messageState);
 
   // 問題ファイルリスト取得
@@ -42,12 +46,10 @@ export const AddQuizForm = ({ value, queryOfPutQuizState, setValue, setQueryofPu
 
   // ファイル選択の切り替え
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (setQueryofPutQuizStater) {
-      setQueryofPutQuizStater((prev) => ({
-        ...prev,
-        fileNum: +e.target.value
-      }));
-    }
+    setQueryOfAddQuiz((prev) => ({
+      ...prev,
+      fileNum: +e.target.value
+    }));
   };
 
   return (
@@ -59,11 +61,26 @@ export const AddQuizForm = ({ value, queryOfPutQuizState, setValue, setQueryofPu
 
         <PutQuizForm
           value={value}
-          queryOfPutQuizState={queryOfPutQuizState}
+          queryOfPutQuizState={queryOfAddQuiz}
           setValue={setValue}
-          setQueryofPutQuizStater={setQueryofPutQuizStater}
+          setQueryofPutQuizStater={setQueryOfAddQuiz}
         />
       </FormGroup>
+      <Button
+        label="問題登録"
+        attr={'button-array'}
+        variant="contained"
+        color="primary"
+        onClick={(e) =>
+          addQuizAPI({
+            value,
+            queryOfAddQuizState: queryOfAddQuiz,
+            setAddLog,
+            setMessageStater: setMessage,
+            setQueryofAddQuizStater: setQueryOfAddQuiz
+          })
+        }
+      />
     </>
   );
 };
