@@ -136,7 +136,7 @@ export class QuizController {
     return await this.quizService.failed(req);
   }
 
-  @Post('/add')
+  @Post('')
   async add(@Body() req: AddQuizAPIRequestDto) {
     return await this.quizService.add(req);
   }

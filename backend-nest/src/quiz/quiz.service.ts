@@ -523,17 +523,13 @@ export class QuizService {
   // 問題を１問追加
   async add(req: AddQuizAPIRequestDto) {
     try {
-      const { file_num, input_data } = req;
-      if (!file_num && !input_data) {
+      const { file_num, question, answer, quiz_category, img_file } = req;
+      if (!file_num || !question || !answer) {
         throw new HttpException(
-          `ファイル番号または問題文が入力されていません。(file_num:${file_num},input_data:${JSON.stringify(
-            input_data,
-          )})`,
+          `ファイル番号または問題文または答えが入力されていません。`,
           HttpStatus.BAD_REQUEST,
         );
       }
-
-      const { question, answer, quiz_category, img_file } = input_data;
 
       // 新問題番号を取得しINSERT
       const res = await prisma.quiz.findFirst({
@@ -1508,18 +1504,20 @@ export class QuizService {
   // 応用問題を１問追加
   async addAdvancedQuiz(req: AddQuizAPIRequestDto) {
     try {
-      const { file_num, input_data } = req;
-      if (!file_num && !input_data) {
+      const {
+        file_num,
+        question,
+        answer,
+        img_file,
+        matched_basic_quiz_id,
+        explanation,
+      } = req;
+      if (!file_num || !question || !answer) {
         throw new HttpException(
-          `ファイル番号または問題文が入力されていません。(file_num:${file_num},input_data:${JSON.stringify(
-            input_data,
-          )})`,
+          `ファイル番号または問題文,答えが入力されていません。`,
           HttpStatus.BAD_REQUEST,
         );
       }
-
-      const { question, answer, img_file, matched_basic_quiz_id, explanation } =
-        input_data;
 
       // 関連する基礎問題番号リストのバリデーション・取得
       const matched_basic_quiz_id_list: number[] = [];
@@ -1605,17 +1603,8 @@ export class QuizService {
   // 四択問題を１問追加
   async addFourChoiceQuiz(req: AddQuizAPIRequestDto) {
     try {
-      const { file_num, input_data } = req;
-      if (!file_num && !input_data) {
-        throw new HttpException(
-          `ファイル番号または問題文が入力されていません。(req:${JSON.stringify(
-            req,
-          )},file_num:${file_num},input_data:${JSON.stringify(input_data)})`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
       const {
+        file_num,
         question,
         answer,
         img_file,
@@ -1624,9 +1613,15 @@ export class QuizService {
         dummy2,
         dummy3,
         explanation,
-      } = input_data;
+      } = req;
+      if (!file_num || !question || !answer) {
+        throw new HttpException(
+          `ファイル番号または問題文が入力されていません。`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
-      if (!dummy1 && !dummy2 && !dummy3) {
+      if (!dummy1 || !dummy2 || !dummy3) {
         throw new HttpException(
           `ダミー選択肢が3つ入力されていません。`,
           HttpStatus.BAD_REQUEST,
