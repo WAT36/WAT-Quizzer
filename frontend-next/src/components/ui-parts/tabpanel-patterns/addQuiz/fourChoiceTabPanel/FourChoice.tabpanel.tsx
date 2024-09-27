@@ -2,22 +2,17 @@ import { TabPanel } from '@/components/ui-elements/tabPanel/TabPanel';
 import { CardContent, Input, Typography } from '@mui/material';
 import React from 'react';
 import styles from '../../TabPanel.module.css';
-import { QueryOfPutQuizState } from '../../../../../../interfaces/state';
+import { AddQuizAPIRequestDto } from 'quizzer-lib';
 
 interface FourChoiceTabPanelProps {
   value: number;
-  index: number;
-  queryOfPutQuizState: QueryOfPutQuizState;
-  setQueryofPutQuizStater?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
+  addQuizRequestData: AddQuizAPIRequestDto;
+  setAddQuizRequestData: React.Dispatch<React.SetStateAction<AddQuizAPIRequestDto>>;
 }
 
-export const FourChoiceTabPanel = ({
-  value,
-  index,
-  queryOfPutQuizState,
-  setQueryofPutQuizStater
-}: FourChoiceTabPanelProps) => (
-  <TabPanel value={value} index={index}>
+export const FourChoiceTabPanel = ({ value, addQuizRequestData, setAddQuizRequestData }: FourChoiceTabPanelProps) => (
+  // TODO ここのindexの値は他の設定ファイルとかに書いてそこから読ませたい
+  <TabPanel value={value} index={2}>
     <CardContent>
       <Typography variant="h6" component="h6" className={styles.messageBox}>
         追加する四択問題（問題文,正解,カテゴリ,画像ファイル名）
@@ -29,14 +24,12 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="question"
-          value={queryOfPutQuizState.question || ''}
+          value={addQuizRequestData.question || ''}
           onChange={(e) => {
-            if (setQueryofPutQuizStater) {
-              setQueryofPutQuizStater((prev) => ({
-                ...prev,
-                ['question']: e.target.value
-              }));
-            }
+            setAddQuizRequestData((prev) => ({
+              ...prev,
+              question: e.target.value
+            }));
           }}
         />
       </Typography>
@@ -47,14 +40,12 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="answer"
-          value={queryOfPutQuizState.answer || ''}
+          value={addQuizRequestData.answer || ''}
           onChange={(e) => {
-            if (setQueryofPutQuizStater) {
-              setQueryofPutQuizStater((prev) => ({
-                ...prev,
-                ['answer']: e.target.value
-              }));
-            }
+            setAddQuizRequestData((prev) => ({
+              ...prev,
+              answer: e.target.value
+            }));
           }}
         />
       </Typography>
@@ -65,14 +56,12 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="category"
-          value={queryOfPutQuizState.quiz_category}
+          value={addQuizRequestData.quiz_category}
           onChange={(e) => {
-            if (setQueryofPutQuizStater) {
-              setQueryofPutQuizStater((prev) => ({
-                ...prev,
-                ['quiz_category']: e.target.value
-              }));
-            }
+            setAddQuizRequestData((prev) => ({
+              ...prev,
+              quiz_category: e.target.value
+            }));
           }}
         />
         <p className={styles.notation}>※カテゴリはカンマ(,)区切りで書くこと</p>
@@ -84,14 +73,12 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="imgFile"
-          value={queryOfPutQuizState.img_file || ''}
+          value={addQuizRequestData.img_file || ''}
           onChange={(e) => {
-            if (setQueryofPutQuizStater) {
-              setQueryofPutQuizStater((prev) => ({
-                ...prev,
-                ['img_data']: e.target.value
-              }));
-            }
+            setAddQuizRequestData((prev) => ({
+              ...prev,
+              img_data: e.target.value
+            }));
           }}
         />
       </Typography>
@@ -102,14 +89,12 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="relatedBasisQuiz"
-          value={queryOfPutQuizState.matched_basic_quiz_id || ''}
+          value={addQuizRequestData.matched_basic_quiz_id || ''}
           onChange={(e) => {
-            if (setQueryofPutQuizStater) {
-              setQueryofPutQuizStater((prev) => ({
-                ...prev,
-                ['matched_basic_quiz_id']: e.target.value
-              }));
-            }
+            setAddQuizRequestData((prev) => ({
+              ...prev,
+              matched_basic_quiz_id: e.target.value
+            }));
           }}
         />
       </Typography>
@@ -120,14 +105,12 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="dummy1"
-          value={queryOfPutQuizState.dummy1 || ''}
+          value={addQuizRequestData.dummy1 || ''}
           onChange={(e) => {
-            if (setQueryofPutQuizStater) {
-              setQueryofPutQuizStater((prev) => ({
-                ...prev,
-                ['dummy1']: e.target.value
-              }));
-            }
+            setAddQuizRequestData((prev) => ({
+              ...prev,
+              dummy1: e.target.value
+            }));
           }}
         />
       </Typography>
@@ -138,14 +121,12 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="dummy2"
-          value={queryOfPutQuizState.dummy2 || ''}
+          value={addQuizRequestData.dummy2 || ''}
           onChange={(e) => {
-            if (setQueryofPutQuizStater) {
-              setQueryofPutQuizStater((prev) => ({
-                ...prev,
-                ['dummy2']: e.target.value
-              }));
-            }
+            setAddQuizRequestData((prev) => ({
+              ...prev,
+              dummy2: e.target.value
+            }));
           }}
         />
       </Typography>
@@ -156,14 +137,12 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="dummy3"
-          value={queryOfPutQuizState.dummy3 || ''}
+          value={addQuizRequestData.dummy3 || ''}
           onChange={(e) => {
-            if (setQueryofPutQuizStater) {
-              setQueryofPutQuizStater((prev) => ({
-                ...prev,
-                ['dummy3']: e.target.value
-              }));
-            }
+            setAddQuizRequestData((prev) => ({
+              ...prev,
+              dummy3: e.target.value
+            }));
           }}
         />
       </Typography>
@@ -174,14 +153,12 @@ export const FourChoiceTabPanel = ({
           fullWidth
           maxRows={1}
           id="description"
-          value={queryOfPutQuizState.explanation || ''}
+          value={addQuizRequestData.explanation || ''}
           onChange={(e) => {
-            if (setQueryofPutQuizStater) {
-              setQueryofPutQuizStater((prev) => ({
-                ...prev,
-                ['explanation']: e.target.value
-              }));
-            }
+            setAddQuizRequestData((prev) => ({
+              ...prev,
+              explanation: e.target.value
+            }));
           }}
         />
         <p className={styles.notation}>

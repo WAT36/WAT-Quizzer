@@ -1,30 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { FormControl, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { QueryOfPutQuizState } from '../../../../../../interfaces/state';
 import { PutQuizForm } from '../../forms/putQuizForm/PutQuizForm';
 import {
+  addQuizAPI,
+  AddQuizAPIRequestDto,
+  AddQuizApiResponseDto,
   GetQuizFileApiResponseDto,
   getQuizFileListAPI,
+  initAddQuizRequestData,
   PullDownOptionDto,
   quizFileListAPIResponseToPullDownAdapter
 } from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { Button } from '@/components/ui-elements/button/Button';
-import { addQuizAPI } from '@/api/quiz/addQuizAPI';
 
 interface AddQuizFormProps {
-  setAddLog?: React.Dispatch<React.SetStateAction<string>>;
+  setAddLog: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
-  const [queryOfAddQuiz, setQueryOfAddQuiz] = useState<QueryOfPutQuizState>({
-    fileNum: -1,
-    quizNum: -1
-  });
-  const [value, setValue] = React.useState(0);
+  const [addQuizRequestData, setAddQuizRequestData] = useState<AddQuizAPIRequestDto>(initAddQuizRequestData);
   const setMessage = useSetRecoilState(messageState);
 
   // 問題ファイルリスト取得
@@ -46,9 +44,9 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
 
   // ファイル選択の切り替え
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    setQueryOfAddQuiz((prev) => ({
+    setAddQuizRequestData((prev) => ({
       ...prev,
-      fileNum: +e.target.value
+      file_num: +e.target.value
     }));
   };
 
@@ -58,28 +56,22 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
         <FormControl>
           <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
         </FormControl>
-
-        <PutQuizForm
-          value={value}
-          queryOfPutQuizState={queryOfAddQuiz}
-          setValue={setValue}
-          setQueryofPutQuizStater={setQueryOfAddQuiz}
-        />
+        <PutQuizForm addQuizRequestData={addQuizRequestData} setAddQuizRequestData={setAddQuizRequestData} />
       </FormGroup>
       <Button
         label="問題登録"
         attr={'button-array'}
         variant="contained"
         color="primary"
-        onClick={(e) =>
-          addQuizAPI({
-            value,
-            queryOfAddQuizState: queryOfAddQuiz,
-            setAddLog,
-            setMessageStater: setMessage,
-            setQueryofAddQuizStater: setQueryOfAddQuiz
-          })
-        }
+        onClick={async (e) => {
+          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+          const result = await addQuizAPI({
+            addQuizRequestData
+          });
+          setMessage(result.message);
+          setAddLog((result.result as AddQuizApiResponseDto).log || '');
+          result.message.messageColor === 'success.light' && setAddQuizRequestData(initAddQuizRequestData);
+        }}
       />
     </>
   );
