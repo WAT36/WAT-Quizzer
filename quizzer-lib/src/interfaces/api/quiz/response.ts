@@ -18,17 +18,6 @@ export interface GetLinkedBasisIdDto {
   basis_quiz_id: number
 }
 
-/// TODO フロント側のbuttonAPIでの返り値型だが、、バック側と揃えた方が良い
-// 問題追加APIの返り値の型
-export interface AddQuizApiResponse extends ApiResponse {
-  result: string
-}
-
-// 問題チェックAPIの返り値の型
-export interface CheckQuizApiResponse extends ApiResponse {
-  result: boolean
-}
-
 // TODO 画像アップロード
 export interface ImageUploadReturnValue {
   name: string
