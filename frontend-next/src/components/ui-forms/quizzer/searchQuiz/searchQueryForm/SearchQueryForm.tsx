@@ -1,32 +1,50 @@
-import React from 'react';
-import { MessageState, QueryOfSearchQuizState } from '../../../../../../interfaces/state';
+import React, { useEffect, useState } from 'react';
+import { QueryOfSearchQuizState } from '../../../../../../interfaces/state';
 import { Checkbox, FormControl, FormControlLabel, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
-import { get } from '@/api/API';
-import { GetCategoryAPIResponseDto, ProcessingApiReponse, PullDownOptionDto } from 'quizzer-lib';
+import {
+  GetCategoryAPIResponseDto,
+  getCategoryListAPI,
+  getCategoryListAPIResponseToPullDownAdapter,
+  GetQuizFileApiResponseDto,
+  getQuizFileListAPI,
+  PullDownOptionDto,
+  quizFileListAPIResponseToPullDownAdapter
+} from 'quizzer-lib';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
 
 interface SearchQueryFormProps {
-  filelistoption: PullDownOptionDto[];
-  categorylistoption: PullDownOptionDto[];
   queryOfSearchQuizState: QueryOfSearchQuizState;
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setCategorylistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
   setQueryofSearchQuizState?: React.Dispatch<React.SetStateAction<QueryOfSearchQuizState>>;
 }
 
-export const SearchQueryForm = ({
-  filelistoption,
-  categorylistoption,
-  queryOfSearchQuizState,
-  setMessage,
-  setCategorylistoption,
-  setQueryofSearchQuizState
-}: SearchQueryFormProps) => {
+export const SearchQueryForm = ({ queryOfSearchQuizState, setQueryofSearchQuizState }: SearchQueryFormProps) => {
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
+  const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
+  const setMessage = useSetRecoilState(messageState);
+
+  useEffect(() => {
+    (async () => {
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3',
+        isDisplay: true
+      });
+      const result = await getQuizFileListAPI();
+      setMessage(result.message);
+      const pullDownOption = result.result
+        ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
+        : [];
+      setFilelistoption(pullDownOption);
+    })();
+  }, [setMessage]);
+
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (!setMessage || !setCategorylistoption || !setQueryofSearchQuizState) {
+    if (!setCategorylistoption || !setQueryofSearchQuizState) {
       return;
     }
 
@@ -34,38 +52,20 @@ export const SearchQueryForm = ({
       message: '通信中...',
       messageColor: '#d3d3d3'
     });
-    get(
-      '/category',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
-          const res: GetCategoryAPIResponseDto[] = data.body as GetCategoryAPIResponseDto[];
-          let categorylist: PullDownOptionDto[] = [];
-          for (var i = 0; i < res.length; i++) {
-            categorylist.push({
-              value: res[i].category,
-              label: res[i].category
-            });
-          }
-          setQueryofSearchQuizState({
-            ...queryOfSearchQuizState,
-            fileNum: +e.target.value
-          });
-          setCategorylistoption(categorylist);
-          setMessage({
-            message: '　',
-            messageColor: 'commmon.black'
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error'
-          });
-        }
-      },
-      {
-        file_num: String(e.target.value)
-      }
-    );
+    // TODO カテゴリリスト取得 これ　別関数にしたい　というよりこのselectedFileChangeをlibとかに持ってきたい getQuizにもこの関数あるので
+    (async () => {
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3',
+        isDisplay: true
+      });
+      const result = await getCategoryListAPI({ getCategoryListData: { file_num: String(e.target.value) } });
+      setMessage(result.message);
+      const pullDownOption = result.result
+        ? getCategoryListAPIResponseToPullDownAdapter(result.result as GetCategoryAPIResponseDto[])
+        : [];
+      setCategorylistoption(pullDownOption);
+    })();
   };
 
   return (
