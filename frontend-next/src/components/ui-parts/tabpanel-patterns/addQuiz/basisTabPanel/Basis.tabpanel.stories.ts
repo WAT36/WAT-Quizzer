@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BasisTabPanel } from './Basis.tabpanel';
+import { initEditQuizRequestData } from 'quizzer-lib';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -20,10 +21,7 @@ type Story = StoryObj<typeof meta>;
 export const BasisTab: Story = {
   args: {
     value: 0,
-    index: 0,
-    queryOfPutQuizState: {
-      fileNum: -1,
-      quizNum: -1
-    }
+    putQuizRequestData: initEditQuizRequestData,
+    setPutQuizRequestData: undefined
   }
 };

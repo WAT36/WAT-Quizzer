@@ -20,40 +20,44 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const AddQuiz: Story = {
   args: {
-    value: -1,
-    queryOfPutQuizState: {
-      fileNum: -1,
-      quizNum: -1
-    }
+    putQuizRequestData: {
+      file_num: -1,
+      quiz_num: -1,
+      value: -1
+    },
+    setPutQuizRequestData: undefined
   }
 };
 
 export const BasisPanel: Story = {
   args: {
-    value: 0,
-    queryOfPutQuizState: {
-      fileNum: -1,
-      quizNum: -1
-    }
+    putQuizRequestData: {
+      file_num: -1,
+      quiz_num: -1,
+      value: 0
+    },
+    setPutQuizRequestData: undefined
   }
 };
 
 export const AppliedPanel: Story = {
   args: {
-    value: 1,
-    queryOfPutQuizState: {
-      fileNum: -1,
-      quizNum: -1
-    }
+    putQuizRequestData: {
+      file_num: -1,
+      quiz_num: -1,
+      value: 1
+    },
+    setPutQuizRequestData: undefined
   }
 };
 
 export const FourChoicePanel: Story = {
   args: {
-    value: 2,
-    queryOfPutQuizState: {
-      fileNum: -1,
-      quizNum: -1
-    }
+    putQuizRequestData: {
+      file_num: -1,
+      quiz_num: -1,
+      value: 2
+    },
+    setPutQuizRequestData: undefined
   }
 };

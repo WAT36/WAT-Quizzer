@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
-import { MessageState, QueryOfPutQuizState, QueryOfQuizState } from '../../../../../../interfaces/state';
+import React, { useEffect, useState } from 'react';
 import { FormControl, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 import { Button } from '@/components/ui-elements/button/Button';
-import { getQuizAPI } from '@/api/quiz/getQuizAPI';
-import { PullDownOptionDto } from 'quizzer-lib';
+import {
+  EditQuizAPIRequestDto,
+  getQuizAPI,
+  GetQuizAPIRequestDto,
+  GetQuizApiResponseDto,
+  getQuizAPIResponseToEditQuizAPIRequestAdapter,
+  GetQuizFileApiResponseDto,
+  getQuizFileListAPI,
+  initGetQuizRequestData,
+  PullDownOptionDto,
+  quizFileListAPIResponseToPullDownAdapter
+} from 'quizzer-lib';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
 
 interface InputQueryForEditFormProps {
-  filelistoption: PullDownOptionDto[];
-  setMessageStater?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setQueryOfEditQuizStater?: React.Dispatch<React.SetStateAction<QueryOfPutQuizState>>;
+  setEditQuizRequestData: React.Dispatch<React.SetStateAction<EditQuizAPIRequestDto>>;
 }
 
 const radioButtonLabelArray = [
@@ -37,30 +46,31 @@ const getLabelIndex = (value: string) => {
   return -1;
 };
 
-export const InputQueryForEditForm = ({
-  filelistoption,
-  setMessageStater,
-  setQueryOfEditQuizStater
-}: InputQueryForEditFormProps) => {
-  const [queryOfQuiz, setQueryOfQuiz] = useState<QueryOfQuizState>({
-    fileNum: -1,
-    quizNum: -1,
-    format: 'basic'
-  });
+export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForEditFormProps) => {
+  const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
+  const [getQuizRequestData, setQuizRequestData] = useState<GetQuizAPIRequestDto>(initGetQuizRequestData);
+  const setMessage = useSetRecoilState(messageState);
+
+  useEffect(() => {
+    (async () => {
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3',
+        isDisplay: true
+      });
+      const result = await getQuizFileListAPI();
+      setMessage(result.message);
+      const pullDownOption = result.result
+        ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
+        : [];
+      setFilelistoption(pullDownOption);
+    })();
+  }, [setMessage]);
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (!setMessageStater || !setQueryOfEditQuizStater) {
-      return;
-    }
-
-    setQueryOfQuiz({
-      ...queryOfQuiz,
-      fileNum: e.target.value as number
-    });
-    setMessageStater({
-      message: '通信中...',
-      messageColor: '#d3d3d3',
-      isDisplay: true
+    setQuizRequestData({
+      ...getQuizRequestData,
+      file_num: +e.target.value
     });
   };
 
@@ -75,12 +85,10 @@ export const InputQueryForEditForm = ({
           <TextField
             label="問題番号"
             setStater={(value: string) => {
-              if (setQueryOfQuiz) {
-                setQueryOfQuiz({
-                  ...queryOfQuiz,
-                  quizNum: +value
-                });
-              }
+              setQuizRequestData({
+                ...getQuizRequestData,
+                quiz_num: +value
+              });
             }}
           />
         </FormControl>
@@ -92,19 +100,10 @@ export const InputQueryForEditForm = ({
               radioButtonProps: radioButtonLabelArray,
               defaultValue: radioButtonLabelArray[0]['value'],
               setQueryofQuizStater: (value: string) => {
-                if (setQueryOfQuiz) {
-                  setQueryOfQuiz({
-                    ...queryOfQuiz,
-                    format: value
-                  });
-                }
-                if (setQueryOfEditQuizStater) {
-                  setQueryOfEditQuizStater((prev) => ({
-                    ...prev,
-                    format: value,
-                    formatValue: getLabelIndex(value)
-                  }));
-                }
+                setQuizRequestData({
+                  ...getQuizRequestData,
+                  format: value
+                });
               }
             }}
           />
@@ -116,9 +115,18 @@ export const InputQueryForEditForm = ({
         attr={'button-array'}
         variant="contained"
         color="primary"
-        onClick={(e) =>
-          getQuizAPI({ queryOfQuizState: queryOfQuiz, setMessageStater, setQueryofPutQuiz: setQueryOfEditQuizStater })
-        }
+        onClick={async (e) => {
+          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+          const result = await getQuizAPI({ getQuizRequestData });
+          setMessage(result.message);
+          if (result.result) {
+            setEditQuizRequestData({
+              ...getQuizAPIResponseToEditQuizAPIRequestAdapter(result.result as GetQuizApiResponseDto),
+              format: getQuizRequestData.format,
+              value: getLabelIndex(getQuizRequestData.format)
+            });
+          }
+        }}
       />
     </>
   );

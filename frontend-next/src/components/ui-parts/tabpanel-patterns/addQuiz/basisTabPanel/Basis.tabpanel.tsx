@@ -2,15 +2,17 @@ import { TabPanel } from '@/components/ui-elements/tabPanel/TabPanel';
 import { CardContent, Input, Typography } from '@mui/material';
 import React from 'react';
 import styles from '../../TabPanel.module.css';
-import { AddQuizAPIRequestDto } from 'quizzer-lib';
+import { AddQuizAPIRequestDto, EditQuizAPIRequestDto } from 'quizzer-lib';
 
 interface BasisTabPanelProps {
   value: number;
-  addQuizRequestData: AddQuizAPIRequestDto;
-  setAddQuizRequestData: React.Dispatch<React.SetStateAction<AddQuizAPIRequestDto>>;
+  putQuizRequestData: AddQuizAPIRequestDto | EditQuizAPIRequestDto;
+  setPutQuizRequestData:
+    | React.Dispatch<React.SetStateAction<AddQuizAPIRequestDto>>
+    | React.Dispatch<React.SetStateAction<EditQuizAPIRequestDto>>;
 }
 
-export const BasisTabPanel = ({ value, addQuizRequestData, setAddQuizRequestData }: BasisTabPanelProps) => (
+export const BasisTabPanel = ({ value, putQuizRequestData, setPutQuizRequestData }: BasisTabPanelProps) => (
   // TODO ここのindexの値は他の設定ファイルとかに書いてそこから読ませたい
   <TabPanel value={value} index={0}>
     <CardContent>
@@ -24,9 +26,10 @@ export const BasisTabPanel = ({ value, addQuizRequestData, setAddQuizRequestData
           fullWidth
           maxRows={1}
           id="question"
-          value={addQuizRequestData.question || ''}
+          value={putQuizRequestData.question || ''}
           onChange={(e) => {
-            setAddQuizRequestData((prev) => ({
+            // TODO ここのany
+            setPutQuizRequestData((prev: any) => ({
               ...prev,
               question: e.target.value
             }));
@@ -40,9 +43,9 @@ export const BasisTabPanel = ({ value, addQuizRequestData, setAddQuizRequestData
           fullWidth
           maxRows={1}
           id="answer"
-          value={addQuizRequestData.answer || ''}
+          value={putQuizRequestData.answer || ''}
           onChange={(e) => {
-            setAddQuizRequestData((prev) => ({
+            setPutQuizRequestData((prev: any) => ({
               ...prev,
               answer: e.target.value
             }));
@@ -56,11 +59,11 @@ export const BasisTabPanel = ({ value, addQuizRequestData, setAddQuizRequestData
           fullWidth
           maxRows={1}
           id="category"
-          value={addQuizRequestData.quiz_category}
+          value={putQuizRequestData.category || ''}
           onChange={(e) => {
-            setAddQuizRequestData((prev) => ({
+            setPutQuizRequestData((prev: any) => ({
               ...prev,
-              quiz_category: e.target.value
+              category: e.target.value
             }));
           }}
         />
@@ -73,11 +76,11 @@ export const BasisTabPanel = ({ value, addQuizRequestData, setAddQuizRequestData
           fullWidth
           maxRows={1}
           id="imgFile"
-          value={addQuizRequestData.img_file || ''}
+          value={putQuizRequestData.img_file || ''}
           onChange={(e) => {
-            setAddQuizRequestData((prev) => ({
+            setPutQuizRequestData((prev: any) => ({
               ...prev,
-              img_data: e.target.value
+              img_file: e.target.value
             }));
           }}
         />
