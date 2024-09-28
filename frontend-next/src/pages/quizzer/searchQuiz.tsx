@@ -6,13 +6,10 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { QueryOfSearchQuizState } from '../../../interfaces/state';
 import { Title } from '@/components/ui-elements/title/Title';
 import { SearchQueryForm } from '@/components/ui-forms/quizzer/searchQuiz/searchQueryForm/SearchQueryForm';
-import { Button } from '@/components/ui-elements/button/Button';
 import { SearchResultTable } from '@/components/ui-elements/searchResultTable/SearchResultTable';
 import { EditSearchResultForm } from '@/components/ui-forms/quizzer/searchQuiz/editSearchResultForm/EditSearchResultForm';
 import { messageState } from '@/atoms/Message';
 import { useRecoilState } from 'recoil';
-import { searchQuizAPI } from '@/api/quiz/searchQuizAPI';
-import { PullDownOptionDto } from 'quizzer-lib';
 
 type Props = {
   isMock?: boolean;
@@ -37,14 +34,7 @@ export default function SearchQuizPage({ isMock }: Props) {
         <SearchQueryForm
           queryOfSearchQuizState={queryOfSearchQuizState}
           setQueryofSearchQuizState={setQueryOfSearchQuizState}
-        />
-
-        <Button
-          label={'検索'}
-          attr={'button-array'}
-          variant="contained"
-          color="primary"
-          onClick={(e) => searchQuizAPI({ queryOfSearchQuizState, setMessage, setSearchResult })}
+          setSearchResult={setSearchResult}
         />
 
         <SearchResultTable

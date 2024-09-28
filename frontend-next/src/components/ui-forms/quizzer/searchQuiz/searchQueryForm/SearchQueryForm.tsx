@@ -16,13 +16,21 @@ import {
 } from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
+import { Button } from '@/components/ui-elements/button/Button';
+import { searchQuizAPI } from '@/api/quiz/searchQuizAPI';
+import { GridRowsProp } from '@mui/x-data-grid';
 
 interface SearchQueryFormProps {
   queryOfSearchQuizState: QueryOfSearchQuizState;
   setQueryofSearchQuizState?: React.Dispatch<React.SetStateAction<QueryOfSearchQuizState>>;
+  setSearchResult?: React.Dispatch<React.SetStateAction<GridRowsProp>>;
 }
 
-export const SearchQueryForm = ({ queryOfSearchQuizState, setQueryofSearchQuizState }: SearchQueryFormProps) => {
+export const SearchQueryForm = ({
+  queryOfSearchQuizState,
+  setQueryofSearchQuizState,
+  setSearchResult
+}: SearchQueryFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
   const setMessage = useSetRecoilState(messageState);
@@ -69,144 +77,153 @@ export const SearchQueryForm = ({ queryOfSearchQuizState, setQueryofSearchQuizSt
   };
 
   return (
-    <FormGroup>
-      <FormControl>
-        <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
-      </FormControl>
+    <>
+      <FormGroup>
+        <FormControl>
+          <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
+        </FormControl>
 
-      <FormControl>
-        <TextField
-          label="検索語句"
-          setStater={(value: string) => {
-            if (setQueryofSearchQuizState) {
-              setQueryofSearchQuizState({
-                ...queryOfSearchQuizState,
-                query: value
-              });
-            }
-          }}
-        />
-      </FormControl>
-
-      <FormGroup row>
-        検索対象：
-        <FormControlLabel
-          control={
-            <Checkbox
-              onChange={(e) => {
-                if (setQueryofSearchQuizState) {
-                  setQueryofSearchQuizState({
-                    ...queryOfSearchQuizState,
-                    cond: {
-                      ...queryOfSearchQuizState.cond,
-                      question: e.target.checked
-                    }
-                  });
-                }
-              }}
-              name="checkedA"
-            />
-          }
-          label="問題"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              onChange={(e) => {
-                if (setQueryofSearchQuizState) {
-                  setQueryofSearchQuizState({
-                    ...queryOfSearchQuizState,
-                    cond: {
-                      ...queryOfSearchQuizState.cond,
-                      answer: e.target.checked
-                    }
-                  });
-                }
-              }}
-              name="checkedB"
-            />
-          }
-          label="答え"
-        />
-      </FormGroup>
-
-      <FormControl>
-        <PullDown
-          label={'カテゴリ'}
-          optionList={categorylistoption}
-          onChange={(e) => {
-            if (setQueryofSearchQuizState) {
-              setQueryofSearchQuizState({
-                ...queryOfSearchQuizState,
-                category: String(e.target.value)
-              });
-            }
-          }}
-        />
-      </FormControl>
-
-      <FormControl>
-        <RangeSliderSection
-          sectionTitle={'正解率(%)指定'}
-          setStater={(value: number[] | number) => {
-            if (setQueryofSearchQuizState) {
-              setQueryofSearchQuizState({
-                ...queryOfSearchQuizState,
-                minRate: Array.isArray(value) ? value[0] : value,
-                maxRate: Array.isArray(value) ? value[1] : value
-              });
-            }
-          }}
-        />
-      </FormControl>
-
-      <FormControl>
-        <RadioGroupSection
-          sectionTitle={'問題種別'}
-          radioGroupProps={{
-            radioButtonProps: [
-              {
-                value: 'basic',
-                label: '基礎問題'
-              },
-              {
-                value: 'applied',
-                label: '応用問題'
-              }
-            ],
-            defaultValue: 'basic',
-            setQueryofQuizStater: (value: string) => {
+        <FormControl>
+          <TextField
+            label="検索語句"
+            setStater={(value: string) => {
               if (setQueryofSearchQuizState) {
                 setQueryofSearchQuizState({
                   ...queryOfSearchQuizState,
-                  format: value
+                  query: value
                 });
               }
-            }
-          }}
-        />
-      </FormControl>
+            }}
+          />
+        </FormControl>
 
-      <FormControl>
-        <FormControlLabel
-          value="only-checked"
-          control={
-            <Checkbox
-              color="primary"
-              onChange={(e) => {
+        <FormGroup row>
+          検索対象：
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={(e) => {
+                  if (setQueryofSearchQuizState) {
+                    setQueryofSearchQuizState({
+                      ...queryOfSearchQuizState,
+                      cond: {
+                        ...queryOfSearchQuizState.cond,
+                        question: e.target.checked
+                      }
+                    });
+                  }
+                }}
+                name="checkedA"
+              />
+            }
+            label="問題"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                onChange={(e) => {
+                  if (setQueryofSearchQuizState) {
+                    setQueryofSearchQuizState({
+                      ...queryOfSearchQuizState,
+                      cond: {
+                        ...queryOfSearchQuizState.cond,
+                        answer: e.target.checked
+                      }
+                    });
+                  }
+                }}
+                name="checkedB"
+              />
+            }
+            label="答え"
+          />
+        </FormGroup>
+
+        <FormControl>
+          <PullDown
+            label={'カテゴリ'}
+            optionList={categorylistoption}
+            onChange={(e) => {
+              if (setQueryofSearchQuizState) {
+                setQueryofSearchQuizState({
+                  ...queryOfSearchQuizState,
+                  category: String(e.target.value)
+                });
+              }
+            }}
+          />
+        </FormControl>
+
+        <FormControl>
+          <RangeSliderSection
+            sectionTitle={'正解率(%)指定'}
+            setStater={(value: number[] | number) => {
+              if (setQueryofSearchQuizState) {
+                setQueryofSearchQuizState({
+                  ...queryOfSearchQuizState,
+                  minRate: Array.isArray(value) ? value[0] : value,
+                  maxRate: Array.isArray(value) ? value[1] : value
+                });
+              }
+            }}
+          />
+        </FormControl>
+
+        <FormControl>
+          <RadioGroupSection
+            sectionTitle={'問題種別'}
+            radioGroupProps={{
+              radioButtonProps: [
+                {
+                  value: 'basic',
+                  label: '基礎問題'
+                },
+                {
+                  value: 'applied',
+                  label: '応用問題'
+                }
+              ],
+              defaultValue: 'basic',
+              setQueryofQuizStater: (value: string) => {
                 if (setQueryofSearchQuizState) {
                   setQueryofSearchQuizState({
                     ...queryOfSearchQuizState,
-                    checked: e.target.checked
+                    format: value
                   });
                 }
-              }}
-            />
-          }
-          label="チェック済のみ検索"
-          labelPlacement="start"
-        />
-      </FormControl>
-    </FormGroup>
+              }
+            }}
+          />
+        </FormControl>
+
+        <FormControl>
+          <FormControlLabel
+            value="only-checked"
+            control={
+              <Checkbox
+                color="primary"
+                onChange={(e) => {
+                  if (setQueryofSearchQuizState) {
+                    setQueryofSearchQuizState({
+                      ...queryOfSearchQuizState,
+                      checked: e.target.checked
+                    });
+                  }
+                }}
+              />
+            }
+            label="チェック済のみ検索"
+            labelPlacement="start"
+          />
+        </FormControl>
+      </FormGroup>
+      <Button
+        label={'検索'}
+        attr={'button-array'}
+        variant="contained"
+        color="primary"
+        onClick={(e) => searchQuizAPI({ queryOfSearchQuizState, setMessage, setSearchResult })}
+      />
+    </>
   );
 };
