@@ -523,7 +523,7 @@ export class QuizService {
   // 問題を１問追加
   async add(req: AddQuizAPIRequestDto) {
     try {
-      const { file_num, question, answer, quiz_category, img_file } = req;
+      const { file_num, question, answer, category, img_file } = req;
       if (!file_num || !question || !answer) {
         throw new HttpException(
           `ファイル番号または問題文または答えが入力されていません。`,
@@ -554,8 +554,8 @@ export class QuizService {
           img_file,
           checked: false,
           quiz_category: {
-            ...(quiz_category && {
-              create: quiz_category.split(',').map((x) => {
+            ...(category && {
+              create: category.split(',').map((x) => {
                 return {
                   category: x,
                 };
