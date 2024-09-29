@@ -119,11 +119,11 @@ export const post = async (
 export const put = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => void,
+  func: (data: ProcessingApiReponse) => ApiResult,
   accessToken?: string
 ) => {
   const key = await getApiKey()
-  await fetch(baseURL + path, {
+  return await fetch(baseURL + path, {
     method: 'PUT',
     body: JSON.stringify(jsondata),
     headers: {
@@ -142,7 +142,13 @@ export const put = async (
     )
     .then(func)
     .catch((error) => {
-      console.error(`PUT(${path}): ${error}`)
+      return {
+        message: {
+          message: String(error.message),
+          messageColor: 'error',
+          isDisplay: true
+        }
+      } as ApiResult
     })
 }
 
