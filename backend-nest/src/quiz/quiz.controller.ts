@@ -16,7 +16,7 @@ import {
   AddQuizAPIRequestDto,
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
-  IntegrateQuizAPIRequestDto,
+  IntegrateToQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
   AddCategoryToQuizAPIRequestDto,
@@ -176,7 +176,7 @@ export class QuizController {
   }
 
   @Post('/integrate')
-  async integrate(@Body() req: IntegrateQuizAPIRequestDto) {
+  async integrate(@Body() req: IntegrateToQuizAPIRequestDto) {
     return await this.quizService.integrate(req);
   }
 

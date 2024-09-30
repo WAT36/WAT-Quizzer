@@ -5,7 +5,6 @@ import {
   AddQuizAPIRequestDto,
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
-  IntegrateQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
   getPrismaYesterdayRange,
@@ -14,6 +13,7 @@ import {
   getPastDate,
   AddCategoryToQuizAPIRequestDto,
   parseStrToBool,
+  IntegrateToQuizAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -1049,18 +1049,9 @@ export class QuizService {
   }
 
   // 問題統合（とりあえず基礎問題のみ）
-  async integrate(req: IntegrateQuizAPIRequestDto) {
+  async integrate(req: IntegrateToQuizAPIRequestDto) {
     try {
-      const { pre_file_num, pre_quiz_num, post_file_num, post_quiz_num } = req;
-      if (pre_file_num !== post_file_num) {
-        throw (
-          '統合前後のファイル番号は同じにしてください (' +
-          pre_file_num +
-          ' != ' +
-          post_file_num +
-          ')'
-        );
-      }
+      const { file_num, fromQuizInfo, toQuizInfo } = req;
 
       // 統合前の問題取得
       const pre_data = await prisma.quiz.findUnique({
@@ -1088,8 +1079,8 @@ export class QuizService {
         },
         where: {
           file_num_quiz_num: {
-            file_num: pre_file_num,
-            quiz_num: pre_quiz_num,
+            file_num,
+            quiz_num: fromQuizInfo.quiz_num,
           },
           deleted_at: null,
         },
@@ -1121,8 +1112,8 @@ export class QuizService {
         },
         where: {
           file_num_quiz_num: {
-            file_num: post_file_num,
-            quiz_num: post_quiz_num,
+            file_num,
+            quiz_num: toQuizInfo.quiz_num,
           },
           deleted_at: null,
         },
@@ -1161,8 +1152,8 @@ export class QuizService {
         //// 元問題のカテゴリ削除
         await prisma.quiz_category.updateMany({
           where: {
-            file_num: pre_file_num,
-            quiz_num: pre_quiz_num,
+            file_num,
+            quiz_num: fromQuizInfo.quiz_num,
           },
           data: {
             deleted_at: new Date(),
@@ -1170,8 +1161,8 @@ export class QuizService {
         });
         await prisma.quiz_category.updateMany({
           where: {
-            file_num: post_file_num,
-            quiz_num: post_quiz_num,
+            file_num,
+            quiz_num: toQuizInfo.quiz_num,
           },
           data: {
             deleted_at: new Date(),
@@ -1182,8 +1173,8 @@ export class QuizService {
           await prisma.quiz_category.upsert({
             where: {
               file_num_quiz_num_category: {
-                file_num: post_file_num,
-                quiz_num: post_quiz_num,
+                file_num,
+                quiz_num: toQuizInfo.quiz_num,
                 category: c,
               },
             },
@@ -1192,8 +1183,8 @@ export class QuizService {
               deleted_at: null,
             },
             create: {
-              file_num: post_file_num,
-              quiz_num: post_quiz_num,
+              file_num,
+              quiz_num: toQuizInfo.quiz_num,
               category: c,
             },
           });
@@ -1207,8 +1198,8 @@ export class QuizService {
           },
           where: {
             file_num_quiz_num: {
-              file_num: pre_file_num,
-              quiz_num: pre_quiz_num,
+              file_num,
+              quiz_num: fromQuizInfo.quiz_num,
             },
           },
         });
@@ -1218,8 +1209,8 @@ export class QuizService {
           },
           where: {
             quiz_format_id: 1,
-            file_num: pre_file_num,
-            quiz_num: pre_quiz_num,
+            file_num,
+            quiz_num: fromQuizInfo.quiz_num,
           },
         });
       });
