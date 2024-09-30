@@ -1,12 +1,13 @@
-import { GetQuizApiResponseDto } from '..'
-import { ApiResult, post } from '../../api'
-import { ProcessingApiSingleReponse } from '../../..'
+import { GetQuizApiResponseDto } from '../..'
+import { ApiResult, post } from '../../../api'
+import { ProcessingApiSingleReponse } from '../../../..'
 
 interface ReverseCheckQuizButtonProps {
+  // TODO GetQuizApiResponseDto?? CheckQuizAPIRequestDto使え
   getQuizResponseData: GetQuizApiResponseDto
 }
 
-export const checkQuizAPI = async ({
+export const reverseCheckQuizAPI = async ({
   getQuizResponseData
 }: ReverseCheckQuizButtonProps): Promise<ApiResult> => {
   if (getQuizResponseData.file_num === -1) {
