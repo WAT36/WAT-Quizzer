@@ -1,6 +1,6 @@
 import { GetQuizApiResponseDto } from '../..'
 
-export const parseStrToBool = (val: string) => {
+export const parseStrToBool = (val?: string) => {
   if (!val) {
     return false
   } else if (val.toLowerCase() === 'false' || val === '' || val === '0') {
