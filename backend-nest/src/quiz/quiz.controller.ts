@@ -17,10 +17,9 @@ import {
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
   IntegrateQuizAPIRequestDto,
-  UpdateCategoryOfQuizAPIRequestDto,
-  RemoveCategoryOfQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
+  AddCategoryToQuizAPIRequestDto,
 } from 'quizzer-lib';
 // import { AuthGuard } from '../auth/auth.guard';
 
@@ -182,14 +181,12 @@ export class QuizController {
   }
 
   @Post('/category')
-  async addCategoryToQuiz(@Body() body: UpdateCategoryOfQuizAPIRequestDto) {
+  async addCategoryToQuiz(@Body() body: AddCategoryToQuizAPIRequestDto) {
     return await this.quizService.addCategoryToQuiz(body);
   }
 
   @Put('/category')
-  async removeCategoryFromQuiz(
-    @Body() body: RemoveCategoryOfQuizAPIRequestDto,
-  ) {
+  async removeCategoryFromQuiz(@Body() body: AddCategoryToQuizAPIRequestDto) {
     return await this.quizService.removeCategoryFromQuiz(body);
   }
 

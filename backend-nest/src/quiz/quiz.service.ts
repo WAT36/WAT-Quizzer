@@ -6,16 +6,15 @@ import {
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
   IntegrateQuizAPIRequestDto,
-  UpdateCategoryOfQuizAPIRequestDto,
-  RemoveCategoryOfQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
   DeleteAnswerLogAPIRequestDto,
   getPrismaYesterdayRange,
   getRandomElementFromArray,
   getPrismaPastDayRange,
   getPastDate,
+  AddCategoryToQuizAPIRequestDto,
+  parseStrToBool,
 } from 'quizzer-lib';
-import { parseStrToBool } from 'lib/str';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
 
@@ -912,8 +911,12 @@ export class QuizService {
                 },
               },
               ...(category && {
-                category: {
-                  contains: category,
+                quiz_category: {
+                  some: {
+                    category: {
+                      contains: category,
+                    },
+                  },
                 },
               }),
               ...(parseStrToBool(checked)
@@ -921,20 +924,22 @@ export class QuizService {
                     checked: true,
                   }
                 : {}),
-              ...(parseStrToBool(queryOnlyInSentense)
-                ? {
-                    quiz_sentense: {
-                      contains: query,
-                    },
-                  }
-                : {}),
-              ...(parseStrToBool(queryOnlyInAnswer)
-                ? {
-                    answer: {
-                      contains: query,
-                    },
-                  }
-                : {}),
+              OR: [
+                parseStrToBool(queryOnlyInSentense)
+                  ? {
+                      quiz_sentense: {
+                        contains: query,
+                      },
+                    }
+                  : {},
+                parseStrToBool(queryOnlyInAnswer)
+                  ? {
+                      answer: {
+                        contains: query,
+                      },
+                    }
+                  : {},
+              ],
             },
             orderBy: {
               quiz_num: 'asc',
@@ -1233,58 +1238,49 @@ export class QuizService {
   }
 
   // 問題にカテゴリ追加
-  async addCategoryToQuiz(req: UpdateCategoryOfQuizAPIRequestDto) {
+  async addCategoryToQuiz(req: AddCategoryToQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, category } = req;
+      const quiz_nums = quiz_num.split(',').map((x) => {
+        if (isNaN(+x)) {
+          throw new HttpException(
+            `問題番号が不正です(${x})`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return +x;
+      });
       const categories = category.split(',');
-      // 現在のカテゴリ取得
-      const nowCategory = (
-        await prisma.quiz_category.findMany({
-          select: {
-            category: true,
-          },
-          where: {
-            file_num,
-            quiz_num,
-            deleted_at: null,
-          },
-        })
-      ).map((x) => {
-        return x.category;
+      // トランザクション
+      await prisma.$transaction(async (prisma) => {
+        for (const quiz_num of quiz_nums) {
+          // 更新
+          for (const c of categories) {
+            await prisma.quiz_category.upsert({
+              where: {
+                file_num_quiz_num_category: {
+                  file_num,
+                  quiz_num,
+                  category: c,
+                },
+              },
+              update: {
+                updated_at: new Date(),
+                deleted_at: null,
+              },
+              create: {
+                file_num,
+                quiz_num,
+                category: c,
+              },
+            });
+          }
+        }
       });
-
-      const new_category = Array.from(new Set([...nowCategory, ...categories]));
-
-      // 更新
-      await prisma.quiz_category.updateMany({
-        where: {
-          file_num,
-          quiz_num,
-        },
-        data: {
-          deleted_at: new Date(),
-        },
-      });
-      for (const c of new_category) {
-        await prisma.quiz_category.upsert({
-          where: {
-            file_num_quiz_num_category: {
-              file_num,
-              quiz_num,
-              category: c,
-            },
-          },
-          update: {
-            updated_at: new Date(),
-            deleted_at: null,
-          },
-          create: {
-            file_num,
-            quiz_num,
-            category: c,
-          },
-        });
-      }
+      // TODO 問題追加系の返り値の扱い　なんか違う方がいい
+      return {
+        result: 'OK!',
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -1296,46 +1292,60 @@ export class QuizService {
   }
 
   // 問題からカテゴリ削除
-  async removeCategoryFromQuiz(body: RemoveCategoryOfQuizAPIRequestDto) {
+  async removeCategoryFromQuiz(body: AddCategoryToQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, category } = body;
-      const categories = category.split(',');
-      // 現在のカテゴリ取得
-      const nowCategory = (
-        await prisma.quiz_category.findMany({
-          select: {
-            category: true,
-          },
-          where: {
-            file_num,
-            quiz_num,
-            deleted_at: null,
-          },
-        })
-      ).map((x) => {
-        return x.category;
-      });
-
-      // 更新
-      for (const c of categories) {
-        if (!nowCategory.includes(c)) {
-          continue;
+      const quiz_nums = quiz_num.split(',').map((x) => {
+        if (isNaN(+x)) {
+          throw new HttpException(
+            `問題番号が不正です(${x})`,
+            HttpStatus.BAD_REQUEST,
+          );
         }
+        return +x;
+      });
+      const categories = category.split(',');
+      // トランザクション
+      await prisma.$transaction(async (prisma) => {
+        // 更新
+        for (const quiz_num of quiz_nums) {
+          // 現在のカテゴリ取得
+          const nowCategory = (
+            await prisma.quiz_category.findMany({
+              select: {
+                category: true,
+              },
+              where: {
+                file_num,
+                quiz_num,
+                deleted_at: null,
+              },
+            })
+          ).map((x) => {
+            return x.category;
+          });
 
-        await prisma.quiz_category.update({
-          data: {
-            updated_at: new Date(),
-            deleted_at: new Date(),
-          },
-          where: {
-            file_num_quiz_num_category: {
-              file_num,
-              quiz_num,
-              category: c,
-            },
-          },
-        });
-      }
+          for (const c of categories) {
+            if (!nowCategory.includes(c)) {
+              continue;
+            }
+
+            await prisma.quiz_category.update({
+              data: {
+                updated_at: new Date(),
+                deleted_at: new Date(),
+              },
+              where: {
+                file_num_quiz_num_category: {
+                  file_num,
+                  quiz_num,
+                  category: c,
+                },
+              },
+            });
+          }
+        }
+      });
       return {
         result: 'OK!',
       };
@@ -1353,19 +1363,36 @@ export class QuizService {
   async check(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num } = req;
-      // 更新
-      return await prisma.quiz.update({
-        data: {
-          checked: true,
-          updated_at: new Date(),
-        },
-        where: {
-          file_num_quiz_num: {
-            file_num,
-            quiz_num,
-          },
-        },
+      const quiz_nums = quiz_num.split(',').map((x) => {
+        if (isNaN(+x)) {
+          throw new HttpException(
+            `問題番号が不正です(${x})`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return +x;
       });
+      // トランザクション
+      await prisma.$transaction(async (prisma) => {
+        // 更新
+        for (const quiz_num of quiz_nums) {
+          await prisma.quiz.update({
+            data: {
+              checked: true,
+              updated_at: new Date(),
+            },
+            where: {
+              file_num_quiz_num: {
+                file_num,
+                quiz_num,
+              },
+            },
+          });
+        }
+      });
+      return {
+        result: 'OK!',
+      };
     } catch (error) {
       throw error;
     }
@@ -1375,19 +1402,36 @@ export class QuizService {
   async uncheck(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num } = req;
-      // 更新
-      return await prisma.quiz.update({
-        data: {
-          checked: false,
-          updated_at: new Date(),
-        },
-        where: {
-          file_num_quiz_num: {
-            file_num,
-            quiz_num,
-          },
-        },
+      const quiz_nums = quiz_num.split(',').map((x) => {
+        if (isNaN(+x)) {
+          throw new HttpException(
+            `問題番号が不正です(${x})`,
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return +x;
       });
+      // トランザクション
+      await prisma.$transaction(async (prisma) => {
+        // 更新
+        for (const quiz_num of quiz_nums) {
+          await prisma.quiz.update({
+            data: {
+              checked: false,
+              updated_at: new Date(),
+            },
+            where: {
+              file_num_quiz_num: {
+                file_num,
+                quiz_num,
+              },
+            },
+          });
+        }
+      });
+      return {
+        result: 'OK!',
+      };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -1402,6 +1446,12 @@ export class QuizService {
   async reverseCheck(req: CheckQuizAPIRequestDto) {
     try {
       const { file_num, quiz_num, format } = req;
+      if (isNaN(+quiz_num)) {
+        throw new HttpException(
+          `問題番号が不正です(${quiz_num})`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       let checked: boolean;
       switch (format) {
         case 'basic': // 基礎問題
@@ -1413,7 +1463,7 @@ export class QuizService {
               where: {
                 file_num_quiz_num: {
                   file_num,
-                  quiz_num,
+                  quiz_num: +quiz_num,
                 },
               },
             })
@@ -1426,7 +1476,7 @@ export class QuizService {
             where: {
               file_num_quiz_num: {
                 file_num,
-                quiz_num,
+                quiz_num: +quiz_num,
               },
             },
           });
@@ -1440,7 +1490,7 @@ export class QuizService {
               where: {
                 file_num_quiz_num: {
                   file_num,
-                  quiz_num,
+                  quiz_num: +quiz_num,
                 },
               },
             })
@@ -1453,7 +1503,7 @@ export class QuizService {
             where: {
               file_num_quiz_num: {
                 file_num,
-                quiz_num,
+                quiz_num: +quiz_num,
               },
             },
           });
