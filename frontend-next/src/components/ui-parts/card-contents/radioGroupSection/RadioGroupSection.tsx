@@ -1,5 +1,6 @@
 import { FormLabel } from '@mui/material';
 import { RadioGroup, RadioGroupProps } from '../../radioGroup/RadioGroup';
+import React from 'react';
 
 interface RadioGroupSectionProps {
   sectionTitle: string;

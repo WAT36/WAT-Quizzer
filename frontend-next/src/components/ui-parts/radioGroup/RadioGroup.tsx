@@ -1,5 +1,6 @@
 import { RadioButton, RadioButtonProps } from '@/components/ui-elements/radioButton/RadioButton';
 import { RadioGroup as MuiRadioGroup } from '@mui/material';
+import React from 'react';
 import { useState } from 'react';
 
 export interface RadioGroupProps {
@@ -24,6 +25,7 @@ export const RadioGroup = ({ radioButtonProps, defaultValue, setQueryofQuizState
     <>
       <MuiRadioGroup
         row
+        key={'row-radio-buttons-group-key'}
         aria-labelledby="demo-row-radio-buttons-group-label"
         name="row-radio-buttons-group"
         value={radioValue}

@@ -5,12 +5,12 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import {
-  checkQuizAPI,
   clearQuizAPI,
   failQuizAPI,
   generateQuizSentense,
   GetQuizApiResponseDto,
-  initGetQuizResponseData
+  initGetQuizResponseData,
+  reverseCheckQuizAPI
 } from 'quizzer-lib';
 
 interface DisplayQuizSectionProps {
@@ -108,7 +108,7 @@ export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }:
               color="warning"
               onClick={async (e) => {
                 setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-                const result = await checkQuizAPI({
+                const result = await reverseCheckQuizAPI({
                   getQuizResponseData
                 });
                 setMessage(result.message);

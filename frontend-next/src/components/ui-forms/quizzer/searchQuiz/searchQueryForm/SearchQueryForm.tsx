@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { QueryOfSearchQuizState } from '../../../../../../interfaces/state';
 import { Checkbox, FormControl, FormControlLabel, FormGroup, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
@@ -9,27 +8,29 @@ import {
   GetCategoryAPIResponseDto,
   getCategoryListAPI,
   getCategoryListAPIResponseToPullDownAdapter,
+  GetQuizApiResponseDto,
   GetQuizFileApiResponseDto,
   getQuizFileListAPI,
   PullDownOptionDto,
-  quizFileListAPIResponseToPullDownAdapter
+  quizFileListAPIResponseToPullDownAdapter,
+  searchQuizAPI,
+  SearchQuizAPIRequestDto
 } from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { Button } from '@/components/ui-elements/button/Button';
-import { searchQuizAPI } from '@/api/quiz/searchQuizAPI';
 import { GridRowsProp } from '@mui/x-data-grid';
 
 interface SearchQueryFormProps {
-  queryOfSearchQuizState: QueryOfSearchQuizState;
-  setQueryofSearchQuizState?: React.Dispatch<React.SetStateAction<QueryOfSearchQuizState>>;
-  setSearchResult?: React.Dispatch<React.SetStateAction<GridRowsProp>>;
+  searchQuizRequestData: SearchQuizAPIRequestDto;
+  setSearchResult: React.Dispatch<React.SetStateAction<GridRowsProp>>;
+  setSearchQuizRequestData: React.Dispatch<React.SetStateAction<SearchQuizAPIRequestDto>>;
 }
 
 export const SearchQueryForm = ({
-  queryOfSearchQuizState,
-  setQueryofSearchQuizState,
-  setSearchResult
+  searchQuizRequestData,
+  setSearchResult,
+  setSearchQuizRequestData
 }: SearchQueryFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
@@ -52,10 +53,6 @@ export const SearchQueryForm = ({
   }, [setMessage]);
 
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    if (!setCategorylistoption || !setQueryofSearchQuizState) {
-      return;
-    }
-
     setMessage({
       message: '通信中...',
       messageColor: '#d3d3d3'
@@ -68,6 +65,10 @@ export const SearchQueryForm = ({
         isDisplay: true
       });
       const result = await getCategoryListAPI({ getCategoryListData: { file_num: String(e.target.value) } });
+      setSearchQuizRequestData({
+        ...searchQuizRequestData,
+        file_num: +e.target.value
+      });
       setMessage(result.message);
       const pullDownOption = result.result
         ? getCategoryListAPIResponseToPullDownAdapter(result.result as GetCategoryAPIResponseDto[])
@@ -87,12 +88,10 @@ export const SearchQueryForm = ({
           <TextField
             label="検索語句"
             setStater={(value: string) => {
-              if (setQueryofSearchQuizState) {
-                setQueryofSearchQuizState({
-                  ...queryOfSearchQuizState,
-                  query: value
-                });
-              }
+              setSearchQuizRequestData({
+                ...searchQuizRequestData,
+                query: value
+              });
             }}
           />
         </FormControl>
@@ -103,15 +102,10 @@ export const SearchQueryForm = ({
             control={
               <Checkbox
                 onChange={(e) => {
-                  if (setQueryofSearchQuizState) {
-                    setQueryofSearchQuizState({
-                      ...queryOfSearchQuizState,
-                      cond: {
-                        ...queryOfSearchQuizState.cond,
-                        question: e.target.checked
-                      }
-                    });
-                  }
+                  setSearchQuizRequestData({
+                    ...searchQuizRequestData,
+                    searchInOnlySentense: String(e.target.checked)
+                  });
                 }}
                 name="checkedA"
               />
@@ -122,15 +116,10 @@ export const SearchQueryForm = ({
             control={
               <Checkbox
                 onChange={(e) => {
-                  if (setQueryofSearchQuizState) {
-                    setQueryofSearchQuizState({
-                      ...queryOfSearchQuizState,
-                      cond: {
-                        ...queryOfSearchQuizState.cond,
-                        answer: e.target.checked
-                      }
-                    });
-                  }
+                  setSearchQuizRequestData({
+                    ...searchQuizRequestData,
+                    searchInOnlyAnswer: String(e.target.checked)
+                  });
                 }}
                 name="checkedB"
               />
@@ -144,12 +133,10 @@ export const SearchQueryForm = ({
             label={'カテゴリ'}
             optionList={categorylistoption}
             onChange={(e) => {
-              if (setQueryofSearchQuizState) {
-                setQueryofSearchQuizState({
-                  ...queryOfSearchQuizState,
-                  category: String(e.target.value)
-                });
-              }
+              setSearchQuizRequestData({
+                ...searchQuizRequestData,
+                category: String(e.target.value)
+              });
             }}
           />
         </FormControl>
@@ -158,13 +145,11 @@ export const SearchQueryForm = ({
           <RangeSliderSection
             sectionTitle={'正解率(%)指定'}
             setStater={(value: number[] | number) => {
-              if (setQueryofSearchQuizState) {
-                setQueryofSearchQuizState({
-                  ...queryOfSearchQuizState,
-                  minRate: Array.isArray(value) ? value[0] : value,
-                  maxRate: Array.isArray(value) ? value[1] : value
-                });
-              }
+              setSearchQuizRequestData({
+                ...searchQuizRequestData,
+                min_rate: Array.isArray(value) ? value[0] : value,
+                max_rate: Array.isArray(value) ? value[1] : value
+              });
             }}
           />
         </FormControl>
@@ -185,12 +170,10 @@ export const SearchQueryForm = ({
               ],
               defaultValue: 'basic',
               setQueryofQuizStater: (value: string) => {
-                if (setQueryofSearchQuizState) {
-                  setQueryofSearchQuizState({
-                    ...queryOfSearchQuizState,
-                    format: value
-                  });
-                }
+                setSearchQuizRequestData({
+                  ...searchQuizRequestData,
+                  format: value
+                });
               }
             }}
           />
@@ -203,12 +186,10 @@ export const SearchQueryForm = ({
               <Checkbox
                 color="primary"
                 onChange={(e) => {
-                  if (setQueryofSearchQuizState) {
-                    setQueryofSearchQuizState({
-                      ...queryOfSearchQuizState,
-                      checked: e.target.checked
-                    });
-                  }
+                  setSearchQuizRequestData({
+                    ...searchQuizRequestData,
+                    checked: String(e.target.checked)
+                  });
                 }}
               />
             }
@@ -222,7 +203,29 @@ export const SearchQueryForm = ({
         attr={'button-array'}
         variant="contained"
         color="primary"
-        onClick={(e) => searchQuizAPI({ queryOfSearchQuizState, setMessage, setSearchResult })}
+        onClick={async (e) => {
+          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+          const result = await searchQuizAPI({ searchQuizRequestData });
+          setMessage(result.message);
+          if (result.result) {
+            const apiResult = (result.result as GetQuizApiResponseDto[]).map((x) => {
+              return {
+                ...x,
+                category: x.quiz_category
+                  ? x.quiz_category
+                      .filter((x) => {
+                        return !x.deleted_at;
+                      })
+                      .map((x) => {
+                        return x.category;
+                      })
+                      .join(',')
+                  : ''
+              };
+            });
+            setSearchResult(apiResult);
+          }
+        }}
       />
     </>
   );
