@@ -1,4 +1,8 @@
-import { GetQuizApiResponseDto, ProcessingApiReponse } from '../../..'
+import {
+  GetQuizApiResponseDto,
+  parseStrToBool,
+  ProcessingApiReponse
+} from '../../..'
 import { SearchQuizAPIRequestDto } from './dto'
 import { ApiResult, get } from '../../api'
 
@@ -18,6 +22,18 @@ export const searchQuizAPI = async ({
       }
     }
   }
+  if (
+    !(
+      parseStrToBool(searchQuizRequestData.searchInOnlyAnswer) ||
+      parseStrToBool(searchQuizRequestData.searchInOnlySentense)
+    )
+  ) {
+    searchQuizRequestData.searchInOnlySentense = 'true'
+    searchQuizRequestData.searchInOnlyAnswer = 'true'
+  }
+  if (searchQuizRequestData.category === '-1') {
+    delete searchQuizRequestData.category
+  }
 
   const result = await get(
     '/quiz/search',
@@ -26,25 +42,8 @@ export const searchQuizAPI = async ({
         (String(data.status)[0] === '2' || String(data.status)[0] === '3') &&
         data.body?.length > 0
       ) {
-        const result: GetQuizApiResponseDto[] = (
+        const result: GetQuizApiResponseDto[] =
           data.body as GetQuizApiResponseDto[]
-        ).map((x) => {
-          return {
-            ...x,
-            category: x.quiz_category
-              ? x.quiz_category
-                  .filter((x) => {
-                    return !x.deleted_at
-                  })
-                  .map((x) => {
-                    return x.category
-                  })
-                  .join(',')
-              : ''
-          }
-        })
-
-        //setSearchResult(res)
         return {
           message: {
             message: 'Success!! ' + result.length + '問の問題を取得しました',
