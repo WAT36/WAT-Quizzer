@@ -13,20 +13,6 @@ export interface IntegrateQuizAPIRequestDto {
   post_quiz_num: number
 }
 
-// クイズにカテゴリを追加するAPIリクエスト型
-export interface UpdateCategoryOfQuizAPIRequestDto {
-  file_num: number
-  quiz_num: number
-  category: string
-}
-
-// クイズからカテゴリを削除するAPIリクエスト型
-export interface RemoveCategoryOfQuizAPIRequestDto {
-  file_num: number
-  quiz_num: number
-  category: string
-}
-
 // 問題ファイル削除系APIリクエスト型
 export interface DeleteAnswerLogAPIRequestDto {
   file_id: number
