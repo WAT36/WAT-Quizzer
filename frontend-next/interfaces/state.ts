@@ -38,10 +38,6 @@ export interface QueryOfEditQuizState {
   format?: string;
 }
 
-export interface QueryOfGetAccuracyState {
-  fileNum: number;
-}
-
 export interface IntegrateToQuizInfoState {
   fileNum?: number;
   quizNum?: number;

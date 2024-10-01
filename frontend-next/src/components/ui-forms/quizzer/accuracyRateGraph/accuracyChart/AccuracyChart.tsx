@@ -1,6 +1,7 @@
 import { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
 import { Chart } from 'react-google-charts';
 import styles from './AccuracyChart.module.css';
+import React from 'react';
 
 interface AccuracyChartProps {
   accuracyData: GetAccuracyRateByCategoryAPIResponseDto;
@@ -49,6 +50,7 @@ export const AccuracyChart = ({ accuracyData }: AccuracyChartProps) => {
   // グラフ領域の縦の長さ（＝40 * データの個数）
   let graph_height = 40 * visualized_data.length;
 
+  // TODO こういう設定値はどこか設定用のファイルに保存しておきたい
   const options = {
     height: graph_height,
     legend: { position: 'none' },
