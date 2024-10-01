@@ -15,14 +15,6 @@ export const getCategoryListAPI = async ({
       if (data.status === 200) {
         const result: GetCategoryAPIResponseDto[] =
           data.body as GetCategoryAPIResponseDto[]
-        // let categorylist: PullDownOptionDto[] = []
-        // for (var i = 0; i < res.length; i++) {
-        //   categorylist.push({
-        //     value: res[i].category,
-        //     label: res[i].category
-        //   })
-        // }
-        // setCategorylistoption(categorylist)
         return {
           message: {
             message: '　',
