@@ -17,10 +17,3 @@ export interface GetLinkedBasisIdDto {
   quiz_num: number
   basis_quiz_id: number
 }
-
-// TODO 画像アップロード
-export interface ImageUploadReturnValue {
-  name: string
-  isUploading: boolean
-  url: string
-}

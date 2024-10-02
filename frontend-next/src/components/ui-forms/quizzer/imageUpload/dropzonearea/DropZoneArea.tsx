@@ -1,18 +1,24 @@
 import Dropzone from 'react-dropzone';
-import { MessageState } from '../../../../../../interfaces/state';
-import { ImageUploadReturnValue } from 'quizzer-lib';
 import axios from 'axios';
 import styles from './DropZoneArea.module.css';
+import { useState } from 'react';
+import { messageState } from '@/atoms/Message';
+import { useSetRecoilState } from 'recoil';
 
-interface DropZoneAreaProps {
-  images: ImageUploadReturnValue[];
+interface DropZoneAreaProps {}
+
+// TODO 画像アップロード機能実装したら改めてlibに持っていく
+interface ImageUploadReturnValue {
+  name: string;
   isUploading: boolean;
-  setImages?: React.Dispatch<React.SetStateAction<ImageUploadReturnValue[]>>;
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setIsUploading?: React.Dispatch<React.SetStateAction<boolean>>;
+  url: string;
 }
 
-export const DropZoneArea = ({ images, isUploading, setImages, setMessage, setIsUploading }: DropZoneAreaProps) => {
+export const DropZoneArea = ({}: DropZoneAreaProps) => {
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [images, setImages] = useState<ImageUploadReturnValue[]>([]);
+  const setMessage = useSetRecoilState(messageState);
+
   const uploadImage = (file: File) => {
     return axios
       .post(process.env.NEXT_PUBLIC_API_SERVER + '/upload', {
@@ -44,34 +50,31 @@ export const DropZoneArea = ({ images, isUploading, setImages, setMessage, setIs
   };
 
   const handleOnDrop = (files: File[]) => {
-    setIsUploading && setIsUploading(true);
-    setMessage &&
-      setMessage({
-        message: '　',
-        messageColor: 'common.black',
-        isDisplay: false
-      });
+    setIsUploading(true);
+    setMessage({
+      message: '　',
+      messageColor: 'common.black',
+      isDisplay: false
+    });
 
     Promise.all(files.map((file) => uploadImage(file)))
       .then((image) => {
-        setIsUploading && setIsUploading(false);
-        setImages && setImages(images.concat(image));
-        setMessage &&
-          setMessage({
-            message: 'アップロードが完了しました:' + image[0].name,
-            messageColor: 'success.light',
-            isDisplay: true
-          });
+        setIsUploading(false);
+        setImages(images.concat(image));
+        setMessage({
+          message: 'アップロードが完了しました:' + image[0].name,
+          messageColor: 'success.light',
+          isDisplay: true
+        });
       })
       .catch((e) => {
         console.error(e);
-        setIsUploading && setIsUploading(false);
-        setMessage &&
-          setMessage({
-            message: 'エラー：アップロードに失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          });
+        setIsUploading(false);
+        setMessage({
+          message: 'エラー：アップロードに失敗しました',
+          messageColor: 'error',
+          isDisplay: true
+        });
       });
   };
 
