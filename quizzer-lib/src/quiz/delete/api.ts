@@ -33,12 +33,6 @@ export const deleteQuiz = async ({
     (data: ProcessingApiSingleReponse) => {
       if (data.status === 200) {
         const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
-        // setQueryOfDeleteQuizState({
-        //     setDeleteQuizInfoState({});
-        //   fileNum: -1,
-        //   quizNum: -1,
-        //   format: 'basic'
-        // });
         return {
           message: {
             message:
