@@ -5,39 +5,19 @@ import { DeleteAnswerLogFileSection } from '../deleteAnswerLogFileSection/Delete
 import { PullDownOptionDto } from 'quizzer-lib';
 
 interface LogConfigSectionProps {
-  deleteLogOfFileNum: number;
-  deleteLogOfFileAlertOpen: boolean;
   filelistoption: PullDownOptionDto[];
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setDeleteLogOfFileNum?: React.Dispatch<React.SetStateAction<number>>;
-  setDeleteLogOfFileAlertOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  setMessage: React.Dispatch<React.SetStateAction<MessageState>>;
 }
 
-export const LogConfigSection = ({
-  deleteLogOfFileNum,
-  deleteLogOfFileAlertOpen,
-  filelistoption,
-  setMessage,
-  setDeleteLogOfFileNum,
-  setDeleteLogOfFileAlertOpen
-}: LogConfigSectionProps) => {
+export const LogConfigSection = ({ filelistoption, setMessage }: LogConfigSectionProps) => {
   return (
-    <>
-      <Card variant="outlined" className={styles.card}>
-        <CardHeader title="解答データ削除" />
-        <CardContent>
-          <Card variant="outlined">
-            <DeleteAnswerLogFileSection
-              deleteLogOfFileNum={deleteLogOfFileNum}
-              deleteLogOfFileAlertOpen={deleteLogOfFileAlertOpen}
-              filelistoption={filelistoption}
-              setMessage={setMessage}
-              setDeleteLogOfFileNum={setDeleteLogOfFileNum}
-              setDeleteLogOfFileAlertOpen={setDeleteLogOfFileAlertOpen}
-            />
-          </Card>
-        </CardContent>
-      </Card>
-    </>
+    <Card variant="outlined" className={styles.card}>
+      <CardHeader title="解答データ削除" />
+      <CardContent>
+        <Card variant="outlined">
+          <DeleteAnswerLogFileSection filelistoption={filelistoption} setMessage={setMessage} />
+        </Card>
+      </CardContent>
+    </Card>
   );
 };

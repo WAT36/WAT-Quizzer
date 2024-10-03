@@ -3,64 +3,46 @@ import { CardContent, CardHeader } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
 import { MessageState } from '../../../../../../interfaces/state';
-import { post } from '@/api/API';
 import {
   getRandomStr,
-  ProcessingApiReponse,
   PullDownOptionDto,
   quizFileListAPIResponseToPullDownAdapter,
   GetQuizFileApiResponseDto,
-  getQuizFileListAPI
+  getQuizFileListAPI,
+  addQuizFileAPI
 } from 'quizzer-lib';
+import { useState } from 'react';
+import React from 'react';
 
 interface AddFileSectionProps {
-  fileName: string;
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setFileName?: React.Dispatch<React.SetStateAction<string>>;
-  setFilelistoption?: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
+  setMessage: React.Dispatch<React.SetStateAction<MessageState>>;
+  setFilelistoption: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
 }
 
-export const AddFileSection = ({ fileName, setMessage, setFileName, setFilelistoption }: AddFileSectionProps) => {
-  const addFile = async () => {
-    // 設定ステートない場合はreturn(storybook表示用に設定)
-    if (!setMessage || !setFilelistoption) {
-      return;
-    }
+export const AddFileSection = ({ setMessage, setFilelistoption }: AddFileSectionProps) => {
+  const [fileName, setFileName] = useState<string>('');
 
+  const addFile = async () => {
     setMessage({
       message: '通信中...',
       messageColor: '#d3d3d3',
       isDisplay: true
     });
-    post(
-      '/quiz/file',
-      {
+    const result = await addQuizFileAPI({
+      addQuizFileApiRequest: {
         file_name: getRandomStr(),
         file_nickname: fileName
-      },
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200 || data.status === 201) {
-          setMessage({
-            message: `新規ファイル「${fileName}」を追加しました`,
-            messageColor: 'success.light',
-            isDisplay: true
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          });
-        }
       }
-    );
-    // 問題ファイル再取得
-    const result = await getQuizFileListAPI();
+    });
     setMessage(result.message);
-    const pullDownOption = result.result
-      ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
-      : [];
-    setFilelistoption(pullDownOption);
+    if (result.message.messageColor === 'success.light') {
+      // 問題ファイル再取得
+      const result = await getQuizFileListAPI();
+      const pullDownOption = result.result
+        ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
+        : [];
+      setFilelistoption(pullDownOption);
+    }
   };
 
   return (

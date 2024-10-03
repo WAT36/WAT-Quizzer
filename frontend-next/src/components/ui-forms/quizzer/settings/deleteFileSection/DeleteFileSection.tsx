@@ -12,22 +12,16 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { MessageState } from '../../../../../../interfaces/state';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { useState } from 'react';
-import { del } from '@/api/API';
-import { ProcessingApiReponse, PullDownOptionDto } from 'quizzer-lib';
+import { deleteQuizFileAPI, PullDownOptionDto } from 'quizzer-lib';
+import React from 'react';
 
 interface DeleteFileSectionProps {
-  deleteFileNum: number;
   filelistoption: PullDownOptionDto[];
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
-  setDeleteFileNum?: React.Dispatch<React.SetStateAction<number>>;
+  setMessage: React.Dispatch<React.SetStateAction<MessageState>>;
 }
 
-export const DeleteFileSection = ({
-  deleteFileNum,
-  filelistoption,
-  setMessage,
-  setDeleteFileNum
-}: DeleteFileSectionProps) => {
+export const DeleteFileSection = ({ filelistoption, setMessage }: DeleteFileSectionProps) => {
+  const [deleteFileNum, setDeleteFileNum] = useState<number>(-1); // 削除する問題ファイルの番号
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
 
   const handleClickOpen = () => {
@@ -39,14 +33,8 @@ export const DeleteFileSection = ({
   };
 
   // ファイルと問題削除
-  const deleteFile = () => {
-    // 設定ステートない場合はreturn(storybook表示用に設定)
-    if (!setMessage || !setDeleteFileNum) {
-      return;
-    }
-
+  const deleteFile = async () => {
     handleClose();
-
     if (deleteFileNum === -1) {
       setMessage({
         message: 'エラー:問題ファイルを選択して下さい',
@@ -55,34 +43,16 @@ export const DeleteFileSection = ({
       });
       return;
     }
-
     setMessage({
       message: '通信中...',
       messageColor: '#d3d3d3',
       isDisplay: true
     });
-    del(
-      '/quiz/file',
-      {
-        file_id: deleteFileNum
-      },
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200 || data.status === 201) {
-          setMessage({
-            message: `ファイルを削除しました(id:${deleteFileNum})`,
-            messageColor: 'success.light',
-            isDisplay: true
-          });
-        } else {
-          setMessage({
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          });
-        }
-      }
-    );
-    setDeleteFileNum(-1);
+    const result = await deleteQuizFileAPI({ deleteQuizFileApiRequest: { file_id: deleteFileNum } });
+    setMessage(result.message);
+    if (result.message.messageColor === 'success.light') {
+      setDeleteFileNum(-1);
+    }
   };
 
   return (
@@ -93,7 +63,7 @@ export const DeleteFileSection = ({
           className={'cardContent'}
           optionList={filelistoption}
           onChange={(e) => {
-            setDeleteFileNum && setDeleteFileNum(+e.target.value);
+            setDeleteFileNum(+e.target.value);
           }}
         />
         <Button label="削除" variant="contained" attr="after-inline" onClick={() => handleClickOpen()} />
@@ -113,8 +83,8 @@ export const DeleteFileSection = ({
             <Button label="キャンセル" onClick={handleClose} variant="outlined" />
             <Button
               label="削除"
-              onClick={() => {
-                deleteFile();
+              onClick={async () => {
+                await deleteFile();
               }}
               variant="contained"
             />
