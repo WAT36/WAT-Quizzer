@@ -129,13 +129,6 @@ export interface WordDetailData {
   word_subsource: WordSubSourceData[];
 }
 
-// 追加する格言のステート型
-export interface InputSayingState {
-  bookId: number;
-  saying: string;
-  explanation: string;
-}
-
 export interface DbHealthCheckState {
   status: string;
   color: string;
