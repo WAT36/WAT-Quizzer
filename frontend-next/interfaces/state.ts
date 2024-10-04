@@ -128,8 +128,3 @@ export interface WordDetailData {
   }[];
   word_subsource: WordSubSourceData[];
 }
-
-export interface DbHealthCheckState {
-  status: string;
-  color: string;
-}
