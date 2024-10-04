@@ -1,6 +1,6 @@
 import { GetQuizApiResponseDto } from '../get'
-import { ApiResult, post } from '../../api'
-import { ClearQuizAPIRequestDto, ProcessingApiSingleReponse } from '../../..'
+import { ApiResult, post, ProcessingApiReponse } from '../../api'
+import { ClearQuizAPIRequestDto } from './dto'
 
 interface ClearQuizButtonProps {
   getQuizResponseData: GetQuizApiResponseDto
@@ -45,7 +45,7 @@ export const clearQuizAPI = async ({
       file_num: getQuizResponseData.file_num,
       quiz_num: getQuizResponseData.quiz_num
     } as ClearQuizAPIRequestDto,
-    (data: ProcessingApiSingleReponse) => {
+    (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         return {
           message: {

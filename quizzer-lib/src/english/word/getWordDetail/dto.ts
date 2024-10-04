@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../../..'
+import { ApiResponse } from '@/api'
 
 // 英単語詳細取得APIレスポンス型
 export interface GetWordDetailAPIResponseDto extends ApiResponse {

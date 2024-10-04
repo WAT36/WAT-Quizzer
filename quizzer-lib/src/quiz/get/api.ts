@@ -1,6 +1,5 @@
 import { GetQuizAPIRequestDto, GetQuizApiResponseDto } from '.'
-import { ProcessingApiSingleReponse } from '../../..'
-import { ApiResult, get } from '../../api'
+import { ApiResult, get, ProcessingApiReponse } from '../../api'
 
 interface GetQuizAPIProps {
   getQuizRequestData: GetQuizAPIRequestDto
@@ -46,7 +45,7 @@ export const getQuizAPI = async ({
       : '/quiz'
   const result = await get(
     path,
-    (data: ProcessingApiSingleReponse) => {
+    (data: ProcessingApiReponse) => {
       if (data.status === 404) {
         return {
           message: {

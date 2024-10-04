@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../../..'
+import { ApiResponse } from '@/api'
 
 // sourceからの取得結果
 export interface SourceApiResponse extends ApiResponse {

@@ -1,5 +1,9 @@
-import { AddAPIResponseDto, ProcessingAddApiReponse } from '../../../..'
-import { ApiResult, put } from '../../../api'
+import {
+  AddAPIResponseDto,
+  ApiResult,
+  ProcessingApiReponse,
+  put
+} from '../../../api'
 import { AddCategoryToQuizAPIRequestDto } from '../add/dto'
 
 interface DeleteCategoryOfQuizAPIProps {
@@ -25,7 +29,7 @@ export const deleteCategoryOfQuizAPI = async ({
     {
       ...deleteCategoryToQuizRequestData
     },
-    (data: ProcessingAddApiReponse) => {
+    (data: ProcessingApiReponse) => {
       if (String(data.status)[0] === '2' || String(data.status)[0] === '3') {
         const result: AddAPIResponseDto = data.body as AddAPIResponseDto
         return {

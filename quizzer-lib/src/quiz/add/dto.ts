@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../..'
+import { ApiResponse } from '@/api'
 import { EditQuizAPIRequestDto } from '../edit/dto'
 
 export type AddQuizAPIRequestDto = Omit<EditQuizAPIRequestDto, 'quiz_num'>

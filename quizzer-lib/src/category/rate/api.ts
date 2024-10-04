@@ -1,5 +1,4 @@
-import { ProcessingApiSingleReponse } from '../../..'
-import { ApiResult, get } from '../../api'
+import { ApiResult, get, ProcessingApiReponse } from '../../api'
 import {
   GetAccuracyRateByCategoryAPIResponseDto,
   GetCategoryRateAPIRequestDto
@@ -24,7 +23,7 @@ export const getAccuracyRateByCategoryAPI = async ({
 
   const result = await get(
     '/category/rate',
-    (data: ProcessingApiSingleReponse) => {
+    (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const result: GetAccuracyRateByCategoryAPIResponseDto =
           data.body as GetAccuracyRateByCategoryAPIResponseDto

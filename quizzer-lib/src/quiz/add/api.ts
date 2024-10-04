@@ -1,6 +1,5 @@
 import { AddQuizAPIRequestDto, AddQuizApiResponseDto } from './dto'
-import { ApiResult, post } from '../../api'
-import { ProcessingAddApiReponse } from '../../..'
+import { ApiResult, post, ProcessingApiReponse } from '../../api'
 
 interface AddQuizButtonProps {
   addQuizRequestData: AddQuizAPIRequestDto
@@ -53,7 +52,7 @@ export const addQuizAPI = async ({
   const result = await post(
     apiPath,
     { ...addQuizRequestData },
-    (data: ProcessingAddApiReponse) => {
+    (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
         result.log = `Added!! [${result.file_num}-${result.quiz_num}]:${result.quiz_sentense},${result.answer}`

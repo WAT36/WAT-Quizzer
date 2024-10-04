@@ -1,10 +1,6 @@
-import {
-  GetQuizApiResponseDto,
-  parseStrToBool,
-  ProcessingApiReponse
-} from '../../..'
+import { GetQuizApiResponseDto, parseStrToBool } from '../../..'
 import { SearchQuizAPIRequestDto } from './dto'
-import { ApiResult, get } from '../../api'
+import { ApiResult, get, ProcessingApiReponse } from '../../api'
 
 interface SearchQuizButtonProps {
   searchQuizRequestData: SearchQuizAPIRequestDto
@@ -40,7 +36,7 @@ export const searchQuizAPI = async ({
     (data: ProcessingApiReponse) => {
       if (
         (String(data.status)[0] === '2' || String(data.status)[0] === '3') &&
-        data.body?.length > 0
+        data.body
       ) {
         const result: GetQuizApiResponseDto[] =
           data.body as GetQuizApiResponseDto[]
@@ -52,7 +48,7 @@ export const searchQuizAPI = async ({
           },
           result
         }
-      } else if (data.status === 404 || data.body?.length === 0) {
+      } else if (data.status === 404 || data.body) {
         return {
           message: {
             message: 'エラー:条件に合致するデータはありません',

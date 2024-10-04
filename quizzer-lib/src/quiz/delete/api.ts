@@ -1,9 +1,5 @@
-import {
-  AddQuizApiResponseDto,
-  GetQuizAPIRequestDto,
-  ProcessingApiSingleReponse
-} from '../../..'
-import { ApiResult, del } from '../../api'
+import { AddQuizApiResponseDto } from '../../..'
+import { ApiResult, del, ProcessingApiReponse } from '../../api'
 import { DeleteQuizAPIRequestDto } from './dto'
 
 interface DeleteQuizAPIProps {
@@ -30,7 +26,7 @@ export const deleteQuiz = async ({
     {
       ...deleteQuizAPIRequestData
     },
-    (data: ProcessingApiSingleReponse) => {
+    (data: ProcessingApiReponse) => {
       if (data.status === 200) {
         const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
         return {

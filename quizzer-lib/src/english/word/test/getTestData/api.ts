@@ -1,9 +1,8 @@
-import { ProcessingApiSingleReponse } from 'quizzer-lib'
 import {
   GetEnglishWordTestDataAPIRequestDto,
   GetEnglishWordTestDataAPIResponseDto
 } from '.'
-import { get, ApiResult } from '../../../../api'
+import { get, ApiResult, ProcessingApiReponse } from '../../../../api'
 
 interface GetEnglishWordTestDataAPIProps {
   getEnglishWordTestData: GetEnglishWordTestDataAPIRequestDto
@@ -14,7 +13,7 @@ export const getEnglishWordTestDataAPI = async ({
 }: GetEnglishWordTestDataAPIProps): Promise<ApiResult> => {
   const result = await get(
     '/english/word/test',
-    (data: ProcessingApiSingleReponse) => {
+    (data: ProcessingApiReponse) => {
       if (data.status === 200 && data.body) {
         const result: GetEnglishWordTestDataAPIResponseDto =
           data.body as GetEnglishWordTestDataAPIResponseDto

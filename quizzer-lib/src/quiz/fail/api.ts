@@ -1,6 +1,5 @@
 import { GetQuizApiResponseDto } from '../get'
-import { ApiResult, post } from '../../api'
-import { ProcessingApiSingleReponse } from '../../..'
+import { ApiResult, post, ProcessingApiReponse } from '../../api'
 
 interface FailQuizButtonProps {
   getQuizResponseData: GetQuizApiResponseDto
@@ -45,7 +44,7 @@ export const failQuizAPI = async ({
       file_num: getQuizResponseData.file_num,
       quiz_num: getQuizResponseData.quiz_num
     },
-    (data: ProcessingApiSingleReponse) => {
+    (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         return {
           message: {

@@ -1,5 +1,4 @@
-import { ProcessingApiSingleReponse } from 'quizzer-lib'
-import { get, ApiResult, post, ProcessingApiReponse } from '../../../../api'
+import { ApiResult, post, ProcessingApiReponse } from '../../../../api'
 import { SubmitEnglishWordTestDataAPIRequestDto } from '.'
 
 interface SubmitEnglishBotTestButtonProps {
@@ -21,11 +20,6 @@ export const submitEnglishBotTestAPI = async ({
     }
   }
 
-  //   setMessageStater({
-  //     message: '通信中...',
-  //     messageColor: '#d3d3d3',
-  //     isDisplay: true
-  //   });
   const result = await post(
     selectedValue ? '/english/word/test/clear' : '/english/word/test/fail',
     {

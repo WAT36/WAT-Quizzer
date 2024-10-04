@@ -1,6 +1,5 @@
 import { EditQuizAPIRequestDto, EditQuizApiResponseDto } from './dto'
-import { ApiResult, post } from '../../api'
-import { ProcessingAddApiReponse } from '../../..'
+import { ApiResult, post, ProcessingApiReponse } from '../../api'
 
 interface EditQuizAPIProps {
   editQuizRequestData: EditQuizAPIRequestDto
@@ -32,7 +31,7 @@ export const editQuizAPI = async ({
     {
       ...editQuizRequestData
     },
-    (data: ProcessingAddApiReponse) => {
+    (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         const result: EditQuizApiResponseDto =
           data.body as EditQuizApiResponseDto

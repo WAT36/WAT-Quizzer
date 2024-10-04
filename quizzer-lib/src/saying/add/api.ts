@@ -1,6 +1,6 @@
 import { AddSayingAPIRequestDto } from './dto'
-import { ApiResult, post } from '../../api'
-import { AddQuizApiResponseDto, ProcessingAddApiReponse } from '../../..'
+import { ApiResult, post, ProcessingApiReponse } from '../../api'
+import { AddQuizApiResponseDto } from '../../..'
 
 interface AddSayingButtonProps {
   addSayingAPIRequest: AddSayingAPIRequestDto
@@ -32,7 +32,7 @@ export const addSayingAPI = async ({
     {
       ...addSayingAPIRequest
     },
-    (data: ProcessingAddApiReponse) => {
+    (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
         return {

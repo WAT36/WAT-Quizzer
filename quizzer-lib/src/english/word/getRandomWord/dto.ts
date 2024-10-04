@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../../..'
+import { ApiResponse } from '@/api'
 
 // 英単語ランダム取得APIレスポンス型
 export interface GetRandomWordAPIResponse extends ApiResponse {

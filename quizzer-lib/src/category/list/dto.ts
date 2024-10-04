@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../..'
+import { ApiResponse } from '@/api'
 
 export interface GetCategoryListAPIRequestDto {
   file_num: string

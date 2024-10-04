@@ -1,6 +1,10 @@
-import { AddAPIResponseDto, ProcessingAddApiReponse } from '../../../..'
 import { AddCategoryToQuizAPIRequestDto } from './dto'
-import { ApiResult, post } from '../../../api'
+import {
+  AddAPIResponseDto,
+  ApiResult,
+  post,
+  ProcessingApiReponse
+} from '../../../api'
 
 interface AddCategoryToQuizAPIProps {
   addCategoryToQuizRequestData: AddCategoryToQuizAPIRequestDto
@@ -24,7 +28,7 @@ export const addCategoryToQuizAPI = async ({
     {
       ...addCategoryToQuizRequestData
     },
-    (data: ProcessingAddApiReponse) => {
+    (data: ProcessingApiReponse) => {
       if (String(data.status)[0] === '2' || String(data.status)[0] === '3') {
         const result: AddAPIResponseDto = data.body as AddAPIResponseDto
         return {

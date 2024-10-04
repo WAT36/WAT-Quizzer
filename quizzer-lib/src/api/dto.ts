@@ -19,3 +19,7 @@ export interface ApiResult {
   message: Message
   result?: ApiResponse | ApiResponse[]
 }
+
+export interface AddAPIResponseDto {
+  result: string
+}
