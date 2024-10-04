@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/api'
+import { ApiResponse } from '../../api'
 
 export interface EditQuizAPIRequestDto {
   // TODO 基礎応用問題統合したら　このvalueは削除する？

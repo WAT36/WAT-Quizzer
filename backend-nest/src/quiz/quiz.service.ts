@@ -6,7 +6,7 @@ import {
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
-  DeleteAnswerLogAPIRequestDto,
+  DeleteAnswerLogOfFileApiRequestDto,
   getPrismaYesterdayRange,
   getRandomElementFromArray,
   getPrismaPastDayRange,
@@ -1516,7 +1516,7 @@ export class QuizService {
   }
 
   // 回答ログ削除(ファイル指定)
-  async deleteAnswerLogByFile(req: DeleteAnswerLogAPIRequestDto) {
+  async deleteAnswerLogByFile(req: DeleteAnswerLogOfFileApiRequestDto) {
     try {
       const { file_id } = req;
       // 指定ファイルの回答ログ削除

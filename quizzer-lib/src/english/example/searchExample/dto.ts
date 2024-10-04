@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/api'
+import { ApiResponse } from '../../../api'
 
 // 例文検索APIリクエスト型
 export interface SearchExampleAPIRequestDto {

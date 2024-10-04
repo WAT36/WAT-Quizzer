@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/api'
+import { ApiResponse } from '../../api'
 
 // TODO category/listのDTOと共通化
 export interface GetCategoryRateAPIRequestDto {

@@ -18,7 +18,7 @@ import {
   DeleteQuizAPIRequestDto,
   IntegrateToQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
-  DeleteAnswerLogAPIRequestDto,
+  DeleteAnswerLogOfFileApiRequestDto,
   AddCategoryToQuizAPIRequestDto,
 } from 'quizzer-lib';
 // import { AuthGuard } from '../auth/auth.guard';
@@ -206,7 +206,7 @@ export class QuizController {
   }
 
   @Patch('/answer_log/file')
-  async deleteAnswerLogByFile(@Body() req: DeleteAnswerLogAPIRequestDto) {
+  async deleteAnswerLogByFile(@Body() req: DeleteAnswerLogOfFileApiRequestDto) {
     return await this.quizService.deleteAnswerLogByFile(req);
   }
 

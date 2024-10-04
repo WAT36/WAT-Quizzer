@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/api'
+import { ApiResponse } from '../../../api'
 
 // quiz/file/statisticsからの取得結果
 export interface QuizFileStatisticsApiResponse extends ApiResponse {

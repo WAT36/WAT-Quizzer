@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/api'
+import { ApiResponse } from '../../api'
 
 // TODO numberにできるところはそうしたい
 export interface GetQuizAPIRequestDto {

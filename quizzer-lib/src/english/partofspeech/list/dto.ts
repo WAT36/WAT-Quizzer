@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/api'
+import { ApiResponse } from '../../../api'
 
 // partofspeechからの取得結果
 export interface PartofSpeechApiResponse extends ApiResponse {
