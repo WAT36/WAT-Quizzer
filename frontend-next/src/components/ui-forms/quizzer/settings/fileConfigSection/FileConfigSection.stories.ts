@@ -21,8 +21,8 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Main: Story = {
   args: {
-    fileName: '',
-    deleteFileNum: -1,
-    filelistoption: quizFileMock
+    setMessage: undefined,
+    filelistoption: [],
+    setFilelistoption: undefined
   }
 };

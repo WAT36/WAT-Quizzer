@@ -1,10 +1,10 @@
 import React from 'react';
 import { CardContent, Typography } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
-import { GetRandomSayingResponse } from 'quizzer-lib';
+import { GetSayingResponse } from 'quizzer-lib';
 
 interface SayingCardProps {
-  sayingResponse: GetRandomSayingResponse;
+  sayingResponse: GetSayingResponse;
 }
 
 export const SayingCard = ({ sayingResponse }: SayingCardProps) => {
@@ -22,7 +22,7 @@ export const SayingCard = ({ sayingResponse }: SayingCardProps) => {
             {sayingResponse.explanation}
           </Typography>
           <Typography id="saying-bookname" variant="subtitle1" component="p" color="grey.600">
-            {sayingResponse.selfhelp_book.name}
+            {sayingResponse.selfhelp_book?.name || ''}
           </Typography>
         </CardContent>
       </Card>
