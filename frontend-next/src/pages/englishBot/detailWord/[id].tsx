@@ -1,6 +1,5 @@
 import { CircularProgress, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getApiAndGetValue } from '@/api/API';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
@@ -27,6 +26,7 @@ import { AntonymStack } from '@/components/ui-forms/englishbot/detailWord/antony
 import { DerivativeStack } from '@/components/ui-forms/englishbot/detailWord/derivativeStack/DerivativeStack';
 import { EtymologyStack } from '@/components/ui-forms/englishbot/detailWord/etymologyStack/EtymologyStack';
 import { Button } from '@/components/ui-elements/button/Button';
+import React from 'react';
 
 type EachWordPageProps = {
   id: string;
@@ -119,11 +119,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     );
   };
 
-  return (
-    <>
-      <Layout mode="englishBot" contents={contents()} title={'各単語詳細'} />
-    </>
-  );
+  return <Layout mode="englishBot" contents={contents()} title={'各単語詳細'} />;
 }
 
 // getStaticPathsの返り値、各文書のファイルパス(dynamic routing([id])のためstring)
