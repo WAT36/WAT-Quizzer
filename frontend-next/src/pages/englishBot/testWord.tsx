@@ -8,6 +8,7 @@ import { apiResponsePullDownAdapter, getSourceListAPI, PullDownOptionDto, Source
 import { RadioGroup } from '@/components/ui-parts/radioGroup/RadioGroup';
 import { WordTestSection } from '@/components/ui-forms/englishbot/testWord/WordTestSection/WordTestSection';
 import { ExampleTestSection } from '@/components/ui-forms/englishbot/testWord/ExampleTestSection/ExampleTestSection';
+import React from 'react';
 
 type Props = {
   isMock?: boolean;
@@ -58,9 +59,5 @@ export default function TestWordPage({ isMock }: Props) {
     );
   };
 
-  return (
-    <>
-      <Layout mode="englishBot" contents={contents()} title={'単語テスト'} />
-    </>
-  );
+  return <Layout mode="englishBot" contents={contents()} title={'単語テスト'} />;
 }

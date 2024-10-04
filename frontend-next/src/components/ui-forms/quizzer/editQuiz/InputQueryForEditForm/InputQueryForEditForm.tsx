@@ -77,10 +77,7 @@ export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForE
   return (
     <>
       <FormGroup>
-        <FormControl>
-          <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
-        </FormControl>
-
+        <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
         <FormControl>
           <TextField
             label="問題番号"

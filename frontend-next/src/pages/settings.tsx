@@ -20,9 +20,10 @@ export default function Settings({ isMock }: Props) {
   const setMessage = useSetRecoilState(messageState);
 
   useEffect(() => {
-    async () => {
+    (async () => {
       setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
       const result = await listBook();
+      setMessage(result.message);
       if (result.result && Array.isArray(result.result)) {
         let booklist: PullDownOptionDto[] = [];
         for (var i = 0; i < result.result.length; i++) {
@@ -33,7 +34,7 @@ export default function Settings({ isMock }: Props) {
         }
         setBooklistoption(booklist);
       }
-    };
+    })();
   }, [setMessage]);
 
   const contents = () => {

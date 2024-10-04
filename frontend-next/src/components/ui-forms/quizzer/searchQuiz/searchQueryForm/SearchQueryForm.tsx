@@ -80,10 +80,7 @@ export const SearchQueryForm = ({
   return (
     <>
       <FormGroup>
-        <FormControl>
-          <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
-        </FormControl>
-
+        <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
         <FormControl>
           <TextField
             label="検索語句"
@@ -128,18 +125,16 @@ export const SearchQueryForm = ({
           />
         </FormGroup>
 
-        <FormControl>
-          <PullDown
-            label={'カテゴリ'}
-            optionList={categorylistoption}
-            onChange={(e) => {
-              setSearchQuizRequestData({
-                ...searchQuizRequestData,
-                category: String(e.target.value)
-              });
-            }}
-          />
-        </FormControl>
+        <PullDown
+          label={'カテゴリ'}
+          optionList={categorylistoption}
+          onChange={(e) => {
+            setSearchQuizRequestData({
+              ...searchQuizRequestData,
+              category: String(e.target.value)
+            });
+          }}
+        />
 
         <FormControl>
           <RangeSliderSection

@@ -35,18 +35,16 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData }: GetWo
     <>
       <Card attr={'through-card padding-vertical'}>
         <FormGroup>
-          <FormControl>
-            <PullDown
-              label={'出典'}
-              optionList={sourcelistoption}
-              onChange={(e) => {
-                setQueryOfTestData({
-                  ...queryOfTestData,
-                  source: String(e.target.value)
-                });
-              }}
-            />
-          </FormControl>
+          <PullDown
+            label={'出典'}
+            optionList={sourcelistoption}
+            onChange={(e) => {
+              setQueryOfTestData({
+                ...queryOfTestData,
+                source: String(e.target.value)
+              });
+            }}
+          />
           <FormControl className={styles.row}>
             サブ出典登録日時指定：
             <LocalizationProvider dateAdapter={AdapterDayjs}>

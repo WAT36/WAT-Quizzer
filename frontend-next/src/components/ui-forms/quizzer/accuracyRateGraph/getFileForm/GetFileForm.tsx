@@ -44,18 +44,16 @@ export const GetFileForm = ({ setAccuracyData }: GetFileFormProps) => {
   return (
     <>
       <FormGroup>
-        <FormControl>
-          <PullDown
-            label={'問題ファイル'}
-            optionList={filelistoption}
-            onChange={(e) => {
-              setCategoryRateData({
-                ...getCategoryRateData,
-                file_num: +e.target.value
-              });
-            }}
-          />
-        </FormControl>
+        <PullDown
+          label={'問題ファイル'}
+          optionList={filelistoption}
+          onChange={(e) => {
+            setCategoryRateData({
+              ...getCategoryRateData,
+              file_num: +e.target.value
+            });
+          }}
+        />
       </FormGroup>
       <Button
         label={'正解率表示'}

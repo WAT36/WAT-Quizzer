@@ -53,9 +53,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
   return (
     <>
       <FormGroup>
-        <FormControl>
-          <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
-        </FormControl>
+        <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
         <PutQuizForm putQuizRequestData={addQuizRequestData} setPutQuizRequestData={setAddQuizRequestData} />
       </FormGroup>
       <Button

@@ -78,10 +78,7 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
 
   return (
     <FormGroup>
-      <FormControl>
-        <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
-      </FormControl>
-
+      <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
       <FormControl>
         <TextField
           label="問題番号"
@@ -95,19 +92,17 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
         />
       </FormControl>
 
-      <FormControl>
-        <PullDown
-          label={'カテゴリ'}
-          optionList={categorylistoption}
-          onChange={(e) => {
-            setQuizRequestData &&
-              setQuizRequestData({
-                ...getQuizRequestData,
-                category: String(e.target.value)
-              });
-          }}
-        />
-      </FormControl>
+      <PullDown
+        label={'カテゴリ'}
+        optionList={categorylistoption}
+        onChange={(e) => {
+          setQuizRequestData &&
+            setQuizRequestData({
+              ...getQuizRequestData,
+              category: String(e.target.value)
+            });
+        }}
+      />
 
       <FormControl>
         <RangeSliderSection

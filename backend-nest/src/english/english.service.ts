@@ -51,6 +51,7 @@ export class EnglishService {
       });
       return data;
     } catch (error: unknown) {
+      console.error(error);
       if (error instanceof Error) {
         throw new HttpException(
           error.message,
