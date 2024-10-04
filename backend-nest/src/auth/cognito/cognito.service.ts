@@ -4,8 +4,15 @@ import {
   InitiateAuthCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable } from '@nestjs/common';
-import { SignInResultResponse } from 'src/auth/auth.service';
 
+// TODO 共通libの方に持っていく
+export interface SignInResultResponse {
+  accessToken?: string;
+  idToken?: string;
+  refreshToken?: string;
+}
+
+// TODO 環境変数効くかな・・？
 @Injectable()
 export class CognitoService {
   readonly cognitoClient;
@@ -32,9 +39,9 @@ export class CognitoService {
     // TODO: Generate a JWT and return it here
     // instead of the user object
     return {
-      accessToken: initiateAuthResult.AuthenticationResult.AccessToken,
-      idToken: initiateAuthResult.AuthenticationResult.IdToken,
-      refreshToken: initiateAuthResult.AuthenticationResult.RefreshToken,
+      accessToken: initiateAuthResult.AuthenticationResult?.AccessToken,
+      idToken: initiateAuthResult.AuthenticationResult?.IdToken,
+      refreshToken: initiateAuthResult.AuthenticationResult?.RefreshToken,
     };
   }
 }

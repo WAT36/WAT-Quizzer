@@ -1,6 +1,5 @@
 import { ProcessingApiReponse } from '../interfaces'
-import { getApiKey } from '../../lib/aws/secrets'
-import { Message } from '../common/message'
+import { getApiKey } from '../lib/aws/secrets'
 import { ApiResult } from './'
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || ''

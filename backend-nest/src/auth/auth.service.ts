@@ -1,12 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CognitoService } from 'lib/aws/cognito';
+import {
+  CognitoService,
+  SignInResultResponse,
+} from './cognito/cognito.service';
 
-// TODO 共通libの方に持っていく
-export interface SignInResultResponse {
-  accessToken: string;
-  idToken: string;
-  refreshToken: string;
-}
 @Injectable()
 export class AuthService {
   constructor(private cognitoService: CognitoService) {}

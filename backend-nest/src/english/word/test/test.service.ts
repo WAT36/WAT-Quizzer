@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { getDateForSqlString } from 'lib/str';
 import { PrismaClient } from '@prisma/client';
 import {
+  getDateForSqlString,
   getPastDate,
   getPrismaPastDayRange,
   getRandomElementsFromArray,
