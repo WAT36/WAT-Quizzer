@@ -1,12 +1,11 @@
 import { Card, CardContent, CardHeader } from '@mui/material';
 import styles from '../Settings.module.css';
-import { MessageState } from '../../../../../../interfaces/state';
 import { DeleteAnswerLogFileSection } from '../deleteAnswerLogFileSection/DeleteAnswerLogFileSection';
-import { PullDownOptionDto } from 'quizzer-lib';
+import { PullDownOptionDto, Message } from 'quizzer-lib';
 
 interface LogConfigSectionProps {
   filelistoption: PullDownOptionDto[];
-  setMessage: React.Dispatch<React.SetStateAction<MessageState>>;
+  setMessage: React.Dispatch<React.SetStateAction<Message>>;
 }
 
 export const LogConfigSection = ({ filelistoption, setMessage }: LogConfigSectionProps) => {

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Button, FormControl, FormGroup, TextField } from '@mui/material';
-import { MessageState } from '../../../../../../interfaces/state';
 import styles from '../Dictionary.module.css';
 import { GridRowsProp } from '@mui/x-data-grid';
-import { searchWordAPI, SearchWordAPIRequestDto } from 'quizzer-lib';
+import { searchWordAPI, SearchWordAPIRequestDto, Message } from 'quizzer-lib';
 
 interface SearchInputSectionProps {
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setMessage?: React.Dispatch<React.SetStateAction<Message>>;
   setSearchResult?: React.Dispatch<React.SetStateAction<GridRowsProp>>;
 }
 

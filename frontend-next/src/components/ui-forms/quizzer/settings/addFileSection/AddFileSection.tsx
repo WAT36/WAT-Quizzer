@@ -2,8 +2,8 @@ import styles from '../Settings.module.css';
 import { CardContent, CardHeader } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
-import { MessageState } from '../../../../../../interfaces/state';
 import {
+  Message,
   getRandomStr,
   PullDownOptionDto,
   quizFileListAPIResponseToPullDownAdapter,
@@ -15,7 +15,7 @@ import { useState } from 'react';
 import React from 'react';
 
 interface AddFileSectionProps {
-  setMessage: React.Dispatch<React.SetStateAction<MessageState>>;
+  setMessage: React.Dispatch<React.SetStateAction<Message>>;
   setFilelistoption: React.Dispatch<React.SetStateAction<PullDownOptionDto[]>>;
 }
 

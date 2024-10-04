@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
 import { CircularProgress, Snackbar } from '@mui/material';
-import { MessageState } from '../../../../interfaces/state';
+import { Message } from 'quizzer-lib';
 
 interface MessageBarProps {
-  messageState: MessageState;
-  setMessageState?: React.Dispatch<React.SetStateAction<MessageState>>;
+  messageState: Message;
+  setMessageState?: React.Dispatch<React.SetStateAction<Message>>;
 }
 
 export const MessageBar = ({ messageState, setMessageState }: MessageBarProps) => {

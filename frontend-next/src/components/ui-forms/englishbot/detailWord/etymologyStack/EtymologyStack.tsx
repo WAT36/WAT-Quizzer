@@ -3,11 +3,11 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { Box, CircularProgress, IconButton, Stack, TextField, Typography } from '@mui/material';
-import { MessageState } from '../../../../../../interfaces/state';
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {
+  Message,
   AddEtymologyAPIRequestDto,
   GetWordDetailAPIResponseDto,
   LinkWordEtymologyAPIRequestDto,
@@ -18,7 +18,7 @@ import {
 
 interface EtymologyStackProps {
   wordDetail: GetWordDetailAPIResponseDto;
-  setMessage?: React.Dispatch<React.SetStateAction<MessageState>>;
+  setMessage?: React.Dispatch<React.SetStateAction<Message>>;
   setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
 }
 
@@ -49,7 +49,6 @@ export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: Etymol
   };
 
   return (
-    <>
       <Card variant="outlined" attr={'silver-card'}>
         <Typography align="left" variant="h4" component="p">
           {'語源'}
@@ -169,6 +168,5 @@ export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: Etymol
           </Box>
         </Modal>
       </Card>
-    </>
   );
 };
