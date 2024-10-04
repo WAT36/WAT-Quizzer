@@ -1,4 +1,5 @@
-export * from './getSaying'
+export * from './get'
 export * from './book'
 export * from './add'
 export * from './search'
+export * from './edit'

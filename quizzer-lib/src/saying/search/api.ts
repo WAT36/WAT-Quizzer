@@ -14,16 +14,6 @@ export const searchSayingAPI = async ({
       if (data.status === 200 && Array.isArray(data.body)) {
         const result: SearchSayingAPIResponseDto[] =
           data.body as SearchSayingAPIResponseDto[]
-        // setSearchResult(
-        //   res.map((x) => {
-        //     return {
-        //       id: x.id,
-        //       explanation: x.explanation,
-        //       saying: x.saying,
-        //       name: x.selfhelp_book.name
-        //     };
-        //   })
-        // );
         return {
           message: {
             message: '　',
