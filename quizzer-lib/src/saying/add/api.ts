@@ -27,7 +27,6 @@ export const addSayingAPI = async ({
     }
   }
 
-  //setMessageStater({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
   const result = await post(
     '/saying',
     {

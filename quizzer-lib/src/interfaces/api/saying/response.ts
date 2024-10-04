@@ -14,21 +14,6 @@ export interface GetBookAPIResponseDto extends ApiResponse {
   name: string
 }
 
-/// 以下、格言(saying)系
-export interface SearchSayingResponse extends ApiResponse {
-  id: number
-  saying: string
-  explanation: string
-  selfhelp_book: {
-    name: string
-  }
-}
-
-export interface GetSelfHelpBookResponse extends ApiResponse {
-  id: number
-  name: string
-}
-
 // おすすめイベント取得APIの型
 export interface GetPopularEventResponse extends ApiResponse {
   name: string
