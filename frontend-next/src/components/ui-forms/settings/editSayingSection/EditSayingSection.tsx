@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { EditQueryOfSaying } from '../../../../../interfaces/state';
 import { CardContent, Input, Typography } from '@mui/material';
 import styles from '../Settings.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
@@ -7,14 +6,13 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { getSayingByIdAPI } from '@/api/saying/getSayingByIdAPI';
-import { editSayingAPI } from '@/api/saying/editSayingAPI';
+import { editSayingAPI, EditSayingAPIRequestDto, getSayingAPI, GetSayingRequest, GetSayingResponse } from 'quizzer-lib';
 
 interface EditSayingSectionProps {}
 
 export const EditSayingSection = ({}: EditSayingSectionProps) => {
-  const [id, setId] = useState<number>(-1);
-  const [editQueryOfSaying, setEditQueryOfSaying] = useState<EditQueryOfSaying>({ id: -1, saying: '' });
+  const [getSayingRequestData, setSayingRequestData] = useState<GetSayingRequest>({ id: -1 });
+  const [editSayingRequestData, setEditSayingRequestData] = useState<EditSayingAPIRequestDto>({ id: -1, saying: '' });
   const setMessage = useSetRecoilState(messageState);
   return (
     <>
@@ -25,20 +23,37 @@ export const EditSayingSection = ({}: EditSayingSectionProps) => {
             className={['fullWidth']}
             variant="outlined"
             setStater={(value: string) => {
-              setId(+value);
+              setSayingRequestData({
+                ...getSayingRequestData,
+                id: +value
+              });
             }}
           />
           <Button
             label={'取得'}
             variant="contained"
             color="primary"
-            onClick={(e) => getSayingByIdAPI({ id, setMessageStater: setMessage, setEditQueryOfSaying })}
+            onClick={async (e) => {
+              setMessage({
+                message: '通信中...',
+                messageColor: '#d3d3d3',
+                isDisplay: true
+              });
+              const result = await getSayingAPI({ getSayingRequestData });
+              setMessage(result.message);
+              if (result.result) {
+                const getResult = result.result as GetSayingResponse;
+                setEditSayingRequestData({
+                  ...getResult
+                });
+              }
+            }}
             attr={'after-inline'}
           />
         </CardContent>
         <CardContent>
           <Typography variant="subtitle1" component="h2">
-            {`ID:${editQueryOfSaying.id < 0 ? '' : editQueryOfSaying.id}`}
+            {`ID:${editSayingRequestData.id < 0 ? '' : editSayingRequestData.id}`}
           </Typography>
           <Typography variant="subtitle1" component="h2" className={styles.messageBox}>
             <label htmlFor="saying">格言　　：</label>
@@ -46,10 +61,10 @@ export const EditSayingSection = ({}: EditSayingSectionProps) => {
               fullWidth
               maxRows={1}
               id="saying"
-              value={editQueryOfSaying.saying || ''}
+              value={editSayingRequestData.saying || ''}
               onChange={(e) => {
-                setEditQueryOfSaying({
-                  ...editQueryOfSaying,
+                setEditSayingRequestData({
+                  ...editSayingRequestData,
                   saying: e.target.value
                 });
               }}
@@ -61,10 +76,10 @@ export const EditSayingSection = ({}: EditSayingSectionProps) => {
               fullWidth
               maxRows={1}
               id="explanation"
-              value={editQueryOfSaying.explanation || ''}
+              value={editSayingRequestData.explanation || ''}
               onChange={(e) => {
-                setEditQueryOfSaying({
-                  ...editQueryOfSaying,
+                setEditSayingRequestData({
+                  ...editSayingRequestData,
                   explanation: e.target.value
                 });
               }}
@@ -74,7 +89,16 @@ export const EditSayingSection = ({}: EditSayingSectionProps) => {
             label={'更新'}
             variant="contained"
             color="primary"
-            onClick={(e) => editSayingAPI({ editQueryOfSaying, setMessageStater: setMessage, setEditQueryOfSaying })}
+            onClick={async (e) => {
+              setMessage({
+                message: '通信中...',
+                messageColor: '#d3d3d3',
+                isDisplay: true
+              });
+              const result = await editSayingAPI({ editSayingRequestData });
+              setMessage(result.message);
+              setEditSayingRequestData({ id: -1, saying: '' });
+            }}
             attr={'after-inline'}
           />
         </CardContent>

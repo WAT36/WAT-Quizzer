@@ -1,5 +1,4 @@
-import React from 'react';
-import { InputSayingState } from '../../../../../interfaces/state';
+import React, { useState } from 'react';
 import { CardContent, SelectChangeEvent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Button } from '@/components/ui-elements/button/Button';
@@ -8,16 +7,14 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { addSayingAPI } from '@/api/saying/addSayingAPI';
-import { PullDownOptionDto } from 'quizzer-lib';
+import { addSayingAPI, AddSayingAPIRequestDto, initAddSayingMockData, PullDownOptionDto } from 'quizzer-lib';
 
 interface AddSayingFormProps {
-  inputSaying: InputSayingState;
   booklistoption: PullDownOptionDto[];
-  setInputSaying?: React.Dispatch<React.SetStateAction<InputSayingState>>;
 }
 
-export const AddSayingForm = ({ inputSaying, booklistoption, setInputSaying }: AddSayingFormProps) => {
+export const AddSayingForm = ({ booklistoption }: AddSayingFormProps) => {
+  const [addSayingAPIRequest, setAddSayingAPIRequest] = useState<AddSayingAPIRequestDto>(initAddSayingMockData);
   const setMessage = useSetRecoilState(messageState);
   return (
     <>
@@ -27,12 +24,10 @@ export const AddSayingForm = ({ inputSaying, booklistoption, setInputSaying }: A
             label={''}
             optionList={booklistoption}
             onChange={(e: SelectChangeEvent<number>) => {
-              if (setInputSaying) {
-                setInputSaying({
-                  ...inputSaying,
-                  bookId: +e.target.value
-                });
-              }
+              setAddSayingAPIRequest({
+                ...addSayingAPIRequest,
+                book_id: +e.target.value
+              });
             }}
           />
         </CardContent>
@@ -42,12 +37,10 @@ export const AddSayingForm = ({ inputSaying, booklistoption, setInputSaying }: A
             variant="outlined"
             className={['fullWidth']}
             setStater={(value: string) => {
-              if (setInputSaying) {
-                setInputSaying({
-                  ...inputSaying,
-                  saying: value
-                });
-              }
+              setAddSayingAPIRequest({
+                ...addSayingAPIRequest,
+                saying: value
+              });
             }}
           />
         </CardContent>
@@ -57,19 +50,28 @@ export const AddSayingForm = ({ inputSaying, booklistoption, setInputSaying }: A
             variant="outlined"
             className={['fullWidth']}
             setStater={(value: string) => {
-              if (setInputSaying) {
-                setInputSaying({
-                  ...inputSaying,
-                  explanation: value
-                });
-              }
+              setAddSayingAPIRequest({
+                ...addSayingAPIRequest,
+                explanation: value
+              });
             }}
           />
           <Button
             label={'格言登録'}
             variant="contained"
             color="primary"
-            onClick={(e) => addSayingAPI({ inputSaying, setMessageStater: setMessage, setInputSaying })}
+            onClick={async (e) => {
+              setMessage({
+                message: '通信中...',
+                messageColor: '#d3d3d3',
+                isDisplay: true
+              });
+              const result = await addSayingAPI({ addSayingAPIRequest });
+              setMessage(result.message);
+              if (result.message.messageColor === 'success.light') {
+                setAddSayingAPIRequest(initAddSayingMockData);
+              }
+            }}
             attr={'after-inline'}
           />
         </CardContent>

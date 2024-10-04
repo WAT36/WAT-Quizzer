@@ -9,20 +9,13 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { searchSayingColumns } from '../../../../../utils/tableColumn';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { searchSayingAPI } from '@/api/saying/searchSayingAPI';
+import { searchSayingAPI, SearchSayingAPIRequestDto } from 'quizzer-lib';
 
-interface SearchSayingSectionProps {
-  queryOfSaying: string;
-  setQueryOfSaying?: React.Dispatch<React.SetStateAction<string>>;
-  setCheckedIdList?: React.Dispatch<React.SetStateAction<number[]>>;
-}
+interface SearchSayingSectionProps {}
 
-export const SearchSayingSection = ({
-  queryOfSaying,
-  setQueryOfSaying,
-  setCheckedIdList
-}: SearchSayingSectionProps) => {
+export const SearchSayingSection = ({}: SearchSayingSectionProps) => {
   const [searchResult, setSearchResult] = useState<GridRowsProp>([] as GridRowsProp);
+  const [searchSayingRequestData, setSearchSayingRequestData] = useState<SearchSayingAPIRequestDto>({ saying: '' });
   const setMessage = useSetRecoilState(messageState);
   return (
     <>
@@ -32,21 +25,42 @@ export const SearchSayingSection = ({
             label="格言検索(部分一致)"
             className={['fullWidth']}
             variant="outlined"
-            setStater={setQueryOfSaying}
+            setStater={(value: string) => {
+              setSearchSayingRequestData({
+                ...searchSayingRequestData,
+                saying: value
+              });
+            }}
           />
           <Button
             label={'検索'}
             variant="contained"
             color="primary"
-            onClick={(e) => searchSayingAPI({ queryOfSaying, setMessageStater: setMessage, setSearchResult })}
+            onClick={async (e) => {
+              setMessage({
+                message: '通信中...',
+                messageColor: '#d3d3d3',
+                isDisplay: true
+              });
+              const result = await searchSayingAPI({ searchSayingRequestData });
+              setMessage(result.message);
+              if (Array.isArray(result.result)) {
+                setSearchResult(
+                  result.result.map((x) => {
+                    return {
+                      id: x.id,
+                      explanation: x.explanation,
+                      saying: x.saying,
+                      name: x.selfhelp_book.name
+                    };
+                  })
+                );
+              }
+            }}
             attr={'after-inline'}
           />
         </CardContent>
-        <SearchResultTable
-          searchResult={searchResult}
-          columns={searchSayingColumns}
-          setCheckedIdList={setCheckedIdList}
-        />
+        <SearchResultTable searchResult={searchResult} columns={searchSayingColumns} />
       </Card>
     </>
   );
