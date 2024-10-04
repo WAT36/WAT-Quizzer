@@ -3,7 +3,7 @@ import {
   AddBookAPIRequestDto,
   AddSayingAPIRequestDto,
   EditSayingAPIRequestDto,
-  getRandomElementsFromArray,
+  getRandomElementFromArray,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -14,9 +14,10 @@ export class SayingService {
   async getRandomSaying(book_id?: number) {
     try {
       if (book_id) {
-        return getRandomElementsFromArray(
+        return getRandomElementFromArray(
           await prisma.saying.findMany({
             select: {
+              id: true,
               saying: true,
               explanation: true,
               selfhelp_book: {
@@ -33,12 +34,12 @@ export class SayingService {
               },
             },
           }),
-          1,
         );
       } else {
-        return getRandomElementsFromArray(
+        return getRandomElementFromArray(
           await prisma.saying.findMany({
             select: {
+              id: true,
               saying: true,
               explanation: true,
               selfhelp_book: {
@@ -54,7 +55,6 @@ export class SayingService {
               },
             },
           }),
-          1,
         );
       }
     } catch (error: unknown) {
@@ -185,8 +185,14 @@ export class SayingService {
     try {
       return await prisma.saying.findUnique({
         select: {
+          id: true,
           saying: true,
           explanation: true,
+          selfhelp_book: {
+            select: {
+              name: true,
+            },
+          },
         },
         where: {
           id,

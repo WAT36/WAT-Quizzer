@@ -1,8 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import {
-  AddQuizFileAPIRequestDto,
-  DeleteQuizFileAPIRequestDto,
-} from 'quizzer-lib';
+import { AddQuizFileApiRequest, DeleteQuizFileApiRequest } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
 
@@ -63,7 +60,7 @@ export class QuizFileService {
   }
 
   // ファイル追加
-  async addFile(req: AddQuizFileAPIRequestDto) {
+  async addFile(req: AddQuizFileApiRequest) {
     try {
       const { file_name, file_nickname } = req;
       // ファイル追加
@@ -84,7 +81,7 @@ export class QuizFileService {
   }
 
   // ファイル削除（とりあえず基礎問題のみ）
-  async deleteFile(req: DeleteQuizFileAPIRequestDto) {
+  async deleteFile(req: DeleteQuizFileApiRequest) {
     try {
       const { file_id } = req;
 

@@ -1,9 +1,6 @@
 import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { QuizFileService } from './file.service';
-import {
-  AddQuizFileAPIRequestDto,
-  DeleteQuizFileAPIRequestDto,
-} from 'quizzer-lib';
+import { AddQuizFileApiRequest, DeleteQuizFileApiRequest } from 'quizzer-lib';
 // import { AuthGuard } from '../../auth/auth.guard';
 
 // @UseGuards(AuthGuard)
@@ -22,12 +19,12 @@ export class QuizFileController {
   }
 
   @Post()
-  async addFile(@Body() req: AddQuizFileAPIRequestDto) {
+  async addFile(@Body() req: AddQuizFileApiRequest) {
     return await this.quizFileService.addFile(req);
   }
 
   @Delete()
-  async deleteFile(@Body() req: DeleteQuizFileAPIRequestDto) {
+  async deleteFile(@Body() req: DeleteQuizFileApiRequest) {
     return await this.quizFileService.deleteFile(req);
   }
 }
