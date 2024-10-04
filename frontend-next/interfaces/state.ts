@@ -133,10 +133,3 @@ export interface DbHealthCheckState {
   status: string;
   color: string;
 }
-
-// 格言取得
-export interface EditQueryOfSaying {
-  id: number;
-  saying: string;
-  explanation?: string;
-}
