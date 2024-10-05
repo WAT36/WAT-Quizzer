@@ -5,9 +5,9 @@ generator client {
 }
 
 generator erd {
-  provider = "prisma-erd-generator"
-  theme = "forest"
-  output = "ERD.md"
+  provider                  = "prisma-erd-generator"
+  theme                     = "forest"
+  output                    = "ERD.md"
   includeRelationFromFields = true
 }
 
