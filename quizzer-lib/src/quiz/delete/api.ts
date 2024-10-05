@@ -1,4 +1,9 @@
-import { AddQuizApiResponseDto } from '../../..'
+import {
+  AddQuizApiResponseDto,
+  errorMessage,
+  MESSAGES,
+  successMessage
+} from '../../..'
 import { ApiResult, del, ProcessingApiReponse } from '../../api'
 import { DeleteQuizAPIRequestDto } from './dto'
 
@@ -12,13 +17,7 @@ export const deleteQuiz = async ({
     !deleteQuizAPIRequestData.file_num ||
     !deleteQuizAPIRequestData.quiz_num
   ) {
-    return {
-      message: {
-        message: 'エラー:削除する問題を取得して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00009) }
   }
 
   const result = await del(
@@ -30,34 +29,17 @@ export const deleteQuiz = async ({
       if (data.status === 200) {
         const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
         return {
-          message: {
-            message:
-              'Success! 削除に成功しました [' +
-              deleteQuizAPIRequestData.file_num +
-              '-' +
-              deleteQuizAPIRequestData.quiz_num +
-              ']',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(
+            MESSAGES.SUCCESS.MSG00009,
+            String(deleteQuizAPIRequestData.file_num),
+            String(deleteQuizAPIRequestData.quiz_num)
+          ),
           result
         }
       } else if (data.status === 404) {
-        return {
-          message: {
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     }
   )

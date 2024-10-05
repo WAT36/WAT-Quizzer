@@ -1,3 +1,4 @@
+import { defaultMessage, errorMessage, MESSAGES } from '../../../..'
 import { get, ApiResult, ProcessingApiReponse } from '../../../api'
 import { GetSelfHelpBookResponse } from './dto'
 
@@ -8,21 +9,11 @@ export const listBook = async (): Promise<ApiResult> => {
       const result: GetSelfHelpBookResponse[] =
         data.body as GetSelfHelpBookResponse[]
       return {
-        message: {
-          message: '　',
-          messageColor: 'success.light',
-          isDisplay: false
-        },
+        message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
         result
       }
     } else {
-      return {
-        message: {
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error',
-          isDisplay: true
-        }
-      }
+      return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
     }
   })
   return result

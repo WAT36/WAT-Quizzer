@@ -1,5 +1,6 @@
 import { AddQuizAPIRequestDto, AddQuizApiResponseDto } from './dto'
 import { ApiResult, post, ProcessingApiReponse } from '../../api'
+import { errorMessage, MESSAGES, successMessage } from '../../..'
 
 interface AddQuizButtonProps {
   addQuizRequestData: AddQuizAPIRequestDto
@@ -10,21 +11,9 @@ export const addQuizAPI = async ({
   addQuizRequestData
 }: AddQuizButtonProps): Promise<ApiResult> => {
   if (addQuizRequestData.file_num === -1) {
-    return {
-      message: {
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
   } else if (!addQuizRequestData.question || !addQuizRequestData.answer) {
-    return {
-      message: {
-        message: 'エラー:問題文及び答えを入力して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00005) }
   }
 
   // 問題形式によりAPI決定
@@ -41,11 +30,10 @@ export const addQuizAPI = async ({
       break
     default:
       return {
-        message: {
-          message: `エラー：問題形式不正:${addQuizRequestData.value}`,
-          messageColor: 'error',
-          isDisplay: true
-        }
+        message: errorMessage(
+          MESSAGES.ERROR.MSG00006,
+          String(addQuizRequestData.value)
+        )
       }
   }
 
@@ -67,21 +55,11 @@ export const addQuizAPI = async ({
         }
 
         return {
-          message: {
-            message: 'Success!! 問題を追加できました!',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(MESSAGES.SUCCESS.MSG00002),
           result
         }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     }
   )

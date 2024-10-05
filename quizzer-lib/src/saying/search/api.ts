@@ -1,5 +1,6 @@
 import { SearchSayingAPIRequestDto, SearchSayingAPIResponseDto } from './dto'
 import { ApiResult, get, ProcessingApiReponse } from '../../api'
+import { defaultMessage, errorMessage, MESSAGES } from '../../..'
 
 interface searchSayingAPIProps {
   searchSayingRequestData: SearchSayingAPIRequestDto
@@ -15,32 +16,16 @@ export const searchSayingAPI = async ({
         const result: SearchSayingAPIResponseDto[] =
           data.body as SearchSayingAPIResponseDto[]
         return {
-          message: {
-            message: '　',
-            messageColor: 'success.light',
-            isDisplay: false
-          },
+          message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
           result
         }
       } else if (
         data.status === 404 ||
         (Array.isArray(data.body) && data.body?.length === 0)
       ) {
-        return {
-          message: {
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     },
     {

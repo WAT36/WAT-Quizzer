@@ -1,4 +1,5 @@
 import { CheckQuizAPIRequestDto } from '../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import {
   AddAPIResponseDto,
   ApiResult,
@@ -14,21 +15,9 @@ export const checkOffQuizAPI = async ({
   checkQuizRequestData
 }: CheckOffQuizButtonProps): Promise<ApiResult> => {
   if (checkQuizRequestData.file_num === -1) {
-    return {
-      message: {
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
   } else if (checkQuizRequestData.quiz_num === '') {
-    return {
-      message: {
-        message: 'エラー:問題番号がありません',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00007) }
   }
 
   const result = await put(
@@ -40,21 +29,11 @@ export const checkOffQuizAPI = async ({
       if (data.status === 200 || data.status === 201) {
         const result: AddAPIResponseDto = data.body as AddAPIResponseDto
         return {
-          message: {
-            message: 'Success!! 全て更新しました(再検索してください)',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(MESSAGES.SUCCESS.MSG00005),
           result
         }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     }
   )

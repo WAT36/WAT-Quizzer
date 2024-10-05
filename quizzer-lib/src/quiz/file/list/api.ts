@@ -1,4 +1,5 @@
 import { GetQuizFileApiResponseDto } from '.'
+import { defaultMessage, errorMessage, MESSAGES } from '../../../..'
 import { get, ApiResult, ProcessingApiReponse } from '../../../api'
 
 // quizzer各画面用 問題ファイルリストをapi通信して取ってくる
@@ -14,23 +15,12 @@ export const getQuizFileListAPI = async (): Promise<ApiResult> => {
             data.body as GetQuizFileApiResponseDto[]
           // session storageに保存
           sessionStorage.setItem(storageKey, JSON.stringify(result))
-
           return {
-            message: {
-              message: '　',
-              messageColor: 'common.black',
-              isDisplay: false
-            },
+            message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
             result
           }
         } else {
-          return {
-            message: {
-              message: 'エラー:外部APIとの連携に失敗しました',
-              messageColor: 'error',
-              isDisplay: true
-            }
-          }
+          return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
         }
       },
       {}
@@ -39,11 +29,7 @@ export const getQuizFileListAPI = async (): Promise<ApiResult> => {
   } else {
     // 既にsession storageに値が入っている場合はそれを利用する
     return {
-      message: {
-        message: '　',
-        messageColor: 'common.black',
-        isDisplay: false
-      },
+      message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
       result: JSON.parse(savedFileList) as GetQuizFileApiResponseDto[]
     }
   }

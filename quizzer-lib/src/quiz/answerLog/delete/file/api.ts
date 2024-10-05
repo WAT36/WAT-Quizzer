@@ -1,4 +1,9 @@
-import { AddQuizApiResponseDto } from '../../../../../'
+import {
+  AddQuizApiResponseDto,
+  errorMessage,
+  MESSAGES,
+  successMessage
+} from '../../../../../'
 import { patch, ApiResult, ProcessingApiReponse } from '../../../../api'
 import { DeleteAnswerLogOfFileApiRequestDto } from './dto'
 
@@ -18,20 +23,15 @@ export const deleteAnswerLogOfQuizFileAPI = async ({
       if (data.status === 200 || data.status === 201) {
         const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
         return {
-          message: {
-            message: `回答ログを削除しました(id:${deleteLogOfFileRequest.file_id})`,
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(
+            MESSAGES.SUCCESS.MSG00003,
+            String(deleteLogOfFileRequest.file_id)
+          ),
           result
         }
       } else {
         return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: errorMessage(MESSAGES.ERROR.MSG00004),
           result
         }
       }

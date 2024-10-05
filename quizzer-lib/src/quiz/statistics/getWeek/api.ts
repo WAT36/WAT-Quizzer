@@ -1,4 +1,5 @@
 import { QuizStatisticsWeekApiResponse } from '.'
+import { defaultMessage, errorMessage, MESSAGES } from '../../../..'
 import { get, ProcessingApiReponse } from '../../../api'
 
 interface GetQuizStatisticsWeekAPIProps {}
@@ -9,32 +10,16 @@ export const getQuizStatisticsWeekDataAPI =
       '/quiz/statistics/week',
       (data: ProcessingApiReponse) => {
         if (data.status === 404) {
-          return {
-            message: {
-              message: 'エラー:条件に合致するデータはありません',
-              messageColor: 'error',
-              isDisplay: true
-            }
-          }
+          return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
         } else if (data.status === 200) {
           const result: QuizStatisticsWeekApiResponse[] =
             data.body as QuizStatisticsWeekApiResponse[]
           return {
-            message: {
-              message: '　',
-              messageColor: 'common.black',
-              isDisplay: false
-            },
+            message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
             result
           }
         } else {
-          return {
-            message: {
-              message: 'エラー:外部APIとの連携に失敗しました',
-              messageColor: 'error',
-              isDisplay: true
-            }
-          }
+          return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
         }
       },
       {}

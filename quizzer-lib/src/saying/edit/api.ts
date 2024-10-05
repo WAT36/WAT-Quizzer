@@ -1,6 +1,11 @@
 import { EditSayingAPIRequestDto } from './dto'
 import { ApiResult, patch, ProcessingApiReponse } from '../../api'
-import { AddQuizApiResponseDto } from '../../..'
+import {
+  AddQuizApiResponseDto,
+  errorMessage,
+  MESSAGES,
+  successMessage
+} from '../../..'
 
 interface editSayingAPIProps {
   editSayingRequestData: EditSayingAPIRequestDto
@@ -18,29 +23,13 @@ export const editSayingAPI = async ({
       if (data.status === 200) {
         const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
         return {
-          message: {
-            message: 'Success!! 編集に成功しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(MESSAGES.SUCCESS.MSG00018),
           result
         }
       } else if (data.status === 404 || !data.body) {
-        return {
-          message: {
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     }
   )

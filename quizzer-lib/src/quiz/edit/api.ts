@@ -1,5 +1,6 @@
 import { EditQuizAPIRequestDto, EditQuizApiResponseDto } from './dto'
 import { ApiResult, post, ProcessingApiReponse } from '../../api'
+import { errorMessage, MESSAGES, successMessage } from '../../..'
 
 interface EditQuizAPIProps {
   editQuizRequestData: EditQuizAPIRequestDto
@@ -9,21 +10,9 @@ export const editQuizAPI = async ({
   editQuizRequestData
 }: EditQuizAPIProps): Promise<ApiResult> => {
   if (editQuizRequestData.file_num === -1) {
-    return {
-      message: {
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
   } else if (!editQuizRequestData.question || !editQuizRequestData.answer) {
-    return {
-      message: {
-        message: 'エラー:問題文及び答えを入力して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00005) }
   }
 
   const result = await post(
@@ -45,21 +34,11 @@ export const editQuizAPI = async ({
         }
 
         return {
-          message: {
-            message: 'Success!! 問題を更新できました!',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(MESSAGES.SUCCESS.MSG00010),
           result
         }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     }
   )

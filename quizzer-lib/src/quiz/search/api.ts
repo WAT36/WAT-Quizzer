@@ -1,4 +1,9 @@
-import { GetQuizApiResponseDto, parseStrToBool } from '../../..'
+import {
+  errorMessage,
+  GetQuizApiResponseDto,
+  MESSAGES,
+  successMessage
+} from '../../..'
 import { SearchQuizAPIRequestDto } from './dto'
 import { ApiResult, get, ProcessingApiReponse } from '../../api'
 
@@ -10,13 +15,7 @@ export const searchQuizAPI = async ({
   searchQuizRequestData
 }: SearchQuizButtonProps): Promise<ApiResult> => {
   if (searchQuizRequestData.file_num === -1) {
-    return {
-      message: {
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
   if (
     !(
@@ -41,29 +40,16 @@ export const searchQuizAPI = async ({
         const result: GetQuizApiResponseDto[] =
           data.body as GetQuizApiResponseDto[]
         return {
-          message: {
-            message: 'Success!! ' + result.length + '問の問題を取得しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(
+            MESSAGES.SUCCESS.MSG00015,
+            String(result.length)
+          ),
           result
         }
       } else if (data.status === 404 || data.body) {
-        return {
-          message: {
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     },
     {

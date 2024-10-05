@@ -1,5 +1,6 @@
 import { ApiResult, get, ProcessingApiReponse } from '../../api'
 import { GetSayingRequest, GetSayingResponse } from '.'
+import { errorMessage, MESSAGES, successMessage } from '../../..'
 
 // TODO APIではbook_idを引数に設定できるので　その場合でもできるようにしておきたい
 interface GetSayingAPIProps {
@@ -14,11 +15,10 @@ export const getSayingAPI = async ({
     (isNaN(getSayingRequestData.id) || getSayingRequestData.id === -1)
   ) {
     return {
-      message: {
-        message: `エラー:入力したIDが不正です:${getSayingRequestData.id}`,
-        messageColor: 'error',
-        isDisplay: true
-      }
+      message: errorMessage(
+        MESSAGES.ERROR.MSG00014,
+        String(getSayingRequestData.id)
+      )
     }
   }
 
@@ -32,21 +32,11 @@ export const getSayingAPI = async ({
       if (data.status === 200) {
         const result: GetSayingResponse = data.body as GetSayingResponse
         return {
-          message: {
-            message: 'Success!!取得しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(MESSAGES.SUCCESS.MSG00019),
           result
         }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     },
     {}

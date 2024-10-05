@@ -1,4 +1,5 @@
 import { GetQuizApiResponseDto } from '../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import { ApiResult, post, ProcessingApiReponse } from '../../../api'
 
 interface ReverseCheckQuizButtonProps {
@@ -10,32 +11,14 @@ export const reverseCheckQuizAPI = async ({
   getQuizResponseData
 }: ReverseCheckQuizButtonProps): Promise<ApiResult> => {
   if (getQuizResponseData.file_num === -1) {
-    return {
-      message: {
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
   } else if (getQuizResponseData.quiz_num === -1) {
-    return {
-      message: {
-        message: 'エラー:問題番号がありません',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00007) }
   } else if (
     !getQuizResponseData.quiz_sentense ||
     !getQuizResponseData.answer
   ) {
-    return {
-      message: {
-        message: 'エラー:問題を出題してから登録して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00008) }
   }
 
   const result = await post(
@@ -49,23 +32,16 @@ export const reverseCheckQuizAPI = async ({
       if (data.status === 200 || data.status === 201) {
         const result: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto
         return {
-          message: {
-            message: `問題[${getQuizResponseData.quiz_num}] にチェック${
-              result.checked ? 'をつけ' : 'を外し'
-            }ました`,
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(
+            result.checked
+              ? MESSAGES.SUCCESS.MSG00006
+              : MESSAGES.SUCCESS.MSG00007,
+            String(getQuizResponseData.quiz_num)
+          ),
           result
         }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     }
   )

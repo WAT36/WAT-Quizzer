@@ -1,4 +1,9 @@
-import { AddQuizApiResponseDto } from '../../../..'
+import {
+  AddQuizApiResponseDto,
+  errorMessage,
+  MESSAGES,
+  successMessage
+} from '../../../..'
 import { post, ApiResult, ProcessingApiReponse } from '../../../api'
 import { AddQuizFileApiRequest } from './dto'
 
@@ -18,21 +23,14 @@ export const addQuizFileAPI = async ({
       if (data.status === 200 || data.status === 201) {
         const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
         return {
-          message: {
-            message: `新規ファイル「${addQuizFileApiRequest.file_nickname}」を追加しました`,
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(
+            MESSAGES.SUCCESS.MSG00012,
+            String(addQuizFileApiRequest.file_nickname)
+          ),
           result
         }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     }
   )

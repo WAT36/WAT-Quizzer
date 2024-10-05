@@ -1,5 +1,20 @@
 import { GetQuizApiResponseDto } from '../..'
 
+// {0},{1},, の箇所に入力した値を代入
+export const formatString = (str: string, ...value: string[]) => {
+  let result = str
+  let i = 0
+  while (result.includes(`{${i}}`)) {
+    if (value.length <= i + 1) {
+      result = result.replace(`{${i}}`, value[i])
+    } else {
+      break
+    }
+    i++
+  }
+  return result
+}
+
 export const parseStrToBool = (val?: string) => {
   if (!val) {
     return false

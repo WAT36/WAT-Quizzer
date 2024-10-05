@@ -1,6 +1,11 @@
 import { AddSayingAPIRequestDto } from './dto'
 import { ApiResult, post, ProcessingApiReponse } from '../../api'
-import { AddQuizApiResponseDto } from '../../..'
+import {
+  AddQuizApiResponseDto,
+  errorMessage,
+  MESSAGES,
+  successMessage
+} from '../../..'
 
 interface AddSayingButtonProps {
   addSayingAPIRequest: AddSayingAPIRequestDto
@@ -10,21 +15,9 @@ export const addSayingAPI = async ({
   addSayingAPIRequest
 }: AddSayingButtonProps): Promise<ApiResult> => {
   if (!addSayingAPIRequest.book_id || addSayingAPIRequest.book_id === -1) {
-    return {
-      message: {
-        message: 'エラー:本名を選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00011) }
   } else if (!addSayingAPIRequest.saying || addSayingAPIRequest.saying === '') {
-    return {
-      message: {
-        message: 'エラー:格言を入力して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00012) }
   }
 
   const result = await post(
@@ -36,21 +29,11 @@ export const addSayingAPI = async ({
       if (data.status === 200 || data.status === 201) {
         const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
         return {
-          message: {
-            message: `新規格言「${addSayingAPIRequest.saying}」を追加しました`,
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(MESSAGES.SUCCESS.MSG00016),
           result
         }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     }
   )

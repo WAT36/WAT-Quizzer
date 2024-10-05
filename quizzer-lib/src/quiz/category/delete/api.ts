@@ -1,3 +1,4 @@
+import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import {
   AddAPIResponseDto,
   ApiResult,
@@ -15,13 +16,7 @@ export const deleteCategoryOfQuizAPI = async ({
   deleteCategoryToQuizRequestData
 }: DeleteCategoryOfQuizAPIProps): Promise<ApiResult> => {
   if (deleteCategoryToQuizRequestData.file_num === -1) {
-    return {
-      message: {
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
+    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
 
   const result = await put(
@@ -33,29 +28,13 @@ export const deleteCategoryOfQuizAPI = async ({
       if (String(data.status)[0] === '2' || String(data.status)[0] === '3') {
         const result: AddAPIResponseDto = data.body as AddAPIResponseDto
         return {
-          message: {
-            message: 'Success!! 全て更新しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
+          message: successMessage(MESSAGES.SUCCESS.MSG00004),
           result
         }
       } else if (data.status === 404) {
-        return {
-          message: {
-            message: 'エラー:条件に合致するデータはありません',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
       } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     }
   )
