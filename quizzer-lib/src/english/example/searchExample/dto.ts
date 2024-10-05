@@ -3,7 +3,7 @@ import { ApiResponse } from '../../../api'
 // 例文検索APIリクエスト型
 export interface SearchExampleAPIRequestDto {
   query: string
-  isLinked: string
+  isLinked: boolean
 }
 
 // 例文検索APIレスポンス型

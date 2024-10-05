@@ -20,12 +20,12 @@ export const searchQuizAPI = async ({
   }
   if (
     !(
-      parseStrToBool(searchQuizRequestData.searchInOnlyAnswer) ||
-      parseStrToBool(searchQuizRequestData.searchInOnlySentense)
+      searchQuizRequestData.searchInOnlyAnswer ||
+      searchQuizRequestData.searchInOnlySentense
     )
   ) {
-    searchQuizRequestData.searchInOnlySentense = 'true'
-    searchQuizRequestData.searchInOnlyAnswer = 'true'
+    searchQuizRequestData.searchInOnlySentense = true
+    searchQuizRequestData.searchInOnlyAnswer = true
   }
   if (searchQuizRequestData.category === '-1') {
     delete searchQuizRequestData.category

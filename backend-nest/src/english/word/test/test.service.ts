@@ -6,7 +6,6 @@ import {
   getPrismaPastDayRange,
   getRandomElementsFromArray,
   getRandomInt,
-  parseStrToBool,
 } from 'quizzer-lib';
 export const prisma: PrismaClient = new PrismaClient();
 
@@ -18,7 +17,7 @@ export class EnglishWordTestService {
     source: string,
     startDate?: string,
     endDate?: string,
-    checked?: string,
+    checked?: boolean,
     min_rate?: number,
     max_rate?: number,
   ) {
@@ -69,7 +68,7 @@ export class EnglishWordTestService {
             lte: max_rate || 100,
           },
         },
-        ...(parseStrToBool(checked)
+        ...(checked
           ? {
               checked: true,
             }

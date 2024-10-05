@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -23,7 +24,7 @@ export class SayingController {
 
   // 格言取得（本ID指定、無い場合はランダムで取得）
   @Get()
-  async getSaying(@Query('book_id') book_id: number) {
+  async getSaying(@Query('book_id', ParseIntPipe) book_id: number) {
     return await this.sayingService.getRandomSaying(book_id);
   }
 
@@ -59,7 +60,7 @@ export class SayingController {
 
   // 格言取得(格言ID指定)
   @Get('/:id')
-  async getSayingById(@Param('id') id: number) {
+  async getSayingById(@Param('id', ParseIntPipe) id: number) {
     return await this.sayingService.getSayingByIdService(+id);
   }
 }

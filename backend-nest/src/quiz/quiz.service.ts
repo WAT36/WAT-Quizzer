@@ -12,7 +12,6 @@ import {
   getPrismaPastDayRange,
   getPastDate,
   AddCategoryToQuizAPIRequestDto,
-  parseStrToBool,
   IntegrateToQuizAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
@@ -29,7 +28,7 @@ export type getQuizProps = {
   min_rate?: number;
   max_rate?: number;
   category?: string;
-  checked?: string;
+  checked?: boolean;
   format: string; //'basic' | 'applied' | '4choice';
   method?: 'random' | 'worstRate' | 'leastClear' | 'LRU' | 'review';
 };
@@ -72,7 +71,7 @@ export class QuizService {
                       contains: category,
                     },
                   }),
-                  ...(parseStrToBool(checked)
+                  ...(checked
                     ? {
                         checked: true,
                       }
@@ -188,7 +187,7 @@ export class QuizService {
                     last_failed_answer_log: getPrismaYesterdayRange(),
                   }),
                 },
-                ...(parseStrToBool(checked)
+                ...(checked
                   ? {
                       checked: true,
                     }
@@ -299,7 +298,7 @@ export class QuizService {
                     last_failed_answer_log: getPrismaYesterdayRange(),
                   }),
                 },
-                ...(parseStrToBool(checked)
+                ...(checked
                   ? {
                       checked: true,
                     }
@@ -876,10 +875,10 @@ export class QuizService {
     min_rate: number,
     max_rate: number,
     category: string,
-    checked: string,
+    checked: boolean,
     query: string,
-    queryOnlyInSentense: string,
-    queryOnlyInAnswer: string,
+    queryOnlyInSentense: boolean,
+    queryOnlyInAnswer: boolean,
     format: string,
   ) {
     try {
@@ -919,20 +918,20 @@ export class QuizService {
                   },
                 },
               }),
-              ...(parseStrToBool(checked)
+              ...(checked
                 ? {
                     checked: true,
                   }
                 : {}),
               OR: [
-                parseStrToBool(queryOnlyInSentense)
+                queryOnlyInSentense
                   ? {
                       quiz_sentense: {
                         contains: query,
                       },
                     }
                   : {},
-                parseStrToBool(queryOnlyInAnswer)
+                queryOnlyInAnswer
                   ? {
                       answer: {
                         contains: query,
@@ -960,19 +959,19 @@ export class QuizService {
             where: {
               file_num,
               deleted_at: null,
-              ...(parseStrToBool(checked)
+              ...(checked
                 ? {
                     checked: true,
                   }
                 : {}),
-              ...(parseStrToBool(queryOnlyInSentense)
+              ...(queryOnlyInSentense
                 ? {
                     quiz_sentense: {
                       contains: query,
                     },
                   }
                 : {}),
-              ...(parseStrToBool(queryOnlyInAnswer)
+              ...(queryOnlyInAnswer
                 ? {
                     answer: {
                       contains: query,

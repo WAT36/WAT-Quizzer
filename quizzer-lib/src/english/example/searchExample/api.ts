@@ -18,8 +18,6 @@ export const searchExampleAPI = async ({
       }
     }
   }
-  //   setSearchResult([]);
-  //   setMessage({ message: '通信中...', messageColor: '#d3d3d3' });
   const result = await get(
     '/english/example',
     (data: ProcessingApiReponse) => {
@@ -36,9 +34,6 @@ export const searchExampleAPI = async ({
             }
           }
         }
-
-        // setSearchResult(result);
-
         return {
           message: {
             message: 'Success!!取得しました',

@@ -6,6 +6,8 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseBoolPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -86,11 +88,11 @@ export class EnglishWordController {
   async getEnglishWordTestData(
     @Query('format') format: string,
     @Query('source') source: string,
-    @Query('checked') checked: string,
+    @Query('checked', ParseBoolPipe) checked: boolean,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
-    @Query('min_rate') min_rate: number,
-    @Query('max_rate') max_rate: number,
+    @Query('min_rate', ParseIntPipe) min_rate: number,
+    @Query('max_rate', ParseIntPipe) max_rate: number,
   ) {
     switch (format) {
       // TODO ここのcaseの値もどこかの定数定義ファイルなどから持ってきたい

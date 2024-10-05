@@ -8,7 +8,7 @@ export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || ''
 export const get = async (
   path: string,
   func: (data: ProcessingApiReponse) => ApiResult,
-  queryParam?: { [key: string]: string | number },
+  queryParam?: { [key: string]: string | number | boolean },
   bodyData?: object,
   accessToken?: string
 ) => {

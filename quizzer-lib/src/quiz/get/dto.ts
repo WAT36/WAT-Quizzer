@@ -1,12 +1,11 @@
 import { ApiResponse } from '../../api'
 
-// TODO numberにできるところはそうしたい
 export interface GetQuizAPIRequestDto {
   file_num: number
   quiz_num?: number
   format: string
-  min_rate?: string
-  max_rate?: string
+  min_rate?: number
+  max_rate?: number
   category?: string
   checked?: string //booleanにしたい
 }

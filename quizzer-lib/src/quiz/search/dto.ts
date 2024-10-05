@@ -5,7 +5,7 @@ export interface SearchQuizAPIRequestDto {
   min_rate?: number
   max_rate?: number
   category?: string
-  checked?: string // TODO booleanにしたい
-  searchInOnlySentense?: string // booleanにしたい
-  searchInOnlyAnswer?: string // booleanにしたい
+  checked?: boolean
+  searchInOnlySentense?: boolean
+  searchInOnlyAnswer?: boolean
 }

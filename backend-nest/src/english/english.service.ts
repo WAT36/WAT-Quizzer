@@ -126,50 +126,49 @@ export class EnglishService {
   }
 
   // 例文検索
-  async searchExampleService(query: string, isLinked: string) {
+  async searchExampleService(query: string, isLinked: boolean) {
     try {
       // TODO pipeでboolean対応
-      const data =
-        isLinked === 'true'
-          ? await prisma.example.findMany({
-              where: {
-                word_example: {
-                  every: {
-                    word: {
-                      name: query,
-                    },
-                    deleted_at: null,
+      const data = isLinked
+        ? await prisma.example.findMany({
+            where: {
+              word_example: {
+                every: {
+                  word: {
+                    name: query,
                   },
+                  deleted_at: null,
                 },
-                deleted_at: null,
               },
-              select: {
-                id: true,
-                en_example_sentense: true,
-                ja_example_sentense: true,
+              deleted_at: null,
+            },
+            select: {
+              id: true,
+              en_example_sentense: true,
+              ja_example_sentense: true,
+            },
+            orderBy: {
+              id: 'asc',
+            },
+          })
+        : isLinked === false
+        ? await prisma.example.findMany({
+            where: {
+              en_example_sentense: {
+                contains: query,
               },
-              orderBy: {
-                id: 'asc',
-              },
-            })
-          : isLinked === 'false'
-          ? await prisma.example.findMany({
-              where: {
-                en_example_sentense: {
-                  contains: query,
-                },
-                deleted_at: null,
-              },
-              select: {
-                id: true,
-                en_example_sentense: true,
-                ja_example_sentense: true,
-              },
-              orderBy: {
-                id: 'asc',
-              },
-            })
-          : undefined;
+              deleted_at: null,
+            },
+            select: {
+              id: true,
+              en_example_sentense: true,
+              ja_example_sentense: true,
+            },
+            orderBy: {
+              id: 'asc',
+            },
+          })
+        : undefined;
       return data;
     } catch (error: unknown) {
       if (error instanceof Error) {

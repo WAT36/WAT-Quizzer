@@ -101,7 +101,7 @@ export const SearchQueryForm = ({
                 onChange={(e) => {
                   setSearchQuizRequestData({
                     ...searchQuizRequestData,
-                    searchInOnlySentense: String(e.target.checked)
+                    searchInOnlySentense: e.target.checked
                   });
                 }}
                 name="checkedA"
@@ -115,7 +115,7 @@ export const SearchQueryForm = ({
                 onChange={(e) => {
                   setSearchQuizRequestData({
                     ...searchQuizRequestData,
-                    searchInOnlyAnswer: String(e.target.checked)
+                    searchInOnlyAnswer: e.target.checked
                   });
                 }}
                 name="checkedB"
@@ -183,7 +183,7 @@ export const SearchQueryForm = ({
                 onChange={(e) => {
                   setSearchQuizRequestData({
                     ...searchQuizRequestData,
-                    checked: String(e.target.checked)
+                    checked: e.target.checked
                   });
                 }}
               />

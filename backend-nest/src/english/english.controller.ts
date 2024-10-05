@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  ParseBoolPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { EnglishService } from './english.service';
 import {
   AddExampleAPIRequestDto,
@@ -30,7 +38,7 @@ export class EnglishController {
   @Get('/example')
   async searchExample(
     @Query('query') query: string,
-    @Query('isLinked') isLinked: string,
+    @Query('isLinked', ParseBoolPipe) isLinked: boolean,
   ) {
     return await this.englishService.searchExampleService(query, isLinked);
   }

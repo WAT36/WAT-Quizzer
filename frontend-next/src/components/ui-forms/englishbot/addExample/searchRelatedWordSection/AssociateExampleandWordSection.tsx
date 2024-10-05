@@ -76,7 +76,7 @@ export const AssociateExampleandWordSection = ({}: AssociateExampleandWordSectio
             const result = await searchExampleAPI({
               searchExampleData: {
                 query: associateExampleandWord.wordName || '',
-                isLinked: 'true'
+                isLinked: true
               }
             });
             setMessage && setMessage(result.message);
@@ -123,7 +123,7 @@ export const AssociateExampleandWordSection = ({}: AssociateExampleandWordSectio
             const result = await searchExampleAPI({
               searchExampleData: {
                 query: searchExampleWord || '',
-                isLinked: 'false'
+                isLinked: false
               }
             });
             setMessage && setMessage(result.message);

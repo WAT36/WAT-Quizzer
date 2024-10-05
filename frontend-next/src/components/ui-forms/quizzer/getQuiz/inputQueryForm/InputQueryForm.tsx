@@ -111,8 +111,8 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
             setQuizRequestData &&
               setQuizRequestData({
                 ...getQuizRequestData,
-                min_rate: Array.isArray(value) ? String(value[0]) : String(value),
-                max_rate: Array.isArray(value) ? String(value[1]) : String(value)
+                min_rate: Array.isArray(value) ? value[0] : value,
+                max_rate: Array.isArray(value) ? value[1] : value
               });
           }}
         />
