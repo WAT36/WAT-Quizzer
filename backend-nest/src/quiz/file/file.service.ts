@@ -90,7 +90,6 @@ export class QuizFileService {
         // 指定ファイルの問題全削除
         await prisma.quiz.updateMany({
           data: {
-            updated_at: new Date(),
             deleted_at: new Date(),
           },
           where: {
@@ -112,7 +111,6 @@ export class QuizFileService {
         // 指定ファイル削除
         await prisma.quiz_file.update({
           data: {
-            updated_at: new Date(),
             deleted_at: new Date(),
           },
           where: {

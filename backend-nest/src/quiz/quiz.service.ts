@@ -618,7 +618,6 @@ export class QuizService {
                 answer,
                 img_file,
                 checked: false,
-                updated_at: new Date(),
               },
               where: {
                 file_num_quiz_num: {
@@ -648,7 +647,6 @@ export class QuizService {
                   },
                 },
                 update: {
-                  updated_at: new Date(),
                   deleted_at: null,
                 },
                 create: {
@@ -679,7 +677,6 @@ export class QuizService {
                 quiz_sentense: question,
                 answer,
                 img_file,
-                updated_at: new Date(),
               },
               where: {
                 file_num_quiz_num: {
@@ -708,15 +705,11 @@ export class QuizService {
                 await prisma.quiz_basis_advanced_linkage.upsert({
                   update: {
                     deleted_at: null,
-                    updated_at: new Date(),
                   },
                   create: {
                     file_num,
                     basis_quiz_id: matched_basic_quiz_id_list[i],
                     advanced_quiz_id: updatedAdvancedQuiz.id,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                    deleted_at: null,
                   },
                   where: {
                     basis_quiz_id_advanced_quiz_id: {
@@ -748,18 +741,14 @@ export class QuizService {
                 quiz_sentense: question,
                 answer,
                 img_file,
-                updated_at: new Date(),
                 ...(explanation && {
                   advanced_quiz_explanation: {
                     upsert: {
                       create: {
                         explanation,
-                        created_at: new Date(),
-                        updated_at: new Date(),
                       },
                       update: {
                         explanation,
-                        updated_at: new Date(),
                       },
                     },
                   },
@@ -820,15 +809,11 @@ export class QuizService {
                 await prisma.quiz_basis_advanced_linkage.upsert({
                   update: {
                     deleted_at: null,
-                    updated_at: new Date(),
                   },
                   create: {
                     file_num,
                     basis_quiz_id: matched_basic_quiz_id_list[i],
                     advanced_quiz_id: updatedAdvancedQuiz.id,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                    deleted_at: null,
                   },
                   where: {
                     basis_quiz_id_advanced_quiz_id: {
@@ -1005,7 +990,6 @@ export class QuizService {
         case 'basic':
           return await prisma.quiz.update({
             data: {
-              updated_at: new Date(),
               deleted_at: new Date(),
             },
             where: {
@@ -1020,7 +1004,6 @@ export class QuizService {
         case '4choice':
           return await prisma.advanced_quiz.update({
             data: {
-              updated_at: new Date(),
               deleted_at: new Date(),
             },
             where: {
@@ -1178,7 +1161,6 @@ export class QuizService {
               },
             },
             update: {
-              updated_at: new Date(),
               deleted_at: null,
             },
             create: {
@@ -1192,7 +1174,6 @@ export class QuizService {
         // 統合元データは削除、それまでの解答ログデータも削除
         await prisma.quiz.update({
           data: {
-            updated_at: new Date(),
             deleted_at: new Date(),
           },
           where: {
@@ -1255,7 +1236,6 @@ export class QuizService {
                 },
               },
               update: {
-                updated_at: new Date(),
                 deleted_at: null,
               },
               create: {
@@ -1322,7 +1302,6 @@ export class QuizService {
 
             await prisma.quiz_category.update({
               data: {
-                updated_at: new Date(),
                 deleted_at: new Date(),
               },
               where: {
@@ -1369,7 +1348,6 @@ export class QuizService {
           await prisma.quiz.update({
             data: {
               checked: true,
-              updated_at: new Date(),
             },
             where: {
               file_num_quiz_num: {
@@ -1408,7 +1386,6 @@ export class QuizService {
           await prisma.quiz.update({
             data: {
               checked: false,
-              updated_at: new Date(),
             },
             where: {
               file_num_quiz_num: {
@@ -1461,7 +1438,6 @@ export class QuizService {
           return await prisma.quiz.update({
             data: {
               checked: !checked,
-              updated_at: new Date(),
             },
             where: {
               file_num_quiz_num: {
@@ -1488,7 +1464,6 @@ export class QuizService {
           return await prisma.advanced_quiz.update({
             data: {
               checked: !checked,
-              updated_at: new Date(),
             },
             where: {
               file_num_quiz_num: {

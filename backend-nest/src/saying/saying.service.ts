@@ -217,7 +217,6 @@ export class SayingService {
         data: {
           saying,
           explanation,
-          updated_at: new Date(),
         },
         where: {
           id,

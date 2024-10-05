@@ -379,7 +379,6 @@ export class EnglishWordService {
             await prisma.word_source.update({
               data: {
                 source_id: newSourceId,
-                updated_at: new Date(),
               },
               where: {
                 word_id_source_id: {
@@ -711,7 +710,6 @@ export class EnglishWordService {
           data: {
             partsofspeech_id: partofspeechId,
             meaning,
-            updated_at: new Date(),
           },
           where: {
             word_id_wordmean_id: {
