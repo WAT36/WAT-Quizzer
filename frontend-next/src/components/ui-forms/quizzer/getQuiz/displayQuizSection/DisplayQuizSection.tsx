@@ -70,6 +70,7 @@ export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }:
               attr={'button-array'}
               variant="contained"
               color="primary"
+              disabled={getQuizResponseData.quiz_num === -1}
               onClick={async (e) => {
                 setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
                 const result = await clearQuizAPI({
@@ -88,6 +89,7 @@ export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }:
               attr={'button-array'}
               variant="contained"
               color="secondary"
+              disabled={getQuizResponseData.quiz_num === -1}
               onClick={async (e) => {
                 setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
                 const result = await failQuizAPI({
@@ -106,6 +108,7 @@ export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }:
               attr={'button-array'}
               variant="contained"
               color="warning"
+              disabled={getQuizResponseData.quiz_num === -1}
               onClick={async (e) => {
                 setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
                 const result = await reverseCheckQuizAPI({
