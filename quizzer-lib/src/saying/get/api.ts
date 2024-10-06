@@ -26,20 +26,16 @@ export const getSayingAPI = async ({
     getSayingRequestData.id && !isNaN(getSayingRequestData.id)
       ? `/saying/${getSayingRequestData.id}`
       : '/saying'
-  const result = await get(
-    path,
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const result: GetSayingResponse = data.body as GetSayingResponse
-        return {
-          message: successMessage(MESSAGES.SUCCESS.MSG00019),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+  const result = await get(path, (data: ProcessingApiReponse) => {
+    if (data.status === 200) {
+      const result: GetSayingResponse = data.body as GetSayingResponse
+      return {
+        message: successMessage(MESSAGES.SUCCESS.MSG00019),
+        result
       }
-    },
-    {}
-  )
+    } else {
+      return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+    }
+  })
   return result
 }

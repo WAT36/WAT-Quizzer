@@ -22,9 +22,9 @@ import {
 export class SayingController {
   constructor(private readonly sayingService: SayingService) {}
 
-  // 格言取得（本ID指定、無い場合はランダムで取得）
+  // 格言取得（本ID指定、無い場合はランダムで取得）（QueryがオプショナルでPupe使うと不具合発生するのでpipeはしない）
   @Get()
-  async getSaying(@Query('book_id', ParseIntPipe) book_id: number) {
+  async getSaying(@Query('book_id') book_id?: number) {
     return await this.sayingService.getRandomSaying(book_id);
   }
 
