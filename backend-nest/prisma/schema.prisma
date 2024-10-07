@@ -137,7 +137,7 @@ model partsofspeech {
 
 model quiz {
   id                          Int                           @id @default(autoincrement())
-  format_id                   Int                           @default(0)
+  format_id                   Int
   file_num                    Int
   quiz_num                    Int
   quiz_sentense               String                        @unique @db.VarChar(256)
@@ -150,6 +150,7 @@ model quiz {
   quiz_basis_advanced_linkage quiz_basis_advanced_linkage[]
   quiz_category               quiz_category[]
   quiz_statistics_view        quiz_statistics_view?         @relation(fields: [id], references: [id])
+  quiz_format                 quiz_format?                  @relation(fields: [format_id], references: [id])
 
   @@unique([file_num, quiz_num])
 }
@@ -206,6 +207,7 @@ model quiz_format {
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
+  quiz       quiz[]
 }
 
 model quiz_similarity {

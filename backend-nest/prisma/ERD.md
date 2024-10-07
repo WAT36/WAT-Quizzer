@@ -112,6 +112,7 @@ erDiagram
 
   "quiz" {
     Int id "🗝️"
+    Int format_id 
     Int file_num 
     Int quiz_num 
     String quiz_sentense 
@@ -438,10 +439,12 @@ erDiagram
     "quiz" o{--}o "quiz_basis_advanced_linkage" : "quiz_basis_advanced_linkage"
     "quiz" o{--}o "quiz_category" : "quiz_category"
     "quiz" o|--|o "quiz_statistics_view" : "quiz_statistics_view"
+    "quiz" o|--|o "quiz_format" : "quiz_format"
     "quiz_basis_advanced_linkage" o|--|| "advanced_quiz" : "advanced_quiz"
     "quiz_basis_advanced_linkage" o|--|| "quiz" : "quiz"
     "quiz_category" o|--|| "quiz" : "quiz"
     "quiz_file" o{--}o "advanced_quiz" : "advanced_quiz"
+    "quiz_format" o{--}o "quiz" : "quiz"
     "saying" o|--|| "selfhelp_book" : "selfhelp_book"
     "selfhelp_book" o{--}o "saying" : "saying"
     "source" o{--}o "word_source" : "word_source"
