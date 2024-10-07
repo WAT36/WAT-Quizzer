@@ -26,7 +26,7 @@ model advanced_quiz {
   img_file                      String?                        @db.VarChar(128)
   checked                       Boolean?                       @default(false)
   created_at                    DateTime                       @default(now()) @db.Timestamp(6)
-  updated_at                    DateTime                       @updatedAt
+  updated_at                    DateTime                       @default(now()) @db.Timestamp(6)
   deleted_at                    DateTime?                      @db.Timestamp(6)
   advanced_quiz_type            advanced_quiz_type             @relation(fields: [advanced_quiz_type_id], references: [id])
   quiz_file                     quiz_file                      @relation(fields: [file_num], references: [file_num])
@@ -43,7 +43,7 @@ model advanced_quiz_explanation {
   advanced_quiz_id Int           @unique
   explanation      String
   created_at       DateTime      @default(now()) @db.Timestamp(6)
-  updated_at       DateTime      @updatedAt
+  updated_at       DateTime      @default(now()) @db.Timestamp(6)
   deleted_at       DateTime?     @db.Timestamp(6)
   advanced_quiz    advanced_quiz @relation(fields: [advanced_quiz_id], references: [id])
 }
@@ -53,7 +53,7 @@ model advanced_quiz_type {
   type_name     String          @unique @db.VarChar(256)
   type_nickname String          @db.VarChar(256)
   created_at    DateTime        @default(now()) @db.Timestamp(6)
-  updated_at    DateTime        @updatedAt
+  updated_at    DateTime        @default(now()) @db.Timestamp(6)
   deleted_at    DateTime?       @db.Timestamp(6)
   advanced_quiz advanced_quiz[]
 }
@@ -65,7 +65,7 @@ model answer_log {
   quiz_num       Int
   is_corrected   Boolean?
   created_at     DateTime  @default(now()) @db.Timestamp(6)
-  updated_at     DateTime  @updatedAt
+  updated_at     DateTime  @default(now()) @db.Timestamp(6)
   deleted_at     DateTime? @db.Timestamp(6)
 }
 
@@ -74,7 +74,7 @@ model dummy_choice {
   advanced_quiz_id      Int
   dummy_choice_sentense String        @db.VarChar(256)
   created_at            DateTime      @default(now()) @db.Timestamp(6)
-  updated_at            DateTime      @updatedAt
+  updated_at            DateTime      @default(now()) @db.Timestamp(6)
   deleted_at            DateTime?     @db.Timestamp(6)
   advanced_quiz         advanced_quiz @relation(fields: [advanced_quiz_id], references: [id])
 }
@@ -84,7 +84,7 @@ model englishbot_answer_log {
   word_id    Int
   result     Boolean?
   created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
   test_type  Int       @default(0)
   word       word      @relation(fields: [word_id], references: [id])
@@ -95,7 +95,7 @@ model example {
   en_example_sentense String                @db.VarChar(256)
   ja_example_sentense String                @db.VarChar(256)
   created_at          DateTime              @default(now()) @db.Timestamp(6)
-  updated_at          DateTime              @updatedAt
+  updated_at          DateTime              @default(now()) @db.Timestamp(6)
   deleted_at          DateTime?             @db.Timestamp(6)
   example_explanation example_explanation[]
   word_example        word_example[]
@@ -106,7 +106,7 @@ model example_explanation {
   example_id  Int
   explanation String    @db.VarChar(256)
   created_at  DateTime  @default(now()) @db.Timestamp(6)
-  updated_at  DateTime  @updatedAt
+  updated_at  DateTime  @default(now()) @db.Timestamp(6)
   deleted_at  DateTime? @db.Timestamp(6)
   example     example   @relation(fields: [example_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -118,7 +118,7 @@ model mean {
   partsofspeech_id Int
   meaning          String        @db.VarChar(256)
   created_at       DateTime      @default(now()) @db.Timestamp(6)
-  updated_at       DateTime      @updatedAt
+  updated_at       DateTime      @default(now()) @db.Timestamp(6)
   deleted_at       DateTime?     @db.Timestamp(6)
   partsofspeech    partsofspeech @relation(fields: [partsofspeech_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   word             word          @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -130,13 +130,14 @@ model partsofspeech {
   id         Int       @id @default(autoincrement())
   name       String    @db.VarChar(256)
   created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
   mean       mean[]
 }
 
 model quiz {
   id                          Int                           @id @default(autoincrement())
+  format_id                   Int                           @default(0)
   file_num                    Int
   quiz_num                    Int
   quiz_sentense               String                        @unique @db.VarChar(256)
@@ -144,7 +145,7 @@ model quiz {
   img_file                    String?                       @db.VarChar(128)
   checked                     Boolean?                      @default(false)
   created_at                  DateTime                      @default(now()) @db.Timestamp(6)
-  updated_at                  DateTime                      @updatedAt
+  updated_at                  DateTime                      @default(now()) @db.Timestamp(6)
   deleted_at                  DateTime?                     @db.Timestamp(6)
   quiz_basis_advanced_linkage quiz_basis_advanced_linkage[]
   quiz_category               quiz_category[]
@@ -159,7 +160,7 @@ model quiz_basis_advanced_linkage {
   basis_quiz_id    Int
   advanced_quiz_id Int
   created_at       DateTime      @default(now()) @db.Timestamp(6)
-  updated_at       DateTime      @updatedAt
+  updated_at       DateTime      @default(now()) @db.Timestamp(6)
   deleted_at       DateTime?     @db.Timestamp(6)
   advanced_quiz    advanced_quiz @relation(fields: [advanced_quiz_id], references: [id])
   quiz             quiz          @relation(fields: [basis_quiz_id], references: [id])
@@ -173,7 +174,7 @@ model quiz_category {
   quiz_num   Int
   category   String?   @db.VarChar(256)
   created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
   quiz       quiz      @relation(fields: [file_num, quiz_num], references: [file_num, quiz_num])
 
@@ -185,7 +186,7 @@ model quiz_dependency {
   preliminary_quiz_id Int
   quiz_id             Int
   created_at          DateTime  @default(now()) @db.Timestamp(6)
-  updated_at          DateTime  @updatedAt
+  updated_at          DateTime  @default(now()) @db.Timestamp(6)
   deleted_at          DateTime? @db.Timestamp(6)
 }
 
@@ -194,7 +195,7 @@ model quiz_file {
   file_name     String          @unique @db.VarChar(256)
   file_nickname String          @unique @db.VarChar(256)
   created_at    DateTime        @default(now()) @db.Timestamp(6)
-  updated_at    DateTime        @updatedAt
+  updated_at    DateTime        @default(now()) @db.Timestamp(6)
   deleted_at    DateTime?       @db.Timestamp(6)
   advanced_quiz advanced_quiz[]
 }
@@ -203,7 +204,7 @@ model quiz_format {
   id         Int       @id @default(autoincrement())
   name       String    @unique @db.VarChar(256)
   created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
 }
 
@@ -212,7 +213,7 @@ model quiz_similarity {
   similarity_group_id Int
   quiz_id             Int
   created_at          DateTime  @default(now()) @db.Timestamp(6)
-  updated_at          DateTime  @updatedAt
+  updated_at          DateTime  @default(now()) @db.Timestamp(6)
   deleted_at          DateTime? @db.Timestamp(6)
 
   @@unique([similarity_group_id, quiz_id])
@@ -222,7 +223,7 @@ model quiz_similarity_group {
   id                    Int       @id @default(autoincrement())
   similarity_group_name String    @db.VarChar(256)
   created_at            DateTime  @default(now()) @db.Timestamp(6)
-  updated_at            DateTime  @updatedAt
+  updated_at            DateTime  @default(now()) @db.Timestamp(6)
   deleted_at            DateTime? @db.Timestamp(6)
 }
 
@@ -233,7 +234,7 @@ model saying {
   saying         String        @unique @db.VarChar(256)
   explanation    String
   created_at     DateTime      @default(now()) @db.Timestamp(6)
-  updated_at     DateTime      @updatedAt
+  updated_at     DateTime      @default(now()) @db.Timestamp(6)
   deleted_at     DateTime?     @db.Timestamp(6)
   selfhelp_book  selfhelp_book @relation(fields: [book_id], references: [id])
 }
@@ -242,7 +243,7 @@ model selfhelp_book {
   id         Int       @id @default(autoincrement())
   name       String    @db.VarChar(256)
   created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
   saying     saying[]
 }
@@ -251,7 +252,7 @@ model source {
   id          Int           @id @default(autoincrement())
   name        String        @db.VarChar(256)
   created_at  DateTime      @default(now()) @db.Timestamp(6)
-  updated_at  DateTime      @updatedAt
+  updated_at  DateTime      @default(now()) @db.Timestamp(6)
   deleted_at  DateTime?     @db.Timestamp(6)
   word_source word_source[]
 }
@@ -261,7 +262,7 @@ model word {
   name                  String                  @unique @db.VarChar(256)
   pronounce             String                  @db.VarChar(256)
   created_at            DateTime                @default(now()) @db.Timestamp(6)
-  updated_at            DateTime                @updatedAt
+  updated_at            DateTime                @default(now()) @db.Timestamp(6)
   deleted_at            DateTime?               @db.Timestamp(6)
   checked               Boolean                 @default(false)
   antonym_word          antonym[]               @relation("antonym_word_id")
@@ -283,7 +284,7 @@ model word_etymology {
   etymology_id Int
   word_id      Int
   created_at   DateTime  @default(now()) @db.Timestamp(6)
-  updated_at   DateTime  @updatedAt
+  updated_at   DateTime  @default(now()) @db.Timestamp(6)
   deleted_at   DateTime? @db.Timestamp(6)
   etymology    etymology @relation(fields: [etymology_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   word         word      @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -295,7 +296,7 @@ model etymology {
   id             Int              @id @default(autoincrement())
   name           String           @unique @db.VarChar(256)
   created_at     DateTime         @default(now()) @db.Timestamp(6)
-  updated_at     DateTime         @updatedAt
+  updated_at     DateTime         @default(now()) @db.Timestamp(6)
   deleted_at     DateTime?        @db.Timestamp(6)
   word_etymology word_etymology[]
 }
@@ -304,7 +305,7 @@ model word_example {
   example_sentense_id Int
   word_id             Int
   created_at          DateTime  @default(now()) @db.Timestamp(6)
-  updated_at          DateTime  @updatedAt
+  updated_at          DateTime  @default(now()) @db.Timestamp(6)
   deleted_at          DateTime? @db.Timestamp(6)
   example             example   @relation(fields: [example_sentense_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   word                word      @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -317,7 +318,7 @@ model synonym {
   word_id          Int
   synonym_word_id  Int
   created_at       DateTime  @default(now()) @db.Timestamp(6)
-  updated_at       DateTime  @updatedAt
+  updated_at       DateTime  @default(now()) @db.Timestamp(6)
   deleted_at       DateTime? @db.Timestamp(6)
   synonym_word     word      @relation("synonym_word_id", fields: [synonym_word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   synonym_original word      @relation("synonym_original_id", fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -330,7 +331,7 @@ model antonym {
   word_id          Int
   antonym_word_id  Int
   created_at       DateTime  @default(now()) @db.Timestamp(6)
-  updated_at       DateTime  @updatedAt
+  updated_at       DateTime  @default(now()) @db.Timestamp(6)
   deleted_at       DateTime? @db.Timestamp(6)
   antonym_word     word      @relation("antonym_word_id", fields: [antonym_word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   antonym_original word      @relation("antonym_original_id", fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -343,7 +344,7 @@ model derivative {
   derivative_group_id Int
   word_id             Int              @unique
   created_at          DateTime         @default(now()) @db.Timestamp(6)
-  updated_at          DateTime         @updatedAt
+  updated_at          DateTime         @default(now()) @db.Timestamp(6)
   deleted_at          DateTime?        @db.Timestamp(6)
   derivative_group    derivative_group @relation(fields: [derivative_group_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   word                word             @relation(fields: [word_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -353,7 +354,7 @@ model derivative_group {
   id                    Int          @id @default(autoincrement())
   derivative_group_name String       @db.VarChar(256)
   created_at            DateTime     @default(now()) @db.Timestamp(6)
-  updated_at            DateTime     @updatedAt
+  updated_at            DateTime     @default(now()) @db.Timestamp(6)
   deleted_at            DateTime?    @db.Timestamp(6)
   derivative            derivative[]
 }
@@ -363,7 +364,7 @@ model word_source {
   word_id    Int
   source_id  Int
   created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
   source     source    @relation(fields: [source_id], references: [id])
   word       word      @relation(fields: [word_id], references: [id])
@@ -376,7 +377,7 @@ model word_subsource {
   word_id    Int
   subsource  String    @db.VarChar(256)
   created_at DateTime  @default(now()) @db.Timestamp(6)
-  updated_at DateTime  @updatedAt
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
   word       word      @relation(fields: [word_id], references: [id])
 
@@ -408,7 +409,7 @@ view advanced_quiz_view {
   clear_count           BigInt?
   fail_count            BigInt?
   created_at            DateTime? @default(now()) @db.Timestamp(6)
-  updated_at            DateTime? @updatedAt
+  updated_at            DateTime? @default(now()) @db.Timestamp(6)
   deleted_at            DateTime? @db.Timestamp(6)
   accuracy_rate         BigInt?
 }
@@ -464,7 +465,7 @@ view quiz_view {
   clear_count   BigInt?
   fail_count    BigInt?
   created_at    DateTime? @default(now()) @db.Timestamp(6)
-  updated_at    DateTime? @updatedAt
+  updated_at    DateTime? @default(now()) @db.Timestamp(6)
   deleted_at    DateTime? @db.Timestamp(6)
   accuracy_rate BigInt?
 }
