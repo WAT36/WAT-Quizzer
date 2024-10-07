@@ -157,6 +157,16 @@ erDiagram
     }
   
 
+  "quiz_dummy_choice" {
+    Int id "🗝️"
+    Int quiz_id 
+    String dummy_choice_sentense 
+    DateTime created_at 
+    DateTime updated_at 
+    DateTime deleted_at "❓"
+    }
+  
+
   "quiz_explanation" {
     Int id "🗝️"
     Int quiz_id 
@@ -451,10 +461,12 @@ erDiagram
     "quiz" o{--}o "quiz_explanation" : "quiz_explanation"
     "quiz" o|--|o "quiz_statistics_view" : "quiz_statistics_view"
     "quiz" o|--|o "quiz_format" : "quiz_format"
+    "quiz" o{--}o "quiz_dummy_choice" : "quiz_dummy_choice"
     "quiz_basis_advanced_linkage" o|--|| "advanced_quiz" : "advanced_quiz"
     "quiz_basis_advanced_linkage" o|--|| "quiz" : "quiz"
     "quiz_category" o|--|| "quiz" : "quiz"
-    "quiz_explanation" o|--|o "quiz" : "quiz"
+    "quiz_dummy_choice" o|--|| "quiz" : "quiz"
+    "quiz_explanation" o|--|| "quiz" : "quiz"
     "quiz_file" o{--}o "advanced_quiz" : "advanced_quiz"
     "quiz_format" o{--}o "quiz" : "quiz"
     "saying" o|--|| "selfhelp_book" : "selfhelp_book"

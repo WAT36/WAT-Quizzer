@@ -152,6 +152,7 @@ model quiz {
   quiz_explanation            quiz_explanation[]
   quiz_statistics_view        quiz_statistics_view?         @relation(fields: [id], references: [id])
   quiz_format                 quiz_format?                  @relation(fields: [format_id], references: [id])
+  quiz_dummy_choice           quiz_dummy_choice[]
 
   @@unique([file_num, quiz_num])
 }
@@ -192,6 +193,16 @@ model quiz_dependency {
   deleted_at          DateTime? @db.Timestamp(6)
 }
 
+model quiz_dummy_choice {
+  id                    Int       @id @default(autoincrement())
+  quiz_id               Int
+  dummy_choice_sentense String    @db.VarChar(256)
+  created_at            DateTime  @default(now()) @db.Timestamp(6)
+  updated_at            DateTime  @updatedAt
+  deleted_at            DateTime? @db.Timestamp(6)
+  quiz                  quiz      @relation(fields: [quiz_id], references: [id])
+}
+
 model quiz_explanation {
   id          Int       @id @default(autoincrement())
   quiz_id     Int       @unique
@@ -199,7 +210,7 @@ model quiz_explanation {
   created_at  DateTime  @default(now()) @db.Timestamp(6)
   updated_at  DateTime  @updatedAt
   deleted_at  DateTime? @db.Timestamp(6)
-  quiz        quiz?     @relation(fields: [quiz_id], references: [id])
+  quiz        quiz      @relation(fields: [quiz_id], references: [id])
 }
 
 model quiz_file {
