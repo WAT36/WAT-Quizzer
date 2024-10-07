@@ -38,6 +38,7 @@ erDiagram
 
   "answer_log" {
     Int id "🗝️"
+    Int quiz_id 
     Int quiz_format_id 
     Int file_num 
     Int quiz_num 
@@ -448,6 +449,7 @@ erDiagram
     "advanced_quiz" o|--|o "advanced_quiz_statistics_view" : "advanced_quiz_statistics_view"
     "advanced_quiz_explanation" o|--|| "advanced_quiz" : "advanced_quiz"
     "advanced_quiz_type" o{--}o "advanced_quiz" : "advanced_quiz"
+    "answer_log" o|--|| "quiz" : "quiz"
     "dummy_choice" o|--|| "advanced_quiz" : "advanced_quiz"
     "englishbot_answer_log" o|--|| "word" : "word"
     "example" o{--}o "example_explanation" : "example_explanation"
@@ -456,12 +458,13 @@ erDiagram
     "mean" o|--|| "partsofspeech" : "partsofspeech"
     "mean" o|--|| "word" : "word"
     "partsofspeech" o{--}o "mean" : "mean"
+    "quiz" o{--}o "answer_log" : "answer_log"
     "quiz" o{--}o "quiz_basis_advanced_linkage" : "quiz_basis_advanced_linkage"
     "quiz" o{--}o "quiz_category" : "quiz_category"
     "quiz" o{--}o "quiz_explanation" : "quiz_explanation"
+    "quiz" o{--}o "quiz_dummy_choice" : "quiz_dummy_choice"
     "quiz" o|--|o "quiz_statistics_view" : "quiz_statistics_view"
     "quiz" o|--|o "quiz_format" : "quiz_format"
-    "quiz" o{--}o "quiz_dummy_choice" : "quiz_dummy_choice"
     "quiz_basis_advanced_linkage" o|--|| "advanced_quiz" : "advanced_quiz"
     "quiz_basis_advanced_linkage" o|--|| "quiz" : "quiz"
     "quiz_category" o|--|| "quiz" : "quiz"
