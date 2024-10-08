@@ -162,7 +162,6 @@ model quiz {
 
 model quiz_basis_advanced_linkage {
   id                 Int       @id @default(autoincrement())
-  file_num           Int
   basis_quiz_id      Int
   advanced_quiz_id   Int
   created_at         DateTime  @default(now()) @db.Timestamp(6)

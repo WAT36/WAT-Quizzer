@@ -128,7 +128,6 @@ erDiagram
 
   "quiz_basis_advanced_linkage" {
     Int id "🗝️"
-    Int file_num 
     Int basis_quiz_id 
     Int advanced_quiz_id 
     DateTime created_at 
