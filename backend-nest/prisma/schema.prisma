@@ -32,7 +32,6 @@ model advanced_quiz {
   quiz_file                     quiz_file                      @relation(fields: [file_num], references: [file_num])
   advanced_quiz_explanation     advanced_quiz_explanation?
   dummy_choice                  dummy_choice[]
-  quiz_basis_advanced_linkage   quiz_basis_advanced_linkage[]
   advanced_quiz_statistics_view advanced_quiz_statistics_view? @relation(fields: [id], references: [id])
 
   @@unique([file_num, quiz_num])
@@ -60,7 +59,7 @@ model advanced_quiz_type {
 
 model answer_log {
   id             Int       @id @default(autoincrement())
-  quiz_id        Int       @default(1)
+  quiz_id        Int
   quiz_format_id Int
   file_num       Int
   quiz_num       Int
@@ -138,38 +137,39 @@ model partsofspeech {
 }
 
 model quiz {
-  id                          Int                           @id @default(autoincrement())
-  format_id                   Int
-  file_num                    Int
-  quiz_num                    Int
-  quiz_sentense               String                        @unique @db.VarChar(256)
-  answer                      String                        @db.VarChar(256)
-  img_file                    String?                       @db.VarChar(128)
-  checked                     Boolean?                      @default(false)
-  created_at                  DateTime                      @default(now()) @db.Timestamp(6)
-  updated_at                  DateTime                      @default(now()) @db.Timestamp(6)
-  deleted_at                  DateTime?                     @db.Timestamp(6)
-  answer_log                  answer_log[]
-  quiz_basis_advanced_linkage quiz_basis_advanced_linkage[]
-  quiz_category               quiz_category[]
-  quiz_explanation            quiz_explanation[]
-  quiz_dummy_choice           quiz_dummy_choice[]
-  quiz_statistics_view        quiz_statistics_view?         @relation(fields: [id], references: [id])
-  quiz_format                 quiz_format?                  @relation(fields: [format_id], references: [id])
+  id                    Int                           @id @default(autoincrement())
+  format_id             Int
+  file_num              Int
+  quiz_num              Int
+  quiz_sentense         String                        @unique @db.VarChar(256)
+  answer                String                        @db.VarChar(256)
+  img_file              String?                       @db.VarChar(128)
+  checked               Boolean?                      @default(false)
+  created_at            DateTime                      @default(now()) @db.Timestamp(6)
+  updated_at            DateTime                      @default(now()) @db.Timestamp(6)
+  deleted_at            DateTime?                     @db.Timestamp(6)
+  answer_log            answer_log[]
+  quiz_advanced_linkage quiz_basis_advanced_linkage[] @relation("basis")
+  quiz_basis_linkage    quiz_basis_advanced_linkage[] @relation("advanced")
+  quiz_category         quiz_category[]
+  quiz_explanation      quiz_explanation[]
+  quiz_dummy_choice     quiz_dummy_choice[]
+  quiz_statistics_view  quiz_statistics_view?         @relation(fields: [id], references: [id])
+  quiz_format           quiz_format?                  @relation(fields: [format_id], references: [id])
 
   @@unique([file_num, quiz_num])
 }
 
 model quiz_basis_advanced_linkage {
-  id               Int           @id @default(autoincrement())
-  file_num         Int
-  basis_quiz_id    Int
-  advanced_quiz_id Int
-  created_at       DateTime      @default(now()) @db.Timestamp(6)
-  updated_at       DateTime      @default(now()) @db.Timestamp(6)
-  deleted_at       DateTime?     @db.Timestamp(6)
-  advanced_quiz    advanced_quiz @relation(fields: [advanced_quiz_id], references: [id])
-  quiz             quiz          @relation(fields: [basis_quiz_id], references: [id])
+  id                 Int       @id @default(autoincrement())
+  file_num           Int
+  basis_quiz_id      Int
+  advanced_quiz_id   Int
+  created_at         DateTime  @default(now()) @db.Timestamp(6)
+  updated_at         DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at         DateTime? @db.Timestamp(6)
+  quiz_basis_link    quiz      @relation("basis", fields: [basis_quiz_id], references: [id])
+  quiz_advanced_link quiz      @relation("advanced", fields: [advanced_quiz_id], references: [id])
 
   @@unique([basis_quiz_id, advanced_quiz_id])
 }
