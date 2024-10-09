@@ -149,8 +149,8 @@ model quiz {
   updated_at            DateTime                      @default(now()) @db.Timestamp(6)
   deleted_at            DateTime?                     @db.Timestamp(6)
   answer_log            answer_log[]
-  quiz_advanced_linkage quiz_basis_advanced_linkage[] @relation("basis")
-  quiz_basis_linkage    quiz_basis_advanced_linkage[] @relation("advanced")
+  quiz_basis_linkage    quiz_basis_advanced_linkage[] @relation("basis")
+  quiz_advanced_linkage quiz_basis_advanced_linkage[] @relation("advanced")
   quiz_category         quiz_category[]
   quiz_explanation      quiz_explanation[]
   quiz_dummy_choice     quiz_dummy_choice[]
