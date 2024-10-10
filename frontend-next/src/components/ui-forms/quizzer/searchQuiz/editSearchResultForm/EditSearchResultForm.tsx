@@ -131,8 +131,7 @@ export const EditSearchResultForm = ({
           .map((id) => {
             return String(id);
           })
-          .join(','),
-        format: '-1' // TODO チェックONは今quizしか対応されてない　基礎応用一本化を早急にやるべき
+          .join(',')
       }
     });
     setMessage({
@@ -165,8 +164,7 @@ export const EditSearchResultForm = ({
           .map((id) => {
             return String(id);
           })
-          .join(','),
-        format: '-1' // TODO チェックONは今quizしか対応されてない　基礎応用一本化を早急にやるべき
+          .join(',')
       }
     });
     setMessage({

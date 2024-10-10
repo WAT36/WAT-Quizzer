@@ -23,7 +23,7 @@ export const AddQuiz: Story = {
     putQuizRequestData: {
       file_num: -1,
       quiz_num: -1,
-      value: -1
+      format_id: -1
     },
     setPutQuizRequestData: undefined
   }
@@ -34,7 +34,7 @@ export const BasisPanel: Story = {
     putQuizRequestData: {
       file_num: -1,
       quiz_num: -1,
-      value: 0
+      format_id: 0
     },
     setPutQuizRequestData: undefined
   }
@@ -45,7 +45,7 @@ export const AppliedPanel: Story = {
     putQuizRequestData: {
       file_num: -1,
       quiz_num: -1,
-      value: 1
+      format_id: 1
     },
     setPutQuizRequestData: undefined
   }
@@ -56,7 +56,7 @@ export const FourChoicePanel: Story = {
     putQuizRequestData: {
       file_num: -1,
       quiz_num: -1,
-      value: 2
+      format_id: 2
     },
     setPutQuizRequestData: undefined
   }

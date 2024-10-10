@@ -24,33 +24,32 @@ const a11yProps = (index: number) => {
 export const PutQuizForm = ({ putQuizRequestData, setPutQuizRequestData }: PutQuizFormProps) => {
   // タブの切り替え
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setPutQuizRequestData({
-      file_num: putQuizRequestData.file_num,
-      quiz_num: -1,
-      value: newValue
-    });
+    // TODO 直す
+    // setPutQuizRequestData({
+    //   //file_num: putQuizRequestData.file_num,
+    // });
   };
 
   return (
     <>
       <Card variant="outlined">
-        <Tabs value={putQuizRequestData.value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs value={putQuizRequestData.format_id} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="基礎問題" {...a11yProps(0)} />
           <Tab label="応用問題" {...a11yProps(1)} />
           <Tab label="四択問題" {...a11yProps(2)} />
         </Tabs>
         <BasisTabPanel
-          value={putQuizRequestData.value}
+          value={putQuizRequestData.format_id || -1}
           putQuizRequestData={putQuizRequestData}
           setPutQuizRequestData={setPutQuizRequestData}
         />
         <AppliedTabPanel
-          value={putQuizRequestData.value}
+          value={putQuizRequestData.format_id || -1}
           putQuizRequestData={putQuizRequestData}
           setPutQuizRequestData={setPutQuizRequestData}
         />
         <FourChoiceTabPanel
-          value={putQuizRequestData.value}
+          value={putQuizRequestData.format_id || -1}
           putQuizRequestData={putQuizRequestData}
           setPutQuizRequestData={setPutQuizRequestData}
         />

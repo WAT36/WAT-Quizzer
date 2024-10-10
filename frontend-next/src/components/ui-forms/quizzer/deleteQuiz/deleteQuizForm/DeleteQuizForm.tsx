@@ -60,7 +60,7 @@ export const DeleteQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: DeleteQuiz
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuizRequestData({
       ...getQuizRequestData,
-      format: (event.target as HTMLInputElement).value
+      format_id: +(event.target as HTMLInputElement).value
     });
   };
 
@@ -98,11 +98,12 @@ export const DeleteQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: DeleteQuiz
 
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
+              {/**TODO ここなおす */}
               <RadioGroup
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
                 name="row-radio-buttons-group"
-                value={getQuizRequestData.format}
+                value={getQuizRequestData.format_id}
                 defaultValue="basic"
                 onChange={handleRadioChange}
               >
@@ -123,7 +124,7 @@ export const DeleteQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: DeleteQuiz
               const result = await getQuizAPI({ getQuizRequestData });
               setMessage(result.message);
               if (result.result) {
-                setDeleteQuizInfo({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+                setDeleteQuizInfo({ ...(result.result as GetQuizApiResponseDto) });
               }
             }}
           />
@@ -170,7 +171,7 @@ export const DeleteQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: DeleteQuiz
             deleteQuizAPIRequestData: {
               file_num: deleteQuizInfo.file_num,
               quiz_num: deleteQuizInfo.quiz_num,
-              format: deleteQuizInfo.format
+              format_id: deleteQuizInfo.format_id
             }
           });
           setMessage(result.message);

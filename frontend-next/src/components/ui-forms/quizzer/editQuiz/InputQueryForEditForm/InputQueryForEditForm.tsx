@@ -99,7 +99,7 @@ export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForE
               setQueryofQuizStater: (value: string) => {
                 setQuizRequestData({
                   ...getQuizRequestData,
-                  format: value
+                  format_id: +value
                 });
               }
             }}
@@ -119,8 +119,7 @@ export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForE
           if (result.result) {
             setEditQuizRequestData({
               ...getQuizAPIResponseToEditQuizAPIRequestAdapter(result.result as GetQuizApiResponseDto),
-              format: getQuizRequestData.format,
-              value: getLabelIndex(getQuizRequestData.format)
+              format_id: getQuizRequestData.format_id
             });
           }
         }}

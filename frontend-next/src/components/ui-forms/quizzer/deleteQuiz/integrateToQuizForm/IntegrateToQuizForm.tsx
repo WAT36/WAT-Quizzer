@@ -50,7 +50,7 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
             <FormControl>
               <TextField
                 label="問題番号"
-                disabled={!(deleteQuizInfo.format === 'basic' || deleteQuizInfo.format === 'applied')}
+                disabled={!(deleteQuizInfo.format_id === 1 || deleteQuizInfo.format_id === 2)}
                 onChange={(e) => {
                   setQuizRequestData({
                     ...getQuizRequestData,
@@ -67,8 +67,8 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
                 name="row-radio-buttons-group"
-                value={deleteQuizInfo.format}
-                defaultValue={deleteQuizInfo.format}
+                value={deleteQuizInfo.format_id}
+                defaultValue={deleteQuizInfo.format_id}
               >
                 <FormControlLabel disabled value="basic" control={<Radio />} label="基礎問題" />
                 <FormControlLabel disabled value="applied" control={<Radio />} label="応用問題" />
@@ -81,7 +81,7 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
             attr={'button-array'}
             variant="contained"
             color="primary"
-            disabled={deleteQuizInfo.format !== 'basic'}
+            disabled={deleteQuizInfo.format_id !== 1}
             onClick={async (e) => {
               setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
               const result = await getQuizAPI({
@@ -92,7 +92,7 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
               });
               setMessage(result.message);
               if (result.result) {
-                setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+                setQuizResponseData({ ...(result.result as GetQuizApiResponseDto) });
               }
             }}
           />
@@ -133,7 +133,7 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
         attr={'button-array'}
         variant="contained"
         color="primary"
-        disabled={deleteQuizInfo.format !== 'basic'}
+        disabled={deleteQuizInfo.format_id !== 1}
         onClick={async (e) => {
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await integrateQuizAPI({
