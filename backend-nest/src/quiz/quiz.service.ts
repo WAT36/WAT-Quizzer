@@ -29,7 +29,7 @@ export type getQuizProps = {
   max_rate?: number;
   category?: string;
   checked?: boolean;
-  format?: number;
+  format_id?: number;
   method?: 'random' | 'worstRate' | 'leastClear' | 'LRU' | 'review';
 };
 
@@ -43,7 +43,7 @@ export class QuizService {
     max_rate,
     category,
     checked,
-    format,
+    format_id,
     method,
   }: getQuizProps) {
     try {
@@ -53,7 +53,7 @@ export class QuizService {
         method
           ? {
               file_num,
-              format,
+              format_id,
               deleted_at: null,
               quiz_statistics_view: {
                 accuracy_rate: {
@@ -78,7 +78,7 @@ export class QuizService {
           : {
               file_num,
               quiz_num,
-              format,
+              format_id,
               deleted_at: null,
             };
       const orderBy =
@@ -1138,5 +1138,21 @@ export class QuizService {
     } catch (error) {
       throw error;
     }
+  }
+
+  // 問題形式リスト取得
+  async getQuizFormatList() {
+    return await prisma.quiz_format.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+      where: {
+        deleted_at: null,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
   }
 }

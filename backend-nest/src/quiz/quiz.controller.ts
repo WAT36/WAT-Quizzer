@@ -34,9 +34,9 @@ export class QuizController {
   async getQuiz(
     @Query('file_num', ParseIntPipe) file_num: number,
     @Query('quiz_num', ParseIntPipe) quiz_num: number,
-    @Query('format') format: string,
+    @Query('format_id', ParseIntPipe) format_id: number,
   ) {
-    return await this.quizService.getQuiz({ file_num, quiz_num, format });
+    return await this.quizService.getQuiz({ file_num, quiz_num, format_id });
   }
 
   @Get('/random')
@@ -46,7 +46,7 @@ export class QuizController {
     @Query('max_rate', ParseIntPipe) max_rate: number,
     @Query('category') category: string,
     @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format') format: string,
+    @Query('format_id', ParseIntPipe) format_id: number,
   ) {
     return await this.quizService.getQuiz({
       file_num,
@@ -54,7 +54,7 @@ export class QuizController {
       max_rate,
       category,
       checked,
-      format,
+      format_id,
       method: 'random',
     });
   }
@@ -64,13 +64,13 @@ export class QuizController {
     @Query('file_num', ParseIntPipe) file_num: number,
     @Query('category') category: string,
     @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format') format: string,
+    @Query('format_id', ParseIntPipe) format_id: number,
   ) {
     return await this.quizService.getQuiz({
       file_num,
       category,
       checked,
-      format,
+      format_id,
       method: 'worstRate',
     });
   }
@@ -80,13 +80,13 @@ export class QuizController {
     @Query('file_num', ParseIntPipe) file_num: number,
     @Query('category') category: string,
     @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format') format: string,
+    @Query('format_id', ParseIntPipe) format_id: number,
   ) {
     return await this.quizService.getQuiz({
       file_num,
       category,
       checked,
-      format,
+      format_id,
       method: 'leastClear',
     });
   }
@@ -96,13 +96,13 @@ export class QuizController {
     @Query('file_num', ParseIntPipe) file_num: number,
     @Query('category') category: string,
     @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format') format: string,
+    @Query('format_id', ParseIntPipe) format_id: number,
   ) {
     return await this.quizService.getQuiz({
       file_num,
       category,
       checked,
-      format,
+      format_id,
       method: 'LRU',
     });
   }
@@ -112,13 +112,13 @@ export class QuizController {
     @Query('file_num', ParseIntPipe) file_num: number,
     @Query('category') category: string,
     @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format') format: string,
+    @Query('format_id', ParseIntPipe) format_id: number,
   ) {
     return await this.quizService.getQuiz({
       file_num,
       category,
       checked,
-      format,
+      format_id,
       method: 'review',
     });
   }
@@ -153,7 +153,7 @@ export class QuizController {
     @Query('query') query: string,
     @Query('searchInOnlySentense', ParseBoolPipe) searchInOnlySentense: boolean,
     @Query('searchInOnlyAnswer', ParseBoolPipe) searchInOnlyAnswer: boolean,
-    @Query('format') format: string,
+    @Query('format_id', ParseIntPipe) format_id: number,
   ) {
     return await this.quizService.search(
       file_num,
@@ -164,7 +164,7 @@ export class QuizController {
       query,
       searchInOnlySentense,
       searchInOnlyAnswer,
-      format,
+      format_id,
     );
   }
 
@@ -208,14 +208,9 @@ export class QuizController {
     return await this.quizService.deleteAnswerLogByFile(req);
   }
 
-  @Post('/advanced')
-  async addAdvanceQuiz(@Body() req: AddQuizAPIRequestDto) {
-    return await this.quizService.addAdvancedQuiz(req);
-  }
-
-  @Post('/advanced/4choice')
-  async addFourChoiceQuiz(@Body() req: AddQuizAPIRequestDto) {
-    return await this.quizService.addFourChoiceQuiz(req);
+  @Get('format')
+  async getQuizFormatList() {
+    return await this.quizService.getQuizFormatList();
   }
 
   @Get('/statistics/week')
