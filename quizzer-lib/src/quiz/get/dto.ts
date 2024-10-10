@@ -12,8 +12,7 @@ export interface GetQuizAPIRequestDto {
 
 // 問題取得APIのレスポンス（基礎応用込み）、フォーマット込み
 export interface GetQuizApiResponseDto extends ApiResponse {
-  format: string
-  format_value?: number
+  format_id?: number
 
   id: number
   file_num: number
@@ -34,10 +33,10 @@ export interface GetQuizApiResponseDto extends ApiResponse {
   quiz_dummy_choice?: {
     dummy_choice_sentense: string // TODO テーブルごとの型なので本当は望ましくない getQuiz専用のAPI返り値型を作るべき
   }[]
-  quiz_basis_linkage: {
+  quiz_basis_linkage?: {
     basis_quiz_id: number
   }[]
-  quiz_advanced_linkage: {
+  quiz_advanced_linkage?: {
     advanced_quiz_id: number
   }[]
   quiz_explanation?: {

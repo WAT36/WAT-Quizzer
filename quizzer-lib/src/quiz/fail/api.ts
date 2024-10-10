@@ -23,7 +23,8 @@ export const failQuizAPI = async ({
   const result = await post(
     '/quiz/fail',
     {
-      format: getQuizResponseData.format,
+      quiz_id: getQuizResponseData.id,
+      format_id: getQuizResponseData.format_id,
       file_num: getQuizResponseData.file_num,
       quiz_num: getQuizResponseData.quiz_num
     },

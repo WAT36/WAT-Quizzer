@@ -24,7 +24,6 @@ export const reverseCheckQuizAPI = async ({
   const result = await post(
     '/quiz/check',
     {
-      format: getQuizResponseData.format,
       file_num: getQuizResponseData.file_num,
       quiz_num: getQuizResponseData.quiz_num
     },

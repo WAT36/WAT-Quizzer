@@ -16,29 +16,8 @@ export const addQuizAPI = async ({
     return { message: errorMessage(MESSAGES.ERROR.MSG00005) }
   }
 
-  // 問題形式によりAPI決定
-  let apiPath
-  switch (addQuizRequestData.value) {
-    case 0:
-      apiPath = '/quiz'
-      break
-    case 1:
-      apiPath = '/quiz/advanced'
-      break
-    case 2:
-      apiPath = '/quiz/advanced/4choice'
-      break
-    default:
-      return {
-        message: errorMessage(
-          MESSAGES.ERROR.MSG00006,
-          String(addQuizRequestData.value)
-        )
-      }
-  }
-
   const result = await post(
-    apiPath,
+    '/quiz',
     { ...addQuizRequestData },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {

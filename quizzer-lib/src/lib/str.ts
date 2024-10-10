@@ -47,17 +47,15 @@ export const getDateForSqlString = (date: Date | string) => {
 export const generateQuizSentense = (
   res: GetQuizApiResponseDto
 ): Partial<
-  Pick<
-    GetQuizApiResponseDto,
-    'quiz_sentense' | 'answer' | 'advanced_quiz_explanation'
-  >
+  Pick<GetQuizApiResponseDto, 'quiz_sentense' | 'answer' | 'quiz_explanation'>
 > => {
-  if (res.format === '4choice') {
+  // 四択の場合
+  if (res.format_id === 3) {
     const choices = []
     choices.push(res.answer)
-    if (res.dummy_choice) {
-      for (let i = 0; i < res.dummy_choice.length; i++) {
-        choices.push(res.dummy_choice[i].dummy_choice_sentense || '')
+    if (res.quiz_dummy_choice) {
+      for (let i = 0; i < res.quiz_dummy_choice.length; i++) {
+        choices.push(res.quiz_dummy_choice[i].dummy_choice_sentense || '')
       }
     }
     // 選択肢の配列をランダムに並び替える
@@ -68,11 +66,9 @@ export const generateQuizSentense = (
       quiz_sentense:
         res.file_num !== -1 && res.quiz_num !== -1
           ? `[${res.file_num}-${res.quiz_num}]${res.quiz_sentense}${
-              res.advanced_quiz_statistics_view?.accuracy_rate
+              res.quiz_statistics_view?.accuracy_rate
                 ? '(正解率' +
-                  Number(
-                    res.advanced_quiz_statistics_view.accuracy_rate
-                  ).toFixed(2) +
+                  Number(res.quiz_statistics_view.accuracy_rate).toFixed(2) +
                   '%)'
                 : ''
             }
@@ -82,9 +78,9 @@ export const generateQuizSentense = (
         D: ${choices[choiceName.indexOf('D')]}`
           : '',
       answer: `${choiceName[0]}: ${res.answer}`,
-      advanced_quiz_explanation: {
-        explanation: res.advanced_quiz_explanation
-          ? res.advanced_quiz_explanation.explanation
+      quiz_explanation: {
+        explanation: res.quiz_explanation
+          ? res.quiz_explanation.explanation
               .replaceAll('{c}', choiceName[0])
               .replaceAll('{d1}', choiceName[1])
               .replaceAll('{d2}', choiceName[2])
@@ -102,8 +98,6 @@ export const generateQuizSentense = (
                   Number(
                     res.quiz_statistics_view
                       ? res.quiz_statistics_view.accuracy_rate
-                      : res.advanced_quiz_statistics_view
-                      ? res.advanced_quiz_statistics_view.accuracy_rate
                       : NaN
                   ).toFixed(2) +
                   '%)'

@@ -39,12 +39,10 @@ export const getQuizAPIResponseToEditQuizAPIRequestAdapter = (
   response: GetQuizApiResponseDto
 ) => {
   const result: EditQuizAPIRequestDto = {
-    // TODO 基礎応用統合したらいらなくなるので仮で-1
-    value: -1,
-
+    quiz_id: response.id,
     file_num: response.file_num,
     quiz_num: response.quiz_num,
-    format: response.format,
+    format_id: response.format_id,
     question: response.quiz_sentense,
     answer: response.answer,
     category: response.quiz_category
@@ -63,18 +61,18 @@ export const getQuizAPIResponseToEditQuizAPIRequestAdapter = (
           .join(',')
       : '',
     dummy1:
-      response.dummy_choice && response.dummy_choice.length > 0
-        ? response.dummy_choice[0].dummy_choice_sentense
+      response.quiz_dummy_choice && response.quiz_dummy_choice.length > 0
+        ? response.quiz_dummy_choice[0].dummy_choice_sentense
         : '', //四択問題のダミー選択肢１
     dummy2:
-      response.dummy_choice && response.dummy_choice.length > 1
-        ? response.dummy_choice[1].dummy_choice_sentense
+      response.quiz_dummy_choice && response.quiz_dummy_choice.length > 1
+        ? response.quiz_dummy_choice[1].dummy_choice_sentense
         : '', //四択問題のダミー選択肢２
     dummy3:
-      response.dummy_choice && response.dummy_choice.length > 2
-        ? response.dummy_choice[2].dummy_choice_sentense
+      response.quiz_dummy_choice && response.quiz_dummy_choice.length > 2
+        ? response.quiz_dummy_choice[2].dummy_choice_sentense
         : '', //四択問題のダミー選択肢３
-    explanation: response.advanced_quiz_explanation?.explanation // 解説
+    explanation: response.quiz_explanation?.explanation // 解説
   }
   return result
 }
