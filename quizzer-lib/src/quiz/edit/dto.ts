@@ -1,12 +1,10 @@
 import { ApiResponse } from '../../api'
 
 export interface EditQuizAPIRequestDto {
-  // TODO 基礎応用問題統合したら　このvalueは削除する？
-  value: number
-
+  quiz_id: number
   file_num: number
   quiz_num: number
-  format?: string
+  format_id?: number
   question?: string
   answer?: string
   category?: string
