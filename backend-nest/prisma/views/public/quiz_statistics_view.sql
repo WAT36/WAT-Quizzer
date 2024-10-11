@@ -28,65 +28,36 @@ FROM
         quiz
         LEFT JOIN (
           SELECT
-            answer_log.file_num,
-            answer_log.quiz_num,
+            answer_log.quiz_id,
             count(*) AS clear_count
           FROM
             answer_log
           WHERE
-            (
-              (answer_log.is_corrected = TRUE)
-              AND (answer_log.quiz_format_id = 1)
-            )
+            (answer_log.is_corrected = TRUE)
           GROUP BY
-            answer_log.file_num,
-            answer_log.quiz_num
-        ) corrected_data ON (
-          (
-            (quiz.file_num = corrected_data.file_num)
-            AND (quiz.quiz_num = corrected_data.quiz_num)
-          )
-        )
+            answer_log.quiz_id
+        ) corrected_data ON ((quiz.id = corrected_data.quiz_id))
       )
       LEFT JOIN (
         SELECT
-          answer_log.file_num,
-          answer_log.quiz_num,
+          answer_log.quiz_id,
           count(*) AS fail_count,
           max(answer_log.created_at) AS last_failed_answer_log
         FROM
           answer_log
         WHERE
-          (
-            (answer_log.is_corrected = false)
-            AND (answer_log.quiz_format_id = 1)
-          )
+          (answer_log.is_corrected = false)
         GROUP BY
-          answer_log.file_num,
-          answer_log.quiz_num
-      ) incorrected_data ON (
-        (
-          (quiz.file_num = incorrected_data.file_num)
-          AND (quiz.quiz_num = incorrected_data.quiz_num)
-        )
-      )
+          answer_log.quiz_id
+      ) incorrected_data ON ((quiz.id = incorrected_data.quiz_id))
     )
     LEFT JOIN (
       SELECT
-        answer_log.file_num,
-        answer_log.quiz_num,
+        answer_log.quiz_id,
         max(answer_log.created_at) AS last_answer_log
       FROM
         answer_log
-      WHERE
-        (answer_log.quiz_format_id = 1)
       GROUP BY
-        answer_log.file_num,
-        answer_log.quiz_num
-    ) all_log_data ON (
-      (
-        (quiz.file_num = all_log_data.file_num)
-        AND (quiz.quiz_num = all_log_data.quiz_num)
-      )
-    )
+        answer_log.quiz_id
+    ) all_log_data ON ((quiz.id = all_log_data.quiz_id))
   );
