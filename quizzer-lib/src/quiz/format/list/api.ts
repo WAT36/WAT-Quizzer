@@ -5,10 +5,10 @@ import { GetQuizFormatApiResponseDto } from './dto'
 // quizzer各画面用 問題形式リストをapi通信して取ってくる
 export const getQuizFormatListAPI = async (): Promise<ApiResult> => {
   const storageKey = 'quizFormatList'
-  const savedFileList = sessionStorage.getItem(storageKey)
-  if (!savedFileList) {
+  const savedFormatList = sessionStorage.getItem(storageKey)
+  if (!savedFormatList) {
     const result = get(
-      '/quiz/file',
+      '/quiz/format',
       (data: ProcessingApiReponse) => {
         if (data.status === 200) {
           const result: GetQuizFormatApiResponseDto[] =
@@ -30,7 +30,7 @@ export const getQuizFormatListAPI = async (): Promise<ApiResult> => {
     // 既にsession storageに値が入っている場合はそれを利用する
     return {
       message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
-      result: JSON.parse(savedFileList) as GetQuizFormatApiResponseDto[]
+      result: JSON.parse(savedFormatList) as GetQuizFormatApiResponseDto[]
     }
   }
 }

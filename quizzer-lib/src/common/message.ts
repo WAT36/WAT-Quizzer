@@ -1,4 +1,4 @@
-import { formatString } from '../..'
+import { formatString, MESSAGES } from '../..'
 
 export interface Message {
   message: string
@@ -32,6 +32,6 @@ export const defaultMessage = (
   return {
     message: params.length > 0 ? formatString(message) : message,
     messageColor: 'common.black',
-    isDisplay: true
+    isDisplay: message !== MESSAGES.DEFAULT.MSG00001
   }
 }
