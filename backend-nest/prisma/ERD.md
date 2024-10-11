@@ -38,7 +38,6 @@ erDiagram
 
   "answer_log" {
     Int id "🗝️"
-    Int quiz_id 
     Int quiz_format_id 
     Int file_num 
     Int quiz_num 
@@ -46,6 +45,7 @@ erDiagram
     DateTime created_at 
     DateTime updated_at 
     DateTime deleted_at "❓"
+    Int quiz_id 
     }
   
 
@@ -113,7 +113,6 @@ erDiagram
 
   "quiz" {
     Int id "🗝️"
-    Int format_id 
     Int file_num 
     Int quiz_num 
     String quiz_sentense 
@@ -123,6 +122,7 @@ erDiagram
     DateTime created_at 
     DateTime updated_at 
     DateTime deleted_at "❓"
+    Int format_id 
     }
   
 
@@ -343,35 +343,6 @@ erDiagram
     }
   
 
-  "advanced_quiz_statistics_view" {
-    Int id 
-    BigInt clear_count "❓"
-    BigInt fail_count "❓"
-    BigInt answer_count "❓"
-    BigInt accuracy_rate "❓"
-    DateTime last_answer_log "❓"
-    DateTime last_failed_answer_log "❓"
-    }
-  
-
-  "advanced_quiz_view" {
-    Int id 
-    Int file_num "❓"
-    Int quiz_num "❓"
-    Int advanced_quiz_type_id "❓"
-    String quiz_sentense "❓"
-    String answer "❓"
-    String img_file "❓"
-    Boolean checked "❓"
-    BigInt clear_count "❓"
-    BigInt fail_count "❓"
-    DateTime created_at "❓"
-    DateTime updated_at "❓"
-    DateTime deleted_at "❓"
-    BigInt accuracy_rate "❓"
-    }
-  
-
   "category_view" {
     Int file_num 
     String category 
@@ -386,14 +357,10 @@ erDiagram
     Int file_num 
     String file_name "❓"
     String file_nickname "❓"
-    BigInt basic_quiz_count "❓"
-    Decimal basic_clear "❓"
-    Decimal basic_fail "❓"
-    Decimal basic_accuracy_rate "❓"
-    BigInt advanced_quiz_count "❓"
-    Decimal advanced_clear "❓"
-    Decimal advanced_fail "❓"
-    Decimal advanced_accuracy_rate "❓"
+    BigInt count "❓"
+    Decimal clear "❓"
+    Decimal fail "❓"
+    Decimal accuracy_rate "❓"
     }
   
 
@@ -444,7 +411,6 @@ erDiagram
     "advanced_quiz" o|--|| "quiz_file" : "quiz_file"
     "advanced_quiz" o{--}o "advanced_quiz_explanation" : "advanced_quiz_explanation"
     "advanced_quiz" o{--}o "dummy_choice" : "dummy_choice"
-    "advanced_quiz" o|--|o "advanced_quiz_statistics_view" : "advanced_quiz_statistics_view"
     "advanced_quiz_explanation" o|--|| "advanced_quiz" : "advanced_quiz"
     "advanced_quiz_type" o{--}o "advanced_quiz" : "advanced_quiz"
     "answer_log" o|--|| "quiz" : "quiz"
@@ -457,15 +423,15 @@ erDiagram
     "mean" o|--|| "word" : "word"
     "partsofspeech" o{--}o "mean" : "mean"
     "quiz" o{--}o "answer_log" : "answer_log"
-    "quiz" o{--}o "quiz_basis_advanced_linkage" : "quiz_basis_linkage"
+    "quiz" o|--|| "quiz_format" : "quiz_format"
     "quiz" o{--}o "quiz_basis_advanced_linkage" : "quiz_advanced_linkage"
+    "quiz" o{--}o "quiz_basis_advanced_linkage" : "quiz_basis_linkage"
     "quiz" o{--}o "quiz_category" : "quiz_category"
-    "quiz" o{--}o "quiz_explanation" : "quiz_explanation"
     "quiz" o{--}o "quiz_dummy_choice" : "quiz_dummy_choice"
+    "quiz" o{--}o "quiz_explanation" : "quiz_explanation"
     "quiz" o|--|o "quiz_statistics_view" : "quiz_statistics_view"
-    "quiz" o|--|o "quiz_format" : "quiz_format"
-    "quiz_basis_advanced_linkage" o|--|| "quiz" : "quiz_basis_link"
     "quiz_basis_advanced_linkage" o|--|| "quiz" : "quiz_advanced_link"
+    "quiz_basis_advanced_linkage" o|--|| "quiz" : "quiz_basis_link"
     "quiz_category" o|--|| "quiz" : "quiz"
     "quiz_dummy_choice" o|--|| "quiz" : "quiz"
     "quiz_explanation" o|--|| "quiz" : "quiz"
@@ -501,7 +467,6 @@ erDiagram
     "word_source" o|--|| "source" : "source"
     "word_source" o|--|| "word" : "word"
     "word_subsource" o|--|| "word" : "word"
-    "advanced_quiz_statistics_view" o{--}o "advanced_quiz" : "advanced_quiz"
     "quiz_statistics_view" o{--}o "quiz" : "quiz"
     "word_statistics_view" o{--}o "word" : "word"
 ```
