@@ -36,14 +36,10 @@ export class QuizFileService {
         file_num: true,
         file_name: true,
         file_nickname: true,
-        basic_quiz_count: true,
-        basic_clear: true,
-        basic_fail: true,
-        basic_accuracy_rate: true,
-        advanced_quiz_count: true,
-        advanced_clear: true,
-        advanced_fail: true,
-        advanced_accuracy_rate: true,
+        count: true,
+        clear: true,
+        fail: true,
+        accuracy_rate: true,
       },
       orderBy: {
         file_num: 'asc',
@@ -53,8 +49,7 @@ export class QuizFileService {
     return result.map((x) => {
       return {
         ...x,
-        basic_quiz_count: Number(x.basic_quiz_count),
-        advanced_quiz_count: Number(x.advanced_quiz_count),
+        count: Number(x.count),
       };
     });
   }
