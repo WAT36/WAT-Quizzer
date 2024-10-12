@@ -11,7 +11,7 @@ export const successMessage = (
   ...params: string[]
 ): Message => {
   return {
-    message: params.length > 0 ? formatString(message) : message,
+    message: params.length > 0 ? formatString(message, ...params) : message,
     messageColor: 'success.light',
     isDisplay: true
   }
@@ -19,7 +19,7 @@ export const successMessage = (
 
 export const errorMessage = (message: string, ...params: string[]): Message => {
   return {
-    message: params.length > 0 ? formatString(message) : message,
+    message: params.length > 0 ? formatString(message, ...params) : message,
     messageColor: 'error',
     isDisplay: true
   }
@@ -30,7 +30,7 @@ export const defaultMessage = (
   ...params: string[]
 ): Message => {
   return {
-    message: params.length > 0 ? formatString(message) : message,
+    message: params.length > 0 ? formatString(message, ...params) : message,
     messageColor: 'common.black',
     isDisplay: message !== MESSAGES.DEFAULT.MSG00001
   }

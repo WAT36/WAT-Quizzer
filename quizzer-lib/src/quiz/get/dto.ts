@@ -7,6 +7,17 @@ export interface GetQuizAPIRequestDto {
   min_rate?: number
   max_rate?: number
   category?: string
+  checked?: boolean //booleanにしたい
+}
+
+//API側で受け取った時のDTO（Pipeで上に変換する）
+export interface GetQuizAPIRequestReceivedDto {
+  file_num: string
+  quiz_num?: string
+  format_id?: string
+  min_rate?: string
+  max_rate?: string
+  category?: string
   checked?: string //booleanにしたい
 }
 

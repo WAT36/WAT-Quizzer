@@ -1,7 +1,7 @@
 export const initGetQuizRequestData = {
   file_num: -1,
   quiz_num: -1,
-  format: 'basic'
+  format_id: 1
 }
 
 export const initGetQuizResponseData = {
