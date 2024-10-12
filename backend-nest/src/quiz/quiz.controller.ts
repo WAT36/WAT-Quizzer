@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  ParseBoolPipe,
-  ParseIntPipe,
   Patch,
   Post,
   Put,
@@ -22,7 +20,10 @@ import {
   CheckQuizAPIRequestDto,
   DeleteAnswerLogOfFileApiRequestDto,
   AddCategoryToQuizAPIRequestDto,
+  parseStrToBool,
+  GetQuizAPIRequestDto,
 } from 'quizzer-lib';
+import { GetQuizPipe } from './pipe/getQuiz.pipe';
 // import { AuthGuard } from '../auth/auth.guard';
 
 // @UseGuards(AuthGuard)
@@ -31,96 +32,33 @@ export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 
   @Get()
-  async getQuiz(
-    @Query('file_num', ParseIntPipe) file_num: number,
-    @Query('quiz_num', ParseIntPipe) quiz_num: number,
-    @Query('format_id', ParseIntPipe) format_id: number,
-  ) {
-    return await this.quizService.getQuiz({ file_num, quiz_num, format_id });
+  async getQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestDto) {
+    return await this.quizService.getQuiz(req);
   }
 
   @Get('/random')
-  async getRandomQuiz(
-    @Query('file_num', ParseIntPipe) file_num: number,
-    @Query('min_rate', ParseIntPipe) min_rate: number,
-    @Query('max_rate', ParseIntPipe) max_rate: number,
-    @Query('category') category: string,
-    @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format_id', ParseIntPipe) format_id: number,
-  ) {
-    return await this.quizService.getQuiz({
-      file_num,
-      min_rate,
-      max_rate,
-      category,
-      checked,
-      format_id,
-      method: 'random',
-    });
+  async getRandomQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestDto) {
+    return await this.quizService.getQuiz(req, 'random');
   }
 
   @Get('/worst')
-  async getWorstRateQuiz(
-    @Query('file_num', ParseIntPipe) file_num: number,
-    @Query('category') category: string,
-    @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format_id', ParseIntPipe) format_id: number,
-  ) {
-    return await this.quizService.getQuiz({
-      file_num,
-      category,
-      checked,
-      format_id,
-      method: 'worstRate',
-    });
+  async getWorstRateQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestDto) {
+    return await this.quizService.getQuiz(req, 'worstRate');
   }
 
   @Get('/minimum')
-  async getMinimumAnsweredQuiz(
-    @Query('file_num', ParseIntPipe) file_num: number,
-    @Query('category') category: string,
-    @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format_id', ParseIntPipe) format_id: number,
-  ) {
-    return await this.quizService.getQuiz({
-      file_num,
-      category,
-      checked,
-      format_id,
-      method: 'leastClear',
-    });
+  async getMinimumAnsweredQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestDto) {
+    return await this.quizService.getQuiz(req, 'leastClear');
   }
 
   @Get('/lru')
-  async getLRUQuiz(
-    @Query('file_num', ParseIntPipe) file_num: number,
-    @Query('category') category: string,
-    @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format_id', ParseIntPipe) format_id: number,
-  ) {
-    return await this.quizService.getQuiz({
-      file_num,
-      category,
-      checked,
-      format_id,
-      method: 'LRU',
-    });
+  async getLRUQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestDto) {
+    return await this.quizService.getQuiz(req, 'LRU');
   }
 
   @Get('/review')
-  async getReviewQuiz(
-    @Query('file_num', ParseIntPipe) file_num: number,
-    @Query('category') category: string,
-    @Query('checked', ParseBoolPipe) checked: boolean,
-    @Query('format_id', ParseIntPipe) format_id: number,
-  ) {
-    return await this.quizService.getQuiz({
-      file_num,
-      category,
-      checked,
-      format_id,
-      method: 'review',
-    });
+  async getReviewQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestDto) {
+    return await this.quizService.getQuiz(req, 'review');
   }
 
   @Post('/clear')
@@ -145,25 +83,25 @@ export class QuizController {
 
   @Get('/search')
   async search(
-    @Query('file_num', ParseIntPipe) file_num: number,
-    @Query('min_rate', ParseIntPipe) min_rate: number,
-    @Query('max_rate', ParseIntPipe) max_rate: number,
+    @Query('file_num') file_num: number,
+    @Query('min_rate') min_rate: number,
+    @Query('max_rate') max_rate: number,
     @Query('category') category: string,
-    @Query('checked', ParseBoolPipe) checked: boolean,
     @Query('query') query: string,
-    @Query('searchInOnlySentense', ParseBoolPipe) searchInOnlySentense: boolean,
-    @Query('searchInOnlyAnswer', ParseBoolPipe) searchInOnlyAnswer: boolean,
-    @Query('format_id', ParseIntPipe) format_id: number,
+    @Query('searchInOnlySentense') searchInOnlySentense: string,
+    @Query('searchInOnlyAnswer') searchInOnlyAnswer: string,
+    @Query('format_id') format_id: number,
+    @Query('checked') checked: string,
   ) {
     return await this.quizService.search(
       file_num,
       min_rate,
       max_rate,
       category,
-      checked,
+      parseStrToBool(checked),
       query,
-      searchInOnlySentense,
-      searchInOnlyAnswer,
+      parseStrToBool(searchInOnlySentense),
+      parseStrToBool(searchInOnlyAnswer),
       format_id,
     );
   }

@@ -13,6 +13,7 @@ import {
   getPastDate,
   AddCategoryToQuizAPIRequestDto,
   IntegrateToQuizAPIRequestDto,
+  GetQuizAPIRequestDto,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -22,31 +23,23 @@ export interface QueryType {
   value: (string | number)[];
 }
 
-export type getQuizProps = {
-  file_num: number;
-  quiz_num?: number;
-  min_rate?: number;
-  max_rate?: number;
-  category?: string;
-  checked?: boolean;
-  format_id?: number;
-  method?: 'random' | 'worstRate' | 'leastClear' | 'LRU' | 'review';
-};
-
 @Injectable()
 export class QuizService {
   // 問題取得
-  async getQuiz({
-    file_num,
-    quiz_num,
-    min_rate,
-    max_rate,
-    category,
-    checked,
-    format_id,
-    method,
-  }: getQuizProps) {
+  async getQuiz(
+    req: GetQuizAPIRequestDto,
+    method?: 'random' | 'worstRate' | 'leastClear' | 'LRU' | 'review',
+  ) {
     try {
+      const {
+        file_num,
+        quiz_num,
+        min_rate,
+        max_rate,
+        category,
+        checked,
+        format_id,
+      } = req;
       // 取得条件
       const where =
         // methodがある時は条件指定
@@ -65,8 +58,12 @@ export class QuizService {
                 }),
               },
               ...(category && {
-                category: {
-                  contains: category,
+                quiz_category: {
+                  some: {
+                    category: {
+                      contains: category,
+                    },
+                  },
                 },
               }),
               ...(checked
@@ -78,7 +75,6 @@ export class QuizService {
           : {
               file_num,
               quiz_num,
-              format_id,
               deleted_at: null,
             };
       const orderBy =
@@ -114,6 +110,7 @@ export class QuizService {
           id: true,
           file_num: true,
           quiz_num: true,
+          format_id: true,
           quiz_sentense: true,
           answer: true,
           img_file: true,
