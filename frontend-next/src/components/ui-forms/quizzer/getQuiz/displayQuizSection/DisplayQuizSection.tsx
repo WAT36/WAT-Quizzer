@@ -63,7 +63,7 @@ export const DisplayQuizSection = ({ getQuizResponseData, setQuizResponseData }:
               {displayQuiz.answer}
             </Typography>
             <Typography variant="subtitle2" component="h3">
-              {'解説：' + displayQuiz.advanced_quiz_explanation?.explanation}
+              {'解説：' + displayQuiz.quiz_explanation?.explanation}
             </Typography>
             <Button
               label={'正解!!'}

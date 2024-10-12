@@ -6,7 +6,7 @@ import { getImageOfQuizAPI, getQuizAPI, GetQuizAPIRequestDto, GetQuizApiResponse
 
 interface GetQuizButtonGroupProps {
   getQuizRequestData: GetQuizAPIRequestDto;
-  setQuizResponseData?: React.Dispatch<React.SetStateAction<GetQuizApiResponseDto>>;
+  setQuizResponseData: React.Dispatch<React.SetStateAction<GetQuizApiResponseDto>>;
 }
 
 export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: GetQuizButtonGroupProps) => {
@@ -23,8 +23,8 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData });
           setMessage(result.message);
-          if (setQuizResponseData && result.result) {
-            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          if (result.result) {
+            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto) });
           }
         }}
       />
@@ -37,8 +37,8 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'random' });
           setMessage(result.message);
-          if (setQuizResponseData && result.result) {
-            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          if (result.result) {
+            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto) });
           }
         }}
       />
@@ -50,8 +50,8 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'worstRate' });
           setMessage(result.message);
-          if (setQuizResponseData && result.result) {
-            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          if (result.result) {
+            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto) });
           }
         }}
       />
@@ -64,8 +64,8 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'leastClear' });
           setMessage(result.message);
-          if (setQuizResponseData && result.result) {
-            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          if (result.result) {
+            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto) });
           }
         }}
       />
@@ -78,8 +78,8 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'LRU' });
           setMessage(result.message);
-          if (setQuizResponseData && result.result) {
-            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          if (result.result) {
+            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto) });
           }
         }}
       />
@@ -92,8 +92,8 @@ export const GetQuizButtonGroup = ({ getQuizRequestData, setQuizResponseData }: 
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getQuizAPI({ getQuizRequestData, getQuizMethod: 'review' });
           setMessage(result.message);
-          if (setQuizResponseData && result.result) {
-            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto), format: getQuizRequestData.format });
+          if (result.result) {
+            setQuizResponseData({ ...(result.result as GetQuizApiResponseDto) });
           }
         }}
       />

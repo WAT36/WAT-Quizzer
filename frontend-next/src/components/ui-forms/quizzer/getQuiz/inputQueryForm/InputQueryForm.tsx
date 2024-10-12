@@ -11,6 +11,9 @@ import {
   GetQuizAPIRequestDto,
   GetQuizFileApiResponseDto,
   getQuizFileListAPI,
+  GetQuizFormatApiResponseDto,
+  getQuizFormatListAPI,
+  initQuizFormatListData,
   PullDownOptionDto,
   quizFileListAPIResponseToPullDownAdapter
 } from 'quizzer-lib';
@@ -19,12 +22,15 @@ import { messageState } from '@/atoms/Message';
 
 interface InputQueryFormProps {
   getQuizRequestData: GetQuizAPIRequestDto;
-  setQuizRequestData?: React.Dispatch<React.SetStateAction<GetQuizAPIRequestDto>>;
+  setQuizRequestData: React.Dispatch<React.SetStateAction<GetQuizAPIRequestDto>>;
 }
 
 export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: InputQueryFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
+  const [quizFormatListoption, setQuizFormatListoption] = useState<GetQuizFormatApiResponseDto[]>([
+    initQuizFormatListData
+  ]);
   const setMessage = useSetRecoilState(messageState);
 
   // 問題ファイルリスト取得
@@ -42,6 +48,23 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
         ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
         : [];
       setFilelistoption(pullDownOption);
+    })();
+  }, [setMessage]);
+
+  // 問題形式リスト取得
+  useEffect(() => {
+    // TODO これ　別関数にしたい
+    (async () => {
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3',
+        isDisplay: true
+      });
+      const result = await getQuizFormatListAPI();
+      setMessage(result.message);
+      setQuizFormatListoption(
+        result.result ? [initQuizFormatListData, ...(result.result as GetQuizFormatApiResponseDto[])] : []
+      );
     })();
   }, [setMessage]);
 
@@ -83,24 +106,23 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
         <TextField
           label="問題番号"
           setStater={(value: string) => {
-            setQuizRequestData &&
-              setQuizRequestData({
-                ...getQuizRequestData,
-                quiz_num: +value
-              });
+            setQuizRequestData({
+              ...getQuizRequestData,
+              quiz_num: +value
+            });
           }}
         />
       </FormControl>
 
+      {/*TODO ランダムで使うところだけはCardかなんかで囲って表示させるようにしたい */}
       <PullDown
         label={'カテゴリ'}
         optionList={categorylistoption}
         onChange={(e) => {
-          setQuizRequestData &&
-            setQuizRequestData({
-              ...getQuizRequestData,
-              category: String(e.target.value)
-            });
+          setQuizRequestData({
+            ...getQuizRequestData,
+            category: String(e.target.value)
+          });
         }}
       />
 
@@ -108,12 +130,11 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
         <RangeSliderSection
           sectionTitle={'正解率(%)指定'}
           setStater={(value: number[] | number) => {
-            setQuizRequestData &&
-              setQuizRequestData({
-                ...getQuizRequestData,
-                min_rate: Array.isArray(value) ? value[0] : value,
-                max_rate: Array.isArray(value) ? value[1] : value
-              });
+            setQuizRequestData({
+              ...getQuizRequestData,
+              min_rate: Array.isArray(value) ? value[0] : value,
+              max_rate: Array.isArray(value) ? value[1] : value
+            });
           }}
         />
       </FormControl>
@@ -122,27 +143,18 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
         <RadioGroupSection
           sectionTitle={'問題種別'}
           radioGroupProps={{
-            radioButtonProps: [
-              {
-                value: 'basic',
-                label: '基礎問題'
-              },
-              {
-                value: 'applied',
-                label: '応用問題'
-              },
-              {
-                value: '4choice',
-                label: '四択問題'
-              }
-            ],
-            defaultValue: 'basic',
+            radioButtonProps: quizFormatListoption.map((x) => {
+              return {
+                value: String(x.id),
+                label: x.name
+              };
+            }),
+            defaultValue: '1',
             setQueryofQuizStater: (value: string) => {
-              setQuizRequestData &&
-                setQuizRequestData({
-                  ...getQuizRequestData,
-                  format: value
-                });
+              setQuizRequestData({
+                ...getQuizRequestData,
+                format_id: +value
+              });
             }
           }}
         />
@@ -155,11 +167,10 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
             <Checkbox
               color="primary"
               onChange={(e) => {
-                setQuizRequestData &&
-                  setQuizRequestData({
-                    ...getQuizRequestData,
-                    checked: String(e.target.checked)
-                  });
+                setQuizRequestData({
+                  ...getQuizRequestData,
+                  checked: e.target.checked
+                });
               }}
             />
           }
