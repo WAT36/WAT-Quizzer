@@ -21,39 +21,12 @@ interface AddQuizFormProps {
 }
 
 export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
-  const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
   const [addQuizRequestData, setAddQuizRequestData] = useState<AddQuizAPIRequestDto>(initAddQuizRequestData);
   const setMessage = useSetRecoilState(messageState);
-
-  // 問題ファイルリスト取得
-  useEffect(() => {
-    (async () => {
-      setMessage({
-        message: '通信中...',
-        messageColor: '#d3d3d3',
-        isDisplay: true
-      });
-      const result = await getQuizFileListAPI();
-      setMessage(result.message);
-      const pullDownOption = result.result
-        ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
-        : [];
-      setFilelistoption(pullDownOption);
-    })();
-  }, [setMessage]);
-
-  // ファイル選択の切り替え
-  const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    setAddQuizRequestData((prev) => ({
-      ...prev,
-      file_num: +e.target.value
-    }));
-  };
 
   return (
     <>
       <FormGroup>
-        <PullDown label={'問題ファイル'} optionList={filelistoption} onChange={selectedFileChange} />
         <PutQuizForm putQuizRequestData={addQuizRequestData} setPutQuizRequestData={setAddQuizRequestData} />
       </FormGroup>
       <Button
