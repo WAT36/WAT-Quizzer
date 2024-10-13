@@ -14,6 +14,13 @@ export const columns = [
     type: 'boolean'
   },
   {
+    field: 'format_name',
+    headerName: '種別',
+    sortable: false,
+    width: 75,
+    type: 'string'
+  },
+  {
     field: 'quiz_sentense',
     headerName: '問題',
     sortable: false,

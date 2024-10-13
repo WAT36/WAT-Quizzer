@@ -11,6 +11,9 @@ import {
   GetQuizApiResponseDto,
   GetQuizFileApiResponseDto,
   getQuizFileListAPI,
+  GetQuizFormatApiResponseDto,
+  getQuizFormatListAPI,
+  initQuizFormatListData,
   PullDownOptionDto,
   quizFileListAPIResponseToPullDownAdapter,
   searchQuizAPI,
@@ -34,6 +37,10 @@ export const SearchQueryForm = ({
 }: SearchQueryFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
+  const [quizFormatListoption, setQuizFormatListoption] = useState<GetQuizFormatApiResponseDto[]>([
+    initQuizFormatListData
+  ]);
+
   const setMessage = useSetRecoilState(messageState);
 
   useEffect(() => {
@@ -52,11 +59,24 @@ export const SearchQueryForm = ({
     })();
   }, [setMessage]);
 
+  // 問題形式リスト取得
+  useEffect(() => {
+    // TODO これ　別関数にしたい
+    (async () => {
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3',
+        isDisplay: true
+      });
+      const result = await getQuizFormatListAPI();
+      setMessage(result.message);
+      setQuizFormatListoption(
+        result.result ? [initQuizFormatListData, ...(result.result as GetQuizFormatApiResponseDto[])] : []
+      );
+    })();
+  }, [setMessage]);
+
   const selectedFileChange = (e: SelectChangeEvent<number>) => {
-    setMessage({
-      message: '通信中...',
-      messageColor: '#d3d3d3'
-    });
     // TODO カテゴリリスト取得 これ　別関数にしたい　というよりこのselectedFileChangeをlibとかに持ってきたい getQuizにもこの関数あるので
     (async () => {
       setMessage({
@@ -153,21 +173,17 @@ export const SearchQueryForm = ({
           <RadioGroupSection
             sectionTitle={'問題種別'}
             radioGroupProps={{
-              radioButtonProps: [
-                {
-                  value: 'basic',
-                  label: '基礎問題'
-                },
-                {
-                  value: 'applied',
-                  label: '応用問題'
-                }
-              ],
-              defaultValue: 'basic',
+              radioButtonProps: quizFormatListoption.map((x) => {
+                return {
+                  value: String(x.id),
+                  label: x.name
+                };
+              }),
+              defaultValue: '-1',
               setQueryofQuizStater: (value: string) => {
                 setSearchQuizRequestData({
                   ...searchQuizRequestData,
-                  format: value
+                  format_id: +value
                 });
               }
             }}
@@ -195,6 +211,7 @@ export const SearchQueryForm = ({
       </FormGroup>
       <Button
         label={'検索'}
+        disabled={searchQuizRequestData.file_num === -1}
         attr={'button-array'}
         variant="contained"
         color="primary"
@@ -215,7 +232,8 @@ export const SearchQueryForm = ({
                         return x.category;
                       })
                       .join(',')
-                  : ''
+                  : '',
+                format_name: x.quiz_format ? x.quiz_format.name.replace('問題', '') : ''
               };
             });
             setSearchResult(apiResult);
