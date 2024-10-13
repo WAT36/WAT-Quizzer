@@ -19,6 +19,12 @@ export const getQuizAPI = async ({
   ) {
     return { message: errorMessage(MESSAGES.ERROR.MSG00002) }
   }
+  if (getQuizRequestData.format_id === -1) {
+    delete getQuizRequestData.format_id
+  }
+  if (getQuizRequestData.category === '-1') {
+    delete getQuizRequestData.category
+  }
 
   const path =
     getQuizMethod === 'random'

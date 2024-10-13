@@ -32,6 +32,9 @@ export interface GetQuizApiResponseDto extends ApiResponse {
   answer: string
   img_file?: string
   checked?: boolean
+  quiz_format?: {
+    name: string
+  }
   quiz_statistics_view?: {
     clear_count: number
     fail_count: number

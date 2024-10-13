@@ -17,17 +17,12 @@ export const searchQuizAPI = async ({
   if (searchQuizRequestData.file_num === -1) {
     return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
-  if (
-    !(
-      searchQuizRequestData.searchInOnlyAnswer ||
-      searchQuizRequestData.searchInOnlySentense
-    )
-  ) {
-    searchQuizRequestData.searchInOnlySentense = true
-    searchQuizRequestData.searchInOnlyAnswer = true
-  }
+
   if (searchQuizRequestData.category === '-1') {
     delete searchQuizRequestData.category
+  }
+  if (searchQuizRequestData.format_id === -1) {
+    delete searchQuizRequestData.format_id
   }
 
   const result = await get(
