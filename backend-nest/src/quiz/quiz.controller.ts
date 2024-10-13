@@ -22,8 +22,10 @@ import {
   AddCategoryToQuizAPIRequestDto,
   parseStrToBool,
   GetQuizAPIRequestDto,
+  SearchQuizAPIRequestDto,
 } from 'quizzer-lib';
 import { GetQuizPipe } from './pipe/getQuiz.pipe';
+import { SearchQuizPipe } from './pipe/searchQuiz.pipe';
 // import { AuthGuard } from '../auth/auth.guard';
 
 // @UseGuards(AuthGuard)
@@ -82,28 +84,8 @@ export class QuizController {
   }
 
   @Get('/search')
-  async search(
-    @Query('file_num') file_num: number,
-    @Query('min_rate') min_rate: number,
-    @Query('max_rate') max_rate: number,
-    @Query('category') category: string,
-    @Query('query') query: string,
-    @Query('searchInOnlySentense') searchInOnlySentense: string,
-    @Query('searchInOnlyAnswer') searchInOnlyAnswer: string,
-    @Query('format_id') format_id: number,
-    @Query('checked') checked: string,
-  ) {
-    return await this.quizService.search(
-      file_num,
-      min_rate,
-      max_rate,
-      category,
-      parseStrToBool(checked),
-      query,
-      parseStrToBool(searchInOnlySentense),
-      parseStrToBool(searchInOnlyAnswer),
-      format_id,
-    );
+  async search(@Query(SearchQuizPipe) req: SearchQuizAPIRequestDto) {
+    return await this.quizService.search(req);
   }
 
   @Delete()

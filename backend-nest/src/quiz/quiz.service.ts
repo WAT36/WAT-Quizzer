@@ -14,6 +14,8 @@ import {
   AddCategoryToQuizAPIRequestDto,
   IntegrateToQuizAPIRequestDto,
   GetQuizAPIRequestDto,
+  SearchQuizAPIRequestDto,
+  xor,
 } from 'quizzer-lib';
 import { PrismaClient } from '@prisma/client';
 export const prisma: PrismaClient = new PrismaClient();
@@ -551,18 +553,19 @@ export class QuizService {
   }
 
   // 問題検索
-  async search(
-    file_num: number,
-    min_rate: number,
-    max_rate: number,
-    category: string,
-    checked: boolean,
-    query: string,
-    queryOnlyInSentense: boolean,
-    queryOnlyInAnswer: boolean,
-    format_id: number,
-  ) {
+  async search(req: SearchQuizAPIRequestDto) {
     try {
+      const {
+        query,
+        file_num,
+        format_id,
+        min_rate,
+        max_rate,
+        category,
+        checked,
+        searchInOnlySentense,
+        searchInOnlyAnswer,
+      } = req;
       return await prisma.quiz.findMany({
         select: {
           id: true,
@@ -574,6 +577,11 @@ export class QuizService {
             select: {
               category: true,
               deleted_at: true,
+            },
+          },
+          quiz_format: {
+            select: {
+              name: true,
             },
           },
           img_file: true,
@@ -603,28 +611,25 @@ export class QuizService {
                 checked: true,
               }
             : {}),
-          OR: [
-            queryOnlyInSentense
-              ? {
-                  quiz_sentense: {
-                    contains: query,
-                  },
-                }
-              : {},
-            queryOnlyInAnswer
-              ? {
-                  answer: {
-                    contains: query,
-                  },
-                }
-              : {},
-          ],
+          ...(xor(searchInOnlySentense, searchInOnlyAnswer) &&
+          searchInOnlySentense
+            ? {
+                quiz_sentense: {
+                  contains: query,
+                },
+              }
+            : {
+                answer: {
+                  contains: query,
+                },
+              }),
         },
         orderBy: {
           quiz_num: 'asc',
         },
       });
     } catch (error: unknown) {
+      console.error(error);
       if (error instanceof Error) {
         throw new HttpException(
           error.message,
