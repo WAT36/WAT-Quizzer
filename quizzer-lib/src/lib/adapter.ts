@@ -53,8 +53,8 @@ export const getQuizAPIResponseToEditQuizAPIRequestAdapter = (
           .join(',')
       : '',
     img_file: response.img_file,
-    matched_basic_quiz_id: response.quiz_basis_advanced_linkage
-      ? response.quiz_basis_advanced_linkage
+    matched_basic_quiz_id: response.quiz_advanced_linkage
+      ? response.quiz_advanced_linkage
           .map((id) => {
             return String(id.basis_quiz_id)
           })

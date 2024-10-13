@@ -46,8 +46,10 @@ export interface GetQuizApiResponseDto extends ApiResponse {
   }[]
   quiz_basis_linkage?: {
     basis_quiz_id: number
+    advanced_quiz_id: number
   }[]
   quiz_advanced_linkage?: {
+    basis_quiz_id: number
     advanced_quiz_id: number
   }[]
   quiz_explanation?: {
