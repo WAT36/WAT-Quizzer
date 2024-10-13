@@ -12,6 +12,9 @@ import {
   getQuizAPIResponseToEditQuizAPIRequestAdapter,
   GetQuizFileApiResponseDto,
   getQuizFileListAPI,
+  GetQuizFormatApiResponseDto,
+  getQuizFormatListAPI,
+  initEditQuizRequestData,
   initGetQuizRequestData,
   PullDownOptionDto,
   quizFileListAPIResponseToPullDownAdapter
@@ -23,31 +26,9 @@ interface InputQueryForEditFormProps {
   setEditQuizRequestData: React.Dispatch<React.SetStateAction<EditQuizAPIRequestDto>>;
 }
 
-const radioButtonLabelArray = [
-  {
-    value: 'basic',
-    label: '基礎問題'
-  },
-  {
-    value: 'applied',
-    label: '応用問題'
-  },
-  {
-    value: '4choice',
-    label: '四択問題'
-  }
-];
-const getLabelIndex = (value: string) => {
-  for (let i = 0; i < radioButtonLabelArray.length; i++) {
-    if (value === radioButtonLabelArray[i]['value']) {
-      return i;
-    }
-  }
-  return -1;
-};
-
 export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForEditFormProps) => {
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
+  const [quizFormatListoption, setQuizFormatListoption] = useState<GetQuizFormatApiResponseDto[]>([]);
   const [getQuizRequestData, setQuizRequestData] = useState<GetQuizAPIRequestDto>(initGetQuizRequestData);
   const setMessage = useSetRecoilState(messageState);
 
@@ -64,6 +45,21 @@ export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForE
         ? quizFileListAPIResponseToPullDownAdapter(result.result as GetQuizFileApiResponseDto[])
         : [];
       setFilelistoption(pullDownOption);
+    })();
+  }, [setMessage]);
+
+  // 問題形式リスト取得
+  useEffect(() => {
+    // TODO これ　別関数にしたい
+    (async () => {
+      setMessage({
+        message: '通信中...',
+        messageColor: '#d3d3d3',
+        isDisplay: true
+      });
+      const result = await getQuizFormatListAPI();
+      setMessage(result.message);
+      setQuizFormatListoption(result.result ? (result.result as GetQuizFormatApiResponseDto[]) : []);
     })();
   }, [setMessage]);
 
@@ -94,13 +90,18 @@ export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForE
           <RadioGroupSection
             sectionTitle={'問題種別'}
             radioGroupProps={{
-              radioButtonProps: radioButtonLabelArray,
-              defaultValue: radioButtonLabelArray[0]['value'],
+              radioButtonProps: quizFormatListoption.map((x) => {
+                return {
+                  value: String(x.id),
+                  label: x.name
+                };
+              }),
+              defaultValue: '1',
               setQueryofQuizStater: (value: string) => {
-                setQuizRequestData({
-                  ...getQuizRequestData,
+                setQuizRequestData((prev: any) => ({
+                  ...prev,
                   format_id: +value
-                });
+                }));
               }
             }}
           />
@@ -118,9 +119,10 @@ export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForE
           setMessage(result.message);
           if (result.result) {
             setEditQuizRequestData({
-              ...getQuizAPIResponseToEditQuizAPIRequestAdapter(result.result as GetQuizApiResponseDto),
-              format_id: getQuizRequestData.format_id
+              ...getQuizAPIResponseToEditQuizAPIRequestAdapter(result.result as GetQuizApiResponseDto)
             });
+          } else {
+            setEditQuizRequestData(initEditQuizRequestData);
           }
         }}
       />

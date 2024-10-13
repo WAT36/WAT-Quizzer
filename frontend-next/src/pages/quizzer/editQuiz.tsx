@@ -3,11 +3,11 @@ import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { InputQueryForEditForm } from '@/components/ui-forms/quizzer/editQuiz/InputQueryForEditForm/InputQueryForEditForm';
-import { PutQuizForm } from '@/components/ui-forms/quizzer/forms/putQuizForm/PutQuizForm';
 import { Button } from '@/components/ui-elements/button/Button';
 import { editQuizAPI, EditQuizAPIRequestDto, initEditQuizRequestData } from 'quizzer-lib';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
+import { EditQuizForm } from '@/components/ui-forms/quizzer/editQuiz/editQuizForm/EditQuizForm';
 
 type Props = {
   isMock?: boolean;
@@ -22,9 +22,10 @@ export default function EditQuizPage({ isMock }: Props) {
       <Container>
         <Title label="WAT Quizzer"></Title>
         <InputQueryForEditForm setEditQuizRequestData={setEditQuizRequestData} />
-        <PutQuizForm putQuizRequestData={editQuizRequestData} setPutQuizRequestData={setEditQuizRequestData} />
+        <EditQuizForm editQuizRequestData={editQuizRequestData} setEditQuizRequestData={setEditQuizRequestData} />
         <Button
           label={'更新'}
+          disabled={editQuizRequestData.quiz_id === -1}
           attr={'button-array'}
           variant="contained"
           color="primary"
