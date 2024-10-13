@@ -75,6 +75,7 @@ export class QuizService {
           : {
               file_num,
               quiz_num,
+              format_id,
               deleted_at: null,
             };
       const orderBy =
@@ -141,10 +142,12 @@ export class QuizService {
           quiz_basis_linkage: {
             select: {
               basis_quiz_id: true,
+              advanced_quiz_id: true,
             },
           },
           quiz_advanced_linkage: {
             select: {
+              basis_quiz_id: true,
               advanced_quiz_id: true,
             },
           },
