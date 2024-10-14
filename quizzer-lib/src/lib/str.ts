@@ -5,7 +5,7 @@ export const formatString = (str: string, ...value: string[]) => {
   let result = str
   let i = 0
   while (result.includes(`{${i}}`)) {
-    if (value.length <= i + 1) {
+    if (value.length > i) {
       result = result.replace(`{${i}}`, value[i])
     } else {
       break
