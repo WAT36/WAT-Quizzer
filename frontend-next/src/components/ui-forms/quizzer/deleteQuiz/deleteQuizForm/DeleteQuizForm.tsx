@@ -1,17 +1,5 @@
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import {
-  Card,
-  CardContent,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  Paper,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Card, CardContent, FormControl, FormGroup, FormLabel, Paper, TextField, Typography } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
 import styles from '../DeleteQuizForm.module.css';
 import {
@@ -21,6 +9,7 @@ import {
   GetQuizApiResponseDto,
   GetQuizFileApiResponseDto,
   getQuizFileListAPI,
+  GetQuizFormatApiResponseDto,
   initGetQuizRequestData,
   initGetQuizResponseData,
   PullDownOptionDto,
@@ -29,13 +18,15 @@ import {
 import { useEffect, useState } from 'react';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
+import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 
 interface DeleteQuizFormProps {
   deleteQuizInfo: GetQuizApiResponseDto;
+  quizFormatListoption: GetQuizFormatApiResponseDto[];
   setDeleteQuizInfo: React.Dispatch<React.SetStateAction<GetQuizApiResponseDto>>;
 }
 
-export const DeleteQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: DeleteQuizFormProps) => {
+export const DeleteQuizForm = ({ deleteQuizInfo, quizFormatListoption, setDeleteQuizInfo }: DeleteQuizFormProps) => {
   const [getQuizRequestData, setQuizRequestData] = useState<GetQuizAPIRequestDto>(initGetQuizRequestData);
   const [filelistoption, setFilelistoption] = useState<PullDownOptionDto[]>([]);
   const setMessage = useSetRecoilState(messageState);
@@ -55,14 +46,6 @@ export const DeleteQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: DeleteQuiz
       setFilelistoption(pullDownOption);
     })();
   }, [setMessage]);
-
-  // ラジオボタンの選択変更時の処理
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuizRequestData({
-      ...getQuizRequestData,
-      format_id: +(event.target as HTMLInputElement).value
-    });
-  };
 
   return (
     <Paper variant="outlined" className={styles.form}>
@@ -97,25 +80,30 @@ export const DeleteQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: DeleteQuiz
             </FormControl>
 
             <FormControl>
-              <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
-              {/**TODO ここなおす */}
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                value={getQuizRequestData.format_id}
-                defaultValue="basic"
-                onChange={handleRadioChange}
-              >
-                <FormControlLabel value="basic" control={<Radio />} label="基礎問題" />
-                <FormControlLabel value="applied" control={<Radio />} label="応用問題" />
-                <FormControlLabel value="4choice" control={<Radio />} label="四択問題" />
-              </RadioGroup>
+              <RadioGroupSection
+                sectionTitle={'問題種別'}
+                radioGroupProps={{
+                  radioButtonProps: quizFormatListoption.map((x) => {
+                    return {
+                      value: String(x.id),
+                      label: x.name
+                    };
+                  }),
+                  defaultValue: '1',
+                  setQueryofQuizStater: (value: string) => {
+                    setQuizRequestData({
+                      ...getQuizRequestData,
+                      format_id: +value
+                    });
+                  }
+                }}
+              />
             </FormControl>
           </FormGroup>
 
           <Button
             label={'問題取得'}
+            disabled={getQuizRequestData.file_num === -1}
             attr={'button-array'}
             variant="contained"
             color="primary"

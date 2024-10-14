@@ -1,16 +1,4 @@
-import {
-  Card,
-  CardContent,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  Paper,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Card, CardContent, FormControl, FormGroup, FormLabel, Paper, TextField, Typography } from '@mui/material';
 import styles from '../DeleteQuizForm.module.css';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Button } from '@/components/ui-elements/button/Button';
@@ -23,16 +11,22 @@ import {
   GetQuizApiResponseDto,
   initGetQuizResponseData,
   getQuizAPI,
-  integrateQuizAPI
+  integrateQuizAPI,
+  GetQuizFormatApiResponseDto
 } from 'quizzer-lib';
+import { RadioGroupSection } from '@/components/ui-parts/card-contents/radioGroupSection/RadioGroupSection';
 
 interface IntegrateToQuizFormProps {
   deleteQuizInfo: GetQuizApiResponseDto;
+  quizFormatListoption: GetQuizFormatApiResponseDto[];
   setDeleteQuizInfo: React.Dispatch<React.SetStateAction<GetQuizApiResponseDto>>;
 }
 
-export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: IntegrateToQuizFormProps) => {
-  //const [integrateToQuizInfoState, setIntegrateToQuizInfoState] = useState<IntegrateToQuizInfoState>({});
+export const IntegrateToQuizForm = ({
+  deleteQuizInfo,
+  quizFormatListoption,
+  setDeleteQuizInfo
+}: IntegrateToQuizFormProps) => {
   const [getQuizRequestData, setQuizRequestData] = useState<GetQuizAPIRequestDto>(initGetQuizRequestData);
   const [getQuizResponseData, setQuizResponseData] = useState<GetQuizApiResponseDto>(initGetQuizResponseData);
   const setMessage = useSetRecoilState(messageState);
@@ -50,7 +44,6 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
             <FormControl>
               <TextField
                 label="問題番号"
-                disabled={!(deleteQuizInfo.format_id === 1 || deleteQuizInfo.format_id === 2)}
                 onChange={(e) => {
                   setQuizRequestData({
                     ...getQuizRequestData,
@@ -62,17 +55,24 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
             </FormControl>
 
             <FormControl>
-              <FormLabel id="demo-row-radio-buttons-group-label">問題種別</FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                value={deleteQuizInfo.format_id}
-                defaultValue={deleteQuizInfo.format_id}
-              >
-                <FormControlLabel disabled value="basic" control={<Radio />} label="基礎問題" />
-                <FormControlLabel disabled value="applied" control={<Radio />} label="応用問題" />
-              </RadioGroup>
+              <RadioGroupSection
+                sectionTitle={'問題種別'}
+                radioGroupProps={{
+                  radioButtonProps: quizFormatListoption.map((x) => {
+                    return {
+                      value: String(x.id),
+                      label: x.name
+                    };
+                  }),
+                  defaultValue: '1',
+                  setQueryofQuizStater: (value: string) => {
+                    setQuizRequestData({
+                      ...getQuizRequestData,
+                      format_id: +value
+                    });
+                  }
+                }}
+              />
             </FormControl>
           </FormGroup>
 
@@ -81,7 +81,7 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
             attr={'button-array'}
             variant="contained"
             color="primary"
-            disabled={deleteQuizInfo.format_id !== 1}
+            disabled={getQuizRequestData.file_num === -1}
             onClick={async (e) => {
               setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
               const result = await getQuizAPI({
@@ -133,7 +133,7 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
         attr={'button-array'}
         variant="contained"
         color="primary"
-        disabled={deleteQuizInfo.format_id !== 1}
+        disabled={getQuizResponseData.quiz_num === -1}
         onClick={async (e) => {
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await integrateQuizAPI({
