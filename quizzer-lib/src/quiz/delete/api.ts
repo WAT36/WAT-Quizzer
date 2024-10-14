@@ -15,7 +15,9 @@ export const deleteQuiz = async ({
 }: DeleteQuizAPIProps): Promise<ApiResult> => {
   if (
     !deleteQuizAPIRequestData.file_num ||
-    !deleteQuizAPIRequestData.quiz_num
+    !deleteQuizAPIRequestData.quiz_num ||
+    deleteQuizAPIRequestData.file_num === -1 ||
+    deleteQuizAPIRequestData.quiz_num === -1
   ) {
     return { message: errorMessage(MESSAGES.ERROR.MSG00009) }
   }
