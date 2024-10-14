@@ -7,9 +7,10 @@ export interface RadioGroupProps {
   radioButtonProps: RadioButtonProps[];
   defaultValue: string;
   setQueryofQuizStater?: (value: string) => void;
+  disabled?: boolean;
 }
 
-export const RadioGroup = ({ radioButtonProps, defaultValue, setQueryofQuizStater }: RadioGroupProps) => {
+export const RadioGroup = ({ radioButtonProps, defaultValue, setQueryofQuizStater, disabled }: RadioGroupProps) => {
   const [radioValue, setRadioValue] = useState<string>(defaultValue);
 
   // ラジオボタンの選択変更時の処理
@@ -34,7 +35,7 @@ export const RadioGroup = ({ radioButtonProps, defaultValue, setQueryofQuizState
       >
         {radioButtonProps.map((x) => (
           <>
-            <RadioButton key={x.value} value={x.value} label={x.label}></RadioButton>
+            <RadioButton key={x.value} value={x.value} label={x.label} disabled={disabled}></RadioButton>
           </>
         ))}
       </MuiRadioGroup>
