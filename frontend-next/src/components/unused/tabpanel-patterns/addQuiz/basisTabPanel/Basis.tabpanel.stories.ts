@@ -4,7 +4,7 @@ import { initEditQuizRequestData } from 'quizzer-lib';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Molecules/TabPanelPatterns/BasisTabPanel',
+  title: 'Unused/TabPanelPatterns/BasisTabPanel',
   component: BasisTabPanel,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
