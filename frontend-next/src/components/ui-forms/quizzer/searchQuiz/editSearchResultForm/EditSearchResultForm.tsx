@@ -15,7 +15,7 @@ import { messageState } from '@/atoms/Message';
 interface EditSearchResultFormProps {
   checkedIdList: number[];
   searchQuizRequestData: SearchQuizAPIRequestDto;
-  setCheckedIdList?: React.Dispatch<React.SetStateAction<number[]>>;
+  setCheckedIdList: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export const EditSearchResultForm = ({
@@ -64,8 +64,8 @@ export const EditSearchResultForm = ({
       ...result.message
     });
     // 終わったらチェック全て外す、入力カテゴリも消す
-    setCheckedIdList && setCheckedIdList([]);
-    setChangedCategory && setChangedCategory('');
+    setCheckedIdList([]);
+    setChangedCategory('');
   };
 
   // チェックした問題から指定カテゴリを一括削除する
@@ -105,8 +105,8 @@ export const EditSearchResultForm = ({
       ...result.message
     });
     // 終わったらチェック全て外す、入力カテゴリも消す
-    setCheckedIdList && setCheckedIdList([]);
-    setChangedCategory && setChangedCategory('');
+    setCheckedIdList([]);
+    setChangedCategory('');
   };
 
   // 選択した問題全てにチェックをつける
@@ -138,8 +138,8 @@ export const EditSearchResultForm = ({
       ...result.message
     });
     // 終わったらチェック全て外す、入力カテゴリも消す
-    setCheckedIdList && setCheckedIdList([]);
-    setChangedCategory && setChangedCategory('');
+    setCheckedIdList([]);
+    setChangedCategory('');
   };
 
   // 選択した問題全てにチェックを外す
@@ -195,7 +195,7 @@ export const EditSearchResultForm = ({
             label={'一括カテゴリ登録'}
             variant="contained"
             color="primary"
-            disabled={searchQuizRequestData.format !== 'basic'}
+            disabled={checkedIdList.length === 0}
             onClick={async (e) => await registerCategoryToChecked()}
           ></Button>
         </FormControl>
@@ -206,7 +206,7 @@ export const EditSearchResultForm = ({
             label={'一括カテゴリ削除'}
             variant="contained"
             color="primary"
-            disabled={searchQuizRequestData.format !== 'basic'}
+            disabled={checkedIdList.length === 0}
             onClick={async (e) => await removeCategoryFromChecked()}
           ></Button>
         </FormControl>
@@ -220,7 +220,7 @@ export const EditSearchResultForm = ({
             label={'✅をつける'}
             variant="contained"
             color="primary"
-            disabled={searchQuizRequestData.format !== 'basic'} // TODO 応用問題検索結果からチェック機能つける
+            disabled={checkedIdList.length === 0} // TODO 応用問題検索結果からチェック機能つける
             onClick={async (e) => await checkedToSelectedQuiz()}
           ></Button>
         </FormControl>
@@ -231,7 +231,7 @@ export const EditSearchResultForm = ({
             label={'✅を外す'}
             variant="contained"
             color="primary"
-            disabled={searchQuizRequestData.format !== 'basic'}
+            disabled={checkedIdList.length === 0}
             onClick={async (e) => await uncheckedToSelectedQuiz()}
           ></Button>
         </FormControl>
