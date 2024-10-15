@@ -121,11 +121,11 @@ model quiz_basis_advanced_linkage {
 
 model quiz_category {
   id         Int       @id @default(autoincrement())
-  quiz_id    Int
   category   String?   @db.VarChar(256)
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
+  quiz_id    Int
   quiz       quiz      @relation(fields: [quiz_id], references: [id])
 
   @@unique([quiz_id, category])

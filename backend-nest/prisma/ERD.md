@@ -90,11 +90,11 @@ erDiagram
 
   "quiz_category" {
     Int id "🗝️"
-    Int quiz_id 
     String category "❓"
     DateTime created_at 
     DateTime updated_at 
     DateTime deleted_at "❓"
+    Int quiz_id 
     }
   
 

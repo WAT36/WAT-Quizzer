@@ -1,5 +1,5 @@
 SELECT
-  qc.file_num,
+  q.file_num,
   qc.category,
   count(*) AS count,
   sum(qv.clear_count) AS sum_of_clear_count,
@@ -14,17 +14,15 @@ SELECT
   END AS accuracy_rate
 FROM
   (
-    quiz_category qc
-    JOIN quiz_view qv ON (
-      (
-        (qc.file_num = qv.file_num)
-        AND (qc.quiz_num = qv.quiz_num)
-      )
+    (
+      quiz q
+      JOIN quiz_category qc ON ((q.id = qc.quiz_id))
     )
+    JOIN quiz_view qv ON ((q.id = qv.id))
   )
 GROUP BY
-  qc.file_num,
+  q.file_num,
   qc.category
 ORDER BY
-  qc.file_num,
+  q.file_num,
   qc.category;
