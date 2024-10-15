@@ -3,9 +3,6 @@ erDiagram
 
   "answer_log" {
     Int id "🗝️"
-    Int quiz_format_id 
-    Int file_num 
-    Int quiz_num 
     Boolean is_corrected "❓"
     DateTime created_at 
     DateTime updated_at 
@@ -93,6 +90,7 @@ erDiagram
 
   "quiz_category" {
     Int id "🗝️"
+    Int quiz_id 
     Int file_num 
     Int quiz_num 
     String category "❓"
