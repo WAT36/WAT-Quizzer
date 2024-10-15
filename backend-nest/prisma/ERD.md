@@ -1,41 +1,6 @@
 ```mermaid
 erDiagram
 
-  "advanced_quiz" {
-    Int id "🗝️"
-    Int file_num 
-    Int quiz_num 
-    Int advanced_quiz_type_id 
-    String quiz_sentense 
-    String answer 
-    String img_file "❓"
-    Boolean checked "❓"
-    DateTime created_at 
-    DateTime updated_at 
-    DateTime deleted_at "❓"
-    }
-  
-
-  "advanced_quiz_explanation" {
-    Int id "🗝️"
-    Int advanced_quiz_id 
-    String explanation 
-    DateTime created_at 
-    DateTime updated_at 
-    DateTime deleted_at "❓"
-    }
-  
-
-  "advanced_quiz_type" {
-    Int id "🗝️"
-    String type_name 
-    String type_nickname 
-    DateTime created_at 
-    DateTime updated_at 
-    DateTime deleted_at "❓"
-    }
-  
-
   "answer_log" {
     Int id "🗝️"
     Int quiz_format_id 
@@ -46,16 +11,6 @@ erDiagram
     DateTime updated_at 
     DateTime deleted_at "❓"
     Int quiz_id 
-    }
-  
-
-  "dummy_choice" {
-    Int id "🗝️"
-    Int advanced_quiz_id 
-    String dummy_choice_sentense 
-    DateTime created_at 
-    DateTime updated_at 
-    DateTime deleted_at "❓"
     }
   
 
@@ -407,14 +362,7 @@ erDiagram
     DateTime last_answer_log "❓"
     }
   
-    "advanced_quiz" o|--|| "advanced_quiz_type" : "advanced_quiz_type"
-    "advanced_quiz" o|--|| "quiz_file" : "quiz_file"
-    "advanced_quiz" o{--}o "advanced_quiz_explanation" : "advanced_quiz_explanation"
-    "advanced_quiz" o{--}o "dummy_choice" : "dummy_choice"
-    "advanced_quiz_explanation" o|--|| "advanced_quiz" : "advanced_quiz"
-    "advanced_quiz_type" o{--}o "advanced_quiz" : "advanced_quiz"
     "answer_log" o|--|| "quiz" : "quiz"
-    "dummy_choice" o|--|| "advanced_quiz" : "advanced_quiz"
     "englishbot_answer_log" o|--|| "word" : "word"
     "example" o{--}o "example_explanation" : "example_explanation"
     "example" o{--}o "word_example" : "word_example"
@@ -435,7 +383,6 @@ erDiagram
     "quiz_category" o|--|| "quiz" : "quiz"
     "quiz_dummy_choice" o|--|| "quiz" : "quiz"
     "quiz_explanation" o|--|| "quiz" : "quiz"
-    "quiz_file" o{--}o "advanced_quiz" : "advanced_quiz"
     "quiz_format" o{--}o "quiz" : "quiz"
     "saying" o|--|| "selfhelp_book" : "selfhelp_book"
     "selfhelp_book" o{--}o "saying" : "saying"
