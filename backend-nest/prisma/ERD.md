@@ -91,8 +91,6 @@ erDiagram
   "quiz_category" {
     Int id "🗝️"
     Int quiz_id 
-    Int file_num 
-    Int quiz_num 
     String category "❓"
     DateTime created_at 
     DateTime updated_at 

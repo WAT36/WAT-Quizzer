@@ -17,13 +17,13 @@ datasource db {
 }
 
 model answer_log {
-  id             Int       @id @default(autoincrement())
-  is_corrected   Boolean?
-  created_at     DateTime  @default(now()) @db.Timestamp(6)
-  updated_at     DateTime  @default(now()) @db.Timestamp(6)
-  deleted_at     DateTime? @db.Timestamp(6)
-  quiz_id        Int
-  quiz           quiz      @relation(fields: [quiz_id], references: [id])
+  id           Int       @id @default(autoincrement())
+  is_corrected Boolean?
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at   DateTime? @db.Timestamp(6)
+  quiz_id      Int
+  quiz         quiz      @relation(fields: [quiz_id], references: [id])
 }
 
 model englishbot_answer_log {
@@ -121,16 +121,14 @@ model quiz_basis_advanced_linkage {
 
 model quiz_category {
   id         Int       @id @default(autoincrement())
-  quiz_id    Int       @default(0)
-  file_num   Int
-  quiz_num   Int
+  quiz_id    Int
   category   String?   @db.VarChar(256)
   created_at DateTime  @default(now()) @db.Timestamp(6)
   updated_at DateTime  @default(now()) @db.Timestamp(6)
   deleted_at DateTime? @db.Timestamp(6)
-  quiz       quiz      @relation(fields: [file_num, quiz_num], references: [file_num, quiz_num])
+  quiz       quiz      @relation(fields: [quiz_id], references: [id])
 
-  @@unique([file_num, quiz_num, category])
+  @@unique([quiz_id, category])
 }
 
 model quiz_dependency {
