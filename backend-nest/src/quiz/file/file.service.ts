@@ -98,7 +98,9 @@ export class QuizFileService {
             deleted_at: new Date(),
           },
           where: {
-            file_num: file_id,
+            quiz: {
+              file_num: file_id,
+            },
             deleted_at: null,
           },
         });
