@@ -15,7 +15,10 @@ interface DeleteCategoryOfQuizAPIProps {
 export const deleteCategoryOfQuizAPI = async ({
   deleteCategoryToQuizRequestData
 }: DeleteCategoryOfQuizAPIProps): Promise<ApiResult> => {
-  if (deleteCategoryToQuizRequestData.file_num === -1) {
+  if (
+    !deleteCategoryToQuizRequestData.quiz_id ||
+    deleteCategoryToQuizRequestData.quiz_id === ''
+  ) {
     return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
 

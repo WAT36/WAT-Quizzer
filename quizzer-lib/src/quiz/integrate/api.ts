@@ -10,9 +10,8 @@ export const integrateQuizAPI = async ({
   integrateToQuizAPIRequestData
 }: IntegrateQuizAPIProps): Promise<ApiResult> => {
   if (
-    !integrateToQuizAPIRequestData.file_num ||
-    !integrateToQuizAPIRequestData.fromQuizInfo.quiz_num ||
-    !integrateToQuizAPIRequestData.toQuizInfo.quiz_num
+    !integrateToQuizAPIRequestData.fromQuizId ||
+    !integrateToQuizAPIRequestData.toQuizId
   ) {
     return { message: errorMessage(MESSAGES.ERROR.MSG00010) }
   }
@@ -27,9 +26,9 @@ export const integrateQuizAPI = async ({
         return {
           message: successMessage(
             MESSAGES.SUCCESS.MSG00014,
-            String(integrateToQuizAPIRequestData.file_num),
-            String(integrateToQuizAPIRequestData.fromQuizInfo.quiz_num),
-            String(integrateToQuizAPIRequestData.toQuizInfo.quiz_num)
+            'ID',
+            String(integrateToQuizAPIRequestData.fromQuizId),
+            String(integrateToQuizAPIRequestData.toQuizId)
           ),
           result
         }

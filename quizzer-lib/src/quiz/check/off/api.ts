@@ -14,9 +14,7 @@ interface CheckOffQuizButtonProps {
 export const checkOffQuizAPI = async ({
   checkQuizRequestData
 }: CheckOffQuizButtonProps): Promise<ApiResult> => {
-  if (checkQuizRequestData.file_num === -1) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
-  } else if (checkQuizRequestData.quiz_num === '') {
+  if (!checkQuizRequestData.quiz_id || checkQuizRequestData.quiz_id === '') {
     return { message: errorMessage(MESSAGES.ERROR.MSG00007) }
   }
 

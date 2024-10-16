@@ -14,7 +14,10 @@ interface AddCategoryToQuizAPIProps {
 export const addCategoryToQuizAPI = async ({
   addCategoryToQuizRequestData
 }: AddCategoryToQuizAPIProps): Promise<ApiResult> => {
-  if (addCategoryToQuizRequestData.file_num === -1) {
+  if (
+    !addCategoryToQuizRequestData.quiz_id ||
+    addCategoryToQuizRequestData.quiz_id === ''
+  ) {
     return {
       message: errorMessage(MESSAGES.ERROR.MSG00001)
     }
