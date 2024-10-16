@@ -51,8 +51,7 @@ export const EditSearchResultForm = ({
     // カテゴリをチェックした問題に一括登録
     const result = await addCategoryToQuizAPI({
       addCategoryToQuizRequestData: {
-        file_num: searchQuizRequestData.file_num,
-        quiz_num: checkedIdList
+        quiz_id: checkedIdList
           .map((id) => {
             return String(id);
           })
@@ -92,8 +91,7 @@ export const EditSearchResultForm = ({
 
     const result = await deleteCategoryOfQuizAPI({
       deleteCategoryToQuizRequestData: {
-        file_num: searchQuizRequestData.file_num,
-        quiz_num: checkedIdList
+        quiz_id: checkedIdList
           .map((id) => {
             return String(id);
           })
@@ -126,8 +124,7 @@ export const EditSearchResultForm = ({
     });
     const result = await checkOnQuizAPI({
       checkQuizRequestData: {
-        file_num: searchQuizRequestData.file_num,
-        quiz_num: checkedIdList
+        quiz_id: checkedIdList
           .map((id) => {
             return String(id);
           })
@@ -159,8 +156,7 @@ export const EditSearchResultForm = ({
     });
     const result = await checkOffQuizAPI({
       checkQuizRequestData: {
-        file_num: searchQuizRequestData.file_num,
-        quiz_num: checkedIdList
+        quiz_id: checkedIdList
           .map((id) => {
             return String(id);
           })

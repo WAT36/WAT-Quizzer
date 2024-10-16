@@ -1,7 +1,14 @@
 export const columns = [
   {
-    field: 'quiz_num',
+    field: 'id',
     headerName: 'ID',
+    sortable: true,
+    type: 'number',
+    width: 0
+  },
+  {
+    field: 'quiz_num',
+    headerName: '番号',
     sortable: true,
     type: 'number',
     width: 75

@@ -138,13 +138,8 @@ export const IntegrateToQuizForm = ({
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await integrateQuizAPI({
             integrateToQuizAPIRequestData: {
-              file_num: deleteQuizInfo.file_num,
-              fromQuizInfo: {
-                quiz_num: deleteQuizInfo.quiz_num
-              },
-              toQuizInfo: {
-                quiz_num: getQuizResponseData.quiz_num
-              }
+              fromQuizId: deleteQuizInfo.id,
+              toQuizId: getQuizResponseData.id
             }
           });
           setMessage(result.message);

@@ -17,7 +17,7 @@ export const FileStatisticsCard = ({}: FileStatisticsCardProps) => {
   }, []);
 
   const data: [string, string | number, string | number, string | number][] = quizFileStatisticsData.map((x) => {
-    return [x.file_nickname, x.basic_quiz_count, x.basic_clear, x.basic_fail];
+    return [x.file_nickname, x.count, x.clear, x.fail];
   });
   data.unshift(['問題ファイル名', '問題数', '正解数', '不正解数']);
   const options = {
