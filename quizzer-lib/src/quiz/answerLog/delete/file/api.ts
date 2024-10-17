@@ -31,8 +31,7 @@ export const deleteAnswerLogOfQuizFileAPI = async ({
         }
       } else {
         return {
-          message: errorMessage(MESSAGES.ERROR.MSG00004),
-          result
+          message: errorMessage(MESSAGES.ERROR.MSG00004)
         }
       }
     }

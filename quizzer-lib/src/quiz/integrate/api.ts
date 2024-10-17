@@ -1,4 +1,9 @@
-import { errorMessage, MESSAGES, successMessage } from '../../..'
+import {
+  AddQuizApiResponseDto,
+  errorMessage,
+  MESSAGES,
+  successMessage
+} from '../../..'
 import { ApiResult, post, ProcessingApiReponse } from '../../api'
 import { IntegrateToQuizAPIRequestDto } from './dto'
 
@@ -23,6 +28,7 @@ export const integrateQuizAPI = async ({
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
+        const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
         return {
           message: successMessage(
             MESSAGES.SUCCESS.MSG00014,
