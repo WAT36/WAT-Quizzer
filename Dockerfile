@@ -28,4 +28,4 @@ COPY ./backend-nest ./
 RUN npm run build
 
 WORKDIR ${LAMBDA_TASK_ROOT}
-CMD [ "/var/task/backend-nest/dist/src/main.handler" ]
+CMD [ "/var/task/backend-nest/dist/main.handler" ]
