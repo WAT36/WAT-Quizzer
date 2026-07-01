@@ -9,6 +9,7 @@ export interface GetEnglishWordTestDataAPIRequestDto {
   max_rate?: number
   result_from?: number
   result_to?: number
+  word_type?: 'all' | 'word' | 'phrase'
 }
 
 //API側で受け取った時のDTO（Pipeで上に変換する）
@@ -22,6 +23,7 @@ export interface GetEnglishWordTestDataAPIRequestReceivedDto {
   max_rate?: string
   result_from?: string
   result_to?: string
+  word_type?: string
 }
 
 // 英単語テストデータ取得APIレスポンス型

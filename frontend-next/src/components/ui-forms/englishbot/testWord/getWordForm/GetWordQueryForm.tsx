@@ -15,7 +15,7 @@ import {
 import { getEnglishWordTestDataAPI } from '@/utils/api-wrapper';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
-import { englishTestTypeRadioButton } from '@/constants/contents/radioButton';
+import { englishTestTypeRadioButton, englishWordTypeRadioButton } from '@/constants/contents/radioButton';
 import { DateRange } from '@/components/ui-parts/dateRange/DateRange';
 
 interface GetWordQueryFormProps {
@@ -125,6 +125,19 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
             {isRangeInvalid && (
               <span className="text-red-500 text-xs mt-1">x件目はy件目以下の値を入力してください</span>
             )}
+          </FormControl>
+          <FormControl>
+            単語種別：
+            <RadioGroup
+              radioButtonProps={englishWordTypeRadioButton}
+              defaultValue={'all'}
+              setQueryofQuizStater={(value: string) => {
+                setQueryOfTestData({
+                  ...queryOfTestData,
+                  word_type: value as 'all' | 'word' | 'phrase'
+                });
+              }}
+            />
           </FormControl>
           <FormControl>
             テスト形式：

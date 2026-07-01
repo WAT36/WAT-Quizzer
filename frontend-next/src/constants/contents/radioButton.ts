@@ -12,3 +12,18 @@ export const englishTestTypeRadioButton = [
     label: '意味当て'
   }
 ];
+
+export const englishWordTypeRadioButton = [
+  {
+    value: 'all',
+    label: 'すべて'
+  },
+  {
+    value: 'word',
+    label: '単語のみ'
+  },
+  {
+    value: 'phrase',
+    label: '熟語のみ'
+  }
+];
