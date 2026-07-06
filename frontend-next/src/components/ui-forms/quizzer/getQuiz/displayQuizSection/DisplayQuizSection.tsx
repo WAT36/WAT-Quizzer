@@ -48,8 +48,8 @@ export const DisplayQuizSection = ({
     // チェックボックスがONの時（hideAccuracyRateがtrue）は正解率を削除
     let quizSentense = generated.quiz_sentense || '';
     if (hideAccuracyRate && quizSentense) {
-      // 正解率のパターン (正解率XX.XX%) を削除
-      quizSentense = quizSentense.replace(/\(正解率[\d.]+%\)/g, '');
+      // 正解率・解答数のパターン (正解率XX.XX%)(解答数N回) を削除
+      quizSentense = quizSentense.replace(/\(正解率[\d.]+%\)(\(解答数\d+回\))?/g, '');
     }
     return {
       ...getQuizResponseData,

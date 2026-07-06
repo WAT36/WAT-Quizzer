@@ -89,7 +89,9 @@ export const generateQuizSentense = (
               res.quiz_statistics_view?.accuracy_rate
                 ? '(正解率' +
                   Number(res.quiz_statistics_view.accuracy_rate).toFixed(2) +
-                  '%)'
+                  '%)(解答数' +
+                  (Number(res.quiz_statistics_view.clear_count ?? 0) + Number(res.quiz_statistics_view.fail_count ?? 0)) +
+                  '回)'
                 : ''
             }
         ` +
@@ -130,7 +132,9 @@ export const generateQuizSentense = (
                       ? res.quiz_statistics_view.accuracy_rate
                       : NaN
                   ).toFixed(2) +
-                  '%)'
+                  '%)(解答数' +
+                  (Number(res.quiz_statistics_view.clear_count ?? 0) + Number(res.quiz_statistics_view.fail_count ?? 0)) +
+                  '回)'
                 : ''
             }`
           : ''
