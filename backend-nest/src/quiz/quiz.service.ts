@@ -1916,7 +1916,8 @@ export class QuizService {
             reason: 'neverAnswered' as const,
             days_since_last_answered: null,
             recent_accuracy_rate: null,
-            score: 1.0,
+            _daysSinceLast: Infinity,
+            _recentAccuracy: null as number | null,
           };
         }
 
@@ -1936,12 +1937,6 @@ export class QuizService {
             ? recentLogs.filter((log) => log.is_corrected).length / recentLogs.length
             : null;
 
-        // スコア算出（高いほど優先）
-        const lruScore = Math.min(daysSinceLast, 30) / 30;
-        const accuracyScore =
-          recentAccuracy !== null ? 1 - recentAccuracy : 0.5;
-        const score = lruScore * 0.4 + accuracyScore * 0.6;
-
         const reason: 'notRecent' | 'lowAccuracy' =
           recentAccuracy !== null && recentAccuracy < 0.5
             ? 'lowAccuracy'
@@ -1955,13 +1950,27 @@ export class QuizService {
             recentAccuracy !== null
               ? Math.round(recentAccuracy * 1000) / 1000
               : null,
-          score,
+          _daysSinceLast: daysSinceLast,
+          _recentAccuracy: recentAccuracy,
         };
       });
 
-    return scored
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5)
-      .map(({ score: _score, ...rest }) => rest);
+    // 低正解率: 直近正解率が50%未満のカテゴリを正解率昇順で上位2件
+    const lowAccuracyItems = scored
+      .filter((c) => c._recentAccuracy !== null && c._recentAccuracy < 0.5)
+      .sort((a, b) => (a._recentAccuracy ?? 1) - (b._recentAccuracy ?? 1))
+      .slice(0, 2);
+
+    const lowAccuracyNames = new Set(lowAccuracyItems.map((c) => c.category_name));
+
+    // 放置気味: lowAccuracyで選ばれたものを除き、最終解答日が古い順で上位3件（未解答は最優先）
+    const notRecentItems = scored
+      .filter((c) => !lowAccuracyNames.has(c.category_name))
+      .sort((a, b) => b._daysSinceLast - a._daysSinceLast)
+      .slice(0, 3);
+
+    return [...lowAccuracyItems, ...notRecentItems].map(
+      ({ _daysSinceLast: _d, _recentAccuracy: _r, ...rest }) => rest,
+    );
   }
 }
