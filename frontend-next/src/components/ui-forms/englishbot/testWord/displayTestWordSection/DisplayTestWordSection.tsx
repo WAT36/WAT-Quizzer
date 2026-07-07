@@ -57,7 +57,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                     return <Chip key={index} label={value.source.name} />;
                   })}
                 {displayTestData.word?.word_statistics_view.accuracy_rate
-                  ? `（正解率 ${displayTestData.word?.word_statistics_view.accuracy_rate}%）`
+                  ? `（正解率 ${displayTestData.word?.word_statistics_view.accuracy_rate}% / ${displayTestData.word?.word_statistics_view.answer_count}回）`
                   : ''}
               </div>
 

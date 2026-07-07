@@ -181,6 +181,8 @@ export class EnglishWordTestService {
           word_statistics_view: {
             select: {
               accuracy_rate: true,
+              clear_count: true,
+              fail_count: true,
             },
           },
         },
@@ -229,6 +231,7 @@ export class EnglishWordTestService {
           word_source: result.word_source,
           word_statistics_view: {
             accuracy_rate: result.word_statistics_view.accuracy_rate.toString(),
+            answer_count: Number(result.word_statistics_view.clear_count ?? 0) + Number(result.word_statistics_view.fail_count ?? 0),
           },
         },
         correct: {
