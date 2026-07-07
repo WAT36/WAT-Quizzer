@@ -83,6 +83,16 @@ erDiagram
     }
   
 
+  "example_source" {
+    Int id "🗝️"
+    Int example_id 
+    Int source_id 
+    DateTime created_at 
+    DateTime updated_at 
+    DateTime deleted_at "❓"
+    }
+  
+
   "mean" {
     Int id "🗝️"
     Int word_id 
@@ -432,6 +442,8 @@ erDiagram
     "category_quiz" }o--|| "quiz" : "quiz"
     "englishbot_answer_log" }o--|| "word" : "word"
     "example_explanation" }o--|| "example" : "example"
+    "example_source" }o--|| "example" : "example"
+    "example_source" }o--|| "source" : "source"
     "mean" }o--|| "partsofspeech" : "partsofspeech"
     "mean" }o--|| "word" : "word"
     "quiz" }o--|| "quiz_format" : "quiz_format"

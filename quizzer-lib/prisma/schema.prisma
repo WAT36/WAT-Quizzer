@@ -99,6 +99,7 @@ model example {
   updated_at          DateTime              @updatedAt
   deleted_at          DateTime?             @db.Timestamp(6)
   example_explanation example_explanation[]
+  example_source      example_source[]
   word_example        word_example[]
 }
 
@@ -110,6 +111,19 @@ model example_explanation {
   updated_at  DateTime  @updatedAt
   deleted_at  DateTime? @db.Timestamp(6)
   example     example   @relation(fields: [example_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model example_source {
+  id         Int       @id @default(autoincrement())
+  example_id Int
+  source_id  Int
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime? @db.Timestamp(6)
+  example    example   @relation(fields: [example_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  source     source    @relation(fields: [source_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([example_id, source_id])
 }
 
 model mean {
@@ -263,12 +277,13 @@ model selfhelp_book {
 }
 
 model source {
-  id          Int           @id @default(autoincrement())
-  name        String        @db.VarChar(256)
-  created_at  DateTime      @default(now()) @db.Timestamp(6)
-  updated_at  DateTime      @updatedAt
-  deleted_at  DateTime?     @db.Timestamp(6)
-  word_source word_source[]
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(256)
+  created_at     DateTime         @default(now()) @db.Timestamp(6)
+  updated_at     DateTime         @updatedAt
+  deleted_at     DateTime?        @db.Timestamp(6)
+  example_source example_source[]
+  word_source    word_source[]
 }
 
 model word {
