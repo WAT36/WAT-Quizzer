@@ -15,7 +15,9 @@
     "build:backend": "npx -w backend-nest prisma format && npx -w backend-nest prisma generate && npx -w backend-nest nest build",
     "build:frontend": "npx -w frontend-next next build",
     "deps:check": "npx syncpack list-mismatches",
-    "deps:fix": "npx syncpack fix-mismatches"
+    "deps:fix": "npx syncpack fix-mismatches",
+    "start:backend": "npm run build -w quizzer-lib && npm install -w backend-nest && npm run build -w backend-nest && npm run start:dev -w backend-nest",
+    "start:frontend": "npm install -w frontend-next && npm run dev -w frontend-next"
   },
   "repository": {
     "type": "git",
