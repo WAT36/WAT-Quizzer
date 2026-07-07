@@ -62,7 +62,7 @@ export class EnglishService {
 
   // 例文追加
   async addExampleService(req: AddExampleAPIRequestDto) {
-    const { exampleEn, exampleJa, explanation, wordName } = req;
+    const { exampleEn, exampleJa, explanation, wordName, sourceId, newSourceName } = req;
 
     // 入力単語存在チェック
     const wordData =
@@ -81,6 +81,26 @@ export class EnglishService {
         `エラー：入力した単語名「${wordName}は存在しません」`,
         HttpStatus.NOT_FOUND,
       );
+    }
+
+    // 出典IDの解決（その他の場合は新規登録または既存取得）
+    let resolvedSourceId: number | undefined = sourceId;
+    if (sourceId === -2) {
+      if (!newSourceName) {
+        throw new HttpException(
+          '新規追加する出典が入力されていません',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const sourceData = await prisma.source.findMany({
+        where: { name: newSourceName, deleted_at: null },
+      });
+      if (sourceData[0]) {
+        resolvedSourceId = sourceData[0].id;
+      } else {
+        const result = await prisma.source.create({ data: { name: newSourceName } });
+        resolvedSourceId = result.id;
+      }
     }
 
     try {
@@ -107,6 +127,16 @@ export class EnglishService {
             data: {
               example_sentense_id: createdExampleData.id,
               word_id: wordData.id,
+            },
+          });
+        }
+
+        // example_sourceにデータ追加(出典入力ある場合のみ)
+        if (resolvedSourceId !== undefined && resolvedSourceId !== -1) {
+          await prisma.example_source.create({
+            data: {
+              example_id: createdExampleData.id,
+              source_id: resolvedSourceId,
             },
           });
         }

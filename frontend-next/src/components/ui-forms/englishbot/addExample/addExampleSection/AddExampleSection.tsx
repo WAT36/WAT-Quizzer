@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
-import { CardContent, CardHeader } from '@mui/material';
+import { CardContent, CardHeader, InputLabel, MenuItem, Select } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
-import { AddExampleAPIRequestDto } from 'quizzer-lib';
+import { AddExampleAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
 import { addExampleAPI } from '@/utils/api-wrapper';
 import { Button } from '@/components/ui-elements/button/Button';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
 import { clearInputValuesByIds } from '@/utils/dom';
+import { pullDownMenuProps } from '@/constants/pullDown';
 
-interface AddExampleSectionProps {}
+interface AddExampleSectionProps {
+  sourceList: PullDownOptionDto[];
+}
 
-export const AddExampleSection = ({}: AddExampleSectionProps) => {
+export const AddExampleSection = ({ sourceList }: AddExampleSectionProps) => {
   const [addExampleData, setAddExampleData] = useState<AddExampleAPIRequestDto>({
     exampleEn: '',
     exampleJa: '',
-    wordName: ''
+    wordName: '',
+    sourceId: -1
   });
   const setMessage = useSetRecoilState(messageState);
 
@@ -84,6 +88,54 @@ export const AddExampleSection = ({}: AddExampleSectionProps) => {
                 id={'addExplanationField'}
               />
             </CardContent>
+            <CardHeader subheader="出典(あれば)" />
+            <CardContent className="flex" style={{ flexDirection: 'column', gap: '8px' }}>
+              <Select
+                labelId="example-source-select-label"
+                id="example-source-select"
+                defaultValue={-1}
+                value={addExampleData.sourceId ?? -1}
+                label="source"
+                sx={{ width: 1 }}
+                MenuProps={pullDownMenuProps}
+                onChange={(e) => {
+                  setAddExampleData({
+                    ...addExampleData,
+                    sourceId: +e.target.value,
+                    newSourceName: undefined
+                  });
+                }}
+              >
+                <MenuItem value={-1} key={-1}>
+                  選択なし
+                </MenuItem>
+                {sourceList.map((x) => (
+                  <MenuItem value={x.value} key={x.value}>
+                    {x.label}
+                  </MenuItem>
+                ))}
+                <MenuItem value={-2} key={-2}>
+                  その他
+                </MenuItem>
+              </Select>
+              {addExampleData.sourceId === -2 && (
+                <>
+                  <InputLabel id="example-source-select-label"></InputLabel>
+                  <TextField
+                    label="出典"
+                    variant="outlined"
+                    setStater={(value: string) => {
+                      setAddExampleData({
+                        ...addExampleData,
+                        newSourceName: value
+                      });
+                    }}
+                    id="addExampleNewSourceField"
+                    className={['fullWidth']}
+                  />
+                </>
+              )}
+            </CardContent>
           </Card>
         </CardContent>
         <Button
@@ -117,14 +169,16 @@ export const AddExampleSection = ({}: AddExampleSectionProps) => {
               setAddExampleData({
                 exampleEn: '',
                 exampleJa: '',
-                wordName: ''
+                wordName: '',
+                sourceId: -1
               });
               // 入力データをクリア
               clearInputValuesByIds([
                 'addExampleEnField',
                 'addExampleJaField',
                 'addExampleToWordName',
-                'addExplanationField'
+                'addExplanationField',
+                'addExampleNewSourceField'
               ]);
             }
           }}

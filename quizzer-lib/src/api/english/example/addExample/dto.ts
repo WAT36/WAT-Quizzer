@@ -4,4 +4,6 @@ export interface AddExampleAPIRequestDto {
   exampleJa: string
   explanation?: string
   wordName?: string
+  sourceId?: number
+  newSourceName?: string // 出典がその他の場合必要
 }
