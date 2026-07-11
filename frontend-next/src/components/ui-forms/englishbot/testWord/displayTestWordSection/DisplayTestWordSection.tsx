@@ -16,7 +16,8 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { Chip } from '@/components/ui-elements/chip/Chip';
 import {
   generateFourChoiceSentense,
-  GetEnglishWordTestDataAPIResponseDto
+  GetEnglishWordTestDataAPIResponseDto,
+  WORD_TEST_TYPE
 } from 'quizzer-lib';
 import { submitEnglishBotTestAPI, toggleWordCheckAPI } from '@/utils/api-wrapper';
 import { useSetRecoilState } from 'recoil';
@@ -40,7 +41,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
   return (
     <>
       <Card variant="outlined">
-        {displayTestData.testType === '0' ? (
+        {displayTestData.testType === String(WORD_TEST_TYPE.NAME) ? (
           // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
           <>
             <CardContent>
@@ -99,7 +100,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                       const result = await submitEnglishBotTestAPI({
                         testResult: {
                           wordId: displayTestData.word?.id || NaN,
-                          testType: 0
+                          testType: WORD_TEST_TYPE.NAME
                         },
                         selectedValue: true
                       });
@@ -125,7 +126,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                       const result = await submitEnglishBotTestAPI({
                         testResult: {
                           wordId: displayTestData.word?.id || NaN,
-                          testType: 0
+                          testType: WORD_TEST_TYPE.NAME
                         },
                         selectedValue: false
                       });
@@ -170,7 +171,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
               </Collapse>
             </CardContent>
           </>
-        ) : displayTestData.testType === '1' ? (
+        ) : displayTestData.testType === String(WORD_TEST_TYPE.FOUR_CHOICE) ? (
           // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
           <>
             <CardContent>
@@ -213,7 +214,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                   const result = await submitEnglishBotTestAPI({
                     testResult: {
                       wordId: displayTestData.word?.id || NaN,
-                      testType: 1
+                      testType: WORD_TEST_TYPE.FOUR_CHOICE
                     },
                     selectedValue: isFourchoiceCorrect
                   });
@@ -232,7 +233,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
               />
             </CardContent>
           </>
-        ) : displayTestData.testType === '2' ? (
+        ) : displayTestData.testType === String(WORD_TEST_TYPE.MEANING) ? (
           // TODO ここはコンポーネント化したい。テスト形式ごとに。quizzerの方も同様
           <>
             <CardContent>
@@ -281,7 +282,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                       const result = await submitEnglishBotTestAPI({
                         testResult: {
                           wordId: displayTestData.word?.id || NaN,
-                          testType: 2
+                          testType: WORD_TEST_TYPE.MEANING
                         },
                         selectedValue: true
                       });
@@ -307,7 +308,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                       const result = await submitEnglishBotTestAPI({
                         testResult: {
                           wordId: displayTestData.word?.id || NaN,
-                          testType: 2
+                          testType: WORD_TEST_TYPE.MEANING
                         },
                         selectedValue: false
                       });
