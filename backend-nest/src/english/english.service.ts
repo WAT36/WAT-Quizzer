@@ -304,6 +304,9 @@ export class EnglishService {
           id: true,
           en_example_sentense: true,
           ja_example_sentense: true,
+          example_explanation: {
+            select: { explanation: true },
+          },
         },
       });
 

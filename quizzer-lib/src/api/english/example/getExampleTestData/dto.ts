@@ -10,5 +10,6 @@ export interface GetExampleTestDataAPIResponseDto {
     id: number
     en_example_sentense: string
     ja_example_sentense: string
+    example_explanation: { explanation: string }[]
   }
 }

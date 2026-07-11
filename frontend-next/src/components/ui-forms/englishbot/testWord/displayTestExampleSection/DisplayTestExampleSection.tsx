@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
-import { Button as MuiButton, CardActions, CardContent, Collapse } from '@mui/material';
+import { Button as MuiButton, CardActions, CardContent, Collapse, Typography } from '@mui/material';
 import { EXAMPLE_TEST_TYPE, GetExampleTestDataAPIResponseDto } from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
@@ -39,6 +39,13 @@ export const DisplayTestExampleSection = ({ displayTestData, setDisplayTestData 
             {displayTestData.example?.en_example_sentense && (
               <p>{displayTestData.example.en_example_sentense}</p>
             )}
+            {displayTestData.example?.example_explanation?.map((item, index) => (
+              <Typography key={index} variant="subtitle2" component="p">
+                {item.explanation.split(/(\\n)/).map((part, i) =>
+                  part.match(/\\n/) ? <br key={i} /> : part
+                )}
+              </Typography>
+            ))}
             <Button
               label={'正解!!'}
               attr={'button-array'}
