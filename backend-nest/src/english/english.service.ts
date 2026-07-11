@@ -272,17 +272,45 @@ export class EnglishService {
   }
 
   // 例文テスト取得
-  async getExampleTestService() {
+  async getExampleTestService(sourceId?: number) {
     try {
-      const data = await prisma.example.findMany({
-        where: {
-          example_explanation: {
-            none: {},
+      const where = {
+        deleted_at: null,
+        ...(sourceId !== undefined && {
+          example_source: {
+            some: {
+              source_id: sourceId,
+            },
           },
+        }),
+      };
+
+      const total = await prisma.example.count({ where });
+
+      if (total === 0) {
+        throw new HttpException(
+          '条件に合致するデータはありません',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const skip = Math.floor(Math.random() * total);
+
+      const example = await prisma.example.findFirst({
+        where,
+        skip,
+        select: {
+          id: true,
+          en_example_sentense: true,
+          ja_example_sentense: true,
         },
       });
-      return data;
+
+      return { total, example };
     } catch (error: unknown) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
       if (error instanceof Error) {
         throw new HttpException(
           error.message,

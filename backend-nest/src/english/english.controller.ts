@@ -59,8 +59,10 @@ export class EnglishController {
 
   @ApiOperation({ summary: '例文テストデータを取得する' })
   @Get('/example/test')
-  async getExampleTest() {
-    return await this.englishService.getExampleTestService();
+  async getExampleTest(@Query('sourceId') sourceId?: string) {
+    return await this.englishService.getExampleTestService(
+      sourceId !== undefined ? +sourceId : undefined,
+    );
   }
 
   @ApiOperation({ summary: '出典ごとの統計情報を取得する' })
