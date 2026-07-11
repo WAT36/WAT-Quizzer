@@ -170,15 +170,15 @@ export const AddExampleSection = ({ sourceList }: AddExampleSectionProps) => {
                 exampleEn: '',
                 exampleJa: '',
                 wordName: '',
-                sourceId: -1
+                sourceId: addExampleData.sourceId,
+                newSourceName: addExampleData.newSourceName
               });
-              // 入力データをクリア
+              // 入力データをクリア（出典は保持）
               clearInputValuesByIds([
                 'addExampleEnField',
                 'addExampleJaField',
                 'addExampleToWordName',
-                'addExplanationField',
-                'addExampleNewSourceField'
+                'addExplanationField'
               ]);
             }
           }}
