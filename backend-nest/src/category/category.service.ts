@@ -110,6 +110,36 @@ export class CategoryService {
           child_category_id: child.id,
         },
       });
+
+      // 子カテゴリが付与されている問題に親カテゴリが付与されていなければ付与する
+      const quizzesWithChild = await prisma.category_quiz.findMany({
+        where: { category_id: child.id, deleted_at: null },
+        select: { quiz_id: true },
+      });
+      const quizIds = quizzesWithChild.map((q) => q.quiz_id);
+
+      if (quizIds.length > 0) {
+        // 既に親カテゴリが付与されている問題ID（deleted_at: null）
+        const alreadyAssigned = await prisma.category_quiz.findMany({
+          where: {
+            category_id: parent.id,
+            quiz_id: { in: quizIds },
+            deleted_at: null,
+          },
+          select: { quiz_id: true },
+        });
+        const alreadyAssignedIds = new Set(alreadyAssigned.map((q) => q.quiz_id));
+        const missingIds = quizIds.filter((id) => !alreadyAssignedIds.has(id));
+
+        for (const quiz_id of missingIds) {
+          await prisma.category_quiz.upsert({
+            where: { quiz_id_category_id: { quiz_id, category_id: parent.id } },
+            create: { quiz_id, category_id: parent.id },
+            update: { deleted_at: null },
+          });
+        }
+      }
+
       return record;
     } catch (error: unknown) {
       if (error instanceof HttpException) {
