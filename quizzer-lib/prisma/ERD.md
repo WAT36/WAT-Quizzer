@@ -63,6 +63,17 @@ erDiagram
     }
   
 
+  "englishbot_example_answer_log" {
+    Int id "🗝️"
+    Int example_id 
+    Boolean result "❓"
+    DateTime created_at 
+    DateTime updated_at 
+    DateTime deleted_at "❓"
+    Int test_type 
+    }
+  
+
   "example" {
     Int id "🗝️"
     String en_example_sentense 
@@ -441,6 +452,7 @@ erDiagram
     "category_quiz" }o--|| "category" : "category"
     "category_quiz" }o--|| "quiz" : "quiz"
     "englishbot_answer_log" }o--|| "word" : "word"
+    "englishbot_example_answer_log" }o--|| "example" : "example"
     "example_explanation" }o--|| "example" : "example"
     "example_source" }o--|| "example" : "example"
     "example_source" }o--|| "source" : "source"

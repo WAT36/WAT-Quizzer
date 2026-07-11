@@ -91,16 +91,28 @@ model englishbot_answer_log {
   word       word      @relation(fields: [word_id], references: [id])
 }
 
+model englishbot_example_answer_log {
+  id         Int       @id @default(autoincrement())
+  example_id Int
+  result     Boolean?
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime? @db.Timestamp(6)
+  test_type  Int       @default(0)
+  example    example   @relation(fields: [example_id], references: [id])
+}
+
 model example {
-  id                  Int                   @id @default(autoincrement())
-  en_example_sentense String                @db.VarChar(256)
-  ja_example_sentense String                @db.VarChar(256)
-  created_at          DateTime              @default(now()) @db.Timestamp(6)
-  updated_at          DateTime              @updatedAt
-  deleted_at          DateTime?             @db.Timestamp(6)
-  example_explanation example_explanation[]
-  example_source      example_source[]
-  word_example        word_example[]
+  id                            Int                             @id @default(autoincrement())
+  en_example_sentense           String                          @db.VarChar(256)
+  ja_example_sentense           String                          @db.VarChar(256)
+  created_at                    DateTime                        @default(now()) @db.Timestamp(6)
+  updated_at                    DateTime                        @updatedAt
+  deleted_at                    DateTime?                       @db.Timestamp(6)
+  englishbot_example_answer_log englishbot_example_answer_log[]
+  example_explanation           example_explanation[]
+  example_source                example_source[]
+  word_example                  word_example[]
 }
 
 model example_explanation {
