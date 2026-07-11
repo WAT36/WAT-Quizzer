@@ -54,7 +54,7 @@ export default function TestWordPage({ isMock }: Props) {
             }}
           />
         </>
-        {testType === '0' ? <WordTestSection sourcelistoption={sourcelistoption} /> : <ExampleTestSection />}
+        {testType === '0' ? <WordTestSection sourcelistoption={sourcelistoption} /> : <ExampleTestSection sourcelistoption={sourcelistoption} />}
       </Container>
     );
   };

@@ -1,36 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FormGroup } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
-import { FormGroup } from '@mui/material';
-
-// TODO 例文テストデータ取得APIのリクエスト/レスポンスDTOができたら差し替える
-export interface ExampleTestData {
-  exampleId?: number;
-  enSentense?: string;
-  jaSentense?: string;
-}
+import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
+import { GetExampleTestDataAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
+import { getExampleTestDataAPI } from '@/utils/api-wrapper';
 
 interface GetExampleQueryFormProps {
-  setDisplayTestData?: React.Dispatch<React.SetStateAction<ExampleTestData>>;
+  sourcelistoption: PullDownOptionDto[];
+  setDisplayTestData?: React.Dispatch<React.SetStateAction<GetExampleTestDataAPIResponseDto>>;
   setTotalCount?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
-export const GetExampleQueryForm = ({ setDisplayTestData, setTotalCount }: GetExampleQueryFormProps) => {
+export const GetExampleQueryForm = ({
+  sourcelistoption,
+  setDisplayTestData,
+  setTotalCount
+}: GetExampleQueryFormProps) => {
+  const [sourceId, setSourceId] = useState<number | undefined>(undefined);
+  const setMessage = useSetRecoilState(messageState);
+
   return (
     <>
       <Card attr={['through-card', 'padding-vertical']}>
         <FormGroup>
-          {/* TODO 出題条件フォームをここに追加する */}
+          <PullDown
+            label={'出典'}
+            optionList={sourcelistoption}
+            onChange={(e) => {
+              setSourceId(e.target.value !== '' ? +e.target.value : undefined);
+            }}
+          />
         </FormGroup>
       </Card>
-      {/* TODO 出題ボタンをここに追加する */}
       <Button
         label={'Random Example'}
         attr={'button-array'}
         variant="contained"
         color="primary"
         onClick={async () => {
-          // TODO APIを呼び出して例文テストデータを取得する
+          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+          const result = await getExampleTestDataAPI({
+            getExampleTestData: { sourceId }
+          });
+          setMessage(result.message);
+          setTotalCount && setTotalCount(result.total);
+          if (result.message.messageColor === 'common.black') {
+            setDisplayTestData &&
+              setDisplayTestData(result.result as GetExampleTestDataAPIResponseDto);
+          }
         }}
       />
     </>

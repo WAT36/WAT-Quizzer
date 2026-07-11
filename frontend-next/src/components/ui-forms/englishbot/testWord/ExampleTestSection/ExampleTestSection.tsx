@@ -1,17 +1,21 @@
 import { useState } from 'react';
 import React from 'react';
-import { GetExampleQueryForm, ExampleTestData } from '../getExampleForm/GetExampleQueryForm';
+import { GetExampleTestDataAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
+import { GetExampleQueryForm } from '../getExampleForm/GetExampleQueryForm';
 import { DisplayTestExampleSection } from '../displayTestExampleSection/DisplayTestExampleSection';
 
-interface ExampleTestSectionProps {}
+interface ExampleTestSectionProps {
+  sourcelistoption: PullDownOptionDto[];
+}
 
-export const ExampleTestSection = ({}: ExampleTestSectionProps) => {
-  const [displayTestData, setDisplayTestData] = useState<ExampleTestData>({});
+export const ExampleTestSection = ({ sourcelistoption }: ExampleTestSectionProps) => {
+  const [displayTestData, setDisplayTestData] = useState<GetExampleTestDataAPIResponseDto>({});
   const [totalCount, setTotalCount] = useState<number | undefined>(undefined);
 
   return (
     <>
       <GetExampleQueryForm
+        sourcelistoption={sourcelistoption}
         setDisplayTestData={setDisplayTestData}
         setTotalCount={setTotalCount}
       />
