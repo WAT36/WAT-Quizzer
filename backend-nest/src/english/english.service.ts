@@ -3,6 +3,7 @@ import {
   AddExampleAPIRequestDto,
   SourceStatisticsApiResponse,
   SubmitAssociationExampleAPIRequestDto,
+  SubmitExampleTestDataAPIRequestDto,
   prisma,
 } from 'quizzer-lib';
 
@@ -311,6 +312,48 @@ export class EnglishService {
       if (error instanceof HttpException) {
         throw error;
       }
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 例文テスト正解登録
+  async exampleTestClearedService(req: SubmitExampleTestDataAPIRequestDto) {
+    try {
+      const { exampleId, testType } = req;
+      return await prisma.englishbot_example_answer_log.create({
+        data: {
+          example_id: exampleId,
+          result: true,
+          test_type: testType,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
+  // 例文テスト不正解登録
+  async exampleTestFailedService(req: SubmitExampleTestDataAPIRequestDto) {
+    try {
+      const { exampleId, testType } = req;
+      return await prisma.englishbot_example_answer_log.create({
+        data: {
+          example_id: exampleId,
+          result: false,
+          test_type: testType,
+        },
+      });
+    } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
           error.message,
