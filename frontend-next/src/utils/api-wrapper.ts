@@ -447,6 +447,11 @@ export const getExampleTestDataAPI = async (params: any): Promise<ApiResult> => 
   return originalGetExampleTestDataAPI(params);
 };
 
+export const submitExampleTestDataAPI = async (params: any): Promise<ApiResult> => {
+  const { submitExampleTestDataAPI: originalSubmitExampleTestDataAPI } = await import('quizzer-lib');
+  return originalSubmitExampleTestDataAPI(params);
+};
+
 export const submitAssociationExampleAPI = async (params: any): Promise<ApiResult> => {
   if (isMockMode()) {
     return mockAPI.mockSubmitAssociationExampleAPI(params);

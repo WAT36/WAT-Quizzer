@@ -3,6 +3,9 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
 import { Button as MuiButton, CardActions, CardContent, Collapse } from '@mui/material';
 import { GetExampleTestDataAPIResponseDto } from 'quizzer-lib';
+import { useSetRecoilState } from 'recoil';
+import { messageState } from '@/atoms/Message';
+import { submitExampleTestDataAPI } from '@/utils/api-wrapper';
 
 interface DisplayTestExampleSectionProps {
   displayTestData: GetExampleTestDataAPIResponseDto;
@@ -11,6 +14,7 @@ interface DisplayTestExampleSectionProps {
 
 export const DisplayTestExampleSection = ({ displayTestData, setDisplayTestData }: DisplayTestExampleSectionProps) => {
   const [expanded, setExpanded] = useState<boolean>(false);
+  const setMessage = useSetRecoilState(messageState);
 
   return (
     <>
@@ -42,7 +46,16 @@ export const DisplayTestExampleSection = ({ displayTestData, setDisplayTestData 
               color="primary"
               disabled={!displayTestData.example?.id}
               onClick={async () => {
-                // TODO 正解APIを呼び出す
+                setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+                const result = await submitExampleTestDataAPI({
+                  testResult: { exampleId: displayTestData.example!.id, testType: 0 },
+                  selectedValue: true
+                });
+                setMessage(result.message);
+                if (result.message.messageColor === 'success.light') {
+                  setDisplayTestData && setDisplayTestData({});
+                  setExpanded(false);
+                }
               }}
             />
             <Button
@@ -52,7 +65,16 @@ export const DisplayTestExampleSection = ({ displayTestData, setDisplayTestData 
               color="secondary"
               disabled={!displayTestData.example?.id}
               onClick={async () => {
-                // TODO 不正解APIを呼び出す
+                setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+                const result = await submitExampleTestDataAPI({
+                  testResult: { exampleId: displayTestData.example!.id, testType: 0 },
+                  selectedValue: false
+                });
+                setMessage(result.message);
+                if (result.message.messageColor === 'success.light') {
+                  setDisplayTestData && setDisplayTestData({});
+                  setExpanded(false);
+                }
               }}
             />
           </CardContent>
