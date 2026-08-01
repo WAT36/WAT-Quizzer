@@ -1,3 +1,9 @@
+# batch
+
+WAT-Quizzer 用の単発実行バッチ/CLIスクリプト集。`quizzer-lib` を参照し、認証が必要なものは `src/tools/signin.ts` の `signInForBatch`（内部ヘルパー、単体では実行しない）でサインインしてから `backend-nest` の API を呼び出す。
+
+各スクリプトは `npx ts-node src/<ファイル名>.ts <引数...>` の形式で実行する。
+
 # quiz.uploader.ts
 
 基礎・応用問題が書かれたファイルを読み込んで問題登録する
@@ -67,3 +73,13 @@ npx ts-node src/englishword.source.register.ts <ファイル名> --source-only
 格言3,解説3
 (...の連続)
 ```
+
+# tools/avg_line.register.ts
+
+全ファイルの合計行数・ファイル数から平均行数を計算し記録する（API を経由せず `quizzer-lib` の `prisma` クライアントで直接 DB に書き込む）。
+
+```
+npx ts-node src/tools/avg_line.register.ts (全ファイルの行数合計) (全ファイル数)
+```
+
+リポジトリルートの `update_avg_lines.sh`（push 前フックでの実行を想定）から、対象ファイルの行数を集計した上で呼び出される。

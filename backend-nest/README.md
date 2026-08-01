@@ -1,73 +1,66 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# backend-nest
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+WAT-Quizzer の REST API サーバー。[NestJS](https://nestjs.com/) 製。
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+ローカルでは Express サーバーとして起動する一方、`src/main.ts` は AWS Lambda 用のハンドラー (`aws-serverless-express` 経由) もエクスポートしており、同一コードベースをサーバーレス実行にも対応させている。
 
-## Description
+## 構成
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+`src/` 直下は機能ごとの NestJS モジュールに分かれている（`app.module.ts` で束ねる）。DB アクセスは Prisma を利用するが、スキーマ・生成クライアントの実体は `../quizzer-lib`（backend-nest / batch / frontend-next 共有パッケージ）にあり、本アプリは `quizzer-lib` から `prisma` クライアントや共通 DTO/ユーティリティを import して使う（スキーマ本体は `../quizzer-lib/prisma/schema.prisma`）。
 
-## Installation
+| モジュール | ベースパス | 概要 |
+|---|---|---|
+| `quiz/` | `/quiz`, `/quiz/file` | 基礎・応用問題の CRUD、ランダム/苦手問題出題、正誤記録、CSV アップロード、画像アップロード、統計 |
+| `category/` | `/category` | 問題カテゴリの一覧・正答率・親子関係・件数集計 |
+| `english/` | `/english`, `/english/word`, `/english/derivatives` | 英単語帳（EnglishBot）: 単語/派生語/類義語/反意語/語源、例文とテスト、出典管理 |
+| `saying/` | `/saying` | 格言（さやいん）の登録・検索・出典（書籍）管理 |
+| `todo/` | `/todo` | ToDo とチェック状況、日記 |
+| `auth/` | `/auth` | サインイン・パスワード再設定。Cognito (`auth/cognito/`) を用いたユーザー認証・JWT 検証 (`CognitoAuthGuard`) |
+
+各コントローラーが受け付ける具体的なエンドポイントは各 `*.controller.ts` を参照。ローカル起動時は Swagger UI が `http://localhost:4000/api` で閲覧できる。
+
+## セットアップ
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Running the app
+## 起動
 
 ```bash
-# development
-$ npm run start
+# 開発（ホットリロードなし）
+npm run start
 
-# watch mode
-$ npm run start:dev
+# watch モード
+npm run start:dev
 
-# production mode
-$ npm run start:prod
+# 本番相当
+npm run start:prod
 ```
 
-## Test
+ローカル起動時はポート `4000` で待ち受ける（`APP_ENV=local` のときのみ `bootstrap()` が実行される）。
+
+## テスト
 
 ```bash
-# unit tests
-$ npm run test
+# ユニットテスト
+npm run test
 
-# e2e tests
-$ npm run test:e2e
+# e2e テスト
+npm run test:e2e
 
-# test coverage
-$ npm run test:cov
+# カバレッジ
+npm run test:cov
 ```
 
-## Support
+## 環境変数
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+`quizzer-lib` 経由の DB 接続を含め、主に以下をリポジトリルートの `.env` で管理する（値は各自の環境に合わせて設定。秘密情報のためリポジトリには含まれない）。
 
-## Stay in touch
+- `DATABASE_URL` / `DIRECT_URL` — Prisma 接続先
+- `APP_ENV` — `local` のときのみ Express サーバーとして起動
+- `REGION`, `AWS_COGNITO_USERPOOL_ID`, `AWS_COGNITO_APPCLIENT_ID` — Cognito 認証まわり
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Docker
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+リポジトリルートの `Dockerfile` / `docker-compose.yaml` から本アプリのコンテナ (`quizzer_api`, ポート `4000`) をビルド・起動できる。

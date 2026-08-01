@@ -1,38 +1,67 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# frontend-next
 
-## Getting Started
+WAT-Quizzer のフロントエンド。[Next.js](https://nextjs.org/)（Pages Router）製で、`next.config.js` で `output: 'export'` を指定した静的サイトとしてビルドされる（`infra` の `FrontendStack` から配信される想定）。
 
-First, run the development server:
+## 画面構成 (`src/pages/`)
+
+| パス | 内容 |
+|---|---|
+| `/` | トップページ |
+| `/login` | ログイン |
+| `/settings` | 全体設定 |
+| `/quizzer` 以下 | 問題（Quiz）機能: 一覧取得・追加・編集・削除・検索・画像アップロード・正答率グラフ・設定 |
+| `/englishBot` 以下 | 英単語帳（EnglishBot）機能: トップ・単語追加・例文追加・単語詳細 (`detailWord/[id]`)・辞書検索・単語テスト |
+| `/storybook` | Storybook への導線ページ |
+| `/404` | 404 ページ |
+
+`src/components/`（`ui-elements` / `ui-forms` / `ui-parts` / `templates` / `unused`）、`src/hooks/`、`src/contexts/`、`src/atoms/`（Recoil）、`src/utils/` に実装が分かれる。API 呼び出しやモックデータ、型は `../quizzer-lib`（backend-nest / batch と共有のパッケージ）を利用する。
+
+## 主要ライブラリ
+
+- UI: MUI (`@mui/material`, `@mui/x-data-grid`, `@mui/x-date-pickers`), Tailwind CSS
+- 状態管理: Recoil
+- グラフ/図: Chart.js・recharts（正答率グラフ等）、react-d3-tree（カテゴリツリー等）
+- 認証: amazon-cognito-identity-js
+
+## セットアップ
+
+```bash
+npm install
+```
+
+## 開発サーバー起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) で確認できる。
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## ビルド
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```bash
+npm run build   # 静的エクスポート (out/)
+npm run serve   # ビルド後 out/ を配信
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## テスト
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Storybook（コンポーネントカタログ + a11y チェック）:
+  ```bash
+  npm run storybook          # 開発サーバー (port 6006)
+  npm run build-storybook
+  npm run test-storybook     # Storybook のインタラクション/a11yテスト
+  ```
+  `chromatic` / `git:push` は Chromatic への Storybook 公開用。
+- Playwright による e2e テスト (`e2e/`):
+  ```bash
+  npm run e2e
+  npm run e2e:ui
+  ```
 
-## Learn More
+## 環境変数
 
-To learn more about Next.js, take a look at the following resources:
+主に以下をリポジトリルートの `.env` で管理する。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- `NEXT_PUBLIC_API_SERVER` — 接続先の `backend-nest` API のベース URL
+- `NEXT_PUBLIC_URL_END`, `QUIZZER_FRONT_SERVER` — フロント自身の URL 関連設定
