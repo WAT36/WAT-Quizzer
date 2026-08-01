@@ -49,7 +49,7 @@ export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanF
     return (
       <>
         <Select
-          aria-label="品詞"
+          inputProps={{ 'aria-label': '品詞' }}
           id="demo-simple-select"
           defaultValue={-1}
           label="partOfSpeech"

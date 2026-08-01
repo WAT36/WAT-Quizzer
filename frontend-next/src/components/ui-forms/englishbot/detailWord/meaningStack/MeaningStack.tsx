@@ -32,7 +32,7 @@ const displayPosInput = (
 ) => {
   return (
     <Select
-      aria-label="品詞"
+      inputProps={{ 'aria-label': '品詞' }}
       id="demo-simple-select"
       defaultValue={editMeanData.partofspeechId || -1}
       label="partOfSpeech"

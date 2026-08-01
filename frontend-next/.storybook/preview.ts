@@ -9,11 +9,6 @@ const preview: Preview = {
         date: /Date$/
       }
     },
-    // RequiredAuthComponent が next/navigation の useRouter を使用しているため、
-    // App Router 向けのナビゲーションモックを有効化する（未設定だと "router mocks...not created yet" エラーになる）
-    nextjs: {
-      appDirectory: true
-    },
     // a11yチェックは .storybook/test-runner.ts の axe-playwright 側で一元管理する
     // (addon-a11y自体のsmoke-testでの自動失敗は無効化し、二重の合否判定を避ける)
     a11y: {

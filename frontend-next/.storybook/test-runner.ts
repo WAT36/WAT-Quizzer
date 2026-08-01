@@ -1,4 +1,5 @@
 import type { TestRunnerConfig } from '@storybook/test-runner';
+import { waitForPageReady } from '@storybook/test-runner';
 import { injectAxe, checkA11y } from 'axe-playwright';
 
 /*
@@ -10,6 +11,9 @@ const config: TestRunnerConfig = {
     await injectAxe(page);
   },
   async postVisit(page) {
+    // ストーリー（特にRecoil等、非同期チャンクをまたぐ状態管理を使うもの）の
+    // レンダリングが完全に落ち着くのを待ってからチェックする
+    await waitForPageReady(page);
     await checkA11y(page, '#storybook-root', {
       detailedReport: true,
       detailedReportOptions: {

@@ -16,6 +16,7 @@ import {
   PointElement
 } from 'chart.js';
 import { CircularProgress } from '@mui/material';
+import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
 
 import { ACCRATE_HISTGRAM_LABEL, ACCRATE_HISTGRAM_COLOR, ACCRATE_HISTGRAM_TITLE } from '@/constants/contents/chart';
 
@@ -26,6 +27,7 @@ interface AccuracyRateHistgramCardProps {
 }
 
 export const AccuracyRateHistgramCard = ({ file_num }: AccuracyRateHistgramCardProps) => {
+  const chartRef = useChartAriaLabel(ACCRATE_HISTGRAM_TITLE);
   const [accuracyRateHistgramData, setAccuracyRateHistgramData] = useState<AccuracyRateHistgramApiResponse>({
     result: []
   });
@@ -77,7 +79,7 @@ export const AccuracyRateHistgramCard = ({ file_num }: AccuracyRateHistgramCardP
     <Card variant="outlined" attr={['margin-vertical']}>
       <div className="h-[350px]">
         {accuracyRateHistgramData.result.length > 0 ? (
-          <Chart type="bar" options={options} data={data} aria-label={ACCRATE_HISTGRAM_TITLE} />
+          <Chart ref={chartRef} type="bar" options={options} data={data} />
         ) : (
           <CircularProgress aria-label="読み込み中" />
         )}

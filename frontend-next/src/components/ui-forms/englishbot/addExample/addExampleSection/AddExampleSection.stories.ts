@@ -19,5 +19,10 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Main: Story = {
-  args: {}
+  args: {
+    sourceList: [
+      { value: 1, label: 'TOEIC' },
+      { value: 2, label: '英検' }
+    ]
+  }
 };

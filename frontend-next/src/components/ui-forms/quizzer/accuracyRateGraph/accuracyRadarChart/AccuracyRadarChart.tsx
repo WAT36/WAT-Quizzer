@@ -2,6 +2,7 @@ import { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
 import React from 'react';
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
+import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
 
 interface AccuracyRadarChartProps {
   accuracyData: GetAccuracyRateByCategoryAPIResponseDto;
@@ -10,6 +11,8 @@ interface AccuracyRadarChartProps {
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 export const AccuracyRadarChart = ({ accuracyData, order }: AccuracyRadarChartProps) => {
+  const chartRef = useChartAriaLabel('カテゴリ別正答率レーダーチャート');
+
   // データがない場合は何もしない
   if (accuracyData.result.length === 0 && accuracyData.checked_result.length === 0) {
     return <></>;
@@ -74,7 +77,7 @@ export const AccuracyRadarChart = ({ accuracyData, order }: AccuracyRadarChartPr
   // Radarチャートは正方形が見やすいので高さを幅に合わせる
   return (
     <div className="w-full h-[800px]">
-      <Radar options={options} data={data} />
+      <Radar ref={chartRef} options={options} data={data} />
     </div>
   );
 };

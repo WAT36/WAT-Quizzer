@@ -91,7 +91,7 @@ export const AddExampleSection = ({ sourceList }: AddExampleSectionProps) => {
             <CardHeader subheader="出典(あれば)" />
             <CardContent className="flex" style={{ flexDirection: 'column', gap: '8px' }}>
               <Select
-                aria-label="出典"
+                inputProps={{ 'aria-label': '出典' }}
                 id="example-source-select"
                 defaultValue={-1}
                 value={addExampleData.sourceId ?? -1}

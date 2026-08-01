@@ -2,6 +2,7 @@ import { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
 
 interface AccuracyChartProps {
   accuracyData: GetAccuracyRateByCategoryAPIResponseDto;
@@ -10,6 +11,8 @@ interface AccuracyChartProps {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export const AccuracyChart = ({ accuracyData, order }: AccuracyChartProps) => {
+  const chartRef = useChartAriaLabel('カテゴリ別正答率グラフ');
+
   // データがない場合は何もしない
   if (accuracyData.result.length === 0 && accuracyData.checked_result.length === 0) {
     return <></>;
@@ -63,7 +66,7 @@ export const AccuracyChart = ({ accuracyData, order }: AccuracyChartProps) => {
   };
   return (
     <div style={{ height: `${graph_height}px` }} className="mb-10">
-      <Bar options={options} data={data} aria-label="カテゴリ別正答率グラフ" />
+      <Bar ref={chartRef} options={options} data={data} />
     </div>
   );
 };

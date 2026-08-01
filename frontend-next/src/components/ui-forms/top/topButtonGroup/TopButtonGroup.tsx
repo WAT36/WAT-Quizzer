@@ -26,6 +26,8 @@ export const TopButtonGroup = () => {
         variant="contained"
         size="large"
         color="info"
+        // MUIのデフォルトinfo色は白文字とのコントラスト比がWCAG AA基準(4.5:1)を満たさないため、濃い色に上書きする
+        sx={{ backgroundColor: '#01579b', '&:hover': { backgroundColor: '#014477' } }}
         href={'/settings' + process.env.NEXT_PUBLIC_URL_END}
       />
       <Button

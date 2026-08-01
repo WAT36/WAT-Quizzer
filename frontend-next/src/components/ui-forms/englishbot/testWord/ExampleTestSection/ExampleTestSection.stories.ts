@@ -14,5 +14,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {}
+  args: {
+    sourcelistoption: [
+      { value: 1, label: 'TOEIC' },
+      { value: 2, label: '英検' }
+    ]
+  }
 };

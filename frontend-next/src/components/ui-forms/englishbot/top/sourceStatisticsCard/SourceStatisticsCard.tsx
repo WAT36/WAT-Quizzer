@@ -6,11 +6,13 @@ import { CircularProgress } from '@mui/material';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
 
 interface SourceStatisticsCardProps {}
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const SourceStatisticsCard = ({}: SourceStatisticsCardProps) => {
+  const chartRef = useChartAriaLabel('出典別正答率グラフ');
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionDto[]>([]);
   const [selectedSource, setSelectedSource] = useState<number>(1);
   const [sourceStatisticsData, setSourceStatisticsData] = useState<SourceStatisticsApiResponse[]>([]);
@@ -74,7 +76,7 @@ export const SourceStatisticsCard = ({}: SourceStatisticsCardProps) => {
         <PullDown label={'出典'} optionList={sourcelistoption} onChange={(e) => setSelectedSource(+e.target.value)} />
         <Card variant="outlined" attr={['rect-600', 'margin-vertical']}>
           {sourceStatisticsData.length > 0 ? (
-            <Doughnut data={data} options={options} aria-label="出典別正答率グラフ" />
+            <Doughnut ref={chartRef} data={data} options={options} />
           ) : (
             <CircularProgress aria-label="読み込み中" />
           )}

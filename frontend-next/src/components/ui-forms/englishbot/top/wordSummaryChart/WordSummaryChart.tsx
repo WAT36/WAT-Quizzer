@@ -3,12 +3,14 @@ import { WordSummaryApiResponse } from 'quizzer-lib';
 import { CircularProgress } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
 ChartJS.register(ArcElement, Tooltip, Legend);
 interface WordSummaryChartProps {
   wordSummaryData: WordSummaryApiResponse[];
 }
 
 export const WordSummaryChart = ({ wordSummaryData }: WordSummaryChartProps) => {
+  const chartRef = useChartAriaLabel('単熟語登録数グラフ');
   const data = {
     labels: wordSummaryData.filter((x) => x.name !== 'all').map((x) => x.name),
     datasets: [
@@ -37,7 +39,7 @@ export const WordSummaryChart = ({ wordSummaryData }: WordSummaryChartProps) => 
   return (
     <Card variant="outlined" attr={['margin-vertical']}>
       {wordSummaryData.length > 0 ? (
-        <Doughnut data={data} options={options} aria-label="単熟語登録数グラフ" />
+        <Doughnut ref={chartRef} data={data} options={options} />
       ) : (
         <CircularProgress aria-label="読み込み中" />
       )}

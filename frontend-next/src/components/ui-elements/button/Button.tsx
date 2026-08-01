@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button as MuiButton } from '@mui/material';
+import { Button as MuiButton, SxProps, Theme } from '@mui/material';
 
 interface ButtonProps {
   label: string;
@@ -9,6 +9,7 @@ interface ButtonProps {
   href?: string;
   attr?: string;
   disabled?: boolean;
+  sx?: SxProps<Theme>;
   onClick?: (event: React.KeyboardEvent | React.MouseEvent) => void;
 }
 

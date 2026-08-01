@@ -25,7 +25,11 @@ const config: StorybookConfig = {
         ...config.resolve.alias,
         '@': path.resolve(__dirname, '../src'),
         // Next.jsフォントをモック
-        'next/font/google': path.resolve(__dirname, '../.storybook/mocks/next-font-google.ts')
+        'next/font/google': path.resolve(__dirname, '../.storybook/mocks/next-font-google.ts'),
+        // RequiredAuthComponent が next/navigation の useRouter を使用しているが、
+        // このプロジェクトは Pages Router がメインのため @storybook/nextjs の
+        // appDirectory モードは使わず、next/navigation だけを軽量スタブに差し替える
+        'next/navigation': path.resolve(__dirname, '../.storybook/mocks/next-navigation.ts')
       };
       // @vitest/mockerをfallbackで無視
       config.resolve.fallback = {

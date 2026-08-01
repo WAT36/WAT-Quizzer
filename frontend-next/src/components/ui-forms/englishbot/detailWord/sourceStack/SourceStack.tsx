@@ -32,7 +32,7 @@ const displaySourceInput = (
 ) => {
   return (
     <Select
-      aria-label="出典"
+      inputProps={{ 'aria-label': '出典' }}
       id="demo-simple-select"
       defaultValue={editWordSourceData.oldSourceId || -1}
       label="source"
