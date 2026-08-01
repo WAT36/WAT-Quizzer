@@ -9,7 +9,7 @@ interface FooterProps {
   topHref: string;
 }
 
-export const Footer = ({ bgColor = '#0077B6', topHref }: FooterProps) => {
+export const Footer = ({ bgColor = '#006494', topHref }: FooterProps) => {
   const router = useRouter();
 
   return (

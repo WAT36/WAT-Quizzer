@@ -10,7 +10,7 @@ interface HeaderProps {
   onClick?: (event: React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>) => void;
 }
 
-export const Header = ({ bgColor = '#0077B6', subTitle, onClick }: HeaderProps) => (
+export const Header = ({ bgColor = '#006494', subTitle, onClick }: HeaderProps) => (
   <HeaderBar bgColor={bgColor}>
     <span className="text-white font-bold block px-3 pr-10 text-sm md:text-base leading-[44px] md:leading-[48px] break-words">
       WAT Quizzer

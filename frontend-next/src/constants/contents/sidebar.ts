@@ -11,7 +11,8 @@ interface SideBarType {
 const urlEnd = process.env.NEXT_PUBLIC_URL_END || '';
 export const sidebar: { [key: string]: SideBarType } = {
   quizzer: {
-    bgColor: '#0077B6',
+    // 元は#0077B6。白文字とのコントラスト比がWCAG AA基準(4.5:1)をわずかに下回るため微調整
+    bgColor: '#006494',
     contents: [
       { name: 'トップ', link: '/quizzer' + urlEnd },
       { name: '問題出題', link: '/quizzer/getQuiz' + urlEnd },
@@ -35,7 +36,8 @@ export const sidebar: { [key: string]: SideBarType } = {
     ]
   },
   settings: {
-    bgColor: '#0288d1',
+    // 元は#0288d1(MUIデフォルトinfo色)。白文字とのコントラスト比がWCAG AA基準(4.5:1)を下回るため調整
+    bgColor: '#01579b',
     contents: []
   },
   top: {

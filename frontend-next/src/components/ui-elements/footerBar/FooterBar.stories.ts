@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Quizzer: Story = {
   args: {
-    bgColor: '#0077B6'
+    bgColor: '#006494'
   }
 };
 
