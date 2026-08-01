@@ -67,7 +67,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
             </Typography>
 
             <Typography variant="h6" component="h6" className="!my-[10px] !mx-0 border-none">
-              <label htmlFor="question">問題ファイル：</label>
+              <label>問題ファイル：</label>
               <QuizFilePullDown
                 onFileChange={(e: SelectChangeEvent<number | string>) => {
                   setAddQuizRequestData((prev: any) => ({
@@ -79,7 +79,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
             </Typography>
 
             <Typography variant="h6" component="h6" className="!my-[10px] !mx-0 border-none">
-              <label htmlFor="question">問題種別：</label>
+              <label>問題種別：</label>
               <RadioGroupSection
                 sectionTitle={''}
                 radioGroupProps={{

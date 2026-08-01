@@ -35,8 +35,21 @@ export const mockGetQuizAPI = async (params: any): Promise<ApiResult> => {
 };
 
 export const mockSearchQuizAPI = async (params: any): Promise<ApiResult> => {
-  // 検索結果として複数の問題を返す
-  const searchResults = quizMockData;
+  const { searchQuizRequestData } = params;
+  const { query, file_num, checked, searchInOnlySentense, searchInOnlyAnswer } = searchQuizRequestData || {};
+
+  const searchResults = quizMockData.filter((quiz) => {
+    if (file_num !== undefined && file_num !== -1 && quiz.file_num !== file_num) return false;
+    if (checked !== undefined && quiz.checked !== checked) return false;
+    if (!query) return true;
+
+    const targets = searchInOnlyAnswer
+      ? [quiz.answer]
+      : searchInOnlySentense
+        ? [quiz.quiz_sentense]
+        : [quiz.quiz_sentense, quiz.answer];
+    return targets.some((t) => t.includes(query));
+  });
 
   return {
     message: {
