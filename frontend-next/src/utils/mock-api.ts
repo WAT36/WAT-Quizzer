@@ -23,7 +23,7 @@ export const mockGetQuizAPI = async (params: any): Promise<ApiResult> => {
   // 問題を返す（通常取得以外はランダム） TODO チェック済とか問題種別とかカテゴリに対応する？
   const quizList = quizMockData.filter((quiz) => quiz.file_num === params.getQuizRequestData.file_num);
   const quiz = params.getQuizMethod
-    ? quizList[Math.floor(Math.random() * quizMockData.length)]
+    ? quizList[Math.floor(Math.random() * quizList.length)]
     : quizList.find((quiz) => quiz.quiz_num === params.getQuizRequestData.quiz_num);
 
   return quiz
