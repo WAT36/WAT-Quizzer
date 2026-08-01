@@ -1,4 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+
+// MUIのButtonはhref付きだと<a>、onClickのみだと<button>になるため、どちらにもマッチさせる
+const navButton = (page: Page, label: string) => page.locator(`a:has-text("${label}"), button:has-text("${label}")`);
 
 test.describe('navigation', () => {
   test.beforeEach(async ({ page }) => {
@@ -18,30 +21,30 @@ test.describe('navigation', () => {
 
   test('主要ボタンの存在', async ({ page }) => {
     // Quizzer, English Quiz Bot, 設定ボタンが存在するか
-    await expect(page.locator('button:has-text("Quizzer")')).toBeVisible();
-    await expect(page.locator('button:has-text("English Quiz Bot")')).toBeVisible();
-    await expect(page.locator('button:has-text("設定")')).toBeVisible();
+    await expect(navButton(page, 'Quizzer')).toBeVisible();
+    await expect(navButton(page, 'English Quiz Bot')).toBeVisible();
+    await expect(navButton(page, '設定')).toBeVisible();
   });
 
   test('主要ボタンの遷移', async ({ page }) => {
     // Quizzerボタンをクリックして遷移するか
-    await page.click('button:has-text("Quizzer")');
+    await navButton(page, 'Quizzer').click();
     await expect(page).toHaveURL(/\/quizzer/);
     await page.goBack();
     // English Quiz Botボタンをクリックして遷移するか
-    await page.click('button:has-text("English Quiz Bot")');
+    await navButton(page, 'English Quiz Bot').click();
     await expect(page).toHaveURL(/\/englishBot/);
     await page.goBack();
     // 設定ボタンをクリックして遷移するか
-    await page.click('button:has-text("設定")');
+    await navButton(page, '設定').click();
     await expect(page).toHaveURL(/\/settings/);
     await page.goBack();
   });
 
   test('フッターの表示', async ({ page }) => {
     // フッターのトップ・ログアウトボタン、コピーライトが表示されているか
-    await expect(page.locator('footer button:has-text("トップ")')).toBeVisible();
-    await expect(page.locator('footer button:has-text("ログアウト")')).toBeVisible();
+    await expect(page.locator('footer').locator('a:has-text("トップ"), button:has-text("トップ")')).toBeVisible();
+    await expect(page.locator('footer').locator('a:has-text("ログアウト"), button:has-text("ログアウト")')).toBeVisible();
     await expect(page.locator('footer')).toContainText('Tatsuroh Wakasugi');
   });
 });
