@@ -172,6 +172,15 @@ export const getImageOfQuizAPI = async (params: any): Promise<ApiResult> => {
   return originalGetImageOfQuizAPI(params);
 };
 
+export const uploadImageOfQuizAPI = async (params: any): Promise<ApiResult> => {
+  if (isMockMode()) {
+    return mockAPI.mockUploadImageOfQuizAPI(params);
+  }
+
+  const { uploadImageOfQuizAPI: originalUploadImageOfQuizAPI } = await import('quizzer-lib');
+  return originalUploadImageOfQuizAPI(params);
+};
+
 export const getSayingAPI = async (params: any): Promise<ApiResult> => {
   if (isMockMode()) {
     return mockAPI.mockGetSayingAPI(params);

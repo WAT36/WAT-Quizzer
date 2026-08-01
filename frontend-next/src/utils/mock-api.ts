@@ -57,7 +57,8 @@ export const mockSearchQuizAPI = async (params: any): Promise<ApiResult> => {
       messageColor: 'success.light',
       isDisplay: true
     },
-    result: searchResults
+    result: searchResults,
+    total: searchResults.length
   };
 };
 
@@ -275,6 +276,21 @@ export const mockGetImageOfQuizAPI = async (params: any): Promise<ApiResult> => 
     result: {
       imageUrl: 'https://via.placeholder.com/400x300/cccccc/666666?text=Sample+Quiz+Image'
     }
+  };
+};
+
+export const mockUploadImageOfQuizAPI = async (params: any): Promise<ApiResult> => {
+  const { uploadQuizRequestData } = params;
+
+  if (!uploadQuizRequestData?.file) {
+    return {
+      message: errorMessage(MESSAGES.ERROR.MSG00004)
+    };
+  }
+
+  return {
+    message: successMessage(MESSAGES.SUCCESS.MSG00002),
+    result: { fileName: uploadQuizRequestData.file.name }
   };
 };
 

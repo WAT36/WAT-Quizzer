@@ -2,7 +2,7 @@ import Dropzone from 'react-dropzone';
 import { useState } from 'react';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
-import { uploadImageOfQuizAPI } from 'quizzer-lib';
+import { uploadImageOfQuizAPI } from '@/utils/api-wrapper';
 
 interface DropZoneAreaProps {}
 

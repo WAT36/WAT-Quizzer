@@ -43,6 +43,7 @@ test.describe('quizzer / 問題出題', () => {
     await page.getByRole('button', { name: 'ランダム出題' }).click();
 
     // [1-N] 形式のプレフィックスが選択ファイル(file_num=1)の問題であることを保証する
-    await expect(page.getByText(/^\[1-\d+\]/)).toBeVisible();
+    // チェック済み問題は先頭に✅が付くため、^アンカーは使わない
+    await expect(page.getByText(/\[1-\d+\]/)).toBeVisible();
   });
 });
