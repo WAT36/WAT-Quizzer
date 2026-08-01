@@ -42,7 +42,7 @@ export const SynonymStack = ({ wordDetail, setMessage, setWordDetail }: SynonymS
       </Typography>
       <Box sx={{ width: '100%', padding: '4px' }}>
         {wordDetail.id === -1 ? (
-          <CircularProgress />
+          <CircularProgress aria-label="読み込み中" />
         ) : (
           <Stack spacing={2}>
             <>
@@ -80,7 +80,7 @@ export const SynonymStack = ({ wordDetail, setMessage, setWordDetail }: SynonymS
               })}
             </>
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton onClick={(e) => handleSynonymModalOpen()}>
+              <IconButton aria-label="類義語追加" onClick={(e) => handleSynonymModalOpen()}>
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>

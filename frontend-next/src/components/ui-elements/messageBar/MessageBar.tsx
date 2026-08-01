@@ -21,7 +21,7 @@ export const MessageBar = ({ messageState, setMessageState }: MessageBarProps) =
       message={
         messageState.message === '通信中...' ? (
           <>
-            <CircularProgress className="mr-2" />
+            <CircularProgress aria-label="読み込み中" className="mr-2" />
             {messageState.message}
           </>
         ) : (

@@ -176,11 +176,11 @@ export const TodoList = ({}: TodoListProps) => {
             </Box>
           )}
           {isLoading ? (
-            <Typography variant="body2" color="grey.500" sx={{ fontStyle: 'italic' }}>
+            <Typography variant="body2" color="grey.700" sx={{ fontStyle: 'italic' }}>
               読み込み中...
             </Typography>
           ) : todos.length === 0 ? (
-            <Typography variant="body2" color="grey.500" sx={{ fontStyle: 'italic' }}>
+            <Typography variant="body2" color="grey.700" sx={{ fontStyle: 'italic' }}>
               Todoがありません
             </Typography>
           ) : (

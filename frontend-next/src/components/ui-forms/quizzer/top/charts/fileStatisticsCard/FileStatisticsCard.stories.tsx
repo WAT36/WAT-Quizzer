@@ -70,8 +70,9 @@ const FileStatisticsCardWithMock = () => {
   return (
     <Card variant="outlined" attr={['margin-vertical']}>
       <div style={{ marginBottom: 16 }}>
-        <label>ファイル</label>
+        <label htmlFor="file-statistics-select">ファイル</label>
         <select
+          id="file-statistics-select"
           value={selectedFileNum}
           onChange={(e) => setSelectedFileNum(Number(e.target.value))}
           style={{ marginLeft: 8 }}

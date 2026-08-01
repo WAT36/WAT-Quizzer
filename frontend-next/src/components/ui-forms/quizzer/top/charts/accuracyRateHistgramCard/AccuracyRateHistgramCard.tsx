@@ -77,9 +77,9 @@ export const AccuracyRateHistgramCard = ({ file_num }: AccuracyRateHistgramCardP
     <Card variant="outlined" attr={['margin-vertical']}>
       <div className="h-[350px]">
         {accuracyRateHistgramData.result.length > 0 ? (
-          <Chart type="bar" options={options} data={data} />
+          <Chart type="bar" options={options} data={data} aria-label={ACCRATE_HISTGRAM_TITLE} />
         ) : (
-          <CircularProgress />
+          <CircularProgress aria-label="読み込み中" />
         )}
       </div>
     </Card>

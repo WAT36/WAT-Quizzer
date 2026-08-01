@@ -10,7 +10,7 @@ interface DisplaySentenceProps {
 
 export const DisplaySentence = ({ checked, sentence, color, id, ...props }: DisplaySentenceProps) => {
   return (
-    <Typography variant="subtitle1" component="h2" color={color} id={id} {...props}>
+    <Typography variant="subtitle1" component="p" color={color} id={id} {...props}>
       {checked ? '✅' : ''}
       {sentence
         .replaceAll('\\n', '\n')

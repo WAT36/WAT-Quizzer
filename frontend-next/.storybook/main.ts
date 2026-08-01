@@ -14,6 +14,11 @@ const config: StorybookConfig = {
     name: '@storybook/nextjs',
     options: {}
   },
+  // Storybookでは実DB/実APIに繋がず、アプリ本体と同じモックモード（api-wrapper.ts の isMockMode）で描画する
+  env: (config) => ({
+    ...config,
+    NEXT_PUBLIC_MOCK_MODE: 'true'
+  }),
   webpackFinal: async (config) => {
     if (config.resolve) {
       config.resolve.alias = {

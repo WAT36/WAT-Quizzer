@@ -45,7 +45,7 @@ export const SubSourceStack = ({ wordDetail, setMessage, setWordDetail }: SubSou
       </Typography>
       <Box sx={{ width: '100%', padding: '4px' }}>
         {wordDetail.id === -1 ? (
-          <CircularProgress />
+          <CircularProgress aria-label="読み込み中" />
         ) : (
           <Stack spacing={2}>
             {wordDetail.word_subsource.map((x, index) => {
@@ -69,7 +69,7 @@ export const SubSourceStack = ({ wordDetail, setMessage, setWordDetail }: SubSou
               );
             })}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton onClick={(e) => handleOpen(-1)}>
+              <IconButton aria-label="サブ出典追加" onClick={(e) => handleOpen(-1)}>
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>

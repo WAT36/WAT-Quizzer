@@ -47,7 +47,7 @@ export const InputAddWordForm = ({ sourceList, addWordState, setMessage, setAddW
     return (
       <>
         <Select
-          labelId="demo-simple-select-label"
+          aria-label="出典"
           id="demo-simple-select"
           defaultValue={-1}
           value={addWordState.inputWord.sourceId}

@@ -65,7 +65,7 @@ export const RecommendedCategoryCard = ({ file_num }: RecommendedCategoryCardPro
                 問題ファイルを何か指定してください
               </Typography>
             ) : loading ? (
-              <CircularProgress />
+              <CircularProgress aria-label="読み込み中" />
             ) : categories && categories.length > 0 ? (
               <ul className="space-y-3">
                 {categories.map((item, index) => (

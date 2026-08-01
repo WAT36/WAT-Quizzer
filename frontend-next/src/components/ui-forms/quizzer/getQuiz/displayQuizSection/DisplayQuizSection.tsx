@@ -140,7 +140,7 @@ export const DisplayQuizSection = ({
             displayQuiz.quiz_category.map((category, index) => {
               return <Chip key={index} label={category.category} />;
             })}
-          <Typography variant="subtitle2" className="text-gray-400">
+          <Typography variant="subtitle2" component="span" className="text-gray-400">
             {displayQuiz.count && `(取得問題数${String(displayQuiz.count)}問中)`}
           </Typography>
         </CardContent>

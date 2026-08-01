@@ -177,6 +177,7 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
         <FormControl>
           <TextField
             id="change-category"
+            aria-label="変更後のカテゴリ"
             value={changedCategory}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) =>
               setChangedCategory && setChangedCategory(e.target.value)

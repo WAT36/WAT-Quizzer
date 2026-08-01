@@ -32,7 +32,7 @@ const displayPosInput = (
 ) => {
   return (
     <Select
-      labelId="demo-simple-select-label"
+      aria-label="品詞"
       id="demo-simple-select"
       defaultValue={editMeanData.partofspeechId || -1}
       label="partOfSpeech"
@@ -104,7 +104,7 @@ export const MeaningStack = ({ posList, wordDetail, setMessage, setWordDetail }:
       </Typography>
       <Box sx={{ width: '100%', padding: '4px' }}>
         {wordDetail.id === -1 ? (
-          <CircularProgress />
+          <CircularProgress aria-label="読み込み中" />
         ) : (
           <Stack spacing={2}>
             {wordDetail.mean.map((x, index) => {
@@ -129,7 +129,7 @@ export const MeaningStack = ({ posList, wordDetail, setMessage, setWordDetail }:
             })}
             {/* 意味の新規追加ボタン */}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton onClick={(e) => handleOpen(-1)}>
+              <IconButton aria-label="意味追加" onClick={(e) => handleOpen(-1)}>
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>

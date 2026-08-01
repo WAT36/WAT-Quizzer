@@ -36,7 +36,11 @@ export const WordSummaryChart = ({ wordSummaryData }: WordSummaryChartProps) => 
 
   return (
     <Card variant="outlined" attr={['margin-vertical']}>
-      {wordSummaryData.length > 0 ? <Doughnut data={data} options={options} /> : <CircularProgress />}
+      {wordSummaryData.length > 0 ? (
+        <Doughnut data={data} options={options} aria-label="単熟語登録数グラフ" />
+      ) : (
+        <CircularProgress aria-label="読み込み中" />
+      )}
     </Card>
   );
 };

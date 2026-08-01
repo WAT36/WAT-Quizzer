@@ -101,7 +101,7 @@ export const RandomQuizCard = ({ file_num }: RandomQuizCardProps) => {
                   })}
               </>
             ) : (
-              <CircularProgress />
+              <CircularProgress aria-label="読み込み中" />
             )}
           </CardContent>
           {randomQuizData.id !== -1 && (
@@ -166,7 +166,7 @@ export const RandomQuizCard = ({ file_num }: RandomQuizCardProps) => {
                     >
                       {message.message === '通信中...' ? (
                         <div className="flex items-center gap-2">
-                          <CircularProgress size={16} />
+                          <CircularProgress aria-label="読み込み中" size={16} />
                           {message.message}
                         </div>
                       ) : (

@@ -50,13 +50,13 @@ export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: Etymol
     <Card variant="outlined" attr={['silver-card']}>
       <Typography align="left" variant="h4" component="p">
         {'語源'}
-        <IconButton onClick={(e) => handleAddEtymologyModalOpen()}>
+        <IconButton aria-label="語源追加" onClick={(e) => handleAddEtymologyModalOpen()}>
           <AddCircleOutlineIcon />
         </IconButton>
       </Typography>
       <Box sx={{ width: '100%', padding: '4px' }}>
         {wordDetail.id === -1 ? (
-          <CircularProgress />
+          <CircularProgress aria-label="読み込み中" />
         ) : (
           <Stack spacing={2}>
             {wordDetail.word_etymology.map((x, xindex) => {
@@ -77,7 +77,7 @@ export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: Etymol
               );
             })}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton onClick={(e) => handleEtymologyModalOpen()}>
+              <IconButton aria-label="語源追加" onClick={(e) => handleEtymologyModalOpen()}>
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>

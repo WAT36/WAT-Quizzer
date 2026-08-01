@@ -42,7 +42,11 @@ export const TestLogPastWeekChart = ({ wordTestPastWeekStatisticsData }: TestLog
 
   return (
     <Card variant="outlined" attr={['h-full', 'w-full', 'margin-vertical']}>
-      {wordTestPastWeekStatisticsData.length > 0 ? <Bar options={options} data={data} /> : <CircularProgress />}
+      {wordTestPastWeekStatisticsData.length > 0 ? (
+        <Bar options={options} data={data} aria-label="過去１週間の回答数グラフ" />
+      ) : (
+        <CircularProgress aria-label="読み込み中" />
+      )}
     </Card>
   );
 };

@@ -49,10 +49,11 @@ export const MultiSelectPullDown = ({ optionList, label, className, value, onCha
     return selectedLabels.join(', ');
   };
 
+  const labelId = `quiz-file-name-${getRandomStr()}`;
   const selectProps = {
     className:
       'rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500',
-    labelId: `quiz-file-name-${getRandomStr()}`,
+    labelId,
     id: `quiz-file-id-${getRandomStr()}`,
     value: selectedValue,
     onChange: handleChange,
@@ -66,8 +67,9 @@ export const MultiSelectPullDown = ({ optionList, label, className, value, onCha
       sx={{ minWidth: 120, maxWidth: '100%' }}
     >
       <InputLabel
-        id={`quiz-file-input-${getRandomStr()}`}
+        id={labelId}
         className="rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        sx={{ '&.Mui-disabled': { color: '#595959' } }}
       >
         {label}
       </InputLabel>

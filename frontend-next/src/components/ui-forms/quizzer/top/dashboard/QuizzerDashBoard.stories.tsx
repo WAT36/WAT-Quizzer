@@ -10,8 +10,9 @@ const QuizzerDashboardWithMock = () => {
   return (
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
       <div style={{ marginBottom: 16 }}>
-        <label>ファイル番号: </label>
+        <label htmlFor="file-num-select">ファイル番号: </label>
         <select
+          id="file-num-select"
           value={selectedFileNum}
           onChange={(e) => setSelectedFileNum(Number(e.target.value))}
           style={{ marginLeft: 8 }}

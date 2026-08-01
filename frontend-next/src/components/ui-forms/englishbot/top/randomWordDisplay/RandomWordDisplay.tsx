@@ -14,7 +14,7 @@ export const RandomWordDisplay = ({ wordData }: RandomWordDisplayProps) => {
           ランダムに１語
         </Typography>
         {wordData.id === -1 ? (
-          <CircularProgress />
+          <CircularProgress aria-label="読み込み中" />
         ) : (
           <>
             <Typography id="wordName" variant="h2" component="p" color="black">

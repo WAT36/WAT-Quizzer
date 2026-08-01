@@ -63,7 +63,7 @@ export const AccuracyChart = ({ accuracyData, order }: AccuracyChartProps) => {
   };
   return (
     <div style={{ height: `${graph_height}px` }} className="mb-10">
-      <Bar options={options} data={data} />
+      <Bar options={options} data={data} aria-label="カテゴリ別正答率グラフ" />
     </div>
   );
 };

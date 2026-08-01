@@ -73,7 +73,11 @@ export const SourceStatisticsCard = ({}: SourceStatisticsCardProps) => {
         {/*TODO quizzer形式のプルダウン結構使うから　あらかじめquizzerのファイル値が入った状態のプルダウンをコンポーネントとして用意したほうがいい気した */}
         <PullDown label={'出典'} optionList={sourcelistoption} onChange={(e) => setSelectedSource(+e.target.value)} />
         <Card variant="outlined" attr={['rect-600', 'margin-vertical']}>
-          {sourceStatisticsData.length > 0 ? <Doughnut data={data} options={options} /> : <CircularProgress />}
+          {sourceStatisticsData.length > 0 ? (
+            <Doughnut data={data} options={options} aria-label="出典別正答率グラフ" />
+          ) : (
+            <CircularProgress aria-label="読み込み中" />
+          )}
         </Card>
       </Card>
     </>

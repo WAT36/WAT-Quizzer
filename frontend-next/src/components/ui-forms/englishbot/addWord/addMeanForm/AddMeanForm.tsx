@@ -49,7 +49,7 @@ export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanF
     return (
       <>
         <Select
-          labelId="demo-simple-select-label"
+          aria-label="品詞"
           id="demo-simple-select"
           defaultValue={-1}
           label="partOfSpeech"
@@ -201,10 +201,10 @@ export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanF
         </Table>
       </TableContainer>
       <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-        <IconButton onClick={addTableRow}>
+        <IconButton aria-label="行追加" onClick={addTableRow}>
           <AddCircleOutlineIcon />
         </IconButton>
-        <IconButton onClick={decrementTableRow}>
+        <IconButton aria-label="行削除" onClick={decrementTableRow}>
           <RemoveCircleOutlineIcon />
         </IconButton>
       </Stack>

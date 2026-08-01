@@ -42,7 +42,7 @@ export const DerivativeStack = ({ wordDetail, setMessage, setWordDetail }: Deriv
       </Typography>
       <Box sx={{ width: '100%', padding: '4px' }}>
         {wordDetail.id === -1 ? (
-          <CircularProgress />
+          <CircularProgress aria-label="読み込み中" />
         ) : (
           <Stack spacing={2}>
             {wordDetail.derivative ? (
@@ -69,7 +69,7 @@ export const DerivativeStack = ({ wordDetail, setMessage, setWordDetail }: Deriv
               <></>
             )}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton onClick={(e) => handleDerivativeModalOpen()}>
+              <IconButton aria-label="派生語追加" onClick={(e) => handleDerivativeModalOpen()}>
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>

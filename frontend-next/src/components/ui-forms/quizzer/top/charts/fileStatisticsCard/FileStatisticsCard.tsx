@@ -71,7 +71,11 @@ export const FileStatisticsCard = ({ file_num }: FileStatisticsCardProps) => {
           {quizFileStatisticsData?.process_rate ? `進捗率:${quizFileStatisticsData?.process_rate.toFixed(2)}%` : ''}
         </p>
         <Card variant="outlined" attr={['margin-vertical']}>
-          {quizFileStatisticsData ? <Doughnut data={data} options={options} /> : <CircularProgress />}
+          {quizFileStatisticsData ? (
+            <Doughnut data={data} options={options} aria-label="問題ファイル統計グラフ" />
+          ) : (
+            <CircularProgress aria-label="読み込み中" />
+          )}
         </Card>
       </Card>
     </>

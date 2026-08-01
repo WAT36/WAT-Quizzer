@@ -88,6 +88,7 @@ export const Table = <TData,>({
                   <th className="px-6 py-4 w-14 border-b border-gray-200">
                     <input
                       type="checkbox"
+                      aria-label="全て選択"
                       checked={table.getIsAllRowsSelected()}
                       ref={(el) => {
                         if (el) {
@@ -156,6 +157,7 @@ export const Table = <TData,>({
                     <td className="px-6 py-4 border-b border-gray-100">
                       <input
                         type="checkbox"
+                        aria-label="行を選択"
                         checked={row.getIsSelected()}
                         onChange={row.getToggleSelectedHandler()}
                         className={`w-5 h-5 rounded cursor-pointer border-2 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-colors ${

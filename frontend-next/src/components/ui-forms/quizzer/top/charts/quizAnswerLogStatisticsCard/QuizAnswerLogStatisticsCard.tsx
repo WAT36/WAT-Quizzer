@@ -132,7 +132,11 @@ export const QuizAnswerLogStatisticsCard = ({ file_num }: QuizAnswerLogStatistic
         onChange={(e) => setDateUnit(e.target.value as DateUnit)}
       />
       <div className="h-[300px]">
-        {answerLogStatisticsData.length > 0 ? <Chart type="bar" options={options} data={data} /> : <CircularProgress />}
+        {answerLogStatisticsData.length > 0 ? (
+          <Chart type="bar" options={options} data={data} aria-label="回答数推移グラフ" />
+        ) : (
+          <CircularProgress aria-label="読み込み中" />
+        )}
       </div>
     </Card>
   );

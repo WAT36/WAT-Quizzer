@@ -105,7 +105,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         <Title label="WAT Quizzer - englishBot"></Title>
 
         {wordDetail.id === -1 ? (
-          <CircularProgress />
+          <CircularProgress aria-label="読み込み中" />
         ) : (
           <>
             <Typography variant="h1" component="h1" color={'common.black'}>

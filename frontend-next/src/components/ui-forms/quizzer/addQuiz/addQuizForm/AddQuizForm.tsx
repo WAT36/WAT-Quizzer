@@ -245,6 +245,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
                 })}
                 <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
                   <IconButton
+                    aria-label="ダミー選択肢追加"
                     onClick={() => {
                       setAddQuizRequestData({
                         ...addQuizRequestData,
