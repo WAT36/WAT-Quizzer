@@ -1,4 +1,5 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from './fixtures';
+import type { Page } from '@playwright/test';
 
 // MUIのButtonはhref付きだと<a>、onClickのみだと<button>になるため、どちらにもマッチさせる
 const navButton = (page: Page, label: string) => page.locator(`a:has-text("${label}"), button:has-text("${label}")`);

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 // モックモードのAPIはランダムな単語/例文を返す仕様のため、内容そのものではなく
 // 「出題→答え表示→正解登録」の一連の状態遷移が機能することを確認する。

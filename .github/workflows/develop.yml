@@ -36,6 +36,21 @@ jobs:
         run: npm run e2e
         working-directory: frontend-next
 
+      # coverage-summary.jsonからジョブサマリー用の要約を出力し、基準値(coverage-baseline.json)を
+      # 下回っていないかを確認する。デプロイはブロックしない非ブロッキングな警告のみ。
+      - name: Add E2E coverage summary & baseline check to job summary
+        if: always()
+        run: npm run e2e:check-coverage-baseline
+        working-directory: frontend-next
+
+      - name: Upload E2E coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-coverage-report
+          path: frontend-next/coverage-report/
+          retention-days: 30
+
       - name: Build Storybook
         run: npm run build-storybook
         working-directory: frontend-next

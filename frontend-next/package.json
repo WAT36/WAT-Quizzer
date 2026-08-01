@@ -18,7 +18,8 @@
     "git:push": "git push && chromatic",
     "export:mock": "NEXT_PUBLIC_MOCK_MODE=true NEXT_PUBLIC_URL_END=/ npm run export",
     "e2e": "npm run export:mock && playwright test",
-    "e2e:ui": "npm run export:mock && playwright test --ui"
+    "e2e:ui": "npm run export:mock && playwright test --ui",
+    "e2e:check-coverage-baseline": "node e2e/check-coverage-baseline.js"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.777.0",
@@ -72,13 +73,14 @@
     "chromatic": "^11.5.6",
     "define-lazy-prop": "^2.0.0",
     "dotenv-expand": "^10.0.0",
-    "wait-on": "^7.2.0",
+    "monocart-reporter": "^2.12.4",
     "object.assign": "^4.1.5",
     "postcss": "^8.5.6",
     "prettier": "^3.5.3",
     "serve": "^14.2.1",
     "tar": "^6.2.1",
     "typescript": "^5.8.2",
-    "untildify": "^4.0.0"
+    "untildify": "^4.0.0",
+    "wait-on": "^7.2.0"
   }
 }

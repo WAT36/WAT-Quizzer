@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('quizzer / カテゴリ別正解率表示', () => {
   test.beforeEach(async ({ page }) => {

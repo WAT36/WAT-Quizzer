@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 // モックモード(NEXT_PUBLIC_MOCK_MODE=true)で、ダッシュボード各ウィジェットが
 // 「読み込み中」のまま止まらず、実際にモックデータで描画されることを確認する。

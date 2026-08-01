@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 // モックモードでは getStaticPaths で id=1〜5 の静的ページのみが生成され、
 // englishDataMock.words の該当idの単語名がビルド時に埋め込まれる。

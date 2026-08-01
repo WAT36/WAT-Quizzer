@@ -44,3 +44,7 @@ test-result/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# e2e coverage (monocart-reporter)
+/monocart-report/
+/coverage-report/

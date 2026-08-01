@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 // このページには複数のPullDown（ファイル選択用）があり、ラベル未指定のものは
 // フォールバックで全て同じ"ファイル選択"というアクセシブルネームになる。

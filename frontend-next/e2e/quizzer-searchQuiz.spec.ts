@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('quizzer / 問題検索', () => {
   test.beforeEach(async ({ page }) => {

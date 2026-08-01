@@ -28,7 +28,26 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  /* monocart-reporterがテスト結果レポートに加え、e2e/fixtures.tsで収集したV8カバレッジを集計する */
+  reporter: [
+    ['list'],
+    [
+      'monocart-reporter',
+      {
+        name: 'WAT-Quizzer E2E Test Report',
+        outputFile: './monocart-report/index.html',
+        coverage: {
+          outputDir: './coverage-report',
+          // inline: trueでJS/CSSアセットをHTMLに埋め込み、index.html単体でCIアーティファクトとして開けるようにする
+          reports: [['v8', { inline: true }], ['json-summary']],
+          // _next/static配下のアプリ本体JS/CSSのみを対象にする(node_modulesのvendorチャンクは除外)
+          entryFilter: (entry: { url: string }) => entry.url.includes('/_next/static/'),
+          // ソースマップ由来のパス(turbopack:///[project]/frontend-next/src/...)でsrc/配下(自前のコード)だけに絞る
+          sourceFilter: (sourcePath: string) => sourcePath.includes('/frontend-next/src/') && !sourcePath.includes('node_modules')
+        }
+      }
+    ]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

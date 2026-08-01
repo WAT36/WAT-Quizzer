@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('englishBot / 例文追加', () => {
   test.beforeEach(async ({ page }) => {

@@ -11,7 +11,9 @@ const nextConfig = withInterceptStdout(
     experimental: {
       externalDir: true
     },
-    trailingSlash: true
+    trailingSlash: true,
+    // E2Eカバレッジ計測(monocart-reporter)がバンドル済みJSを元のTSXへマッピングするために必要
+    productionBrowserSourceMaps: true
   },
   (text) => (text.includes('Duplicate atom key') ? '' : text)
 );

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 // モックモードの固定データ（quizzer-lib の quizMockData）を前提にしたテスト。
 // file_num=1（プログラミング基礎問題集）の quiz_num=1 は四択形式ではないため
