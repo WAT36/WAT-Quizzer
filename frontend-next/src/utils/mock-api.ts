@@ -11,7 +11,11 @@ import {
   selfhelpBookMockData,
   successMessage,
   englishDataMock,
-  WordSummaryApiResponse
+  englishExamplesMockData,
+  WordSummaryApiResponse,
+  CategoryParentChildAPIResponseDto,
+  CategoryQuizCountDto,
+  RecommendedCategoryDto
 } from 'quizzer-lib';
 
 // モック用のAPI関数群
@@ -1256,6 +1260,8 @@ let todoMockData: Array<{ id: number; todo: string }> = [
   { id: 3, todo: 'テストケースの作成' },
   { id: 4, todo: 'ドキュメントの更新' }
 ];
+// 削除済みTodo（復元可能な状態で保持）
+let deletedTodoMockData: Array<{ id: number; todo: string; deleted_at: string }> = [];
 
 export const mockAddTodoAPI = async (params: any): Promise<ApiResult> => {
   const { addTodoAPIRequest } = params;
@@ -1297,10 +1303,49 @@ export const mockDeleteTodoAPI = async (params: any): Promise<ApiResult> => {
   const deletedTodo = todoMockData[todoIndex];
   // 新しい配列を作成して再代入
   todoMockData = todoMockData.filter((t) => t.id !== deleteTodoAPIRequestData.id);
+  // 復元できるよう削除済みリストへ退避
+  deletedTodoMockData = [...deletedTodoMockData, { ...deletedTodo, deleted_at: new Date().toISOString() }];
 
   return {
     message: successMessage(MESSAGES.SUCCESS.MSG00009, String(deletedTodo.id)),
     result: { id: deletedTodo.id, todo: deletedTodo.todo }
+  };
+};
+
+export const mockGetTodoListAllAPI = async (): Promise<ApiResult> => {
+  return {
+    message: {
+      message: MESSAGES.SUCCESS.MSG00019,
+      messageColor: 'success.light',
+      isDisplay: true
+    },
+    result: [...todoMockData, ...deletedTodoMockData]
+  };
+};
+
+export const mockRestoreTodoAPI = async (params: any): Promise<ApiResult> => {
+  const { restoreTodoAPIRequestData } = params;
+
+  if (!restoreTodoAPIRequestData.id || restoreTodoAPIRequestData.id === -1) {
+    return {
+      message: errorMessage(MESSAGES.ERROR.MSG00001)
+    };
+  }
+
+  const deletedIndex = deletedTodoMockData.findIndex((t) => t.id === restoreTodoAPIRequestData.id);
+  if (deletedIndex === -1) {
+    return {
+      message: errorMessage(MESSAGES.ERROR.MSG00004)
+    };
+  }
+
+  const restoredTodo = deletedTodoMockData[deletedIndex];
+  deletedTodoMockData = deletedTodoMockData.filter((t) => t.id !== restoreTodoAPIRequestData.id);
+  todoMockData = [...todoMockData, { id: restoredTodo.id, todo: restoredTodo.todo }];
+
+  return {
+    message: successMessage(MESSAGES.SUCCESS.MSG00018),
+    result: { id: restoredTodo.id, todo: restoredTodo.todo, deleted_at: null }
   };
 };
 
@@ -1391,5 +1436,156 @@ export const mockSaveTodoCheckStatusAPI = async (params: any): Promise<ApiResult
       isDisplay: true
     },
     result: { date: date, completedTodoIds: todoCheckStatusMockData[date] }
+  };
+};
+
+// 例文テスト関連のモック
+export const mockGetExampleTestDataAPI = async (params: any): Promise<ApiResult> => {
+  const candidates = englishExamplesMockData;
+
+  if (candidates.length === 0) {
+    return {
+      message: errorMessage(MESSAGES.ERROR.MSG00003)
+    };
+  }
+
+  const picked = candidates[Math.floor(Math.random() * candidates.length)];
+
+  return {
+    message: {
+      message: '　',
+      messageColor: 'common.black',
+      isDisplay: false
+    },
+    result: {
+      total: candidates.length,
+      example: {
+        id: picked.id,
+        en_example_sentense: picked.en_example_sentense,
+        ja_example_sentense: picked.ja_example_sentense,
+        example_explanation: [{ explanation: `「${picked.ja_example_sentense}」という意味の例文です。` }]
+      }
+    },
+    total: candidates.length
+  };
+};
+
+export const mockSubmitExampleTestDataAPI = async (params: any): Promise<ApiResult> => {
+  const { selectedValue } = params;
+
+  if (selectedValue === undefined) {
+    return {
+      message: errorMessage(MESSAGES.ERROR.MSG00001)
+    };
+  }
+
+  return {
+    message: successMessage(selectedValue ? '正解として登録しました' : '不正解として登録しました')
+  };
+};
+
+// カテゴリ親子関係のモックデータ（メモリ上で管理）
+let categoryParentChildMockData: CategoryParentChildAPIResponseDto[] = [
+  { id: 1, parent_category_id: 100, parent_category_name: 'AWS', child_category_id: 101, child_category_name: 'コンピューティング' },
+  { id: 2, parent_category_id: 100, parent_category_name: 'AWS', child_category_id: 102, child_category_name: 'ストレージ' },
+  { id: 3, parent_category_id: 100, parent_category_name: 'AWS', child_category_id: 103, child_category_name: 'ネットワーク' },
+  { id: 4, parent_category_id: 200, parent_category_name: 'データベース', child_category_id: 201, child_category_name: '正規化' },
+  { id: 5, parent_category_id: 200, parent_category_name: 'データベース', child_category_id: 202, child_category_name: 'SQL' }
+];
+
+export const mockGetCategoryParentChildListAPI = async (params: any): Promise<ApiResult> => {
+  return {
+    message: {
+      message: '　',
+      messageColor: 'common.black',
+      isDisplay: false
+    },
+    result: categoryParentChildMockData
+  };
+};
+
+export const mockAddCategoryParentChildAPI = async (params: any): Promise<ApiResult> => {
+  const { addCategoryParentChildData } = params;
+
+  if (!addCategoryParentChildData?.parent_category || !addCategoryParentChildData?.child_category) {
+    return {
+      message: errorMessage(MESSAGES.ERROR.MSG00001)
+    };
+  }
+
+  const newId =
+    categoryParentChildMockData.length > 0 ? Math.max(...categoryParentChildMockData.map((x) => x.id)) + 1 : 1;
+  categoryParentChildMockData = [
+    ...categoryParentChildMockData,
+    {
+      id: newId,
+      parent_category_id: newId * 1000,
+      parent_category_name: addCategoryParentChildData.parent_category,
+      child_category_id: newId * 1000 + 1,
+      child_category_name: addCategoryParentChildData.child_category
+    }
+  ];
+
+  return {
+    message: successMessage(MESSAGES.SUCCESS.MSG00004)
+  };
+};
+
+export const mockDeleteCategoryParentChildAPI = async (params: any): Promise<ApiResult> => {
+  const { deleteCategoryParentChildData } = params;
+
+  categoryParentChildMockData = categoryParentChildMockData.filter((x) => x.id !== deleteCategoryParentChildData?.id);
+
+  return {
+    message: successMessage(MESSAGES.SUCCESS.MSG00004)
+  };
+};
+
+// カテゴリ別問題数のモックデータ（上記の親子関係と同じidで対応させ、ツリーマップが意味のある形になるようにしている）
+const categoryQuizCountMockData: CategoryQuizCountDto[] = [
+  { id: 100, name: 'AWS', count: 20 },
+  { id: 101, name: 'コンピューティング', count: 8 },
+  { id: 102, name: 'ストレージ', count: 7 },
+  { id: 103, name: 'ネットワーク', count: 5 },
+  { id: 200, name: 'データベース', count: 12 },
+  { id: 201, name: '正規化', count: 5 },
+  { id: 202, name: 'SQL', count: 4 },
+  { id: 300, name: 'JavaScript', count: 6 }
+];
+
+export const mockGetCategoryQuizCountAPI = async (params: any): Promise<ApiResult> => {
+  return {
+    message: {
+      message: '　',
+      messageColor: 'common.black',
+      isDisplay: false
+    },
+    result: categoryQuizCountMockData
+  };
+};
+
+export const mockCleanupEmptyCategoriesAPI = async (): Promise<ApiResult> => {
+  return {
+    message: successMessage(MESSAGES.SUCCESS.MSG00004),
+    result: { deleted_count: 0 }
+  };
+};
+
+export const mockGetRecommendedCategoriesAPI = async (params: { file_num: number }): Promise<ApiResult> => {
+  if (params.file_num === -1) {
+    return {
+      message: errorMessage(MESSAGES.ERROR.MSG00001)
+    };
+  }
+
+  const result: RecommendedCategoryDto[] = [
+    { category_name: 'ネットワーク', reason: 'neverAnswered', days_since_last_answered: null, recent_accuracy_rate: null },
+    { category_name: '正規化', reason: 'notRecent', days_since_last_answered: 14, recent_accuracy_rate: null },
+    { category_name: 'SQL', reason: 'lowAccuracy', days_since_last_answered: null, recent_accuracy_rate: 0.35 }
+  ];
+
+  return {
+    message: successMessage(MESSAGES.SUCCESS.MSG00019),
+    result
   };
 };
