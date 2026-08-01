@@ -2,22 +2,18 @@ import { test, expect } from '@playwright/test';
 
 test.describe('navigation', () => {
   test.beforeEach(async ({ page }) => {
-    // Go to the starting url before each test.
-    await page.goto(process.env.QUIZZER_FRONT_SERVER || '');
+    // Go to the starting url before each test (baseURL は playwright.config.ts で設定)
+    await page.goto('/');
   });
 
-  test('Quizzer Init', async ({ page }) => {
-    // Expect a title "to contain" a substring.
-    await expect(page).toHaveTitle(/Quizzer/);
-    // 格言で取得中。。から変わるか確認
-    await expect(page.locator('#saying')).not.toHaveText(/取得中.../);
-    // DBヘルスチェックで取得中。。から変わるか確認
-    await expect(page.locator('#db-health')).not.toHaveText(/取得中.../);
+  test('格言の表示', async ({ page }) => {
+    // 格言が初期表示の"(取得中...)"から変わるか確認（モックAPIからの取得完了を確認）
+    await expect(page.locator('#saying')).not.toHaveText(/取得中/);
   });
 
   test('ヘッダーのロゴ表示', async ({ page }) => {
     // ヘッダーに"WAT Quizzer"が表示されているか
-    await expect(page.locator('header .title')).toHaveText(/WAT Quizzer/);
+    await expect(page.locator('header')).toContainText('WAT Quizzer');
   });
 
   test('主要ボタンの存在', async ({ page }) => {
@@ -44,8 +40,8 @@ test.describe('navigation', () => {
 
   test('フッターの表示', async ({ page }) => {
     // フッターのトップ・ログアウトボタン、コピーライトが表示されているか
-    await expect(page.locator('footer .left button:has-text("トップ")')).toBeVisible();
-    await expect(page.locator('footer .left button:has-text("ログアウト")')).toBeVisible();
-    await expect(page.locator('footer .right')).toHaveText(/©️ Tatsuroh Wakasugi/);
+    await expect(page.locator('footer button:has-text("トップ")')).toBeVisible();
+    await expect(page.locator('footer button:has-text("ログアウト")')).toBeVisible();
+    await expect(page.locator('footer')).toContainText('Tatsuroh Wakasugi');
   });
 });

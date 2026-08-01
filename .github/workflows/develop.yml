@@ -9,9 +9,48 @@ permissions:
 
 jobs:
   # TODO バック、フロント、ライブラリごとに分けたい build-lib,deploy-frontend,deploy-backendみたいな。フロントバックはneeds:build-libとさせる
+  frontend-test:
+    name: Frontend Tests (Storybook + Playwright E2E)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # AWS認証情報は不要（モックモードビルドのみで完結するテスト）
+      - name: Setup dependencies(all)
+        run: npm ci
+
+      - name: Setup quizzer-lib
+        run: cd ./quizzer-lib && npm run build
+        env:
+          # prisma generate がスキーマ内の env() 参照を解決できればよく、実際の接続はしない
+          DATABASE_URL: postgresql://user:password@localhost:5432/dummy
+          DIRECT_URL: postgresql://user:password@localhost:5432/dummy
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: frontend-next
+
+      - name: Run Playwright E2E (mock mode / DBなし)
+        run: npm run e2e
+        working-directory: frontend-next
+
+      - name: Build Storybook
+        run: npm run build-storybook
+        working-directory: frontend-next
+
+      - name: Run Storybook tests (interaction + a11y)
+        run: |
+          npx serve storybook-static -l 6006 &
+          npx wait-on http://127.0.0.1:6006
+          npm run test-storybook
+        working-directory: frontend-next
+
   deploy-production:
     name: Deploy to Production (develop)
     runs-on: ubuntu-latest
+    needs: frontend-test
     environment: develop
 
     steps:
@@ -137,6 +176,7 @@ jobs:
   deploy-mock:
     name: Deploy to Mock Environment
     runs-on: ubuntu-latest
+    needs: frontend-test
     environment: develop
 
     steps:
