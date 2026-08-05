@@ -1,39 +1,49 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Tree, { CustomNodeElementProps, RawNodeDatum } from 'react-d3-tree';
-import { CategoryParentChildAPIResponseDto } from 'quizzer-lib';
+import { CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
 
 interface CategoryTreeGraphProps {
   parentChildList: CategoryParentChildAPIResponseDto[];
+  categoryCounts?: CategoryQuizCountDto[];
   onDelete: (id: number) => void;
 }
 
-const buildTreeData = (parentChildList: CategoryParentChildAPIResponseDto[]): RawNodeDatum[] => {
-  const childNames = new Set(parentChildList.map((r) => r.child_category_name));
-  const rootNames = [...new Set(parentChildList.map((r) => r.parent_category_name))].filter(
-    (name) => !childNames.has(name)
-  );
-
-  const parentToChildren = new Map<string, CategoryParentChildAPIResponseDto[]>();
+const buildTreeData = (
+  parentChildList: CategoryParentChildAPIResponseDto[],
+  countMap: Map<number, number>
+): RawNodeDatum[] => {
+  const childIds = new Set(parentChildList.map((r) => r.child_category_id));
+  const rootRelations = new Map<number, string>();
   for (const rel of parentChildList) {
-    if (!parentToChildren.has(rel.parent_category_name)) {
-      parentToChildren.set(rel.parent_category_name, []);
+    if (!childIds.has(rel.parent_category_id)) {
+      rootRelations.set(rel.parent_category_id, rel.parent_category_name);
     }
-    parentToChildren.get(rel.parent_category_name)!.push(rel);
   }
 
-  const buildNode = (name: string, relationId?: number): RawNodeDatum => {
-    const childRels = parentToChildren.get(name) ?? [];
+  const parentToChildren = new Map<number, CategoryParentChildAPIResponseDto[]>();
+  for (const rel of parentChildList) {
+    if (!parentToChildren.has(rel.parent_category_id)) {
+      parentToChildren.set(rel.parent_category_id, []);
+    }
+    parentToChildren.get(rel.parent_category_id)!.push(rel);
+  }
+
+  const buildNode = (id: number, name: string, relationId?: number): RawNodeDatum => {
+    const childRels = parentToChildren.get(id) ?? [];
     return {
       name,
-      attributes: relationId != null ? { _relationId: relationId } : undefined,
-      children: childRels.map((rel) => buildNode(rel.child_category_name, rel.id)),
+      attributes: {
+        ...(relationId != null ? { _relationId: relationId } : {}),
+        _count: countMap.get(id) ?? 0,
+      },
+      children: childRels.map((rel) => buildNode(rel.child_category_id, rel.child_category_name, rel.id)),
     };
   };
 
-  return rootNames.map((name) => buildNode(name));
+  return [...rootRelations.entries()].map(([id, name]) => buildNode(id, name));
 };
 
-export const CategoryTreeGraph = ({ parentChildList, onDelete }: CategoryTreeGraphProps) => {
+export const CategoryTreeGraph = ({ parentChildList, categoryCounts, onDelete }: CategoryTreeGraphProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [translate, setTranslate] = useState({ x: 80, y: 200 });
 
@@ -47,6 +57,7 @@ export const CategoryTreeGraph = ({ parentChildList, onDelete }: CategoryTreeGra
   const renderNode = useCallback(
     ({ nodeDatum }: CustomNodeElementProps) => {
       const relationId = nodeDatum.attributes?._relationId as number | undefined;
+      const count = nodeDatum.attributes?._count as number | undefined;
       const name = nodeDatum.name;
 
       // 複数ルートをまとめる仮想ルートノード
@@ -54,8 +65,9 @@ export const CategoryTreeGraph = ({ parentChildList, onDelete }: CategoryTreeGra
         return <g><circle r={3} fill="#bbb" /></g>;
       }
 
-      const boxWidth = Math.max(80, name.length * 9 + 32);
-      const boxHeight = 28;
+      const countLabel = `${count ?? 0}問`;
+      const boxWidth = Math.max(80, Math.max(name.length * 9, countLabel.length * 8) + 32);
+      const boxHeight = 36;
       const isRoot = relationId == null;
 
       return (
@@ -73,11 +85,22 @@ export const CategoryTreeGraph = ({ parentChildList, onDelete }: CategoryTreeGra
           <text
             textAnchor="middle"
             dominantBaseline="middle"
+            y={-7}
             fill="#333"
             fontSize={11}
             style={{ pointerEvents: 'none', userSelect: 'none' } as React.CSSProperties}
           >
             {name}
+          </text>
+          <text
+            textAnchor="middle"
+            dominantBaseline="middle"
+            y={9}
+            fill="#666"
+            fontSize={9}
+            style={{ pointerEvents: 'none', userSelect: 'none' } as React.CSSProperties}
+          >
+            {countLabel}
           </text>
           {!isRoot && (
             <g
@@ -113,7 +136,8 @@ export const CategoryTreeGraph = ({ parentChildList, onDelete }: CategoryTreeGra
     return <p className="text-gray-500">登録されている親子関係はありません</p>;
   }
 
-  const treeData = buildTreeData(parentChildList);
+  const countMap = new Map<number, number>((categoryCounts ?? []).map((c) => [c.id, c.count]));
+  const treeData = buildTreeData(parentChildList, countMap);
   const data: RawNodeDatum =
     treeData.length === 1 ? treeData[0] : { name: '', children: treeData };
 
@@ -128,7 +152,7 @@ export const CategoryTreeGraph = ({ parentChildList, onDelete }: CategoryTreeGra
           data={data}
           orientation="horizontal"
           translate={translate}
-          nodeSize={{ x: 220, y: 50 }}
+          nodeSize={{ x: 220, y: 60 }}
           separation={{ siblings: 1.2, nonSiblings: 1.5 }}
           renderCustomNodeElement={renderNode}
           pathFunc="step"

@@ -3,10 +3,11 @@ import { CardContent, CardHeader } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui-elements/button/Button';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { PullDownOptionDto, Message, CategoryParentChildAPIResponseDto } from 'quizzer-lib';
+import { PullDownOptionDto, Message, CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
 import {
   getCategoryListAPI,
   getCategoryParentChildListAPI,
+  getCategoryQuizCountAPI,
   addCategoryParentChildAPI,
   deleteCategoryParentChildAPI,
 } from '@/utils/api-wrapper';
@@ -28,6 +29,7 @@ export const CategoryParentChildSection = ({
   const [fileNum, setFileNum] = useState<number>(-1);
   const [categoryNames, setCategoryNames] = useState<string[]>([]);
   const [parentChildList, setParentChildList] = useState<CategoryParentChildAPIResponseDto[]>([]);
+  const [categoryCounts, setCategoryCounts] = useState<CategoryQuizCountDto[]>([]);
   const [parentCategory, setParentCategory] = useState<string>('');
   const [childCategory, setChildCategory] = useState<string>('');
 
@@ -51,14 +53,25 @@ export const CategoryParentChildSection = ({
     }
   };
 
+  const fetchCategoryCounts = async (file_num: number) => {
+    const result = await getCategoryQuizCountAPI({ getCategoryQuizCountData: { file_num } });
+    if (result.result) {
+      setCategoryCounts(result.result as CategoryQuizCountDto[]);
+    } else {
+      setCategoryCounts([]);
+    }
+  };
+
   useEffect(() => {
     if (fileNum === -1) {
       setCategoryNames([]);
       setParentChildList([]);
+      setCategoryCounts([]);
       return;
     }
     fetchCategories(fileNum);
     fetchParentChildList(fileNum);
+    fetchCategoryCounts(fileNum);
   }, [fileNum]);
 
   const categoryPullDownOptions: PullDownOptionDto[] = categoryNames.map((name) => ({
@@ -139,7 +152,11 @@ export const CategoryParentChildSection = ({
 
           <CardHeader subheader="登録済み親子関係" />
           <CardContent>
-            <CategoryTreeGraph parentChildList={parentChildList} onDelete={handleDelete} />
+            <CategoryTreeGraph
+              parentChildList={parentChildList}
+              categoryCounts={categoryCounts}
+              onDelete={handleDelete}
+            />
           </CardContent>
         </>
       )}
