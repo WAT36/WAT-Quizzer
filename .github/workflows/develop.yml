@@ -144,10 +144,9 @@ jobs:
               ]
             }'
             
-            # 最新の5つ以外のイメージを削除
-            aws ecr list-images --repository-name $REPO_NAME --query 'imageIds[?imageTag!=`latest`]' --output json | \
-            jq -r '.[] | select(.imageTag != null) | .imageTag' | \
-            tail -n +6 | \
+            # 最新の5つ以外のイメージを削除（日付降順でソートして古いものを対象にする）
+            aws ecr describe-images --repository-name $REPO_NAME --output json | \
+            jq -r '[.imageDetails[] | select(.imageTags != null and (.imageTags | length) > 0)] | sort_by(.imagePushedAt) | reverse | .[5:] | .[].imageTags[0]' | \
             xargs -I {} aws ecr batch-delete-image --repository-name $REPO_NAME --image-ids imageTag={} || true
           fi
 
