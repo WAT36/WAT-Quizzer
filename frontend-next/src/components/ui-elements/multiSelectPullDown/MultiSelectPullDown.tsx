@@ -10,12 +10,12 @@ interface MultiSelectPullDownProps {
   }[];
   label?: string;
   className?: string;
-  value?: number | string;
+  value?: string[];
   onChange?: (e: SelectChangeEvent<string[]>) => void;
 }
 
 export const MultiSelectPullDown = ({ optionList, label, className, value, onChange }: MultiSelectPullDownProps) => {
-  const [selectedValue, setSelectedValue] = React.useState<string[]>([]);
+  const [selectedValue, setSelectedValue] = React.useState<string[]>(value ?? []);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedValue>) => {
     const {
