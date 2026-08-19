@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FormControl, FormGroup, SelectChangeEvent } from '@mui/material';
+import { FormControl, FormGroup, IconButton, SelectChangeEvent } from '@mui/material';
+import CasinoIcon from '@mui/icons-material/Casino';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { GetQuizAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
@@ -20,6 +21,7 @@ interface InputQueryFormProps {
 export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: InputQueryFormProps) => {
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
   const [categoryResetKey, setCategoryResetKey] = useState(0);
+  const [categorySeedValue, setCategorySeedValue] = useState<string[]>([]);
   const { quizFormatListoption } = useQuizFormatList();
   const setMessage = useSetRecoilState(messageState);
 
@@ -37,6 +39,18 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
       keyword: '',
       category: ''
     }));
+    setCategorySeedValue([]);
+    setCategoryResetKey((prev) => prev + 1);
+  };
+
+  const handleRandomCategory = () => {
+    if (categorylistoption.length === 0) return;
+    const randomOption = categorylistoption[Math.floor(Math.random() * categorylistoption.length)];
+    setQuizRequestData((prev) => ({
+      ...prev,
+      category: String(randomOption.value)
+    }));
+    setCategorySeedValue([String(randomOption.value)]);
     setCategoryResetKey((prev) => prev + 1);
   };
 
@@ -71,18 +85,31 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
         />
       </FormControl>
 
-      <FormControl className="max-w-full">
-        <MultiSelectPullDown
-          key={categoryResetKey}
-          label={'カテゴリ'}
-          optionList={categorylistoption}
-          onChange={(e) => {
-            setQuizRequestData({
-              ...getQuizRequestData,
-              category: String(e.target.value)
-            });
-          }}
-        />
+      <FormControl className="max-w-full !block">
+        <div className="flex flex-row items-center gap-2">
+          <MultiSelectPullDown
+            key={categoryResetKey}
+            label={'カテゴリ'}
+            className="min-w-0 flex-1"
+            optionList={categorylistoption}
+            value={categorySeedValue}
+            onChange={(e) => {
+              setQuizRequestData({
+                ...getQuizRequestData,
+                category: String(e.target.value)
+              });
+            }}
+          />
+          <IconButton
+            aria-label="カテゴリをランダム選択"
+            title="カテゴリをランダム選択"
+            onClick={handleRandomCategory}
+            disabled={categorylistoption.length === 0}
+            size="small"
+          >
+            <CasinoIcon />
+          </IconButton>
+        </div>
       </FormControl>
 
       <FormControl>
