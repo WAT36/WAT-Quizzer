@@ -20,12 +20,14 @@
 各サブプロジェクトを個別に動かす場合はルートの `package.json` に以下のスクリプトがある。
 
 ```bash
-npm run start:backend   # quizzer-lib をビルドし、backend-nest を watch モードで起動
-npm run start:frontend  # frontend-next の開発サーバーを起動
-npm run build:backend   # quizzer-lib の prisma 生成 + backend-nest ビルド
-npm run build:frontend  # frontend-next のビルド
-npm run deps:check      # workspace 間の依存バージョン不整合チェック (syncpack)
-npm run deps:fix        # 上記の自動修正
+npm run start            # quizzer-lib をビルドしてから、backend-nest と frontend-next を concurrently で同時起動
+npm run build:lib        # quizzer-lib のビルド
+npm run start:backend    # backend-nest を watch モードで起動
+npm run start:frontend   # frontend-next の開発サーバーを起動
+npm run build:backend    # quizzer-lib の prisma 生成 + backend-nest ビルド
+npm run build:frontend   # frontend-next のビルド
+npm run deps:check       # workspace 間の依存バージョン不整合チェック (syncpack)
+npm run deps:fix         # 上記の自動修正
 ```
 
 詳細なセットアップ・機能・環境変数は各サブディレクトリの README を参照。

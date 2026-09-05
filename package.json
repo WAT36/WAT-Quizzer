@@ -12,12 +12,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build:lib": "npm run build -w quizzer-lib",
     "build:backend": "npx -w backend-nest prisma format && npx -w backend-nest prisma generate && npx -w backend-nest nest build",
     "build:frontend": "npx -w frontend-next next build",
     "deps:check": "npx syncpack list-mismatches",
     "deps:fix": "npx syncpack fix-mismatches",
-    "start:backend": "npm run build -w quizzer-lib && npm install -w backend-nest && npm run build -w backend-nest && npm run start:dev -w backend-nest",
-    "start:frontend": "npm install -w frontend-next && npm run dev -w frontend-next"
+    "start:backend": "npm install -w backend-nest && npm run build -w backend-nest && npm run start:dev -w backend-nest",
+    "start:frontend": "npm install -w frontend-next && npm run dev -w frontend-next",
+    "start": "npm run build:lib && concurrently -n backend,frontend -c blue,green \"npm:start:backend\" \"npm:start:frontend\""
   },
   "repository": {
     "type": "git",
@@ -33,6 +35,7 @@
     "@types/eslint-scope": "^3.7.4",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
+    "concurrently": "^10.0.5",
     "eslint": "^9.27.0"
   }
 }
