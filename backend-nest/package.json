@@ -43,7 +43,7 @@
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.7",
     "aws-jwt-verify": "^5.0.0",
-    "aws-lambda": "^1.0.7",
+    "aws-lambda": "^1.0.6",
     "aws-serverless-express": "^3.4.0",
     "cache-manager": "^6.4.1",
     "class-transformer": "^0.5.1",
@@ -64,6 +64,7 @@
     "papaparse": "^5.5.2",
     "patch-package": "^8.0.0",
     "quizzer-lib": "1.0.1",
+    "tar": "7.5.22",
     "ts-jest": "29.3.0"
   },
   "devDependencies": {
