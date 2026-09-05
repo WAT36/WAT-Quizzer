@@ -13,10 +13,13 @@ export const get = async (
   const query = queryParam
     ? `?${new URLSearchParams(
         Object.keys(queryParam).reduce(
-          (after, key) => ({
-            ...after,
-            [key]: String(queryParam[key])
-          }),
+          (after, key) =>
+            queryParam[key] === undefined
+              ? after
+              : {
+                  ...after,
+                  [key]: String(queryParam[key])
+                },
           {}
         )
       )}`

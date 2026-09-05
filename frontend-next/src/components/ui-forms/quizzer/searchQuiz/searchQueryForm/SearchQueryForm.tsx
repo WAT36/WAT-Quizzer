@@ -173,7 +173,7 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
               ...searchQuizRequestData,
               category: newCategory,
               // カテゴリが未選択になったらonlyDirectCategoryも解除
-              onlyDirectCategory: newCategory === '-1' ? false : searchQuizRequestData.onlyDirectCategory
+              onlyDirectCategory: newCategory === '-1' ? false : !!searchQuizRequestData.onlyDirectCategory
             };
             setSearchQuizRequestData(setData);
             sessionStorage.setItem(STORAGE_KEY, JSON.stringify(setData));

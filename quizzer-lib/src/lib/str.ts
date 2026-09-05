@@ -23,7 +23,7 @@ export const formatString = (str: string, ...value: string[]) => {
 export const parseStrToBool = (val?: string) => {
   if (!val) {
     return false
-  } else if (val.toLowerCase() === 'false' || val === '' || val === '0') {
+  } else if (val.toLowerCase() === 'false' || val.toLowerCase() === 'undefined' || val === '' || val === '0') {
     return false
   }
 
