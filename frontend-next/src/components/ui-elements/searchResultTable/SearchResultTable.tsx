@@ -1,5 +1,14 @@
 import React from 'react';
-import { DataGrid, GridColDef, GridRowClassNameParams, GridRowSelectionModel, GridRowsProp, GridValidRowModel } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridRowClassNameParams,
+  GridRowSelectionModel,
+  GridRowsProp,
+  GridValidRowModel
+} from '@mui/x-data-grid';
+import { Tooltip } from '@/components/ui-elements/tooltip/Tooltip';
 
 interface SearchResultTableProps {
   searchResult: GridRowsProp;
@@ -9,6 +18,12 @@ interface SearchResultTableProps {
   setCheckedIdList?: React.Dispatch<React.SetStateAction<number[]>>;
   getRowClassName?: (params: GridRowClassNameParams) => string;
 }
+
+// 独自のrenderCellを持たない列に補完するデフォルトのセル描画
+const renderCellWithTooltip = (params: GridRenderCellParams) => {
+  const text = params.formattedValue ?? params.value;
+  return <Tooltip text={text == null ? '' : String(text)} />;
+};
 
 export const SearchResultTable = ({
   searchResult,
@@ -23,11 +38,14 @@ export const SearchResultTable = ({
     setCheckedIdList && setCheckedIdList(selectionModel as number[]);
   };
 
+  // 独自のrenderCellを持たない列にのみ、ホバー/タップで全文表示するTooltipを補完する
+  const columnsWithTooltip = columns.map((column) => (column.renderCell ? column : { ...column, renderCell: renderCellWithTooltip }));
+
   return (
     <div className="w-full border border-gray-200 rounded-lg overflow-x-auto">
       <DataGrid
         rows={searchResult}
-        columns={columns}
+        columns={columnsWithTooltip}
         pageSizeOptions={[15]}
         checkboxSelection={hasCheck}
         disableRowSelectionOnClick
