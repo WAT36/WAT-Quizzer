@@ -3,6 +3,7 @@ import React from 'react';
 import { IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { HeaderBar } from '../../ui-elements/headerBar/HeaderBar';
+import { ThemeToggleButton } from '../../ui-elements/themeToggleButton/ThemeToggleButton';
 
 interface HeaderProps {
   bgColor: string;
@@ -16,14 +17,13 @@ export const Header = ({ bgColor = '#006494', subTitle, onClick }: HeaderProps) 
       WAT Quizzer
       {subTitle && <span className="text-white font-bold">{' - ' + subTitle}</span>}
     </span>
-    {onClick ? (
-      <span className="absolute right-2.5 top-0 h-full flex items-center">
+    <span className="absolute right-2.5 top-0 h-full flex items-center">
+      <ThemeToggleButton />
+      {onClick && (
         <IconButton onClick={onClick} size="small" aria-label="Side Bar">
           <MenuIcon style={{ color: 'white' }} />
         </IconButton>
-      </span>
-    ) : (
-      <></>
-    )}
+      )}
+    </span>
   </HeaderBar>
 );

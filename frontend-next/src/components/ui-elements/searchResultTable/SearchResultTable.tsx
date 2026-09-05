@@ -42,7 +42,7 @@ export const SearchResultTable = ({
   const columnsWithTooltip = columns.map((column) => (column.renderCell ? column : { ...column, renderCell: renderCellWithTooltip }));
 
   return (
-    <div className="w-full border border-gray-200 rounded-lg overflow-x-auto">
+    <div className="w-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-x-auto">
       <DataGrid
         rows={searchResult}
         columns={columnsWithTooltip}

@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
+import { RecoilRoot } from 'recoil';
 import { Header } from './Header';
 
 const meta = {
   title: 'Molecules/Header',
   component: Header,
+  decorators: [(story) => <RecoilRoot>{story()}</RecoilRoot>],
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
   parameters: {
