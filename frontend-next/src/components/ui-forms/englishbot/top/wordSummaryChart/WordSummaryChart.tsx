@@ -4,6 +4,7 @@ import { CircularProgress } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
+import { useChartThemeColors } from '@/hooks/useChartThemeColors';
 ChartJS.register(ArcElement, Tooltip, Legend);
 interface WordSummaryChartProps {
   wordSummaryData: WordSummaryApiResponse[];
@@ -11,6 +12,7 @@ interface WordSummaryChartProps {
 
 export const WordSummaryChart = ({ wordSummaryData }: WordSummaryChartProps) => {
   const chartRef = useChartAriaLabel('単熟語登録数グラフ');
+  const { textColor } = useChartThemeColors();
   const data = {
     labels: wordSummaryData.filter((x) => x.name !== 'all').map((x) => x.name),
     datasets: [
@@ -27,11 +29,13 @@ export const WordSummaryChart = ({ wordSummaryData }: WordSummaryChartProps) => 
     responsive: true,
     plugins: {
       legend: {
-        position: 'top' as const
+        position: 'top' as const,
+        labels: { color: textColor }
       },
       title: {
         display: true,
-        text: '単熟語登録数'
+        text: '単熟語登録数',
+        color: textColor
       }
     }
   };

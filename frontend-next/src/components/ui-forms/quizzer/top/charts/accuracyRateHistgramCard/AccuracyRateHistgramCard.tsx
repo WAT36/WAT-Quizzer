@@ -17,6 +17,7 @@ import {
 } from 'chart.js';
 import { CircularProgress } from '@mui/material';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
+import { useChartThemeColors } from '@/hooks/useChartThemeColors';
 
 import { ACCRATE_HISTGRAM_LABEL, ACCRATE_HISTGRAM_COLOR, ACCRATE_HISTGRAM_TITLE } from '@/constants/contents/chart';
 
@@ -28,6 +29,7 @@ interface AccuracyRateHistgramCardProps {
 
 export const AccuracyRateHistgramCard = ({ file_num }: AccuracyRateHistgramCardProps) => {
   const chartRef = useChartAriaLabel(ACCRATE_HISTGRAM_TITLE);
+  const { gridColor, textColor } = useChartThemeColors();
   const [accuracyRateHistgramData, setAccuracyRateHistgramData] = useState<AccuracyRateHistgramApiResponse>({
     result: []
   });
@@ -66,12 +68,18 @@ export const AccuracyRateHistgramCard = ({ file_num }: AccuracyRateHistgramCardP
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const
+        position: 'top' as const,
+        labels: { color: textColor }
       },
       title: {
         display: true,
-        text: ACCRATE_HISTGRAM_TITLE
+        text: ACCRATE_HISTGRAM_TITLE,
+        color: textColor
       }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: textColor } },
+      y: { grid: { color: gridColor }, ticks: { color: textColor } }
     }
   };
 

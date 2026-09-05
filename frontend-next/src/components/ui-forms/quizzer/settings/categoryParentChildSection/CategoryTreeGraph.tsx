@@ -133,7 +133,7 @@ export const CategoryTreeGraph = ({ parentChildList, categoryCounts, onDelete }:
   );
 
   if (parentChildList.length === 0) {
-    return <p className="text-gray-500">登録されている親子関係はありません</p>;
+    return <p className="text-gray-500 dark:text-gray-400">登録されている親子関係はありません</p>;
   }
 
   const countMap = new Map<number, number>((categoryCounts ?? []).map((c) => [c.id, c.count]));
@@ -145,7 +145,8 @@ export const CategoryTreeGraph = ({ parentChildList, categoryCounts, onDelete }:
     <div>
       <div
         ref={containerRef}
-        className="border border-gray-200 rounded bg-white overflow-hidden"
+        // ノード/線の配色がライト背景前提のため、テーマに関わらず背景は白のまま固定する
+        className="border border-gray-200 dark:border-gray-700 rounded bg-white overflow-hidden"
         style={{ width: '100%', height: 500 }}
       >
         <Tree
@@ -161,7 +162,7 @@ export const CategoryTreeGraph = ({ parentChildList, categoryCounts, onDelete }:
           scaleExtent={{ min: 0.2, max: 3 }}
         />
       </div>
-      <p className="text-xs text-gray-400 mt-1">
+      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
         ドラッグでスクロール、ホイールでズーム。子カテゴリの <span className="text-red-400 font-bold">×</span> をクリックすると親子関係を削除できます。
       </p>
     </div>

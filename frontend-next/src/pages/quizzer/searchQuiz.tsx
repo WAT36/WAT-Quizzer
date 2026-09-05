@@ -17,7 +17,7 @@ export default function SearchQuizPage() {
       <Container className="!py-4">
         <SearchQueryForm setSearchResult={setSearchResult} setTotalCount={setTotalCount} />
         {totalCount !== undefined && (
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
             全{totalCount}件中 {searchResult.length}件表示
           </p>
         )}

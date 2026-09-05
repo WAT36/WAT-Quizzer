@@ -37,7 +37,7 @@ export const Checkbox = ({
           />
         }
         label={label}
-        className="text-gray-700"
+        className="text-gray-700 dark:text-gray-300"
       />
     </>
   );

@@ -69,7 +69,7 @@ export const RecommendedCategoryCard = ({ file_num }: RecommendedCategoryCardPro
             ) : categories && categories.length > 0 ? (
               <ul className="space-y-3">
                 {categories.map((item, index) => (
-                  <li key={index} className="flex flex-col gap-1 border-b border-gray-100 pb-2 last:border-0">
+                  <li key={index} className="flex flex-col gap-1 border-b border-gray-100 dark:border-gray-700 pb-2 last:border-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Chip
                         label={REASON_LABEL[item.reason]}

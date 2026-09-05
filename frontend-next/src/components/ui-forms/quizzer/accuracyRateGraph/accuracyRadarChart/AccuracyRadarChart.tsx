@@ -3,6 +3,7 @@ import React from 'react';
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
+import { useChartThemeColors } from '@/hooks/useChartThemeColors';
 
 interface AccuracyRadarChartProps {
   accuracyData: GetAccuracyRateByCategoryAPIResponseDto;
@@ -12,6 +13,7 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 
 export const AccuracyRadarChart = ({ accuracyData, order }: AccuracyRadarChartProps) => {
   const chartRef = useChartAriaLabel('カテゴリ別正答率レーダーチャート');
+  const { gridColor, textColor } = useChartThemeColors();
 
   // データがない場合は何もしない
   if (accuracyData.result.length === 0 && accuracyData.checked_result.length === 0) {
@@ -53,7 +55,8 @@ export const AccuracyRadarChart = ({ accuracyData, order }: AccuracyRadarChartPr
         display: false
       },
       legend: {
-        display: true // Radarでは凡例を表示
+        display: true, // Radarでは凡例を表示
+        labels: { color: textColor }
       }
     },
     scales: {
@@ -61,13 +64,18 @@ export const AccuracyRadarChart = ({ accuracyData, order }: AccuracyRadarChartPr
         // レーダーチャートを常に最小値0、最大値100で表示させる
         min: 0, // 強制的に最小値を 0 に
         max: 100, // 強制的に最大値を 100 に
+        grid: { color: gridColor },
+        angleLines: { color: gridColor },
         ticks: {
-          stepSize: 10 // 目盛り間隔
+          stepSize: 10, // 目盛り間隔
+          color: textColor,
+          backdropColor: 'transparent'
         },
         pointLabels: {
           font: {
             size: 14
-          }
+          },
+          color: textColor
         }
       }
     },

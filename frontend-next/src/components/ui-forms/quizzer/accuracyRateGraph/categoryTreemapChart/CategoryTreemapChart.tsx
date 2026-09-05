@@ -114,7 +114,7 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: { payl
     const node = payload[0].payload;
     if (node.size != null) {
       return (
-        <div className="bg-white border border-gray-300 rounded p-2 text-sm shadow">
+        <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded p-2 text-sm shadow">
           <p className="font-bold">{node.name}</p>
           <p>{node.size}問</p>
         </div>

@@ -3,6 +3,7 @@ import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
+import { useChartThemeColors } from '@/hooks/useChartThemeColors';
 
 interface AccuracyChartProps {
   accuracyData: GetAccuracyRateByCategoryAPIResponseDto;
@@ -12,6 +13,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export const AccuracyChart = ({ accuracyData, order }: AccuracyChartProps) => {
   const chartRef = useChartAriaLabel('カテゴリ別正答率グラフ');
+  const { gridColor, textColor } = useChartThemeColors();
 
   // データがない場合は何もしない
   if (accuracyData.result.length === 0 && accuracyData.checked_result.length === 0) {
@@ -61,6 +63,10 @@ export const AccuracyChart = ({ accuracyData, order }: AccuracyChartProps) => {
       legend: {
         display: false // **凡例を非表示**
       }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: textColor } },
+      y: { grid: { color: gridColor }, ticks: { color: textColor } }
     },
     maintainAspectRatio: false
   };

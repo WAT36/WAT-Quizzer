@@ -19,6 +19,7 @@ import {
 import { CircularProgress } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
+import { useChartThemeColors } from '@/hooks/useChartThemeColors';
 import { ANSWER_LOG_HISTGRAM_LABEL, ANSWER_LOG_HISTGRAM_COLOR, DATE_UNIT_OPTION } from '@/constants/contents/chart';
 
 ChartJS.register(
@@ -38,6 +39,7 @@ interface QuizAnswerLogStatisticsCardProps {
 
 export const QuizAnswerLogStatisticsCard = ({ file_num }: QuizAnswerLogStatisticsCardProps) => {
   const chartRef = useChartAriaLabel('回答数推移グラフ');
+  const { gridColor, textColor } = useChartThemeColors();
   const [answerLogStatisticsData, setAnswerLogStatisticsData] = useState<AnswerLogStatisticsApiResponse[]>([]);
   const [dateUnit, setDateUnit] = useState<DateUnit | undefined>(undefined);
 
@@ -88,7 +90,8 @@ export const QuizAnswerLogStatisticsCard = ({ file_num }: QuizAnswerLogStatistic
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top' as const
+        position: 'top' as const,
+        labels: { color: textColor }
       },
       title: {
         display: true,
@@ -98,16 +101,24 @@ export const QuizAnswerLogStatisticsCard = ({ file_num }: QuizAnswerLogStatistic
             : getAnswerLogStatisticsData.date_unit === 'week'
               ? '週'
               : '日'
-        }間の回答数`
+        }間の回答数`,
+        color: textColor
       }
     },
     scales: {
+      x: {
+        grid: { color: gridColor },
+        ticks: { color: textColor }
+      },
       y: {
         type: 'linear' as const,
         position: 'left' as const,
+        grid: { color: gridColor },
+        ticks: { color: textColor },
         title: {
           display: true,
-          text: ANSWER_LOG_HISTGRAM_LABEL[0]
+          text: ANSWER_LOG_HISTGRAM_LABEL[0],
+          color: textColor
         }
       },
       y1: {
@@ -115,9 +126,11 @@ export const QuizAnswerLogStatisticsCard = ({ file_num }: QuizAnswerLogStatistic
         position: 'right' as const,
         min: 0,
         max: 100,
+        ticks: { color: textColor },
         title: {
           display: true,
-          text: ANSWER_LOG_HISTGRAM_LABEL[1] + '(%)'
+          text: ANSWER_LOG_HISTGRAM_LABEL[1] + '(%)',
+          color: textColor
         },
         grid: {
           drawOnChartArea: false

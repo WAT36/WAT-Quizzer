@@ -22,7 +22,7 @@ export const Modal = ({ isOpen, children, setIsOpen }: ModalProps) => {
         aria-describedby="modal-modal-description"
         className="flex items-center justify-center p-4"
       >
-        <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">{children}</div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">{children}</div>
       </MuiModal>
     </>
   );

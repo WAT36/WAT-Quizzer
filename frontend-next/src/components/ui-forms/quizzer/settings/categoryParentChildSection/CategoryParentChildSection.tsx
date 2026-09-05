@@ -14,7 +14,7 @@ import {
 
 const CategoryTreeGraph = dynamic(
   () => import('./CategoryTreeGraph').then((mod) => mod.CategoryTreeGraph),
-  { ssr: false, loading: () => <p className="text-gray-400 text-sm">グラフを読み込み中...</p> }
+  { ssr: false, loading: () => <p className="text-gray-400 dark:text-gray-500 text-sm">グラフを読み込み中...</p> }
 );
 
 interface CategoryParentChildSectionProps {

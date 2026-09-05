@@ -21,13 +21,13 @@ export const DuplicateAnswerModal = ({ isOpen, setIsOpen, duplicateQuizzes, answ
         </Typography>
         <div className="mb-4 max-h-60 overflow-y-auto">
           {duplicateQuizzes.map((q) => (
-            <div key={q.id} className="mb-2 p-2 border border-gray-200 rounded text-sm">
+            <div key={q.id} className="mb-2 p-2 border border-gray-200 dark:border-gray-700 rounded text-sm">
               <span className="font-semibold">問題文：</span>
               {q.quiz_sentense}
             </div>
           ))}
         </div>
-        <Typography variant="body2" className="!mb-4 text-gray-600">
+        <Typography variant="body2" className="!mb-4 text-gray-600 dark:text-gray-400">
           答え：<strong>{answer}</strong>
         </Typography>
         <div className="flex gap-3 justify-end">

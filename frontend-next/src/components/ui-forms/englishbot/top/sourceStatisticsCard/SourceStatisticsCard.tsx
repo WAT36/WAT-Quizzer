@@ -7,12 +7,14 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
+import { useChartThemeColors } from '@/hooks/useChartThemeColors';
 
 interface SourceStatisticsCardProps {}
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const SourceStatisticsCard = ({}: SourceStatisticsCardProps) => {
   const chartRef = useChartAriaLabel('出典別正答率グラフ');
+  const { textColor } = useChartThemeColors();
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionDto[]>([]);
   const [selectedSource, setSelectedSource] = useState<number>(1);
   const [sourceStatisticsData, setSourceStatisticsData] = useState<SourceStatisticsApiResponse[]>([]);
@@ -58,13 +60,15 @@ export const SourceStatisticsCard = ({}: SourceStatisticsCardProps) => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'left' as const
+        position: 'left' as const,
+        labels: { color: textColor }
       },
       title: {
         display: true,
         text: `出典統計(${selectedSourceStaticsData ? selectedSourceStaticsData.name : 'null'}): ${
           selectedSourceStaticsData ? selectedSourceStaticsData.count : '0'
-        }問中`
+        }問中`,
+        color: textColor
       }
     }
   };

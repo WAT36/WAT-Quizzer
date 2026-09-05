@@ -13,7 +13,7 @@ export const RadioButton = ({ value, label, disabled }: RadioButtonProps) => {
         value={value}
         control={<Radio disabled={disabled} className="text-blue-600" />}
         label={label}
-        className="text-gray-700"
+        className="text-gray-700 dark:text-gray-300"
       />
     </>
   );

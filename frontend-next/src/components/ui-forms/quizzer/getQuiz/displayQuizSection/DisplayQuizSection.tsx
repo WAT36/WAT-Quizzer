@@ -90,7 +90,7 @@ export const DisplayQuizSection = ({
   return (
     <>
       <Card variant="outlined">
-        <CardContent className="!m-[8px] shadow-lg bg-gray-100">
+        <CardContent className="!m-[8px] shadow-lg bg-gray-100 dark:bg-gray-800">
           <div className="flex items-center justify-between mb-2">
             <Typography variant="h5" component="h2" className="flex items-center justify-start h-full">
               問題
@@ -140,7 +140,7 @@ export const DisplayQuizSection = ({
             displayQuiz.quiz_category.map((category, index) => {
               return <Chip key={index} label={category.category} />;
             })}
-          <Typography variant="subtitle2" component="span" className="text-gray-400">
+          <Typography variant="subtitle2" component="span" className="text-gray-400 dark:text-gray-500">
             {displayQuiz.count && `(取得問題数${String(displayQuiz.count)}問中)`}
           </Typography>
         </CardContent>

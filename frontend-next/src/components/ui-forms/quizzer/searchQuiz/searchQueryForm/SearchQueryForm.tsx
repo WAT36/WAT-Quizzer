@@ -324,7 +324,7 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
           }
         }}
       />
-      <p className="text-xs text-gray-400 mt-1">
+      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
         ※ 検索結果は最大 {SEARCH_LIMITS.MAX_QUIZ_SEARCH_RESULTS} 問まで表示されます
       </p>
     </>

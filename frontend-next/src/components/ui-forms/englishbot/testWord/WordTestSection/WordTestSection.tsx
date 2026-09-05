@@ -20,7 +20,7 @@ export const WordTestSection = ({ sourcelistoption }: WordTestSectionProps) => {
         setTotalCount={setTotalCount}
       />
       {totalCount !== undefined && (
-        <p className="text-sm text-gray-600 mt-1">対象単語数：全{totalCount}件</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">対象単語数：全{totalCount}件</p>
       )}
       <DisplayTestWordSection displayTestData={displayTestData} setDisplayTestData={setDisplayTestData} />
     </>

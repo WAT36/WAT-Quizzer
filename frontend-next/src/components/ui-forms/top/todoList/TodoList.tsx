@@ -157,7 +157,7 @@ export const TodoList = ({}: TodoListProps) => {
         }}
       >
         <CardContent>
-          <Typography variant="h6" component="h6" color="grey.700" sx={{ mb: 2 }}>
+          <Typography variant="h6" component="h6" color="text.secondary" sx={{ mb: 2 }}>
             今日のTodo
           </Typography>
           {allCompleted && (
@@ -176,11 +176,11 @@ export const TodoList = ({}: TodoListProps) => {
             </Box>
           )}
           {isLoading ? (
-            <Typography variant="body2" color="grey.700" sx={{ fontStyle: 'italic' }}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
               読み込み中...
             </Typography>
           ) : todos.length === 0 ? (
-            <Typography variant="body2" color="grey.700" sx={{ fontStyle: 'italic' }}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
               Todoがありません
             </Typography>
           ) : (

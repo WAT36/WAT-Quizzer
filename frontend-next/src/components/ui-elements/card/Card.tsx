@@ -13,7 +13,7 @@ export const Card = ({ variant = 'outlined', attr, header, subHeader, children }
   // attrの値とtailwindクラスの対応表
   const tailwindMap: { [key: string]: string } = {
     'message-card': '!my-[10px] !mb-[20px] border-none',
-    'silver-card': 'bg-gray-400 !mb-[20px]',
+    'silver-card': 'bg-gray-400 dark:bg-gray-600 !mb-[20px]',
     'through-card': '!bg-transparent',
     'square-200': 'w-[200px] h-[200px]',
     'square-300': 'w-[300px] h-[300px]',

@@ -49,7 +49,7 @@ export const DropZoneArea = ({}: DropZoneAreaProps) => {
         <section>
           <div
             {...getRootProps()}
-            className="bg-gray-100 m-[10px] p-2.5 border-4 border-dashed border-gray-300 min-h-[200px] text-center"
+            className="bg-gray-100 dark:bg-gray-800 m-[10px] p-2.5 border-4 border-dashed border-gray-300 dark:border-gray-600 min-h-[200px] text-center"
           >
             <input {...getInputProps({ 'aria-label': '画像ファイルを選択' })} />
             <p>Drag and drop some files here, or click to select files</p>

@@ -131,7 +131,9 @@ export const DeleteTodoForm = ({}: DeleteTodoFormProps) => {
             <SearchResultTable
               searchResult={todoList}
               columns={columns}
-              getRowClassName={(params) => (params.row.deleted_at ? 'bg-red-50 text-gray-400' : '')}
+              getRowClassName={(params) =>
+                params.row.deleted_at ? 'bg-red-50 dark:bg-red-900/30 text-gray-400 dark:text-gray-500' : ''
+              }
             />
           )}
         </CardContent>

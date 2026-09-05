@@ -108,7 +108,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
           <CircularProgress aria-label="読み込み中" />
         ) : (
           <>
-            <Typography variant="h1" component="h1" color={'common.black'}>
+            <Typography variant="h1" component="h1" color="text.primary">
               {wordDetail.name}
               <Typography variant="h4" component="span">
                 {wordDetail.checked ? '✅' : ''}

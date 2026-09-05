@@ -172,7 +172,7 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
 
   return (
     <>
-      <FormGroup className="border border-gray-300 rounded-md !my-[4px] !p-[5px] flex items-center" row>
+      <FormGroup className="border border-gray-300 dark:border-gray-600 rounded-md !my-[4px] !p-[5px] flex items-center" row>
         チェックした問題全てにカテゴリ「
         <FormControl>
           <TextField
@@ -208,7 +208,7 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
         </FormControl>
       </FormGroup>
 
-      <FormGroup className="border border-gray-300 rounded-md !my-[10px] !p-[5px] flex items-center" row>
+      <FormGroup className="border border-gray-300 dark:border-gray-600 rounded-md !my-[10px] !p-[5px] flex items-center" row>
         チェックした問題全てに
         <FormControl>
           <Button

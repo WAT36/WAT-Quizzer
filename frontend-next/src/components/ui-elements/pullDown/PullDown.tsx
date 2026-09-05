@@ -30,7 +30,7 @@ export const PullDown = ({ optionList, label, className, value, onChange }: Pull
 
   return (
     <FormControl disabled={optionList.length <= 1 ? true : false} className="min-w-[200px]">
-      <InputLabel id={labelId} className="my-[2px]" sx={{ '&.Mui-disabled': { color: '#595959' } }}>
+      <InputLabel id={labelId} className="my-[2px]" sx={{ '&.Mui-disabled': { color: 'text.disabled' } }}>
         {label || 'ファイル選択'}
       </InputLabel>
       <Select {...selectProps}>

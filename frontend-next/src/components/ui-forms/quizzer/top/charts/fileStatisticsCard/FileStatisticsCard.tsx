@@ -7,6 +7,7 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { DOUGHNUT_CHART_COLOR, DOUGHNUT_CHART_LABEL, DOUGHNUT_CHART_TITLE } from '@/constants/contents/chart';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
+import { useChartThemeColors } from '@/hooks/useChartThemeColors';
 
 interface FileStatisticsCardProps {
   file_num: number;
@@ -15,6 +16,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const FileStatisticsCard = ({ file_num }: FileStatisticsCardProps) => {
   const chartRef = useChartAriaLabel('問題ファイル統計グラフ');
+  const { textColor } = useChartThemeColors();
   const [quizFileStatisticsData, setQuizFileStatisticsData] = useState<QuizFileStatisticsApiResponse>();
 
   useEffect(() => {
@@ -52,7 +54,8 @@ export const FileStatisticsCard = ({ file_num }: FileStatisticsCardProps) => {
         display: true,
         text: `問題ファイル統計(${quizFileStatisticsData ? quizFileStatisticsData.file_nickname : 'null'}): ${
           quizFileStatisticsData ? quizFileStatisticsData.count : '0'
-        }問中`
+        }問中`,
+        color: textColor
       },
       tooltip: {
         callbacks: {

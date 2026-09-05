@@ -79,13 +79,13 @@ export const Table = <TData,>({
 
   return (
     <div className={`w-full ${className}`}>
-      <div className="border border-gray-200 rounded-lg overflow-x-auto">
+      <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-x-auto">
         <table className="w-full border-collapse">
-          <thead className="bg-gray-50">
+          <thead className="bg-gray-50 dark:bg-gray-800">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {enableRowSelection && (
-                  <th className="px-6 py-4 w-14 border-b border-gray-200">
+                  <th className="px-6 py-4 w-14 border-b border-gray-200 dark:border-gray-700">
                     <input
                       type="checkbox"
                       aria-label="全て選択"
@@ -99,7 +99,7 @@ export const Table = <TData,>({
                       className={`w-5 h-5 rounded cursor-pointer border-2 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-colors ${
                         table.getIsAllRowsSelected()
                           ? 'bg-blue-600 border-blue-600'
-                          : 'bg-white border-gray-300 hover:border-blue-400'
+                          : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-blue-400'
                       }`}
                       style={{
                         accentColor: '#2563eb'
@@ -110,20 +110,20 @@ export const Table = <TData,>({
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-6 py-4 text-left text-sm font-medium text-gray-700 uppercase tracking-wider border-b border-gray-200"
+                    className="px-6 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-700"
                   >
                     {header.isPlaceholder ? null : (
                       <div
                         className={`flex items-center gap-2 ${
                           enableSorting && header.column.getCanSort()
-                            ? 'cursor-pointer select-none hover:bg-gray-100'
+                            ? 'cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700'
                             : ''
                         }`}
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {enableSorting && header.column.getCanSort() && (
-                          <span className="text-gray-400">
+                          <span className="text-gray-400 dark:text-gray-500">
                             {{
                               asc: ' ↑',
                               desc: ' ↓'
@@ -137,12 +137,12 @@ export const Table = <TData,>({
               </tr>
             ))}
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
             {table.getRowModel().rows.length === 0 ? (
               <tr>
                 <td
                   colSpan={enableRowSelection ? columns.length + 1 : columns.length}
-                  className="px-6 py-8 text-center text-gray-500"
+                  className="px-6 py-8 text-center text-gray-500 dark:text-gray-400"
                 >
                   データがありません
                 </td>
@@ -151,10 +151,10 @@ export const Table = <TData,>({
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className={`hover:bg-gray-50 ${enableRowSelection && row.getIsSelected() ? 'bg-blue-50' : ''}`}
+                  className={`hover:bg-gray-50 dark:hover:bg-gray-800 ${enableRowSelection && row.getIsSelected() ? 'bg-blue-50 dark:bg-blue-900/40' : ''}`}
                 >
                   {enableRowSelection && (
-                    <td className="px-6 py-4 border-b border-gray-100">
+                    <td className="px-6 py-4 border-b border-gray-100 dark:border-gray-800">
                       <input
                         type="checkbox"
                         aria-label="行を選択"
@@ -163,7 +163,7 @@ export const Table = <TData,>({
                         className={`w-5 h-5 rounded cursor-pointer border-2 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 transition-colors ${
                           row.getIsSelected()
                             ? 'bg-blue-600 border-blue-600'
-                            : 'bg-white border-gray-300 hover:border-blue-400'
+                            : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-blue-400'
                         }`}
                         style={{
                           accentColor: '#2563eb'
@@ -172,7 +172,10 @@ export const Table = <TData,>({
                     </td>
                   )}
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-6 py-4 text-sm text-gray-900 border-b border-gray-100">
+                    <td
+                      key={cell.id}
+                      className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-800"
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
@@ -190,44 +193,46 @@ export const Table = <TData,>({
             <button
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
-              className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               {'<<'}
             </button>
             <button
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               {'<'}
             </button>
             <button
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               {'>'}
             </button>
             <button
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
-              className="px-3 py-1 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               {'>>'}
             </button>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-700">
+          <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
             <span>
               {table.getState().pagination.pageIndex + 1} / {table.getPageCount()} ページ
             </span>
-            <span className="text-gray-500">（全 {table.getRowCount()} 件）</span>
+            <span className="text-gray-500 dark:text-gray-400">（全 {table.getRowCount()} 件）</span>
           </div>
         </div>
       )}
 
       {/* 選択された行の情報 */}
       {enableRowSelection && Object.keys(rowSelection).length > 0 && (
-        <div className="mt-2 text-sm text-gray-600 px-4">{Object.keys(rowSelection).length} 行が選択されています</div>
+        <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 px-4">
+          {Object.keys(rowSelection).length} 行が選択されています
+        </div>
       )}
     </div>
   );

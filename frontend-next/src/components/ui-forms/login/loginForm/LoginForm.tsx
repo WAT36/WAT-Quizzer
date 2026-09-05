@@ -72,7 +72,7 @@ export const LoginForm = ({ setShowNewPasswordForm, username, setUsername }: Log
         <FormControl margin={'dense'}>
           <Button variant={'outlined'} label={'ログイン'} onClick={handleLogin} />
         </FormControl>
-        <p className="text-center text-gray-700">{message}</p>
+        <p className="text-center text-gray-700 dark:text-gray-300">{message}</p>
       </FormGroup>
     </Card>
   );
