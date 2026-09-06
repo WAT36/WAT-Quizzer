@@ -39,7 +39,10 @@ export const SearchResultTable = ({
   };
 
   // 独自のrenderCellを持たない列にのみ、ホバー/タップで全文表示するTooltipを補完する
-  const columnsWithTooltip = columns.map((column) => (column.renderCell ? column : { ...column, renderCell: renderCellWithTooltip }));
+  // ただしboolean列はDataGrid標準のチェックボックス表示を使うため対象外とする
+  const columnsWithTooltip = columns.map((column) =>
+    column.renderCell || column.type === 'boolean' ? column : { ...column, renderCell: renderCellWithTooltip }
+  );
 
   return (
     <div className="w-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-x-auto">
