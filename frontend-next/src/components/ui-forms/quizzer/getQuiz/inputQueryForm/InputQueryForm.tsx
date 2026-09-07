@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { FormControl, FormGroup, IconButton, SelectChangeEvent } from '@mui/material';
+import { FormControl, FormGroup, FormLabel, IconButton, SelectChangeEvent } from '@mui/material';
 import CasinoIcon from '@mui/icons-material/Casino';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { GetQuizAPIRequestDto, KeywordSearchTarget, PullDownOptionDto } from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { CheckboxGroup } from '@/components/ui-parts/checkboxGroup/CheckboxGroup';
 import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
 import { QuizFilePullDown } from '@/components/ui-elements/pullDown/quizFilePullDown/QuizFilePullDown';
 import { useQuizFormatList } from '@/hooks/useQuizFormatList';
@@ -161,40 +160,35 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
       </FormControl>
 
       <FormControl className="!block">
-        <div className="flex flex-row items-start gap-4 flex-nowrap">
-          <div className="flex-shrink-0 !inline-flex">
-            <CheckboxGroup
-              checkboxProps={quizFormatListoption.map((x) => {
-                return {
-                  value: String(x.id),
-                  label: x.name
-                };
-              })}
-              setQueryofQuizStater={(checkBoxValue, checked) => {
+        <FormGroup row className="flex-wrap gap-x-4 gap-y-2 items-center">
+          <FormLabel id="quiz-format-checkbox-group-label">問題種別</FormLabel>
+          {quizFormatListoption.map((x) => (
+            <Checkbox
+              key={x.id}
+              value={String(x.id)}
+              label={x.name}
+              onChange={(e) => {
                 setQuizRequestData({
                   ...getQuizRequestData,
                   format_id: {
                     ...getQuizRequestData.format_id,
-                    [checkBoxValue]: checked
+                    [String(x.id)]: e.target.checked
                   }
                 });
               }}
-              label={'問題種別'}
             />
-          </div>
-          <div className="flex-shrink-0 flex items-center">
-            <Checkbox
-              value="only-checked"
-              label="チェック済から出題"
-              onChange={(e) => {
-                setQuizRequestData({
-                  ...getQuizRequestData,
-                  checked: e.target.checked
-                });
-              }}
-            />
-          </div>
-        </div>
+          ))}
+          <Checkbox
+            value="only-checked"
+            label="チェック済から出題"
+            onChange={(e) => {
+              setQuizRequestData({
+                ...getQuizRequestData,
+                checked: e.target.checked
+              });
+            }}
+          />
+        </FormGroup>
       </FormControl>
     </FormGroup>
   );
