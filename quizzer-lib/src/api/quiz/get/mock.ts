@@ -1,7 +1,8 @@
 export const initGetQuizRequestData = {
   file_num: -1,
   quiz_num: -1,
-  format_id: {}
+  format_id: {},
+  keywordTarget: 'sentence_answer' as const
 }
 
 export const initGetQuizResponseData = {

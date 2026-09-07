@@ -3,7 +3,7 @@ import { FormControl, FormGroup, IconButton, SelectChangeEvent } from '@mui/mate
 import CasinoIcon from '@mui/icons-material/Casino';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
-import { GetQuizAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
+import { GetQuizAPIRequestDto, KeywordSearchTarget, PullDownOptionDto } from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { CheckboxGroup } from '@/components/ui-parts/checkboxGroup/CheckboxGroup';
@@ -12,11 +12,22 @@ import { QuizFilePullDown } from '@/components/ui-elements/pullDown/quizFilePull
 import { useQuizFormatList } from '@/hooks/useQuizFormatList';
 import { useSelectedFileChange } from '@/hooks/useSelectedFileChange';
 import { MultiSelectPullDown } from '@/components/ui-elements/multiSelectPullDown/MultiSelectPullDown';
+import { ToggleButton } from '@/components/ui-elements/toggleButton/ToggleButton';
 
 interface InputQueryFormProps {
   getQuizRequestData: GetQuizAPIRequestDto;
   setQuizRequestData: React.Dispatch<React.SetStateAction<GetQuizAPIRequestDto>>;
 }
+
+// キーワード検索対象のラベル ⇔ 内部値の対応
+const KEYWORD_TARGET_LABELS: Record<KeywordSearchTarget, string> = {
+  sentence_answer: '問題文または解答',
+  explanation: '解説'
+};
+const KEYWORD_TARGET_BY_LABEL: Record<string, KeywordSearchTarget> = {
+  [KEYWORD_TARGET_LABELS.sentence_answer]: 'sentence_answer',
+  [KEYWORD_TARGET_LABELS.explanation]: 'explanation'
+};
 
 export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: InputQueryFormProps) => {
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
@@ -41,6 +52,19 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
     }));
     setCategorySeedValue([]);
     setCategoryResetKey((prev) => prev + 1);
+  };
+
+  const keywordTargetLabel =
+    KEYWORD_TARGET_LABELS[getQuizRequestData.keywordTarget ?? 'sentence_answer'];
+
+  const setKeywordTargetAlignment: React.Dispatch<React.SetStateAction<string>> = (value) => {
+    const nextLabel = typeof value === 'function' ? (value as (prev: string) => string)(keywordTargetLabel) : value;
+    const nextTarget = KEYWORD_TARGET_BY_LABEL[nextLabel];
+    if (!nextTarget) return;
+    setQuizRequestData({
+      ...getQuizRequestData,
+      keywordTarget: nextTarget
+    });
   };
 
   const handleRandomCategory = () => {
@@ -84,6 +108,17 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
           }}
         />
       </FormControl>
+
+      <div className="!mb-4">
+        <FormControl className="max-w-full !block">
+          {'検索対象：'}
+          <ToggleButton
+            alignment={keywordTargetLabel}
+            setAlignment={setKeywordTargetAlignment}
+            buttonValues={[KEYWORD_TARGET_LABELS.sentence_answer, KEYWORD_TARGET_LABELS.explanation]}
+          />
+        </FormControl>
+      </div>
 
       <FormControl className="max-w-full !block">
         <div className="flex flex-row items-center gap-2">

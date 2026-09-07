@@ -55,9 +55,35 @@ export class QuizService {
         checked,
         format_id,
         keyword,
+        keywordTarget,
       } = req;
       // カテゴリは複数選択でカンマ区切りされてるので分割する
       const categories = category && category.split(',').map((s) => s.trim());
+      // キーワード検索条件（対象：問題文+解答 or 解説）
+      const keywordCondition = keyword
+        ? keywordTarget === 'explanation'
+          ? {
+              quiz_explanation: {
+                explanation: {
+                  contains: keyword,
+                },
+              },
+            }
+          : {
+              OR: [
+                {
+                  quiz_sentense: {
+                    contains: keyword,
+                  },
+                },
+                {
+                  answer: {
+                    contains: keyword,
+                  },
+                },
+              ],
+            }
+        : undefined;
       // 取得条件
       const where =
         // methodがある時は条件指定
@@ -118,20 +144,7 @@ export class QuizService {
                     checked: true,
                   }
                 : {}),
-              ...(keyword && {
-                OR: [
-                  {
-                    quiz_sentense: {
-                      contains: keyword,
-                    },
-                  },
-                  {
-                    answer: {
-                      contains: keyword,
-                    },
-                  },
-                ],
-              }),
+              ...keywordCondition,
             }
           : {
               file_num,
@@ -144,20 +157,7 @@ export class QuizService {
                 },
               }),
               deleted_at: null,
-              ...(keyword && {
-                OR: [
-                  {
-                    quiz_sentense: {
-                      contains: keyword,
-                    },
-                  },
-                  {
-                    answer: {
-                      contains: keyword,
-                    },
-                  },
-                ],
-              }),
+              ...keywordCondition,
             };
       const orderBy =
         method === 'worstRate'
