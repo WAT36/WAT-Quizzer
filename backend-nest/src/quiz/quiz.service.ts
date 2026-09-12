@@ -130,9 +130,7 @@ export class QuizService {
                   category_quiz: {
                     some: {
                       category: {
-                        name: {
-                          contains: category,
-                        },
+                        name: category,
                       },
                       deleted_at: null,
                     },
@@ -784,9 +782,7 @@ export class QuizService {
           category_quiz: {
             some: {
               category: {
-                name: {
-                  contains: category,
-                },
+                name: category,
               },
               deleted_at: null,
             },
