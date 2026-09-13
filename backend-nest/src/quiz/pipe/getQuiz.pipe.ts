@@ -19,6 +19,7 @@ export class GetQuizPipe implements PipeTransform<
           case 'quiz_num':
           case 'min_rate':
           case 'max_rate':
+          case 'count':
             if (cur[1] === '-1' || isNaN(parseInt(cur[1]))) {
               return { ...acc };
             } else {

@@ -2,6 +2,7 @@ import { QuizService } from './quiz.service';
 import {
   prisma,
   getRandomElementFromArray,
+  getRandomElementsFromArray,
   xor,
   getPrismaFromPastDayRange,
 } from 'quizzer-lib';
@@ -50,6 +51,7 @@ jest.mock('quizzer-lib', () => {
   return {
     prisma: mockPrisma,
     getRandomElementFromArray: jest.fn(),
+    getRandomElementsFromArray: jest.fn(),
     getPrismaFromPastDayRange: jest.fn(),
     getTodayStart: jest.fn(),
     xor: jest.fn(),
@@ -229,6 +231,65 @@ describe('QuizService', () => {
         fail_count: '1',
         accuracy_rate: '50',
       },
+    });
+  });
+
+  // 出題数(count)指定時の複数件取得テスト用データ
+  const getQuizResultTestBatch = [
+    getQuizResultTest[0],
+    {
+      ...getQuizResultTest[0],
+      id: 1,
+      quiz_num: 1,
+      quiz_sentense: '品詞テスト2',
+      answer: '品詞テスト2',
+    },
+  ];
+
+  // 最低正解率問題取得（出題数指定）正常系
+  it('getWorstRateQuiz - count指定でN件取得', async () => {
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce(
+      getQuizResultTestBatch,
+    );
+    (prisma.quiz.count as jest.Mock).mockResolvedValueOnce(2);
+    expect(
+      await quizService.getQuiz(
+        { file_num: 1, count: 2 },
+        'worstRate',
+      ),
+    ).toEqual({
+      total: 2,
+      quizzes: getQuizResultTestBatch.map((quiz) => ({
+        ...quiz,
+        quiz_statistics_view: {
+          clear_count: '1',
+          fail_count: '1',
+          accuracy_rate: '50',
+        },
+      })),
+    });
+  });
+
+  // ランダム問題取得（出題数指定）正常系
+  it('getRandomQuiz - count指定でN件取得', async () => {
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce(
+      getQuizResultTestBatch,
+    );
+    (getRandomElementsFromArray as jest.Mock).mockReturnValueOnce(
+      getQuizResultTestBatch,
+    );
+    expect(
+      await quizService.getQuiz({ file_num: 1, count: 2 }, 'random'),
+    ).toEqual({
+      total: 2,
+      quizzes: getQuizResultTestBatch.map((quiz) => ({
+        ...quiz,
+        quiz_statistics_view: {
+          clear_count: '1',
+          fail_count: '1',
+          accuracy_rate: '50',
+        },
+      })),
     });
   });
 

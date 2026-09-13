@@ -13,6 +13,7 @@ export interface GetQuizAPIRequestDto {
   checked?: boolean //booleanにしたい
   keyword?: string
   keywordTarget?: KeywordSearchTarget
+  count?: number // 指定した場合、method指定時に条件に合う問題を最大count件まとめて取得する
 }
 
 //API側で受け取った時のDTO（Pipeで上に変換する）
@@ -26,6 +27,7 @@ export interface GetQuizAPIRequestReceivedDto {
   checked?: string //booleanにしたい
   keyword?: string
   keywordTarget?: string
+  count?: string
 }
 
 // 問題取得APIのレスポンス（基礎応用込み）、フォーマット込み

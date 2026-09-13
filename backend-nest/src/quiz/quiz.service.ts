@@ -8,6 +8,7 @@ import {
   CheckQuizAPIRequestDto,
   DeleteAnswerLogOfFileApiRequestDto,
   getRandomElementFromArray,
+  getRandomElementsFromArray,
   AddCategoryToQuizAPIRequestDto,
   IntegrateToQuizAPIRequestDto,
   GetQuizAPIRequestDto,
@@ -56,7 +57,10 @@ export class QuizService {
         format_id,
         keyword,
         keywordTarget,
+        count,
       } = req;
+      // countはmethod指定時（条件検索）のみ有効。件数指定がなければ従来通り1件取得
+      const isBatchRequest = !!method && !!count && count > 0;
       // カテゴリは複数選択でカンマ区切りされてるので分割する
       const categories = category && category.split(',').map((s) => s.trim());
       // キーワード検索条件（対象：問題文+解答 or 解説）
@@ -257,13 +261,13 @@ export class QuizService {
         },
       };
       // データ取得
-      // needsAllResults=false の場合は先頭1件のみ取得してDBからの転送量を削減
+      // needsAllResults=false の場合は必要件数のみ取得してDBからの転送量を削減
       const [results, totalCount] = await Promise.all([
         prisma.quiz.findMany({
           select: selectFields,
           where,
           orderBy,
-          ...(needsAllResults ? {} : { take: 1 }),
+          ...(needsAllResults ? {} : { take: isBatchRequest ? count : 1 }),
         }),
         needsAllResults ? Promise.resolve(null) : prisma.quiz.count({ where }),
       ]);
@@ -273,11 +277,8 @@ export class QuizService {
           HttpStatus.NOT_FOUND,
         );
       }
-      const result =
-        method === 'random' || method === 'todayNotAnswered'
-          ? getRandomElementFromArray(results)
-          : results[0];
-      return {
+      // 1件分の結果を返却用の形に整形する
+      const shapeResult = (result: (typeof results)[number]) => ({
         ...result,
         category_quiz: undefined,
         ...(result.category_quiz && {
@@ -298,6 +299,24 @@ export class QuizService {
             accuracy_rate: result.quiz_statistics_view.accuracy_rate.toString(),
           },
         }),
+      });
+      // count指定時（出題数分まとめて取得）は複数件返却する
+      if (isBatchRequest) {
+        const pickedResults =
+          method === 'random' || method === 'todayNotAnswered'
+            ? getRandomElementsFromArray(results, count)
+            : results;
+        return {
+          total: totalCount ?? results.length,
+          quizzes: pickedResults.map(shapeResult),
+        };
+      }
+      const result =
+        method === 'random' || method === 'todayNotAnswered'
+          ? getRandomElementFromArray(results)
+          : results[0];
+      return {
+        ...shapeResult(result),
         count: totalCount ?? results.length,
       };
     } catch (error: unknown) {
