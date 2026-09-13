@@ -45,7 +45,6 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
     selectedFileChangeHandler(e);
     setQuizRequestData((prev) => ({
       ...prev,
-      quiz_num: 0,
       keyword: '',
       category: ''
     }));
@@ -81,18 +80,6 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
     <FormGroup className="!mt-4">
       <FormControl className="max-w-full">
         <QuizFilePullDown onFileChange={handleFileChange} />
-      </FormControl>
-      <FormControl className="max-w-full">
-        <TextField
-          label="問題番号"
-          value={(getQuizRequestData.quiz_num ?? 0) > 0 ? String(getQuizRequestData.quiz_num) : ''}
-          setStater={(value: string) => {
-            setQuizRequestData({
-              ...getQuizRequestData,
-              quiz_num: +value
-            });
-          }}
-        />
       </FormControl>
 
       <FormControl className="max-w-full">

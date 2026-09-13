@@ -1,50 +1,21 @@
 import React, { useState } from 'react';
-import { Container, Divider, Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
-import { GetQuizButtonGroup } from '@/components/ui-forms/quizzer/getQuiz/getQuizButtonGroup/GetQuizButtonGroup';
 import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displayQuizSection/DisplayQuizSection';
-import { InputQueryForm } from '@/components/ui-forms/quizzer/getQuiz/inputQueryForm/InputQueryForm';
 import { QuizSettingsPanel } from '@/components/ui-forms/quizzer/getQuiz/quizSettingsPanel/QuizSettingsPanel';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useQuizSession } from '@/hooks/useQuizSession';
-import {
-  GetQuizAPIRequestDto,
-  GetQuizApiResponseDto,
-  initGetQuizRequestData,
-  initGetQuizResponseData
-} from 'quizzer-lib';
+import { GetQuizAPIRequestDto, initGetQuizRequestData } from 'quizzer-lib';
 
 export default function GetQuizPage() {
   const [getQuizRequestData, setQuizRequestData] = useState<GetQuizAPIRequestDto>(initGetQuizRequestData);
-  const [getQuizResponseData, setQuizResponseData] = useState<GetQuizApiResponseDto>(initGetQuizResponseData);
-  const [imageUrl, setImageUrl] = useState<string>('');
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-  const [sessionImageUrl, setSessionImageUrl] = useState<string>('');
+  const [imageUrl, setImageUrl] = useState<string>('');
   const quizSession = useQuizSession();
 
   const contents = () => {
     return (
       <Container>
-        <InputQueryForm getQuizRequestData={getQuizRequestData} setQuizRequestData={setQuizRequestData} />
-        <GetQuizButtonGroup
-          getQuizRequestData={getQuizRequestData}
-          getQuizResponseData={getQuizResponseData}
-          setQuizResponseData={setQuizResponseData}
-          setImageUrl={setImageUrl}
-        />
-        <DisplayQuizSection
-          getQuizResponseData={getQuizResponseData}
-          setQuizResponseData={setQuizResponseData}
-          imageUrl={imageUrl}
-          setImageUrl={setImageUrl}
-        />
-
-        <Divider className="!my-6" />
-
-        {/* 動作確認用の仮UI。旧UI撤去後にメインの出題画面として整理予定 */}
-        <Typography variant="subtitle1" component="h2">
-          出題設定(新) - 動作確認中
-        </Typography>
         <Button label="出題設定を開く" variant="contained" attr="button-array" onClick={() => setSettingsOpen(true)} />
         <QuizSettingsPanel
           open={settingsOpen}
@@ -67,8 +38,8 @@ export default function GetQuizPage() {
             </Typography>
             <DisplayQuizSection
               getQuizResponseData={quizSession.currentQuiz}
-              imageUrl={sessionImageUrl}
-              setImageUrl={setSessionImageUrl}
+              imageUrl={imageUrl}
+              setImageUrl={setImageUrl}
               onAnswer={quizSession.answer}
             />
           </>
