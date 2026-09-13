@@ -19,6 +19,7 @@ export default function GetQuizPage() {
   const [getQuizResponseData, setQuizResponseData] = useState<GetQuizApiResponseDto>(initGetQuizResponseData);
   const [imageUrl, setImageUrl] = useState<string>('');
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
+  const [sessionImageUrl, setSessionImageUrl] = useState<string>('');
   const quizSession = useQuizSession();
 
   const contents = () => {
@@ -40,7 +41,7 @@ export default function GetQuizPage() {
 
         <Divider className="!my-6" />
 
-        {/* 動作確認用の仮UI。DisplayQuizSectionとの統合後に削除予定 */}
+        {/* 動作確認用の仮UI。旧UI撤去後にメインの出題画面として整理予定 */}
         <Typography variant="subtitle1" component="h2">
           出題設定(新) - 動作確認中
         </Typography>
@@ -52,38 +53,39 @@ export default function GetQuizPage() {
           setQuizRequestData={setQuizRequestData}
           onStart={quizSession.startSession}
         />
-        <Typography variant="body2" component="pre" className="!mt-2">
-          {`status: ${quizSession.status}\n` +
-            `取得問題数: ${quizSession.totalCount}\n` +
-            `現在: ${quizSession.currentIndex + 1} / ${quizSession.totalCount}\n` +
-            `正解数: ${quizSession.correctCount} / ${quizSession.answeredCount}\n` +
-            `現在の問題文: ${quizSession.currentQuiz.quiz_sentense ?? ''}`}
-        </Typography>
+
+        {quizSession.status === 'idle' && (
+          <Typography variant="body1" className="!mt-4">
+            出題設定から条件を設定して出題してください。
+          </Typography>
+        )}
+
         {quizSession.status === 'active' && (
           <>
-            <Button
-              label="正解!!(セッション)"
-              variant="contained"
-              color="primary"
-              attr="button-array"
-              onClick={() => quizSession.answer(true)}
-            />
-            <Button
-              label="不正解...(セッション)"
-              variant="contained"
-              color="secondary"
-              attr="button-array"
-              onClick={() => quizSession.answer(false)}
+            <Typography variant="subtitle1" className="!mt-4">
+              {`${quizSession.totalCount}問中${quizSession.currentIndex + 1}問目 (正解数: ${quizSession.correctCount}/${quizSession.answeredCount})`}
+            </Typography>
+            <DisplayQuizSection
+              getQuizResponseData={quizSession.currentQuiz}
+              imageUrl={sessionImageUrl}
+              setImageUrl={setSessionImageUrl}
+              onAnswer={quizSession.answer}
             />
           </>
         )}
-        {quizSession.status === 'finished' && quizSession.totalCount > 0 && (
-          <Button
-            label="出題設定に戻る"
-            variant="outlined"
-            attr="button-array"
-            onClick={() => quizSession.resetSession()}
-          />
+
+        {quizSession.status === 'finished' && (
+          <div className="!mt-4">
+            <Typography variant="subtitle1">
+              {`${quizSession.totalCount}問中${quizSession.correctCount}問正解でした`}
+            </Typography>
+            <Button
+              label="出題設定に戻る"
+              variant="outlined"
+              attr="button-array"
+              onClick={() => quizSession.resetSession()}
+            />
+          </div>
         )}
       </Container>
     );

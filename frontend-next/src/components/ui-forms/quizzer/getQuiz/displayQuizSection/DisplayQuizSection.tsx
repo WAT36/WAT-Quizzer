@@ -30,13 +30,16 @@ interface DisplayQuizSectionProps {
   setQuizResponseData?: React.Dispatch<React.SetStateAction<GetQuizApiResponseDto>>;
   imageUrl: string;
   setImageUrl?: React.Dispatch<React.SetStateAction<string>>;
+  // 指定時は正解/不正解ボタン押下時にこちらへ委譲する（結果登録・次の問題への進行は呼び出し元が担う）
+  onAnswer?: (isCorrect: boolean) => Promise<void>;
 }
 
 export const DisplayQuizSection = ({
   getQuizResponseData,
   setQuizResponseData,
   imageUrl,
-  setImageUrl
+  setImageUrl,
+  onAnswer
 }: DisplayQuizSectionProps) => {
   const setMessage = useSetRecoilState(messageState);
   const [expanded, setExpanded] = useState<boolean>(false);
@@ -61,6 +64,27 @@ export const DisplayQuizSection = ({
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  // 正解/不正解ボタン押下時の処理。onAnswerが指定されていればそちらに委譲する
+  const handleAnswer = async (isCorrect: boolean) => {
+    if (onAnswer) {
+      await onAnswer(isCorrect);
+      setExpanded(false);
+      setImageUrl && setImageUrl('');
+      return;
+    }
+    setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+    const result = isCorrect
+      ? await clearQuizAPI({ getQuizResponseData })
+      : await failQuizAPI({ getQuizResponseData });
+    setMessage(result.message);
+    // TODO 成功時の判定法
+    if (result.message.messageColor === 'success.light' && setQuizResponseData) {
+      setQuizResponseData(initGetQuizResponseData);
+      setExpanded(false);
+      setImageUrl && setImageUrl('');
+    }
   };
 
   // 出題変わったら閉じる、画像自動表示の場合は画像を取得
@@ -164,19 +188,7 @@ export const DisplayQuizSection = ({
               variant="contained"
               color="primary"
               disabled={getQuizResponseData.quiz_num === -1}
-              onClick={async (e) => {
-                setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-                const result = await clearQuizAPI({
-                  getQuizResponseData
-                });
-                setMessage(result.message);
-                // TODO 成功時の判定法
-                if (result.message.messageColor === 'success.light' && setQuizResponseData) {
-                  setQuizResponseData(initGetQuizResponseData);
-                  setExpanded(false);
-                  setImageUrl && setImageUrl('');
-                }
-              }}
+              onClick={() => handleAnswer(true)}
             />
             <Button
               label={'不正解...'}
@@ -184,19 +196,7 @@ export const DisplayQuizSection = ({
               variant="contained"
               color="secondary"
               disabled={getQuizResponseData.quiz_num === -1}
-              onClick={async (e) => {
-                setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-                const result = await failQuizAPI({
-                  getQuizResponseData
-                });
-                setMessage(result.message);
-                // TODO 成功時の判定法
-                if (result.message.messageColor === 'success.light' && setQuizResponseData) {
-                  setQuizResponseData(initGetQuizResponseData);
-                  setExpanded(false);
-                  setImageUrl && setImageUrl('');
-                }
-              }}
+              onClick={() => handleAnswer(false)}
             />
             <Button
               label={'チェックつける/外す'}
