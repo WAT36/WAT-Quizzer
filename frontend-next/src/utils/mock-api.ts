@@ -22,6 +22,18 @@ import {
 export const mockGetQuizAPI = async (params: any): Promise<ApiResult> => {
   // 問題を返す（通常取得以外はランダム） TODO チェック済とか問題種別とかカテゴリに対応する？
   const quizList = quizMockData.filter((quiz) => quiz.file_num === params.getQuizRequestData.file_num);
+  const count = params.getQuizRequestData.count;
+
+  // 出題数(count)指定時は条件に合う問題を最大count件まとめて返す
+  if (params.getQuizMethod && count && count > 0) {
+    const quizzes = [...quizList].sort(() => Math.random() - 0.5).slice(0, count);
+    return {
+      message: successMessage(MESSAGES.SUCCESS.MSG00001),
+      result: quizzes,
+      total: quizList.length
+    };
+  }
+
   const quiz = params.getQuizMethod
     ? quizList[Math.floor(Math.random() * quizList.length)]
     : quizList.find((quiz) => quiz.quiz_num === params.getQuizRequestData.quiz_num);

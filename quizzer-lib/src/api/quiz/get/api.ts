@@ -4,7 +4,13 @@ import { ApiResult, get, ProcessingApiReponse } from '../..'
 
 interface GetQuizAPIProps {
   getQuizRequestData: GetQuizAPIRequestDto
-  getQuizMethod?: 'random' | 'worstRate' | 'leastClear' | 'LRU' | 'review'
+  getQuizMethod?:
+    | 'random'
+    | 'worstRate'
+    | 'leastClear'
+    | 'LRU'
+    | 'review'
+    | 'todayNotAnswered'
 }
 
 export const getQuizAPI = async ({
@@ -43,12 +49,23 @@ export const getQuizAPI = async ({
       : getQuizMethod === 'todayNotAnswered'
       ? '/quiz/remaining'
       : '/quiz'
+  // 出題数(count)が指定されている場合は、条件に合う問題を複数件まとめて取得する
+  const isBatchRequest = !!getQuizMethod && !!getQuizRequestData.count && getQuizRequestData.count > 0
+
   const result = await get(
     path,
     (data: ProcessingApiReponse) => {
       if (data.status === 404) {
         return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
       } else if (data.status === 200) {
+        if (isBatchRequest) {
+          const body = data.body as { total: number; quizzes: GetQuizApiResponseDto[] }
+          return {
+            message: successMessage(MESSAGES.SUCCESS.MSG00001),
+            result: body.quizzes,
+            total: body.total
+          }
+        }
         const result: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto
         return {
           message: successMessage(MESSAGES.SUCCESS.MSG00001),
