@@ -30,8 +30,9 @@ interface DisplayQuizSectionProps {
   setQuizResponseData?: React.Dispatch<React.SetStateAction<GetQuizApiResponseDto>>;
   imageUrl: string;
   setImageUrl?: React.Dispatch<React.SetStateAction<string>>;
-  // 指定時は正解/不正解ボタン押下時にこちらへ委譲する（結果登録・次の問題への進行は呼び出し元が担う）
-  onAnswer?: (isCorrect: boolean) => Promise<void>;
+  // 指定時は正解/不正解ボタン押下時にこちらへ委譲する。結果登録に成功したら、実際に次の問題へ進める「確定関数」を返す
+  // （答えの表示エリアが閉じきってから確定関数を呼ぶことで、次の問題の答えが一瞬見えてしまうのを防ぐ）
+  onAnswer?: (isCorrect: boolean) => Promise<(() => void) | null>;
 }
 
 export const DisplayQuizSection = ({
@@ -46,6 +47,7 @@ export const DisplayQuizSection = ({
   const [hideAccuracyRate, setHideAccuracyRate] = useState<boolean>(false);
   const [autoDisplayImage, setAutoDisplayImage] = useState<boolean>(false);
   const prevQuizSentenseRef = useRef<string>(getQuizResponseData.quiz_sentense);
+  const pendingAdvanceRef = useRef<(() => void) | null>(null);
   const displayQuiz = useMemo(() => {
     const generated = generateQuizSentense(getQuizResponseData);
     // チェックボックスがONの時（hideAccuracyRateがtrue）は正解率を削除
@@ -69,9 +71,11 @@ export const DisplayQuizSection = ({
   // 正解/不正解ボタン押下時の処理。onAnswerが指定されていればそちらに委譲する
   const handleAnswer = async (isCorrect: boolean) => {
     if (onAnswer) {
-      await onAnswer(isCorrect);
+      const advance = await onAnswer(isCorrect);
+      if (!advance) return;
+      // 答えの表示エリアを閉じ始める。実際に次の問題へ進めるのはCollapseが閉じきってから（onExited）
+      pendingAdvanceRef.current = advance;
       setExpanded(false);
-      setImageUrl && setImageUrl('');
       return;
     }
     setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
@@ -174,7 +178,19 @@ export const DisplayQuizSection = ({
             答え
           </MuiButton>
         </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Collapse
+          in={expanded}
+          timeout="auto"
+          unmountOnExit
+          onExited={() => {
+            if (pendingAdvanceRef.current) {
+              const advance = pendingAdvanceRef.current;
+              pendingAdvanceRef.current = null;
+              advance();
+              setImageUrl && setImageUrl('');
+            }
+          }}
+        >
           <CardContent>
             <DisplaySentence sentence={displayQuiz.answer} />
             <Typography variant="subtitle2" component="h3">

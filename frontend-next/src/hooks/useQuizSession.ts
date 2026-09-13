@@ -34,12 +34,13 @@ export const useQuizSession = () => {
     [setMessage]
   );
 
-  // 現在の問題に解答する。登録が成功したらセッションを次の問題に進める（キューの最後なら終了状態にする）
+  // 現在の問題に解答する。登録に成功したら、実際にセッションを次の問題へ進める「確定関数」を返す
+  // （呼び出し元が答えの表示エリアを閉じ終えてから確定関数を呼ぶことで、次の問題の答えが一瞬見えてしまうのを防げる）
   const answer = useCallback(
-    async (isCorrect: boolean) => {
+    async (isCorrect: boolean): Promise<(() => void) | null> => {
       const currentQuiz = state.queue[state.currentIndex];
       if (!currentQuiz || state.status !== 'active') {
-        return;
+        return null;
       }
       setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
       const result = isCorrect
@@ -47,9 +48,10 @@ export const useQuizSession = () => {
         : await failQuizAPI({ getQuizResponseData: currentQuiz });
       setMessage(result.message);
       // TODO 成功時の判定法（DisplayQuizSectionの既存実装と同様のmessageColorでの判定）
-      if (result.message.messageColor === 'success.light') {
-        dispatch({ type: 'ANSWER', isCorrect });
+      if (result.message.messageColor !== 'success.light') {
+        return null;
       }
+      return () => dispatch({ type: 'ANSWER', isCorrect });
     },
     [state.queue, state.currentIndex, state.status, setMessage]
   );
