@@ -79,7 +79,7 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
   return (
     <FormGroup className="!mt-4">
       <FormControl className="max-w-full">
-        <QuizFilePullDown onFileChange={handleFileChange} />
+        <QuizFilePullDown onFileChange={handleFileChange} value={getQuizRequestData.file_num} />
       </FormControl>
 
       <FormControl className="max-w-full">

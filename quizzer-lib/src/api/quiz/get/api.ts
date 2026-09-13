@@ -61,7 +61,10 @@ export const getQuizAPI = async ({
         if (isBatchRequest) {
           const body = data.body as { total: number; quizzes: GetQuizApiResponseDto[] }
           return {
-            message: successMessage(MESSAGES.SUCCESS.MSG00001),
+            message: successMessage(
+              MESSAGES.SUCCESS.MSG00015,
+              String(body.quizzes.length)
+            ),
             result: body.quizzes,
             total: body.total
           }
