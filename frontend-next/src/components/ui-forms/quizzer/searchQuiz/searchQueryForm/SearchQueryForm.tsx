@@ -166,6 +166,7 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
         <PullDown
           label={'カテゴリ'}
           optionList={categorylistoption}
+          searchable
           value={searchQuizRequestData.category ?? -1}
           onChange={(e) => {
             const newCategory = String(e.target.value);

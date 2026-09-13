@@ -1,13 +1,15 @@
 import React from 'react';
-import { Checkbox, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent } from '@mui/material';
-import { getRandomStr } from 'quizzer-lib';
-import { pullDownMenuProps } from '@/constants/pullDown';
+import { Autocomplete, Checkbox, FormControl, TextField, SelectChangeEvent } from '@mui/material';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+
+interface MultiSelectPullDownOption {
+  value: number | string;
+  label: string;
+}
 
 interface MultiSelectPullDownProps {
-  optionList: {
-    value: number | string;
-    label: string;
-  }[];
+  optionList: MultiSelectPullDownOption[];
   label?: string;
   className?: string;
   value?: string[];
@@ -17,48 +19,11 @@ interface MultiSelectPullDownProps {
 export const MultiSelectPullDown = ({ optionList, label, className, value, onChange }: MultiSelectPullDownProps) => {
   const [selectedValue, setSelectedValue] = React.useState<string[]>(value ?? []);
 
-  const handleChange = (event: SelectChangeEvent<typeof selectedValue>) => {
-    const {
-      target: { value }
-    } = event;
-    setSelectedValue(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    );
-    onChange && onChange(event);
-  };
+  React.useEffect(() => {
+    setSelectedValue(value ?? []);
+  }, [value]);
 
-  const renderSelectedValue = (selected: string[]) => {
-    if (selected.length === 0) {
-      return '';
-    }
-
-    // 選択された値に対応するラベルを取得
-    const selectedLabels = selected
-      .map((val) => {
-        const option = optionList.find((opt) => String(opt.value) === val);
-        return option ? option.label : val;
-      })
-      .filter(Boolean);
-
-    if (selectedLabels.length === 0) {
-      return '';
-    }
-
-    // すべての選択項目をカンマ区切りで表示
-    return selectedLabels.join(', ');
-  };
-
-  const labelId = `quiz-file-name-${getRandomStr()}`;
-  const selectProps = {
-    className:
-      'rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500',
-    labelId,
-    id: `quiz-file-id-${getRandomStr()}`,
-    value: selectedValue,
-    onChange: handleChange,
-    MenuProps: pullDownMenuProps
-  };
+  const selectedOptions = optionList.filter((opt) => selectedValue.includes(String(opt.value)));
 
   return (
     <FormControl
@@ -66,45 +31,38 @@ export const MultiSelectPullDown = ({ optionList, label, className, value, onCha
       className={className}
       sx={{ minWidth: 120, maxWidth: '100%' }}
     >
-      <InputLabel
-        id={labelId}
-        className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        sx={{ '&.Mui-disabled': { color: 'text.disabled' } }}
-      >
-        {label}
-      </InputLabel>
-      <Select
-        {...selectProps}
+      <Autocomplete
         multiple
-        input={<OutlinedInput label="Tag" />}
-        renderValue={(selected) => (
-          <div
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: '100%'
-            }}
-          >
-            {renderSelectedValue(selected as string[])}
-          </div>
-        )}
-        sx={{
-          '& .MuiSelect-select': {
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            maxWidth: '100%'
-          }
+        disableCloseOnSelect
+        className="my-[8px]"
+        options={optionList}
+        value={selectedOptions}
+        getOptionLabel={(option) => option.label}
+        isOptionEqualToValue={(option, val) => String(option.value) === String(val.value)}
+        onChange={(_event, newValue) => {
+          const newValues = newValue.map((v) => String(v.value));
+          setSelectedValue(newValues);
+          onChange &&
+            onChange({
+              target: { value: newValues }
+            } as SelectChangeEvent<string[]>);
         }}
-      >
-        {optionList.map((x) => (
-          <MenuItem value={x.value} key={x.value}>
-            <Checkbox checked={selectedValue.includes(String(x.value))} />
-            {x.label}
-          </MenuItem>
-        ))}
-      </Select>
+        renderOption={(props, option, { selected }) => {
+          const { key, ...optionProps } = props;
+          return (
+            <li key={key} {...optionProps}>
+              <Checkbox
+                icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                checkedIcon={<CheckBoxIcon fontSize="small" />}
+                checked={selected}
+                className="mr-2"
+              />
+              {option.label}
+            </li>
+          );
+        }}
+        renderInput={(params) => <TextField {...params} label={label} />}
+      />
     </FormControl>
   );
 };
