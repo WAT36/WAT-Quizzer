@@ -25,7 +25,11 @@ export const getCategoryListAPIResponseToPullDownAdapter = (
   arr: GetCategoryAPIResponseDto[]
 ) => {
   const pulldown: PullDownOptionDto[] = []
-  const uniqueCategoryList = Array.from(new Set(arr.map((x) => x.category)));
+  const uniqueCategoryList = Array.from(
+    new Set(
+      arr.map((x) => x.category).filter((category) => category && category.trim() !== '')
+    )
+  )
   uniqueCategoryList.map((x) => {
     pulldown.push({
       value: x,

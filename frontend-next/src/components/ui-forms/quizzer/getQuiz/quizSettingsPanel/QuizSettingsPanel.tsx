@@ -34,14 +34,15 @@ export const QuizSettingsPanel = ({
   setQuizRequestData,
   onStart
 }: QuizSettingsPanelProps) => {
-  const [method, setMethod] = useState<QuizSessionMethod>('random');
+  // PullDownは共通コンポーネントの仕様上、常に「選択なし」(-1)を選べてしまうため、未選択を検知できる型にしている
+  const [method, setMethod] = useState<QuizSessionMethod | -1>('random');
   const [count, setCount] = useState<number>(DEFAULT_QUIZ_COUNT);
   const [starting, setStarting] = useState(false);
 
-  const isValid = getQuizRequestData.file_num !== -1 && count > 0;
+  const isValid = getQuizRequestData.file_num !== -1 && method !== -1 && count > 0;
 
   const handleStart = async () => {
-    if (!isValid || starting) return;
+    if (method === -1 || !isValid || starting) return;
     setStarting(true);
     try {
       await onStart({ getQuizRequestData, getQuizMethod: method, count });
@@ -60,7 +61,7 @@ export const QuizSettingsPanel = ({
           label="出題形式"
           optionList={QUIZ_METHOD_OPTIONS}
           value={method}
-          onChange={(e) => setMethod(e.target.value as QuizSessionMethod)}
+          onChange={(e) => setMethod(e.target.value as QuizSessionMethod | -1)}
         />
         <TextField
           label="出題数"
