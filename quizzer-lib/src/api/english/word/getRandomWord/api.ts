@@ -1,4 +1,4 @@
-import { GetRandomWordAPIResponse } from 'quizzer-lib'
+import { GetRandomWordAPIResponse } from '.'
 import { get, ApiResult, ProcessingApiReponse } from '../../..'
 
 // englishbot用 単語ランダム取得をapi通信して取ってくる

@@ -40,5 +40,5 @@ while read -r file; do
     file_count=$((file_count + 1))
 done < <(get_all_files)
 
-# 平均行数登録バッチで登録
-npx ts-node batch/src/tools/avg_line.register.ts ${total_lines} ${file_count}
+# 平均行数登録バッチで登録（.env はリポジトリルートのものを読むため cwd はルートのまま batch の ts-node を使う）
+./batch/node_modules/.bin/ts-node batch/src/tools/avg_line.register.ts ${total_lines} ${file_count}

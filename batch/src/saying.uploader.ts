@@ -37,7 +37,7 @@ try {
   // アップロード処理
   const file = fs.readFileSync(path.resolve(__dirname, inputFilePath))
   const formData = new FormData()
-  formData.append('file', new Blob([file]))
+  formData.append('file', new Blob([new Uint8Array(file)]))
   const result = await fetch(baseURL + '/saying/upload', {
     method: 'POST',
     body: formData,
