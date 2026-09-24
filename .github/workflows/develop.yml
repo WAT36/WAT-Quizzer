@@ -19,30 +19,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       # AWS認証情報は不要（モックモードビルドのみで完結するテスト）
       - name: Setup dependencies(all)
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Setup quizzer-lib
-        run: cd ./quizzer-lib && npm run build
+        run: cd ./quizzer-lib && pnpm run build
         env:
           # prisma generate がスキーマ内の env() 参照を解決できればよく、実際の接続はしない
           DATABASE_URL: postgresql://user:password@localhost:5432/dummy
           DIRECT_URL: postgresql://user:password@localhost:5432/dummy
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
         working-directory: frontend-next
 
       - name: Run Playwright E2E (mock mode / DBなし)
-        run: npm run e2e
+        run: pnpm run e2e
         working-directory: frontend-next
 
       # coverage-summary.jsonからジョブサマリー用の要約を出力し、基準値(coverage-baseline.json)を
       # 下回っていないかを確認する。デプロイはブロックしない非ブロッキングな警告のみ。
       - name: Add E2E coverage summary & baseline check to job summary
         if: always()
-        run: npm run e2e:check-coverage-baseline
+        run: pnpm run e2e:check-coverage-baseline
         working-directory: frontend-next
 
       - name: Upload E2E coverage report
@@ -54,7 +58,7 @@ jobs:
           retention-days: 30
 
       - name: Build Storybook
-        run: npm run build-storybook
+        run: pnpm run build-storybook
         working-directory: frontend-next
 
       # Recoil(状態管理ライブラリ、2024年2月で開発終了)がStorybookのテスト環境でのみ
@@ -63,9 +67,9 @@ jobs:
       - name: Run Storybook tests (interaction + a11y)
         continue-on-error: true
         run: |
-          npx serve storybook-static -l 6006 &
-          npx wait-on http://127.0.0.1:6006
-          npm run test-storybook
+          pnpm exec serve storybook-static -l 6006 &
+          pnpm exec wait-on http://127.0.0.1:6006
+          pnpm run test-storybook
         working-directory: frontend-next
 
   deploy-production:
@@ -151,13 +155,17 @@ jobs:
             xargs -I {} aws ecr batch-delete-image --repository-name $REPO_NAME --image-ids imageTag={} || true
           fi
 
+      # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup dependencies(all)
         id: setup-dependencies
-        run: npm ci --production
+        run: pnpm install --frozen-lockfile
 
       - name: Setup quizzer-lib
         id: setup-quizzer-lib
-        run: cd ./quizzer-lib && npm run build
+        run: cd ./quizzer-lib && pnpm run build
 
       - name: Setup dependencies(infra)
         id: setup-infra-dependencies
@@ -165,14 +173,14 @@ jobs:
 
       # backendをUT（時間かかってactionsがtimeoutする場合削除してOK）
       - name: Backend Unit test
-        run: cd ./backend-nest && npm run test
+        run: cd ./backend-nest && pnpm run test
 
       # frontendをビルド
       - name: Next.js Build and Export(Frontend)
-        run: cd ./frontend-next && npm run export
+        run: cd ./frontend-next && pnpm run export
 
       - name: Build Storybook
-        run: cd ./frontend-next && rm -rf storybook-static && npm run build-storybook && mkdir -p out/storybook && cp -r storybook-static/* out/storybook/
+        run: cd ./frontend-next && rm -rf storybook-static && pnpm run build-storybook && mkdir -p out/storybook && cp -r storybook-static/* out/storybook/
 
       - name: Deploy backend stack
         id: cdk-deploy-backend
@@ -208,11 +216,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup dependencies(all)
-        run: npm ci --production
+        run: pnpm install --frozen-lockfile
 
       - name: Setup quizzer-lib
-        run: cd ./quizzer-lib && npm run build
+        run: cd ./quizzer-lib && pnpm run build
 
       - name: Setup dependencies(infra)
         run: cd ./infra && npm ci --production
@@ -222,7 +234,7 @@ jobs:
         env:
           NEXT_PUBLIC_MOCK_MODE: true
           NEXT_PUBLIC_URL_END: '/index.html'
-        run: cd ./frontend-next && npm run export
+        run: cd ./frontend-next && pnpm run export
 
       # モック環境用S3アップロード
       - name: Upload mock files to S3

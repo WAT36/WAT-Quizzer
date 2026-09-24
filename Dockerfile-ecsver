@@ -3,31 +3,34 @@ FROM node:18
 ENV GENERATE_SOURCEMAP=false
 ENV NODE_OPTIONS=--max-old-space-size=16384
 
+# pnpm（バージョンはルート package.json の packageManager と合わせる）
+RUN npm install -g pnpm@12.6.0
+
 # from monorepo root
 WORKDIR /app
 
-COPY ./package*.json ./
+COPY ./*.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./
 
-COPY ./quizzer-lib/package*.json ./quizzer-lib/
+COPY ./quizzer-lib/package.json ./quizzer-lib/
 
-COPY ./backend-nest/package*.json ./backend-nest/
+COPY ./backend-nest/package.json ./backend-nest/
 
-RUN npm ci --production
+RUN pnpm install --frozen-lockfile --filter "backend-nest..."
 
 # build quizzer-lib
 WORKDIR /app/quizzer-lib
 
 COPY ./quizzer-lib ./
 
-RUN npm run build
+RUN pnpm run build
 
 # アプリケーションディレクトリを作成する
 WORKDIR /app/backend-nest
 
 COPY ./backend-nest ./
 
-RUN npm run build
+RUN pnpm run build
 
 EXPOSE 4000
 
-CMD [ "npm", "run","start" ]
+CMD [ "pnpm", "run","start" ]

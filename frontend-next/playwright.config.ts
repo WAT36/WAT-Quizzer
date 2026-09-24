@@ -95,9 +95,9 @@ export default defineConfig({
     // },
   ],
 
-  /* Serve the mock-mode static export (built beforehand by `npm run export:mock`, see `e2e` script). DB不要・固定データのため、実DB環境を用意せずに起動できる。 */
+  /* Serve the mock-mode static export (built beforehand by `pnpm run export:mock`, see `e2e` script). DB不要・固定データのため、実DB環境を用意せずに起動できる。 */
   webServer: {
-    command: 'npx serve ./out -l 3000',
+    command: 'pnpm exec serve ./out -l 3000',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 30_000

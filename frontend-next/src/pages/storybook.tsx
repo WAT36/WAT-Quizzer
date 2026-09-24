@@ -15,7 +15,7 @@ export default function Storybook({}: Props) {
 
     if (isDevelopment) {
       // ローカル環境: Storybookの開発サーバー（通常はポート6006）
-      // ※ローカルの場合は別途npm run storybookも実行しておくこと
+      // ※ローカルの場合は別途pnpm run storybookも実行しておくこと
       const devUrl = process.env.NEXT_PUBLIC_STORYBOOK_URL || '';
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setStorybookUrl(devUrl);
@@ -45,7 +45,7 @@ export default function Storybook({}: Props) {
           <Alert severity="info" sx={{ mb: 2 }}>
             Storybookの開発サーバーが起動していることを確認してください。
             <br />
-            起動していない場合は、<code>npm run storybook</code>を実行してください。
+            起動していない場合は、<code>pnpm run storybook</code>を実行してください。
           </Alert>
         )}
         {error && (

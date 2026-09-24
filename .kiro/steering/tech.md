@@ -40,7 +40,7 @@
 - **AWS CDK** v2（`BackendStack`、`FrontendStack`、`MockStack`）
 - SAM も併用（`template.yaml` / `samconfig.toml`）
 - **CI/CD**: GitHub Actions（`develop` ブランチへの push をトリガー）
-- npm workspace には含まれない独立プロジェクト
+- pnpm workspace には含まれない独立プロジェクト（npm で管理）
 
 ## コードスタイル
 
@@ -72,34 +72,34 @@
 
 ### ルート（モノレポ全体）
 ```bash
-npm run start              # quizzer-lib ビルド後、backend + frontend を同時起動
-npm run build:lib          # quizzer-lib のみビルド
-npm run build:backend      # prisma generate → nest build
-npm run build:frontend     # next build（静的エクスポート）
-npm run deps:check         # workspace 間バージョン不整合チェック（syncpack）
-npm run deps:fix           # 上記の自動修正
+pnpm run start              # quizzer-lib ビルド後、backend + frontend を同時起動
+pnpm run build:lib          # quizzer-lib のみビルド
+pnpm run build:backend      # prisma generate → nest build
+pnpm run build:frontend     # next build（静的エクスポート）
+pnpm run deps:check         # workspace 間バージョン不整合チェック（syncpack）
+pnpm run deps:fix           # 上記の自動修正
 ```
 
 ### バックエンド（`backend-nest/` で実行）
 ```bash
-npm run start:dev          # watch モードで起動
-npm run build              # nest build
-npm run test               # Jest 単体テスト
-npm run test:cov           # カバレッジ付きテスト
-npm run test:e2e           # E2E テスト
-npm run lint               # ESLint（--fix 付き）
-npm run format             # Prettier
+pnpm run start:dev          # watch モードで起動
+pnpm run build              # nest build
+pnpm run test               # Jest 単体テスト
+pnpm run test:cov           # カバレッジ付きテスト
+pnpm run test:e2e           # E2E テスト
+pnpm run lint               # ESLint（--fix 付き）
+pnpm run format             # Prettier
 ```
 
 ### フロントエンド（`frontend-next/` で実行）
 ```bash
-npm run dev                # 開発サーバー
-npm run export             # next build（静的エクスポート）
-npm run e2e                # モックモードビルド → Playwright E2E
-npm run storybook          # Storybook 開発サーバー（port 6006）
-npm run build-storybook    # Storybook ビルド
-npm run test-storybook     # Storybook テスト（インタラクション + a11y）
-npm run lint               # next lint
+pnpm run dev                # 開発サーバー
+pnpm run export             # next build（静的エクスポート）
+pnpm run e2e                # モックモードビルド → Playwright E2E
+pnpm run storybook          # Storybook 開発サーバー（port 6006）
+pnpm run build-storybook    # Storybook ビルド
+pnpm run test-storybook     # Storybook テスト（インタラクション + a11y）
+pnpm run lint               # next lint
 ```
 
 ### Docker（ローカル）

@@ -2,7 +2,7 @@
 
 ## 概要
 
-**WAT-Quizzer** は個人向け学習支援 Web アプリケーション。npm workspaces によるモノレポ構成で管理されている。
+**WAT-Quizzer** は個人向け学習支援 Web アプリケーション。pnpm workspace によるモノレポ構成で管理されている。
 
 ## 主要機能
 

@@ -26,13 +26,14 @@ WAT-Quizzer のフロントエンド。[Next.js](https://nextjs.org/)（Pages Ro
 ## セットアップ
 
 ```bash
-npm install
+# リポジトリルートで実行（pnpm workspace で一括インストール）
+pnpm install
 ```
 
 ## 開発サーバー起動
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 [http://localhost:3000](http://localhost:3000) で確認できる。
@@ -40,23 +41,23 @@ npm run dev
 ## ビルド
 
 ```bash
-npm run build   # 静的エクスポート (out/)
-npm run serve   # ビルド後 out/ を配信
+pnpm run build   # 静的エクスポート (out/)
+pnpm run serve   # ビルド後 out/ を配信
 ```
 
 ## テスト
 
 - Storybook（コンポーネントカタログ + a11y チェック）:
   ```bash
-  npm run storybook          # 開発サーバー (port 6006)
-  npm run build-storybook
-  npm run test-storybook     # Storybook のインタラクション/a11yテスト
+  pnpm run storybook          # 開発サーバー (port 6006)
+  pnpm run build-storybook
+  pnpm run test-storybook     # Storybook のインタラクション/a11yテスト
   ```
   `chromatic` / `git:push` は Chromatic への Storybook 公開用。
 - Playwright による e2e テスト (`e2e/`):
   ```bash
-  npm run e2e
-  npm run e2e:ui
+  pnpm run e2e
+  pnpm run e2e:ui
   ```
 
 ## 環境変数

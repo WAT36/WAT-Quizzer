@@ -44,7 +44,7 @@ develop ブランチに push すると、GitHub Actions が自動的に以下を
 
 ```bash
 cd frontend-next
-NEXT_PUBLIC_MOCK_MODE=true npm run dev
+NEXT_PUBLIC_MOCK_MODE=true pnpm run dev
 ```
 
 ## サンプルデータ

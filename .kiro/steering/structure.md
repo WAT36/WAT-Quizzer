@@ -1,6 +1,6 @@
 # プロジェクト構造
 
-## モノレポ構成（npm workspaces）
+## モノレポ構成（pnpm workspace）
 
 ```
 WAT-Quizzer/
@@ -8,7 +8,7 @@ WAT-Quizzer/
 ├── frontend-next/         # Next.js フロントエンド（静的エクスポート）
 ├── quizzer-lib/           # 共有パッケージ（backend-nest / frontend-next / batch が依存）
 ├── batch/                 # 単発実行バッチ・CLI スクリプト集
-├── infra/                 # AWS CDK インフラ定義（npm workspace 外の独立プロジェクト）
+├── infra/                 # AWS CDK インフラ定義（pnpm workspace 外の独立プロジェクト。npm で管理）
 └── container/             # ローカル用 PostgreSQL コンテナ（docker-compose）
 ```
 

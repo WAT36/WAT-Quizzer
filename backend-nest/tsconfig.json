@@ -18,7 +18,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "typeRoots": ["../node_modules/@types"]
+    "typeRoots": ["./node_modules/@types", "../node_modules/@types"]
   },
   "extends": "../tsconfig.json",
   "include": ["src"]

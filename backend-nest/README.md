@@ -22,20 +22,21 @@ WAT-Quizzer の REST API サーバー。[NestJS](https://nestjs.com/) 製。
 ## セットアップ
 
 ```bash
-npm install
+# リポジトリルートで実行（pnpm workspace で一括インストール）
+pnpm install
 ```
 
 ## 起動
 
 ```bash
 # 開発（ホットリロードなし）
-npm run start
+pnpm run start
 
 # watch モード
-npm run start:dev
+pnpm run start:dev
 
 # 本番相当
-npm run start:prod
+pnpm run start:prod
 ```
 
 ローカル起動時はポート `4000` で待ち受ける（`APP_ENV=local` のときのみ `bootstrap()` が実行される）。
@@ -44,13 +45,13 @@ npm run start:prod
 
 ```bash
 # ユニットテスト
-npm run test
+pnpm run test
 
 # e2e テスト
-npm run test:e2e
+pnpm run test:e2e
 
 # カバレッジ
-npm run test:cov
+pnpm run test:cov
 ```
 
 ## 環境変数

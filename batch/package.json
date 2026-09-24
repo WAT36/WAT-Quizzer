@@ -15,6 +15,6 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "quizzer-lib": "1.0.1"
+    "quizzer-lib": "workspace:*"
   }
 }

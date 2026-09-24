@@ -1,0 +1,25 @@
+# pnpm ワークスペース定義（npm の package.json "workspaces" に相当）
+# infra は独立した CDK プロジェクトのため対象外（従来通り npm で管理）
+packages:
+  - backend-nest
+  - frontend-next
+  - quizzer-lib
+  - batch
+
+# 依存パッケージのインストールスクリプト（postinstall 等）の実行可否
+# pnpm は既定で全てブロックするため、必要なものだけ true にする
+#   true : prisma（エンジン取得・クライアント生成）、esbuild / @swc/core / unrs-resolver（ネイティブバイナリ取得）
+#   false: テレメトリ・寄付メッセージ表示・不要なブラウザ取得など、無くても動作に影響しないもの
+# 新しく必要になったら `pnpm approve-builds` で追加できる
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  '@scarf/scarf': false
+  '@swc/core': true
+  aws-sdk: false
+  core-js-pure: false
+  esbuild: true
+  prisma: true
+  protobufjs: false
+  puppeteer: false
+  unrs-resolver: true

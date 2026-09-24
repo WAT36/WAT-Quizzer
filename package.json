@@ -3,23 +3,18 @@
   "version": "1.0.0",
   "description": "csv_quiz_bot 2nd edition by WAT",
   "private": true,
-  "workspaces": [
-    "backend-nest",
-    "frontend-next",
-    "quizzer-lib",
-    "batch"
-  ],
+  "packageManager": "pnpm@12.6.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:lib": "npm run build -w quizzer-lib",
-    "build:backend": "npx -w backend-nest prisma format && npx -w backend-nest prisma generate && npx -w backend-nest nest build",
-    "build:frontend": "npx -w frontend-next next build",
-    "deps:check": "npx syncpack list-mismatches",
-    "deps:fix": "npx syncpack fix-mismatches",
-    "start:backend": "npm install -w backend-nest && npm run build -w backend-nest && npm run start:dev -w backend-nest",
-    "start:frontend": "npm install -w frontend-next && npm run dev -w frontend-next",
-    "start": "npm run build:lib && concurrently -n backend,frontend -c blue,green \"npm:start:backend\" \"npm:start:frontend\""
+    "build:lib": "pnpm --filter quizzer-lib build",
+    "build:backend": "pnpm build:lib && pnpm --filter backend-nest build",
+    "build:frontend": "pnpm --filter frontend-next build",
+    "deps:check": "pnpm dlx syncpack@12 list-mismatches",
+    "deps:fix": "pnpm dlx syncpack@12 fix-mismatches",
+    "start:backend": "pnpm --filter backend-nest build && pnpm --filter backend-nest start:dev",
+    "start:frontend": "pnpm --filter frontend-next dev",
+    "start": "pnpm install && pnpm build:lib && concurrently -n backend,frontend -c blue,green \"pnpm:start:backend\" \"pnpm:start:frontend\""
   },
   "repository": {
     "type": "git",

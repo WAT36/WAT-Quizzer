@@ -36,6 +36,7 @@
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/platform-express": "^11.1.1",
     "@nestjs/swagger": "^11.1.0",
+    "@prisma/client": "^6.3.0",
     "@types/express": "^5.0.2",
     "@types/jest": "29.5.14",
     "@types/multer": "^1.4.12",
@@ -63,7 +64,7 @@
     "nats": "^2.29.3",
     "papaparse": "^5.5.2",
     "patch-package": "^8.0.0",
-    "quizzer-lib": "1.0.1",
+    "quizzer-lib": "workspace:*",
     "tar": "7.5.22",
     "ts-jest": "29.3.0"
   },
