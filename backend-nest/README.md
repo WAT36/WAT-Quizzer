@@ -10,7 +10,7 @@ WAT-Quizzer の REST API サーバー。[NestJS](https://nestjs.com/) 製。
 
 | モジュール | ベースパス | 概要 |
 |---|---|---|
-| `quiz/` | `/quiz`, `/quiz/file` | 基礎・応用問題の CRUD、ランダム/苦手問題出題、正誤記録、CSV アップロード、画像アップロード、統計 |
+| `quiz/` | `/quiz`, `/quiz/file` | 基礎・応用問題の CRUD、出題形式別の問題取得（ランダム・低正解率・最小回答数・LRU・復習・今日未回答・直近更新）、正誤記録、CSV アップロード、画像アップロード、統計 |
 | `category/` | `/category` | 問題カテゴリの一覧・正答率・親子関係・件数集計 |
 | `english/` | `/english`, `/english/word`, `/english/derivatives` | 英単語帳（EnglishBot）: 単語/派生語/類義語/反意語/語源、例文とテスト、出典管理 |
 | `saying/` | `/saying` | 格言（さやいん）の登録・検索・出典（書籍）管理 |
