@@ -34,6 +34,11 @@ if [ -n "$missing" ]; then
   done
   echo "   必要なら Claude Code で /update-readmes を実行して確認してください。"
   echo ""
+
+  # VS Code など GUI からのコミットでは上記の出力が目に入らないため、macOS の通知でも知らせる
+  if [ ! -t 1 ] && command -v osascript >/dev/null 2>&1; then
+    osascript -e "display notification \"未更新:${missing}\" with title \"README の更新を確認してください\"" >/dev/null 2>&1
+  fi
 fi
 
 exit 0

@@ -49,7 +49,7 @@ pnpm deps:fix            # 上記の自動修正
 
 `.githooks/` に Git フックを置いている。`pnpm install` 時に `prepare` スクリプトが `git config core.hooksPath .githooks` を実行するので、特別な設定は不要。
 
-- `pre-commit`: コードに変更があるのに、対応する README が更新されていない場合に警告を出す（コミットは止めない）。Claude Code（`claude` コマンド）が入っていない環境では何もしない。警告が出たら `/update-readmes` で確認する
+- `pre-commit`: コードに変更があるのに、対応する README が更新されていない場合に警告を出す（コミットは止めない）。VS Code など GUI からのコミットでは、macOS の場合は通知でも知らせる。Claude Code（`claude` コマンド）が入っていない環境では何もしない。警告が出たら `/update-readmes` で確認する
 
 ## 脆弱性診断
 
