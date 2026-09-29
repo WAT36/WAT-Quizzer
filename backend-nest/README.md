@@ -62,6 +62,12 @@ pnpm run test:cov
 - `APP_ENV` — `local` のときのみ Express サーバーとして起動
 - `REGION`, `AWS_COGNITO_USERPOOL_ID`, `AWS_COGNITO_APPCLIENT_ID` — Cognito 認証まわり
 
+上記以外に、コード上で以下も参照している（ルートの `.env` には含まれていない）。
+
+- `QUIZ_IMAGE_S3_BUCKET`, `AKEY`, `SAKEY` — 問題画像の S3 アップロード/取得（`quizzer-lib` の `src/lib/aws/s3.ts`）
+- `WORD_DERIVATIVES_FUNCTION_NAME` — 派生語取得で呼び出す Lambda 関数名（`english/derivatives/`）
+- `ENV` — ToDo チェック状況を保存する DynamoDB テーブル名 `<ENV>-todo-check-status` の接頭辞（未設定時は `dev`）
+
 ## Docker
 
 リポジトリルートの `Dockerfile` / `docker-compose.yaml` から本アプリのコンテナ (`quizzer_api`, ポート `4000`) をビルド・起動できる。

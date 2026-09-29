@@ -41,9 +41,12 @@ pnpm run dev
 ## ビルド
 
 ```bash
-pnpm run build   # 静的エクスポート (out/)
-pnpm run serve   # ビルド後 out/ を配信
+pnpm run build        # 静的エクスポート (out/)。export も同じ内容
+pnpm run serve        # ビルド後 out/ を配信
+pnpm run export:mock  # モックモード（NEXT_PUBLIC_MOCK_MODE=true）で静的エクスポート
 ```
+
+モックモードでは API を呼ばずにサンプルデータを表示する（`src/utils/api-wrapper.ts`）。モック環境の詳細はリポジトリルートの `MOCK-README.md` を参照。
 
 ## テスト
 
@@ -52,17 +55,21 @@ pnpm run serve   # ビルド後 out/ を配信
   pnpm run storybook          # 開発サーバー (port 6006)
   pnpm run build-storybook
   pnpm run test-storybook     # Storybook のインタラクション/a11yテスト
+  pnpm run test-storybook:report  # 上記の結果を test-result/a11y.json に出力
   ```
-  `chromatic` / `git:push` は Chromatic への Storybook 公開用。
-- Playwright による e2e テスト (`e2e/`):
+  Storybook では `.storybook/main.ts` で `NEXT_PUBLIC_MOCK_MODE=true` が設定され、モックデータで表示される。`chromatic` / `git:push` は Chromatic への Storybook 公開用。
+- Playwright による e2e テスト (`e2e/`)。モックモードでエクスポートした静的サイトに対して実行する:
   ```bash
-  pnpm run e2e
+  pnpm run e2e                          # export:mock → playwright test
   pnpm run e2e:ui
+  pnpm run e2e:check-coverage-baseline  # e2e/coverage-baseline.json との比較
   ```
 
 ## 環境変数
 
-主に以下をリポジトリルートの `.env` で管理する。
+主に以下を `frontend-next/.env` で管理する。
 
 - `NEXT_PUBLIC_API_SERVER` — 接続先の `backend-nest` API のベース URL
-- `NEXT_PUBLIC_URL_END`, `QUIZZER_FRONT_SERVER` — フロント自身の URL 関連設定
+- `NEXT_PUBLIC_URL_END` — フロント自身の URL 関連設定
+- `NEXT_PUBLIC_STORYBOOK_URL` — `/storybook` ページから遷移する Storybook の URL
+- `NEXT_PUBLIC_MOCK_MODE` — `true` のときモックモード（通常は `export:mock` や Storybook 側で設定）

@@ -2,7 +2,7 @@
 
 WAT-Quizzer 用の単発実行バッチ/CLIスクリプト集。`quizzer-lib` を参照し、認証が必要なものは `src/tools/signin.ts` の `signInForBatch`（内部ヘルパー、単体では実行しない）でサインインしてから `backend-nest` の API を呼び出す。
 
-各スクリプトは `pnpm exec ts-node src/<ファイル名>.ts <引数...>` の形式で実行する。
+各スクリプトは `pnpm exec ts-node src/<ファイル名>.ts <引数...>` の形式で実行する。入力ファイルのパスは `batch/` ディレクトリからの相対パスとして解釈される（スクリプト内で `path.resolve(__dirname, '../' + 引数)` している）。
 
 # quiz.uploader.ts
 
