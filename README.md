@@ -45,6 +45,12 @@ pnpm deps:fix            # 上記の自動修正
 
 詳細なセットアップ・機能・環境変数は各サブディレクトリの README を参照。
 
+### Git フック
+
+`.githooks/` に Git フックを置いている。`pnpm install` 時に `prepare` スクリプトが `git config core.hooksPath .githooks` を実行するので、特別な設定は不要。
+
+- `pre-commit`: コードに変更があるのに、対応する README が更新されていない場合に警告を出す（コミットは止めない）。Claude Code（`claude` コマンド）が入っていない環境では何もしない。警告が出たら `/update-readmes` で確認する
+
 ## 脆弱性診断
 
 Claude Code の `/security-review` スキルで、現在のブランチの差分に対して SQL インジェクション・XSS・認証/認可の不備・シークレット露出などの脆弱性診断ができる（対象は差分ベースなので、リポジトリ全体を診断したい場合は別途調査が必要）。

@@ -6,6 +6,7 @@
   "packageManager": "pnpm@12.6.0",
   "main": "index.js",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:lib": "pnpm --filter quizzer-lib build",
     "build:backend": "pnpm build:lib && pnpm --filter backend-nest build",

@@ -1,0 +1,39 @@
+#!/bin/sh
+# コードに変更があるのに、対応する README が更新されていない場合に警告を出す（コミットは止めない）
+# Claude Code（claude コマンド）が入っていない環境では何もしない
+command -v claude >/dev/null 2>&1 || exit 0
+
+staged=$(git diff --cached --name-only --diff-filter=ACMRD)
+[ -z "$staged" ] && exit 0
+
+# 対象: ソース・Prisma スキーマ・package.json（テスト・Storybook は除外）
+code=$(printf '%s\n' "$staged" \
+  | grep -E '\.(ts|tsx|js|jsx|prisma)$|(^|/)package\.json$' \
+  | grep -vE '\.(test|spec|stories)\.(ts|tsx|js|jsx)$|(^|/)__tests__/')
+[ -z "$code" ] && exit 0
+
+# 変更のあったディレクトリごとに、対応する README がステージされているか確認する
+missing=""
+for dir in backend-nest frontend-next batch infra; do
+  if printf '%s\n' "$code" | grep -q "^$dir/" \
+    && ! printf '%s\n' "$staged" | grep -qx "$dir/README.md"; then
+    missing="$missing $dir/README.md"
+  fi
+done
+# quizzer-lib には README が無いので、ルートの README で扱う
+if printf '%s\n' "$code" | grep -qvE '^(backend-nest|frontend-next|batch|infra)/' \
+  && ! printf '%s\n' "$staged" | grep -qx "README.md"; then
+  missing="$missing README.md"
+fi
+
+if [ -n "$missing" ]; then
+  echo ""
+  echo "⚠️  コードに変更がありますが、以下の README は更新されていません:"
+  for f in $missing; do
+    echo "   - $f"
+  done
+  echo "   必要なら Claude Code で /update-readmes を実行して確認してください。"
+  echo ""
+fi
+
+exit 0
