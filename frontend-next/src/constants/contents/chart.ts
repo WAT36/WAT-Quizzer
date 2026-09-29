@@ -18,3 +18,12 @@ export const DATE_UNIT_OPTION = [
   { value: 'week', label: '週' },
   { value: 'month', label: '月' }
 ];
+
+//  Quizzer 出題セッション終了後の結果グラフ
+export const SESSION_RESULT_DOUGHNUT_LABEL = ['正解', '不正解'];
+export const SESSION_RESULT_DOUGHNUT_COLOR = ['crimson', 'dimgray'];
+export const SESSION_RESULT_DOUGHNUT_TITLE = '今回の正解・不正解';
+export const SESSION_RESULT_CATEGORY_TITLE = 'カテゴリ別正解率(%)';
+export const SESSION_RESULT_CATEGORY_LABEL = '正解率(%)';
+// 得意・苦手・その他（判定対象外含む）の棒の色
+export const SESSION_RESULT_CATEGORY_COLOR = { strong: 'limegreen', weak: 'orange', other: 'royalblue' };

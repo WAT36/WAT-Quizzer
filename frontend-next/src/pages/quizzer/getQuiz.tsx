@@ -3,6 +3,7 @@ import { Container, Typography } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { DisplayQuizSection } from '@/components/ui-forms/quizzer/getQuiz/displayQuizSection/DisplayQuizSection';
 import { QuizSettingsPanel } from '@/components/ui-forms/quizzer/getQuiz/quizSettingsPanel/QuizSettingsPanel';
+import { QuizSessionResult } from '@/components/ui-forms/quizzer/getQuiz/quizSessionResult/QuizSessionResult';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useQuizSession } from '@/hooks/useQuizSession';
 import { GetQuizAPIRequestDto, initGetQuizRequestData } from 'quizzer-lib';
@@ -47,9 +48,7 @@ export default function GetQuizPage() {
 
         {quizSession.status === 'finished' && (
           <div className="!mt-4">
-            <Typography variant="subtitle1">
-              {`${quizSession.totalCount}問中${quizSession.correctCount}問正解でした`}
-            </Typography>
+            <QuizSessionResult results={quizSession.results} />
             <Button
               label="出題設定に戻る"
               variant="outlined"

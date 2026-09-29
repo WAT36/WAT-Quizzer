@@ -75,6 +75,7 @@ export const useQuizSession = () => {
     totalCount: state.queue.length,
     correctCount: state.correctCount,
     answeredCount: state.answeredCount,
+    results: state.results,
     startSession,
     answer,
     resetSession
