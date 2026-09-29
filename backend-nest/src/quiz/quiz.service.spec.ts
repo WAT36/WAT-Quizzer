@@ -196,6 +196,32 @@ describe('QuizService', () => {
     });
   });
 
+  // 直近更新のあった問題を取得 正常系
+  it('getRecentlyUpdatedQuiz - OK', async () => {
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce(
+      getQuizResultTest,
+    );
+    expect(
+      await quizService.getQuiz(
+        { file_num: 1, quiz_num: 1 },
+        'recentlyUpdated',
+      ),
+    ).toEqual({
+      ...getQuizResultTest[0],
+      count: 1,
+      quiz_statistics_view: {
+        clear_count: '1',
+        fail_count: '1',
+        accuracy_rate: '50',
+      },
+    });
+    expect(prisma.quiz.findMany).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        orderBy: [{ updated_at: 'desc' }, { id: 'desc' }],
+      }),
+    );
+  });
+
   // 昨日間違えた問題（reviewメソッド）の取得 正常系テスト
   it('getReviewQuiz - OK', async () => {
     // quiz_statistics_view.findFirstでlast_failed_answer_logを返すモック

@@ -11,6 +11,7 @@ interface GetQuizAPIProps {
     | 'LRU'
     | 'review'
     | 'todayNotAnswered'
+    | 'recentlyUpdated'
 }
 
 export const getQuizAPI = async ({
@@ -48,6 +49,8 @@ export const getQuizAPI = async ({
       ? '/quiz/review'
       : getQuizMethod === 'todayNotAnswered'
       ? '/quiz/remaining'
+      : getQuizMethod === 'recentlyUpdated'
+      ? '/quiz/recent'
       : '/quiz'
   // 出題数(count)が指定されている場合は、条件に合う問題を複数件まとめて取得する
   const isBatchRequest = !!getQuizMethod && !!getQuizRequestData.count && getQuizRequestData.count > 0

@@ -105,6 +105,16 @@ export class QuizController {
   }
 
   @ApiOperation({
+    summary: '直近更新のあったクイズ取得',
+    description:
+      '更新日時(updated_at)が新しい順にクイズを取得します（出題数指定時は上位から指定件数）。',
+  })
+  @Get('/recent')
+  async getRecentlyUpdatedQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestDto) {
+    return await this.quizService.getQuiz(req, 'recentlyUpdated');
+  }
+
+  @ApiOperation({
     summary: 'クイズ正解登録',
     description: 'クイズを正解したことを記録します。',
   })

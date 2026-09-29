@@ -44,7 +44,8 @@ export class QuizService {
       | 'leastClear'
       | 'LRU'
       | 'review'
-      | 'todayNotAnswered',
+      | 'todayNotAnswered'
+      | 'recentlyUpdated',
   ) {
     try {
       const {
@@ -206,7 +207,9 @@ export class QuizService {
                       last_failed_answer_log: 'desc' as const,
                     },
                   }
-                : {};
+                : method === 'recentlyUpdated'
+                  ? [{ updated_at: 'desc' as const }, { id: 'desc' as const }]
+                  : {};
       // 順位確定メソッド（全件ではなく先頭1件のみ取得すればよい）
       const needsAllResults =
         !method || method === 'random' || method === 'todayNotAnswered';

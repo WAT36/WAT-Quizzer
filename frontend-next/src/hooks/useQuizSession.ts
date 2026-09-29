@@ -5,7 +5,14 @@ import { GetQuizAPIRequestDto, GetQuizApiResponseDto, initGetQuizResponseData } 
 import { getQuizAPI, clearQuizAPI, failQuizAPI } from '@/utils/api-wrapper';
 import { initialQuizSessionState, quizSessionReducer } from './quizSession/reducer';
 
-export type QuizSessionMethod = 'random' | 'worstRate' | 'leastClear' | 'LRU' | 'review' | 'todayNotAnswered';
+export type QuizSessionMethod =
+  | 'random'
+  | 'worstRate'
+  | 'leastClear'
+  | 'LRU'
+  | 'review'
+  | 'todayNotAnswered'
+  | 'recentlyUpdated';
 
 export interface StartQuizSessionParams {
   getQuizRequestData: GetQuizAPIRequestDto;
