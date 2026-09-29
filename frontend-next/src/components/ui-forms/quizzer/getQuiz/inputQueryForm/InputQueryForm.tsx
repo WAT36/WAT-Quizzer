@@ -3,7 +3,8 @@ import { FormControl, FormGroup, FormLabel, IconButton, SelectChangeEvent } from
 import CasinoIcon from '@mui/icons-material/Casino';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
-import { GetQuizAPIRequestDto, KeywordSearchTarget, PullDownOptionDto } from 'quizzer-lib';
+import { CategoryQuizCountDto, GetQuizAPIRequestDto, KeywordSearchTarget, PullDownOptionDto } from 'quizzer-lib';
+import { getCategoryQuizCountAPI } from '@/utils/api-wrapper';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
@@ -17,6 +18,9 @@ interface InputQueryFormProps {
   getQuizRequestData: GetQuizAPIRequestDto;
   setQuizRequestData: React.Dispatch<React.SetStateAction<GetQuizAPIRequestDto>>;
 }
+
+// カテゴリランダム選択の対象とする問題数の上限
+const RANDOM_CATEGORY_MAX_QUIZ_COUNT = 200;
 
 // キーワード検索対象のラベル ⇔ 内部値の対応
 const KEYWORD_TARGET_LABELS: Record<KeywordSearchTarget, string> = {
@@ -65,14 +69,34 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
     });
   };
 
-  const handleRandomCategory = () => {
+  const handleRandomCategory = async () => {
     if (categorylistoption.length === 0) return;
-    const randomOption = categorylistoption[Math.floor(Math.random() * categorylistoption.length)];
+    // 問題数が多すぎるカテゴリは除外し、1〜上限問のカテゴリからランダムに選ぶ
+    const { result, message } = await getCategoryQuizCountAPI({
+      getCategoryQuizCountData: { file_num: getQuizRequestData.file_num }
+    });
+    if (!result) {
+      setMessage(message);
+      return;
+    }
+    const optionValues = new Set(categorylistoption.map((x) => String(x.value)));
+    const candidates = (result as CategoryQuizCountDto[]).filter(
+      (x) => optionValues.has(x.name) && x.count > 0 && x.count <= RANDOM_CATEGORY_MAX_QUIZ_COUNT
+    );
+    if (candidates.length === 0) {
+      setMessage({
+        message: `問題数が${RANDOM_CATEGORY_MAX_QUIZ_COUNT}問以下のカテゴリがありません`,
+        messageColor: 'error',
+        isDisplay: true
+      });
+      return;
+    }
+    const randomCategory = candidates[Math.floor(Math.random() * candidates.length)].name;
     setQuizRequestData((prev) => ({
       ...prev,
-      category: String(randomOption.value)
+      category: randomCategory
     }));
-    setCategorySeedValue([String(randomOption.value)]);
+    setCategorySeedValue([randomCategory]);
     setCategoryResetKey((prev) => prev + 1);
   };
 
