@@ -21,7 +21,13 @@ WAT-Quizzer のフロントエンド。[Next.js](https://nextjs.org/)（Pages Ro
 - UI: MUI (`@mui/material`, `@mui/x-data-grid`, `@mui/x-date-pickers`), Tailwind CSS
 - 状態管理: Recoil
 - グラフ/図: Chart.js・recharts（正答率グラフ等）、react-d3-tree（カテゴリツリー等）
-- 認証: amazon-cognito-identity-js
+
+## 認証
+
+- accessToken はメモリにのみ保持し、refreshToken は API（`backend-nest`）が HttpOnly Cookie で管理する。トークン管理の実体は `quizzer-lib` の `src/api/auth/token.ts`
+- 画面表示時に `RequiredAuthComponent` が1回だけ認証状態を確認する。リロード直後などメモリにトークンが無い場合は `/auth/refresh` で取り直し、失敗したら `/login` へ移動する
+- API 呼び出し時に accessToken が期限切れ（または期限間近）なら自動で再取得する。refreshToken も期限切れの場合は、画面を移動せずに再ログインモーダル（`src/components/ui-forms/login/reauthModal/ReauthModal.tsx`、`_app.tsx` に配置）を表示し、ログイン成功後に失敗したリクエストを再送する
+- 再ログインモーダルでユーザー名を入力済みにするため、最後にログインしたユーザー名を localStorage（`lastUsername`）に保存する
 
 ## セットアップ
 

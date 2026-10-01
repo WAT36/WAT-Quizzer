@@ -6,6 +6,7 @@ import { RecoilRoot, useRecoilValue } from 'recoil';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { themeModeState } from '@/atoms/ThemeMode';
 import { createAppTheme } from '@/styles/theme';
+import { ReauthModal } from '@/components/ui-forms/login/reauthModal/ReauthModal';
 
 const ThemedApp = ({ Component, pageProps }: AppProps) => {
   const mode = useRecoilValue(themeModeState);
@@ -19,6 +20,8 @@ const ThemedApp = ({ Component, pageProps }: AppProps) => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Component {...pageProps} />
+      {/* 認証切れ時にその場で再ログインさせるモーダル（全画面共通） */}
+      <ReauthModal />
     </ThemeProvider>
   );
 };

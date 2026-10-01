@@ -14,6 +14,7 @@ export default meta;
 // デフォルトのストーリー
 export const Default: StoryObj<typeof NewPasswordForm> = {
   args: {
-    username: 'dummyuser'
+    username: 'dummyuser',
+    session: 'dummy-session'
   }
 };

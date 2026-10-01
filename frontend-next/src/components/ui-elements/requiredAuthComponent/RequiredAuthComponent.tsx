@@ -2,64 +2,43 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { parseJwt } from 'quizzer-lib';
+import { hasValidAccessToken, refreshAccessToken } from 'quizzer-lib';
 import { isMockMode } from '@/utils/api-wrapper';
 
 type Props = {
   children: React.ReactNode;
 };
 
+// 画面表示時に1回だけ認証状態を確認する
+// 表示後のトークン期限切れはAPI呼び出し時に処理する（refresh → 失敗したら再ログインモーダル）ので、ここでは見ない
 export default function RequiredAuthComponent({ children }: Props) {
   const router = useRouter();
-  const [checking, setChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    // 旧方式でlocalStorageに保存していたトークンを削除
+    localStorage.removeItem('idToken');
+    localStorage.removeItem('accessToken');
+
     // モック環境では認証チェックをスキップ
-    if (isMockMode()) {
-      setIsAuthenticated(true);
-      setChecking(false);
-      return;
-    }
+    // リロード直後などメモリにトークンが無い場合は、refreshTokenのCookieで取り直す
+    const check = async () =>
+      isMockMode() || hasValidAccessToken() || (await refreshAccessToken()) === 'success';
 
-    const idToken = localStorage.getItem('idToken');
-    const accessToken = localStorage.getItem('accessToken');
-    if (!idToken || !accessToken) {
-      router.replace('/login');
-      return;
-    }
+    let cancelled = false;
+    check().then((authenticated) => {
+      if (cancelled) return;
+      if (authenticated) {
+        setIsAuthenticated(true);
+      } else {
+        router.replace('/login');
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
 
-    const idTokenPayload = parseJwt(idToken);
-    const accessTokenPayload = parseJwt(accessToken);
-
-    if (
-      !idTokenPayload ||
-      typeof idTokenPayload.exp !== 'number' ||
-      !accessTokenPayload ||
-      typeof accessTokenPayload.exp !== 'number'
-    ) {
-      console.warn('Invalid token structure');
-      localStorage.removeItem('idToken');
-      localStorage.removeItem('accessToken');
-      router.replace('/login');
-      return;
-    }
-
-    const now = Math.floor(Date.now() / 1000);
-    if (idTokenPayload.exp < now || accessTokenPayload.exp < now) {
-      console.warn('idToken expired');
-      localStorage.removeItem('idToken');
-      localStorage.removeItem('accessToken');
-      router.replace('/login');
-      return;
-    }
-
-    setIsAuthenticated(true);
-    setChecking(false);
-  });
-
-  if (checking) return <></>;
   if (!isAuthenticated) return null;
 
   return <>{children}</>;

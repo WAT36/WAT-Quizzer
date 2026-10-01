@@ -6,13 +6,19 @@ import { Container } from '@/components/ui-elements/container/Container';
 export default function LoginPage() {
   const [showNewPasswordForm, setShowNewPasswordForm] = useState(false);
   const [username, setUsername] = useState<string>('');
+  const [session, setSession] = useState<string>('');
 
   return (
     <Container attr={['flex-center']}>
       {!showNewPasswordForm ? (
-        <LoginForm setShowNewPasswordForm={setShowNewPasswordForm} username={username} setUsername={setUsername} />
+        <LoginForm
+          setShowNewPasswordForm={setShowNewPasswordForm}
+          setSession={setSession}
+          username={username}
+          setUsername={setUsername}
+        />
       ) : (
-        <NewPasswordForm username={username} />
+        <NewPasswordForm username={username} session={session} />
       )}
     </Container>
   );

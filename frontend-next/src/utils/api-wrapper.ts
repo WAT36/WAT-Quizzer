@@ -109,14 +109,15 @@ export const loginAPI = async (params: any): Promise<ApiResult> => {
   return originalLoginAPI(params);
 };
 
-// export const logoutAPI = async (): Promise<ApiResult> => {
-//   if (isMockMode()) {
-//     return mockAPI.mockLogoutAPI();
-//   }
+export const logoutAPI = async (): Promise<void> => {
+  if (isMockMode()) {
+    await mockAPI.mockLogoutAPI();
+    return;
+  }
 
-//   const { logoutAPI: originalLogoutAPI } = await import('quizzer-lib');
-//   return originalLogoutAPI();
-// };
+  const { logout: originalLogout } = await import('quizzer-lib');
+  return originalLogout();
+};
 
 export const addQuizAPI = async (params: any): Promise<ApiResult> => {
   if (isMockMode()) {

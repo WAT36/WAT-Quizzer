@@ -3,6 +3,7 @@ import React from 'react';
 import { FooterBar } from '@/components/ui-elements/footerBar/FooterBar';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useRouter } from 'next/router';
+import { logoutAPI } from '@/utils/api-wrapper';
 
 interface FooterProps {
   bgColor: string;
@@ -20,10 +21,8 @@ export const Footer = ({ bgColor = '#006494', topHref }: FooterProps) => {
           attr="no-margin no-border"
           size="small"
           color="inherit"
-          onClick={(e) => {
-            // TODO 別関数にして別ファイルに置く？
-            localStorage.removeItem('idToken');
-            localStorage.removeItem('accessToken');
+          onClick={async () => {
+            await logoutAPI();
             router.push('/login');
           }}
           label="ログアウト"

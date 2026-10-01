@@ -17,7 +17,7 @@ type Story = StoryObj<typeof LoginForm>;
 
 const Wrapper = (props: any) => {
   const [username, setUsername] = useState('');
-  return <LoginForm {...props} username={username} setUsername={setUsername} setShowNewPasswordForm={() => {}} />;
+  return <LoginForm {...props} username={username} setUsername={setUsername} setShowNewPasswordForm={() => {}} setSession={() => {}} />;
 };
 
 export const Default: Story = {

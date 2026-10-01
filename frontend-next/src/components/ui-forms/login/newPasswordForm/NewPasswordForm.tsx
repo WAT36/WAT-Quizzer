@@ -4,12 +4,15 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { authNewPasswordSigninAPI } from 'quizzer-lib';
+import { LAST_USERNAME_STORAGE_KEY } from '@/constants/auth';
 
 interface NewPasswordFormProps {
   username: string;
+  // サインイン時にNEW_PASSWORD_REQUIREDと一緒に返されたsession
+  session: string;
 }
 
-export const NewPasswordForm = ({ username }: NewPasswordFormProps) => {
+export const NewPasswordForm = ({ username, session }: NewPasswordFormProps) => {
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState<String>('');
 
@@ -22,18 +25,19 @@ export const NewPasswordForm = ({ username }: NewPasswordFormProps) => {
       const res = await authNewPasswordSigninAPI({
         authSigninRequestData: {
           username,
-          password: newPassword
+          password: newPassword,
+          session
         }
       });
       // TODO 型定義する
       const data = res.result as any;
 
-      if (data.status === 'SUCCESS') {
-        localStorage.setItem('idToken', data.idToken);
-        localStorage.setItem('accessToken', data.accessToken);
+      // accessTokenの保持はauthNewPasswordSigninAPI内で行われる
+      if (data?.status === 'SUCCESS') {
+        localStorage.setItem(LAST_USERNAME_STORAGE_KEY, username);
         router.push('/');
       } else {
-        setMessage('不明な応答が返されました' + data.error + ' - ' + data.message);
+        setMessage('不明な応答が返されました' + data?.error + ' - ' + data?.message);
       }
     } catch (err: any) {
       console.error(err);
