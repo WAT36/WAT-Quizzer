@@ -8,7 +8,7 @@ WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com
   - `DnsStack`（`lib/stack/usEast1/dns-stack.ts`）— Route53 ホストゾーン
   - `CertificateStack`（`lib/stack/usEast1/certificate-stack.ts`）— ACM 証明書（us-east-1）
   - `BackendStack`（`lib/stack/backend-stack.ts`）— `backend-nest` 用インフラ
-  - `FrontendStack`（`lib/stack/frontend-stack.ts`）— `frontend-next` の静的サイト配信用インフラ（S3 バケット等。`BackendStack` の `todoCheckStatusTable` を参照）
+  - `FrontendStack`（`lib/stack/frontend-stack.ts`）— `frontend-next` の静的サイト配信用インフラ（S3 バケット等。`BackendStack` の `todoCheckStatusTable` を参照）と、Cognito（ユーザープール・アプリクライアント・ID プール）。アプリクライアントのトークン有効期限は accessToken / idToken 1時間、refreshToken 6時間
   - `UsEast1Stack`（`lib/stack/us-east1-stack.ts`）— us-east-1 リージョン依存のリソース（CloudFront 用証明書と連携）
   - `MockStack`（`lib/stack/mock-stack.ts`）— モック環境用スタック
 - `mock-infra.ts` — `MockStack` のみをデプロイする、モック/ローカル確認用の簡易エントリーポイント
@@ -16,7 +16,17 @@ WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com
 ## 補助リソース (`lib/service/`)
 
 - `route53.ts`, `iam.ts` — Route53 / IAM まわりの共通処理
-- `lambda-edge/cognito-at-edge/` — CloudFront (Lambda@Edge) 上で Cognito 認証を行う Lambda 関数
+- `lambda-edge/cognito-at-edge/` — CloudFront (Lambda@Edge) 上で Cognito 認証を行う Lambda 関数（現在はどのスタックからも参照されていない）
+
+## API（SAM, `template.yaml`）
+
+`backend-nest` の API は CDK ではなく AWS SAM（`template.yaml` / `samconfig.toml`）でデプロイする。`BackendStack` は `SAM_APIGATEWAY_ID` でこの API Gateway を参照する。
+
+- `ApiGatewayRestApi` — API Gateway（カスタムドメイン `QuizzerApiDomainName`）。CORS は `FrontOrigin` パラメータのオリジンのみ許可し、credentials（Cookie）を許可する
+- `SamQuizzerApiFunction` — `backend-nest` を動かす Lambda（リポジトリルートの `Dockerfile` からビルドするコンテナイメージ。`/{proxy+}` の全メソッドを受ける）
+- `WordDerivativesFunction` — 下記 `lambda/word-derivatives/` の Lambda
+
+develop ブランチへの push で `.github/workflows/develop.yml` が `sam build` / `sam deploy` を実行する（パラメータは同ワークフローの `--parameter-overrides` を参照）。
 
 ## Lambda (`lambda/`)
 
