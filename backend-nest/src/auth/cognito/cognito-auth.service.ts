@@ -1,10 +1,15 @@
-import { AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js';
+import {
+  AuthFlowType,
+  ChallengeNameType,
+  CognitoIdentityProviderClient,
+  InitiateAuthCommand,
+  RespondToAuthChallengeCommand,
+  RevokeTokenCommand,
+} from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
-import { userPool } from './cognito-auth.config';
 import * as dotenv from 'dotenv';
-import { SignInResult } from 'quizzer-lib';
 dotenv.config();
 
 const REGION = process.env.REGION;
@@ -19,10 +24,24 @@ const client = jwksClient({
 
 function getKey(header, callback) {
   client.getSigningKey(header.kid, (err, key) => {
-    const signingKey = key?.getPublicKey();
-    callback(null, signingKey);
+    if (err) {
+      return callback(err);
+    }
+    callback(null, key?.getPublicKey());
   });
 }
+
+const cognitoClient = new CognitoIdentityProviderClient({ region: REGION });
+
+// サインイン系APIの結果（refreshTokenはCookieに入れるためコントローラ側で取り出す）
+export type CognitoSignInResult =
+  | { status: 'SUCCESS'; accessToken: string; refreshToken?: string }
+  | {
+      status: 'NEW_PASSWORD_REQUIRED';
+      session: string;
+      username: string;
+    };
+
 @Injectable()
 export class CognitoAuthService {
   async verifyAccessToken(token: string): Promise<any> {
@@ -35,8 +54,10 @@ export class CognitoAuthService {
           algorithms: ['RS256'],
         },
         (err, decoded: any) => {
-          if (err) {
-            reject(new UnauthorizedException('Invalid or expired token'));
+          if (err || !decoded) {
+            return reject(
+              new UnauthorizedException('Invalid or expired token'),
+            );
           }
           if (decoded.token_use !== 'access') {
             return reject(
@@ -56,65 +77,101 @@ export class CognitoAuthService {
     });
   }
 
-  async signIn(username: string, password: string): Promise<SignInResult> {
-    const user = new CognitoUser({
-      Username: username,
-      Pool: userPool,
-    });
+  async signIn(
+    username: string,
+    password: string,
+  ): Promise<CognitoSignInResult> {
+    try {
+      const res = await cognitoClient.send(
+        new InitiateAuthCommand({
+          AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
+          ClientId: CLIENT_ID,
+          AuthParameters: { USERNAME: username, PASSWORD: password },
+        }),
+      );
 
-    const authDetails = new AuthenticationDetails({
-      Username: username,
-      Password: password,
-    });
-
-    return new Promise<SignInResult>((resolve, reject) => {
-      user.authenticateUser(authDetails, {
-        onSuccess: (result) => {
-          const idToken = result.getIdToken().getJwtToken();
-          const accessToken = result.getAccessToken().getJwtToken();
-          resolve({ status: 'SUCCESS', idToken, accessToken });
-        },
-        onFailure: (err) => {
-          reject(new UnauthorizedException(err.message));
-        },
-        newPasswordRequired: (userAttributes, requiredAttributes) => {
-          // Cognitoがセッションを内部保持している
-          resolve({
-            status: 'NEW_PASSWORD_REQUIRED',
-            session:
-              user.getSignInUserSession()?.getAccessToken().getJwtToken() ??
-              null,
-            username,
-          });
-        },
-      });
-    });
+      if (res.ChallengeName === ChallengeNameType.NEW_PASSWORD_REQUIRED) {
+        return {
+          status: 'NEW_PASSWORD_REQUIRED',
+          session: res.Session ?? '',
+          username,
+        };
+      }
+      if (!res.AuthenticationResult?.AccessToken) {
+        throw new Error(`Unsupported challenge: ${res.ChallengeName}`);
+      }
+      return {
+        status: 'SUCCESS',
+        accessToken: res.AuthenticationResult.AccessToken,
+        refreshToken: res.AuthenticationResult.RefreshToken,
+      };
+    } catch (err: unknown) {
+      throw new UnauthorizedException(
+        err instanceof Error ? err.message : 'Sign in failed',
+      );
+    }
   }
 
+  // サインイン時のNEW_PASSWORD_REQUIREDチャレンジに応答する（sessionはサインイン時に返したもの）
   async completeNewPassword(
     username: string,
     newPassword: string,
-  ): Promise<any> {
-    const user = new CognitoUser({
-      Username: username,
-      Pool: userPool,
-    });
-
-    return new Promise((resolve, reject) => {
-      user.completeNewPasswordChallenge(
-        newPassword,
-        {},
-        {
-          onSuccess: (result) => {
-            const idToken = result.getIdToken().getJwtToken();
-            const accessToken = result.getAccessToken().getJwtToken();
-            resolve({ status: 'SUCCESS', idToken, accessToken });
+    session: string,
+  ): Promise<CognitoSignInResult> {
+    try {
+      const res = await cognitoClient.send(
+        new RespondToAuthChallengeCommand({
+          ClientId: CLIENT_ID,
+          ChallengeName: ChallengeNameType.NEW_PASSWORD_REQUIRED,
+          Session: session,
+          ChallengeResponses: {
+            USERNAME: username,
+            NEW_PASSWORD: newPassword,
           },
-          onFailure: (err) => {
-            reject(new UnauthorizedException(err.message));
-          },
-        },
+        }),
       );
-    });
+      if (!res.AuthenticationResult?.AccessToken) {
+        throw new Error(`Unsupported challenge: ${res.ChallengeName}`);
+      }
+      return {
+        status: 'SUCCESS',
+        accessToken: res.AuthenticationResult.AccessToken,
+        refreshToken: res.AuthenticationResult.RefreshToken,
+      };
+    } catch (err: unknown) {
+      throw new UnauthorizedException(
+        err instanceof Error ? err.message : 'Password change failed',
+      );
+    }
+  }
+
+  // refreshTokenで新しいaccessTokenを取得する
+  // (refreshTokenのローテーションは使わないので、refreshToken自体の期限はログイン時から固定)
+  async refresh(refreshToken: string): Promise<string> {
+    try {
+      const res = await cognitoClient.send(
+        new InitiateAuthCommand({
+          AuthFlow: AuthFlowType.REFRESH_TOKEN_AUTH,
+          ClientId: CLIENT_ID,
+          AuthParameters: { REFRESH_TOKEN: refreshToken },
+        }),
+      );
+      const accessToken = res.AuthenticationResult?.AccessToken;
+      if (!accessToken) {
+        throw new Error('No access token returned');
+      }
+      return accessToken;
+    } catch (err: unknown) {
+      throw new UnauthorizedException(
+        err instanceof Error ? err.message : 'Refresh failed',
+      );
+    }
+  }
+
+  // refreshTokenを無効化する（ログアウト時）
+  async revoke(refreshToken: string): Promise<void> {
+    await cognitoClient.send(
+      new RevokeTokenCommand({ ClientId: CLIENT_ID, Token: refreshToken }),
+    );
   }
 }

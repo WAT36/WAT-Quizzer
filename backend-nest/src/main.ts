@@ -8,7 +8,7 @@ import { AppModule } from './app.module';
 import express from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
-// import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 // import schema from '../prisma/schema.prisma';
@@ -21,6 +21,9 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 const binaryMimeTypes: string[] = [];
 
+// refreshトークンCookieを送受信するため、CORSは許可オリジンを明示しcredentialsを許可する
+const FRONT_ORIGIN = process.env.FRONT_ORIGIN || 'http://localhost:3000';
+
 let cachedServer: Server;
 
 async function bootstrapServer(): Promise<Server> {
@@ -30,9 +33,13 @@ async function bootstrapServer(): Promise<Server> {
       AppModule,
       new ExpressAdapter(expressApp),
     );
+    nestApp.use(cookieParser());
     // CORS設定: OPTIONSリクエスト（プリフライト）を明示的に処理
+    // ※デプロイ環境のプリフライトはAPI Gateway(infra/template.yamlのCors)が返す
     nestApp.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Origin', FRONT_ORIGIN);
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header('Vary', 'Origin');
       res.header(
         'Access-Control-Allow-Headers',
         'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-api-key',
@@ -81,8 +88,10 @@ async function bootstrap() {
     // Swaggerのエンドポイントを `/api` に設定
     SwaggerModule.setup('api', app, document);
 
+    app.use(cookieParser());
     app.enableCors({
-      origin: '*',
+      origin: FRONT_ORIGIN,
+      credentials: true,
       allowedHeaders:
         'Origin, X-Requested-With, Content-Type, Accept, x-api-key, Authorization',
     });

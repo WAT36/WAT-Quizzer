@@ -15,9 +15,16 @@ WAT-Quizzer の REST API サーバー。[NestJS](https://nestjs.com/) 製。
 | `english/` | `/english`, `/english/word`, `/english/derivatives` | 英単語帳（EnglishBot）: 単語/派生語/類義語/反意語/語源、例文とテスト、出典管理 |
 | `saying/` | `/saying` | 格言（さやいん）の登録・検索・出典（書籍）管理 |
 | `todo/` | `/todo` | ToDo とチェック状況、日記 |
-| `auth/` | `/auth` | サインイン・パスワード再設定。Cognito (`auth/cognito/`) を用いたユーザー認証・JWT 検証 (`CognitoAuthGuard`) |
+| `auth/` | `/auth` | サインイン・新パスワード設定・アクセストークン再取得（`/auth/refresh`）・ログアウト（`/auth/logout`）。Cognito (`auth/cognito/`、AWS SDK v3) を用いたユーザー認証と、accessToken（JWT）の検証 (`CognitoAuthGuard`。失敗時は 401) |
 
 各コントローラーが受け付ける具体的なエンドポイントは各 `*.controller.ts` を参照。ローカル起動時は Swagger UI が `http://localhost:4000/api` で閲覧できる。
+
+### 認証
+
+- サインイン成功時、accessToken はレスポンス本体で返し、refreshToken は HttpOnly Cookie（`quizzer_refresh_token`、`Path=/auth`、`SameSite=Lax`、有効期限6時間。`APP_ENV=local` 以外では `Secure`）にセットする
+- `/auth/refresh` は Cookie の refreshToken で新しい accessToken を返す。refreshToken が無い・期限切れの場合は 401 を返し Cookie を削除する
+- `/auth/logout` は Cognito の RevokeToken で refreshToken を無効化し、Cookie を削除する
+- Cookie を送受信するため、CORS は `FRONT_ORIGIN` のオリジンのみ許可し、credentials を許可している（`src/main.ts`）
 
 ## セットアップ
 
@@ -67,6 +74,7 @@ pnpm run test:cov
 - `QUIZ_IMAGE_S3_BUCKET`, `AKEY`, `SAKEY` — 問題画像の S3 アップロード/取得（`quizzer-lib` の `src/lib/aws/s3.ts`）
 - `WORD_DERIVATIVES_FUNCTION_NAME` — 派生語取得で呼び出す Lambda 関数名（`english/derivatives/`）
 - `ENV` — ToDo チェック状況を保存する DynamoDB テーブル名 `<ENV>-todo-check-status` の接頭辞（未設定時は `dev`）
+- `FRONT_ORIGIN` — CORS で許可するフロントエンドのオリジン（未設定時は `http://localhost:3000`）。Lambda では `infra/template.yaml` の `FrontOrigin` パラメータから渡される
 
 ## Docker
 
