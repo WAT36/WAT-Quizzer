@@ -1,4 +1,4 @@
-import { ApiResult } from '../../..'
+import { ApiResult, authFetch } from '../../..'
 import { GetImageOfQuizAPIRequestDto, GetImageOfQuizAPIResponseDto } from '.'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 
@@ -14,14 +14,11 @@ export const getImageOfQuizAPI = async ({
   }
 
   // TODO ここだけは共通APIを使えてないので共通APIを使うようにしたい
-  const result = await fetch(
+  const result = await authFetch(
     (process.env.NEXT_PUBLIC_API_SERVER || '') +
       `/quiz/image?fileName=${getImageOfQuizRequestData.fileName}`,
     {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-      }
+      method: 'GET'
     }
   )
   if (!result.ok) {

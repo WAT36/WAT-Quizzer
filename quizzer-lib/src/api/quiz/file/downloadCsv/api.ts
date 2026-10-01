@@ -5,7 +5,7 @@ import {
   MESSAGES,
   successMessage
 } from '../../../../..'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
+import { get, ApiResult, ProcessingApiReponse, authFetch } from '../../..'
 import { Response } from 'express'
 
 interface DownloadQuizCsvAPIProps {
@@ -25,14 +25,11 @@ export const downloadQuizCsvAPI = async ({
   }
 
   // TODO 共通APIを使うように変更したい
-  const result = await fetch(
+  const result = await authFetch(
     (process.env.NEXT_PUBLIC_API_SERVER || '') +
       `/quiz/file/csv?file_num=${downloadQuizCsvApiRequest.file_num}`,
     {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-      }
+      method: 'GET'
     }
   )
   const blob = await result.blob()

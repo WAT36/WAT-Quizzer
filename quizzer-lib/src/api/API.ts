@@ -1,6 +1,11 @@
 import { ApiResult, ProcessingApiReponse } from './'
+import { authFetch } from './auth/token'
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || ''
+
+// 認証が必要なAPIはauthFetch（トークン付与・期限切れ時の再取得/再ログイン）を通す
+const request = (url: string, init: RequestInit, needAuth?: boolean) =>
+  needAuth !== false ? authFetch(url, init) : fetch(url, init)
 
 // TODO メソッドごとに分けてるけどまとめられないか？
 export const get = async (
@@ -25,15 +30,14 @@ export const get = async (
       )}`
     : ''
 
-  const result = await fetch(baseURL + path + query, {
-    method: 'GET',
-    body: bodyData ? JSON.stringify(bodyData) : null,
-    ...(needAuth !== false && {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-      }
-    })
-  })
+  const result = await request(
+    baseURL + path + query,
+    {
+      method: 'GET',
+      body: bodyData ? JSON.stringify(bodyData) : null
+    },
+    needAuth
+  )
     .then((response) =>
       response.json().then((data) => ({
         status: response.status,
@@ -57,14 +61,10 @@ export const getApiAndGetValue = async (
   path: string,
   queryParam?: { [key: string]: string }
 ) => {
-  const accessToken = localStorage.getItem('accessToken')
   const query = queryParam ? `?${new URLSearchParams(queryParam)}` : ''
 
-  return await fetch(baseURL + path + query, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${accessToken}`
-    }
+  return await authFetch(baseURL + path + query, {
+    method: 'GET'
   })
     .catch((error) => {
       console.error('API Error1.')
@@ -79,16 +79,17 @@ export const post = async (
   func: (data: ProcessingApiReponse) => ApiResult,
   needAuth?: boolean
 ) => {
-  return await fetch(baseURL + path, {
-    method: 'POST',
-    body: JSON.stringify(jsondata),
-    headers: {
-      'Content-Type': 'application/json',
-      ...(needAuth !== false && {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-      })
-    }
-  })
+  return await request(
+    baseURL + path,
+    {
+      method: 'POST',
+      body: JSON.stringify(jsondata),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    },
+    needAuth
+  )
     .then((response) =>
       response.json().then((data) => ({
         status: response.status,
@@ -112,13 +113,11 @@ export const put = async (
   jsondata: object,
   func: (data: ProcessingApiReponse) => ApiResult
 ) => {
-  const accessToken = localStorage.getItem('accessToken')
-  return await fetch(baseURL + path, {
+  return await authFetch(baseURL + path, {
     method: 'PUT',
     body: JSON.stringify(jsondata),
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
+      'Content-Type': 'application/json'
     }
   })
     .then((response) =>
@@ -144,13 +143,11 @@ export const del = async (
   jsondata: object,
   func: (data: ProcessingApiReponse) => ApiResult
 ) => {
-  const accessToken = localStorage.getItem('accessToken')
-  return await fetch(baseURL + path, {
+  return await authFetch(baseURL + path, {
     method: 'DELETE',
     body: JSON.stringify(jsondata),
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
+      'Content-Type': 'application/json'
     }
   })
     .then((response) =>
@@ -176,13 +173,11 @@ export const patch = async (
   jsondata: object,
   func: (data: ProcessingApiReponse) => ApiResult
 ) => {
-  const accessToken = localStorage.getItem('accessToken')
-  return await fetch(baseURL + path, {
+  return await authFetch(baseURL + path, {
     method: 'PATCH',
     body: JSON.stringify(jsondata),
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
+      'Content-Type': 'application/json'
     }
   })
     .then((response) =>
@@ -212,15 +207,14 @@ export const fileUploadAPI = async (
 ) => {
   const formData = new FormData()
   formData.append('file', file)
-  return await fetch(baseURL + path, {
-    method: 'POST',
-    body: formData,
-    headers: {
-      ...(needAuth !== false && {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-      })
-    }
-  })
+  return await request(
+    baseURL + path,
+    {
+      method: 'POST',
+      body: formData
+    },
+    needAuth
+  )
     .then((response) =>
       response.json().then((data) => ({
         status: response.status,
