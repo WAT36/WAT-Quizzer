@@ -4,6 +4,8 @@ import { parseJwt } from '../../lib/aws/cognito'
 // - accessTokenはXSSで盗まれにくいようメモリにだけ保持する（リロードしたら/auth/refreshで取り直す）
 // - refreshTokenはAPI側がHttpOnly Cookieで管理するのでフロントからは触らない
 // - refreshも失敗した場合（ログインから6時間経過など）は、画面側で登録した再ログイン処理を呼ぶ
+//   ただし再ログインはこのページで一度認証済みだった（途中で切れた）場合のみ。
+//   最初から未ログインの場合は呼ばず、RequiredAuthComponentがログイン画面へ移動させる
 
 const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || ''
 
@@ -14,11 +16,14 @@ let accessToken: string | null = null
 let refreshPromise: Promise<RefreshResult> | null = null
 let reauthPromise: Promise<boolean> | null = null
 let reauthHandler: (() => Promise<boolean>) | null = null
+// このページ（リロードするまで）で一度でもaccessTokenを取得できたか
+let hasSession = false
 
 type RefreshResult = 'success' | 'unauthorized' | 'error'
 
 export const setAccessToken = (token: string) => {
   accessToken = token
+  hasSession = true
 }
 
 export const clearAccessToken = () => {
@@ -70,7 +75,7 @@ export const refreshAccessToken = (): Promise<RefreshResult> => {
 
 // 再ログインを要求する。同時に複数のAPIが失敗してもモーダルは1回だけ出す
 const requestReauth = (): Promise<boolean> => {
-  if (!reauthHandler) return Promise.resolve(false)
+  if (!reauthHandler || !hasSession) return Promise.resolve(false)
   if (!reauthPromise) {
     reauthPromise = reauthHandler()
       .catch(() => false)
@@ -118,6 +123,7 @@ export const authFetch = async (
 // ログアウト（refreshTokenの無効化とCookie削除はAPI側で行う）
 export const logout = async (): Promise<void> => {
   clearAccessToken()
+  hasSession = false
   await fetch(baseURL + '/auth/logout', {
     method: 'POST',
     credentials: 'include'
