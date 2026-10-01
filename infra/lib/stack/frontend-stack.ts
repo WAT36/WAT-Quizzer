@@ -88,6 +88,12 @@ export class FrontendStack extends cdk.Stack {
         userPassword: true,
         userSrp: true
       },
+      // ログインから約6時間は操作を続けられ、それ以降は再ログインさせる
+      // refreshトークンのローテーションは使わない（期限をログイン時点から固定にするため）
+      accessTokenValidity: cdk.Duration.hours(1),
+      idTokenValidity: cdk.Duration.hours(1),
+      refreshTokenValidity: cdk.Duration.hours(6),
+      enableTokenRevocation: true,
       oAuth: {
         callbackUrls: [process.env.FRONT_CALLBACK_URL || ''],
         logoutUrls: [process.env.LOGOUT_URL || ''],

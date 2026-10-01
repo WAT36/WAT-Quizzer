@@ -46,6 +46,9 @@ Parameters:
   FreeDictionaryApiUrl:
     Type: String
     Description: 'Free Dictionary API base endpoint'
+  FrontOrigin:
+    Type: String
+    Description: 'Frontend origin allowed by CORS with credentials (e.g. https://dev.quizzer.wat-notes.com)'
 
 Resources:
   ApiGatewayRestApi:
@@ -74,8 +77,9 @@ Resources:
       Cors:
         AllowMethods: "'DELETE,POST,GET,OPTIONS,PUT,PATCH'"
         AllowHeaders: "'Origin,X-Requested-With,Content-Type,Accept,Authorization,X-Api-Key,X-Amz-Security-Token'"
-        AllowOrigin: "'*'"
-        AllowCredentials: false
+        # refreshトークンCookieを送るためcredentialsを許可（その場合オリジンの明示が必須）
+        AllowOrigin: !Sub "'${FrontOrigin}'"
+        AllowCredentials: true
         MaxAge: "'3600'"
   SamQuizzerApiFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -95,6 +99,7 @@ Resources:
           SAKEY: !Ref SAkey
           TODO_CHECK_STATUS_TABLE_ARN: !Ref TodoCheckStatusTableArn
           WORD_DERIVATIVES_FUNCTION_NAME: !Ref WordDerivativesFunction
+          FRONT_ORIGIN: !Ref FrontOrigin
           # PRISMA_QUERY_ENGINE_LIBRARY: ../node_modules/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node
       Policies:
         - Statement:

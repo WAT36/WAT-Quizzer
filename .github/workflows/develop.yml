@@ -120,7 +120,8 @@ jobs:
                         Akey=$AKEY \
                         SAkey=$SAKEY \
                         WiktionaryApiUrl=$WIKTIONARY_API_URL \
-                        FreeDictionaryApiUrl=$FREE_DICTIONARY_API_URL
+                        FreeDictionaryApiUrl=$FREE_DICTIONARY_API_URL \
+                        FrontOrigin=https://$FRONT_DOMAIN_NAME
         env:
           AKEY: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
           SAKEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
