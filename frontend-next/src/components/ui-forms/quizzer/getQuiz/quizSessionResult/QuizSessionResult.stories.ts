@@ -43,6 +43,19 @@ export const WithStrongAndWeak: Story = {
   }
 };
 
+// 10問出題予定のところ、4問解答した時点で途中終了した例
+export const FinishedEarly: Story = {
+  args: {
+    totalCount: 10,
+    results: [
+      answer(1, ['AWS', 'コンピューティング'], true),
+      answer(2, ['AWS', 'コンピューティング'], true),
+      answer(3, ['データベース', 'SQL'], false),
+      answer(4, ['データベース', 'SQL'], false)
+    ]
+  }
+};
+
 // カテゴリが付いた問題がない例
 export const WithoutCategory: Story = {
   args: {

@@ -26,6 +26,8 @@ ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Title, Tool
 
 interface QuizSessionResultProps {
   results: QuizAnswerResult[];
+  // 出題予定だった問題数（途中で終了した場合に「N問中M問で終了」と表示するため）
+  totalCount?: number;
 }
 
 const formatRate = (rate: number) => `${rate.toFixed(1)}%`;
@@ -58,7 +60,7 @@ const CategoryList = ({
 );
 
 // 出題セッション終了後に、全体の正解率・グラフ・カテゴリ別の得意/苦手を表示する
-export const QuizSessionResult = ({ results }: QuizSessionResultProps) => {
+export const QuizSessionResult = ({ results, totalCount }: QuizSessionResultProps) => {
   const analysis = useMemo(() => analyzeQuizSession(results), [results]);
   const doughnutRef = useChartAriaLabel(SESSION_RESULT_DOUGHNUT_TITLE);
   const barRef = useChartAriaLabel(SESSION_RESULT_CATEGORY_TITLE);
@@ -132,6 +134,11 @@ export const QuizSessionResult = ({ results }: QuizSessionResultProps) => {
 
   return (
     <div>
+      {totalCount !== undefined && totalCount > results.length && (
+        <Typography variant="body2" color="text.secondary">
+          {`途中で終了しました（${totalCount}問中${results.length}問で終了）`}
+        </Typography>
+      )}
       <Typography variant="subtitle1">{`${analysis.total}問中${analysis.correct}問正解でした`}</Typography>
       <Typography variant="h6">{`正解率：${formatRate(analysis.accuracyRate)}`}</Typography>
 

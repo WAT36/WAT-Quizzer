@@ -63,6 +63,11 @@ export const useQuizSession = () => {
     [state.queue, state.currentIndex, state.status, setMessage]
   );
 
+  // 全問終わる前に出題を終了し、それまでの解答結果で終了画面を表示する
+  const finishSession = useCallback(() => {
+    dispatch({ type: 'FINISH' });
+  }, []);
+
   // 出題設定に戻るためセッションを初期状態にリセットする
   const resetSession = useCallback(() => {
     dispatch({ type: 'RESET' });
@@ -78,6 +83,7 @@ export const useQuizSession = () => {
     results: state.results,
     startSession,
     answer,
+    finishSession,
     resetSession
   };
 };
