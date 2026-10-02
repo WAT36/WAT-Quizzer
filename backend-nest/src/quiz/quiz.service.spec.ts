@@ -123,12 +123,13 @@ describe('QuizService', () => {
 
   // 問題ランダム取得 正常系
   it('getRandomQuiz - OK', async () => {
-    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce(
-      getQuizResultTest,
-    );
-    (getRandomElementFromArray as jest.Mock).mockReturnValueOnce(
-      getQuizResultTest[0],
-    );
+    // 1回目: 条件に合う問題のID一覧、2回目: 抽選した問題の詳細
+    (prisma.quiz.findMany as jest.Mock)
+      .mockResolvedValueOnce([{ id: getQuizResultTest[0].id }])
+      .mockResolvedValueOnce(getQuizResultTest);
+    (getRandomElementFromArray as jest.Mock).mockReturnValueOnce({
+      id: getQuizResultTest[0].id,
+    });
     expect(
       await quizService.getQuiz({ file_num: 1, quiz_num: 1 }, 'random'),
     ).toEqual({
@@ -298,11 +299,12 @@ describe('QuizService', () => {
 
   // ランダム問題取得（出題数指定）正常系
   it('getRandomQuiz - count指定でN件取得', async () => {
-    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce(
-      getQuizResultTestBatch,
-    );
+    // 1回目: 条件に合う問題のID一覧、2回目: 抽選した問題の詳細
+    (prisma.quiz.findMany as jest.Mock)
+      .mockResolvedValueOnce(getQuizResultTestBatch.map(({ id }) => ({ id })))
+      .mockResolvedValueOnce(getQuizResultTestBatch);
     (getRandomElementsFromArray as jest.Mock).mockReturnValueOnce(
-      getQuizResultTestBatch,
+      getQuizResultTestBatch.map(({ id }) => ({ id })),
     );
     expect(
       await quizService.getQuiz({ file_num: 1, count: 2 }, 'random'),

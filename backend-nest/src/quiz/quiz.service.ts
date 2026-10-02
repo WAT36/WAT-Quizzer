@@ -210,9 +210,9 @@ export class QuizService {
                 : method === 'recentlyUpdated'
                   ? [{ updated_at: 'desc' as const }, { id: 'desc' as const }]
                   : {};
-      // 順位確定メソッド（全件ではなく先頭1件のみ取得すればよい）
-      const needsAllResults =
-        !method || method === 'random' || method === 'todayNotAnswered';
+      // ランダム系メソッド（条件に合う全件から抽選する）
+      const isRandomMethod =
+        method === 'random' || method === 'todayNotAnswered';
       const selectFields = {
         id: true,
         file_num: true,
@@ -264,16 +264,42 @@ export class QuizService {
         },
       };
       // データ取得
-      // needsAllResults=false の場合は必要件数のみ取得してDBからの転送量を削減
-      const [results, totalCount] = await Promise.all([
-        prisma.quiz.findMany({
-          select: selectFields,
-          where,
-          orderBy,
-          ...(needsAllResults ? {} : { take: isBatchRequest ? count : 1 }),
-        }),
-        needsAllResults ? Promise.resolve(null) : prisma.quiz.count({ where }),
-      ]);
+      // ランダム系は全件の詳細を取得するとLambdaのメモリ・実行時間の上限を超えるため、
+      // 条件に合う問題のIDだけ全件取得 → 抽選 → 抽選した問題の詳細だけ取得する
+      // それ以外は必要件数のみ取得してDBからの転送量を削減（method無し=問題番号指定は元々1件）
+      const fetchRandomQuizzes = async () => {
+        const ids = await prisma.quiz.findMany({ select: { id: true }, where });
+        const pickedIds = (
+          isBatchRequest
+            ? getRandomElementsFromArray(ids, count)
+            : [getRandomElementFromArray(ids)]
+        )
+          .filter((x) => x !== undefined)
+          .map((x) => x.id);
+        const picked =
+          pickedIds.length > 0
+            ? await prisma.quiz.findMany({
+                select: selectFields,
+                where: { id: { in: pickedIds } },
+              })
+            : [];
+        // 抽選した順に並べ直す
+        const shuffled = pickedIds
+          .map((id) => picked.find((quiz) => quiz.id === id))
+          .filter((quiz) => quiz !== undefined);
+        return [shuffled, ids.length] as const;
+      };
+      const [results, totalCount] = isRandomMethod
+        ? await fetchRandomQuizzes()
+        : await Promise.all([
+            prisma.quiz.findMany({
+              select: selectFields,
+              where,
+              orderBy,
+              ...(method ? { take: isBatchRequest ? count : 1 } : {}),
+            }),
+            method ? prisma.quiz.count({ where }) : Promise.resolve(null),
+          ]);
       if (results.length === 0) {
         throw new HttpException(
           `条件に合致するデータはありません`,
@@ -305,21 +331,13 @@ export class QuizService {
       });
       // count指定時（出題数分まとめて取得）は複数件返却する
       if (isBatchRequest) {
-        const pickedResults =
-          method === 'random' || method === 'todayNotAnswered'
-            ? getRandomElementsFromArray(results, count)
-            : results;
         return {
           total: totalCount ?? results.length,
-          quizzes: pickedResults.map(shapeResult),
+          quizzes: results.map(shapeResult),
         };
       }
-      const result =
-        method === 'random' || method === 'todayNotAnswered'
-          ? getRandomElementFromArray(results)
-          : results[0];
       return {
-        ...shapeResult(result),
+        ...shapeResult(results[0]),
         count: totalCount ?? results.length,
       };
     } catch (error: unknown) {

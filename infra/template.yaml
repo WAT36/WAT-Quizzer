@@ -87,6 +87,8 @@ Resources:
       PackageType: Image
       Architectures:
         - x86_64
+      # 既定の128MBでは問題取得時にメモリ不足→タイムアウトしたため増量（メモリに比例してCPUも増える）
+      MemorySize: 512
       Environment:
         Variables:
           REGION: !Ref Region
