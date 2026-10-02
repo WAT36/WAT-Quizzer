@@ -82,4 +82,4 @@ pnpm exec ts-node src/englishword.source.register.ts <ファイル名> --source-
 pnpm exec ts-node src/tools/avg_line.register.ts (全ファイルの行数合計) (全ファイル数)
 ```
 
-リポジトリルートの `update_avg_lines.sh`（push 前フックでの実行を想定）から、対象ファイルの行数を集計した上で呼び出される。
+`tools/update_avg_lines.sh`（`.githooks/pre-push` から push 前に自動実行される）から、対象ファイルの行数を集計した上で呼び出される。

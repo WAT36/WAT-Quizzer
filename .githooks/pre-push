@@ -1,0 +1,18 @@
+#!/bin/sh
+# push 前に全ファイルの平均行数を計算して DB に記録する（tools/update_avg_lines.sh）
+# 記録に失敗しても push は止めない
+
+repo_root=$(git rev-parse --show-toplevel) || exit 0
+cd "$repo_root" || exit 0
+
+# 依存パッケージ未インストール（pnpm install 前）の環境では何もしない
+if [ ! -x ./batch/node_modules/.bin/ts-node ]; then
+  echo "⚠️  batch の依存パッケージが無いため平均行数の記録をスキップしました（pnpm install 後に有効になります）"
+  exit 0
+fi
+
+if ! bash ./tools/update_avg_lines.sh; then
+  echo "⚠️  平均行数の記録に失敗しました（push は続行します）"
+fi
+
+exit 0

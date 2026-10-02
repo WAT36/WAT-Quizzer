@@ -12,6 +12,7 @@
 | `quizzer-lib/` | backend-nest / batch / frontend-next 共有パッケージ（Prisma スキーマ・共通型・API クライアント・ユーティリティ） |
 | [`infra/`](infra/README.md) | AWS CDK によるインフラ定義（pnpm workspace には含まれない独立プロジェクト。npm で管理） |
 | `container/` | ローカル用 MySQL コンテナ定義 |
+| `tools/` | リポジトリ全体向けの補助スクリプト（`update_avg_lines.sh`: 全ファイルの平均行数を集計して DB に記録） |
 
 ## ローカル起動
 
@@ -49,6 +50,7 @@ pnpm deps:fix            # 上記の自動修正
 
 `.githooks/` に Git フックを置いている。`pnpm install` 時に `prepare` スクリプトが `git config core.hooksPath .githooks` を実行するので、特別な設定は不要。
 
+- `pre-push`: push 前に `tools/update_avg_lines.sh` を実行し、全ファイルの平均行数を DB に記録する（`batch/src/tools/avg_line.register.ts` 経由。DB 接続先はルートの `.env`）。記録に失敗しても push は止めない
 - `pre-commit`: コードに変更があるのに、対応する README が更新されていない場合に警告を出す（コミットは止めない）。VS Code など GUI からのコミットでは、macOS の場合は通知でも知らせる。Claude Code（`claude` コマンド）が入っていない環境では何もしない。警告が出たら `/update-readmes` で確認する
 
 ## 脆弱性診断
