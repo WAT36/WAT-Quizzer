@@ -31,7 +31,8 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
           </Typography>
 
           <FormGroup>
-            <PullDown label={'問題ファイル'} optionList={[{ value: -1, label: '同左' }]} onChange={(e) => {}} />
+            {/* 統合先は常に統合元と同じファイルのため、選べないようにしている */}
+            <PullDown label={'問題ファイル'} optionList={[{ value: -1, label: '同左' }]} onChange={(e) => {}} disabled />
             <FormControl>
               <TextField
                 label="問題番号"

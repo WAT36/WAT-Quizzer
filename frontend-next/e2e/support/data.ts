@@ -64,7 +64,6 @@ export const mockQuizzerMasterData = (api: ApiMock) => {
 
 // ---- englishBot ----
 
-// 出典のプルダウンは選択肢が1件以下だと操作できない仕様のため、2件用意している
 export const sources: SourceApiResponse[] = [
   { id: 1, name: 'TOEIC', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined },
   { id: 2, name: '英検準1級', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined }

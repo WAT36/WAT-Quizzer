@@ -49,4 +49,15 @@ test.describe('englishBot / 英単語テスト', () => {
     await expect(page.getByText('abandon')).toBeVisible();
     expect(api.requests('GET', '/english/word/test')[0].query).toMatchObject({ format: 'lru', source: '1' });
   });
+
+  test('出典が1件だけでも選択できる', async ({ page, api }) => {
+    api.on('GET', '/english/source', { json: [sources[1]] });
+    await page.reload();
+
+    await page.getByLabel('出典').click();
+    await page.getByRole('option', { name: sources[1].name }).click();
+    await page.getByRole('button', { name: 'Random Word' }).click();
+
+    expect(api.requests('GET', '/english/word/test')[0].query).toMatchObject({ source: String(sources[1].id) });
+  });
 });

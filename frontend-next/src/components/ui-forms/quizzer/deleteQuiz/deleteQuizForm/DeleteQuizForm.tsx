@@ -106,6 +106,7 @@ export const DeleteQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: DeleteQuiz
         attr={'button-array'}
         variant="contained"
         color="primary"
+        disabled={deleteQuizInfo.quiz_num === -1}
         onClick={async (e) => {
           setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await deleteQuizAPI({

@@ -24,22 +24,25 @@ interface PullDownProps {
   onChange?: (e: SelectChangeEvent<number | string>) => void;
   // 選択肢が多い場合に、入力で絞り込みできるようにする
   searchable?: boolean;
+  // 指定しない場合は、選択肢が0件の時だけ無効になる
+  disabled?: boolean;
 }
 
-export const PullDown = ({ optionList, label, className, value, onChange, searchable }: PullDownProps) => {
+export const PullDown = ({ optionList, label, className, value, onChange, searchable, disabled }: PullDownProps) => {
   const labelId = `quiz-file-name-${getRandomStr()}`;
+  const isDisabled = disabled ?? optionList.length === 0;
 
   if (searchable) {
     const selectedOption = optionList.find((x) => String(x.value) === String(value)) ?? null;
     return (
-      <FormControl disabled={optionList.length <= 1 ? true : false} className={`min-w-[200px] ${className || ''}`}>
+      <FormControl disabled={isDisabled} className={`min-w-[200px] ${className || ''}`}>
         <Autocomplete
           className="my-[8px]"
           options={optionList}
           getOptionLabel={(option) => option.label}
           isOptionEqualToValue={(option, val) => String(option.value) === String(val.value)}
           value={selectedOption}
-          disabled={optionList.length <= 1}
+          disabled={isDisabled}
           onChange={(_event, newValue) => {
             onChange &&
               onChange({
@@ -65,7 +68,7 @@ export const PullDown = ({ optionList, label, className, value, onChange, search
   };
 
   return (
-    <FormControl disabled={optionList.length <= 1 ? true : false} className="min-w-[200px]">
+    <FormControl disabled={isDisabled} className="min-w-[200px]">
       <InputLabel id={labelId} className="my-[2px]" sx={{ '&.Mui-disabled': { color: 'text.disabled' } }}>
         {label || 'ファイル選択'}
       </InputLabel>

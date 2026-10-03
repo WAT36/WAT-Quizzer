@@ -68,10 +68,10 @@ test.describe('quizzer / 問題削除', () => {
     expect(api.requests('DELETE', '/quiz')).toHaveLength(0);
   });
 
-  test('問題を取得せずに削除しようとするとエラーになり、削除は行われない', async ({ page, api }) => {
-    await section(page, DELETE_SECTION).getByRole('button', { name: '削除' }).click();
-
-    await expect(page.getByText('エラー:削除する問題を取得して下さい')).toBeVisible();
-    expect(api.requests('DELETE', '/quiz')).toHaveLength(0);
+  test('問題を取得するまでは削除・統合できない', async ({ page }) => {
+    await expect(section(page, DELETE_SECTION).getByRole('button', { name: '削除' })).toBeDisabled();
+    await expect(section(page, INTEGRATE_SECTION).getByRole('button', { name: '統合' })).toBeDisabled();
+    // 統合先の問題ファイルは常に統合元と同じ(同左)なので選べない
+    await expect(section(page, INTEGRATE_SECTION).getByLabel('問題ファイル')).toBeDisabled();
   });
 });

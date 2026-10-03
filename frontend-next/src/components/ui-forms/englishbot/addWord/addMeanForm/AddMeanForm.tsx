@@ -1,6 +1,5 @@
 import {
   IconButton,
-  InputLabel,
   MenuItem,
   Select,
   Stack,
@@ -32,7 +31,7 @@ export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanF
       addWordState.meanArrayData[i] && addWordState.meanArrayData[i].partOfSpeechId === -2 ? (
         <>
           <TextField
-            id="input-pos-01"
+            id={`new-pos-name-${i}`}
             label="品詞"
             variant="outlined"
             key={i}
@@ -50,7 +49,7 @@ export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanF
       <>
         <Select
           inputProps={{ 'aria-label': '品詞' }}
-          id="demo-simple-select"
+          id={`pos-select-${i}`}
           defaultValue={-1}
           label="partOfSpeech"
           key={i}
@@ -179,12 +178,11 @@ export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanF
               return (
                 <TableRow key={index}>
                   <TableCell>
-                    <InputLabel id="demo-simple-select-label"></InputLabel>
                     {displayPosInput(index)}
                   </TableCell>
                   <TableCell>
                     <TextField
-                      id="input-mean-01"
+                      id={`meaning-${index}`}
                       label="意味"
                       variant="outlined"
                       key={index}

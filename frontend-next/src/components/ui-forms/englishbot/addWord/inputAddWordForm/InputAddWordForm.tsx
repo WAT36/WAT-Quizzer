@@ -1,4 +1,4 @@
-import { InputLabel, MenuItem, Select } from '@mui/material';
+import { MenuItem, Select } from '@mui/material';
 import { pullDownMenuProps } from '@/constants/pullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Card } from '@/components/ui-elements/card/Card';
@@ -21,7 +21,6 @@ export const InputAddWordForm = ({ sourceList, addWordState, setMessage, setAddW
     const sourceInput =
       addWordState.inputWord.sourceId === -2 ? (
         <>
-          <InputLabel id="demo-simple-select-label"></InputLabel>
           <TextField
             label="出典"
             variant="outlined"
@@ -35,7 +34,7 @@ export const InputAddWordForm = ({ sourceList, addWordState, setMessage, setAddW
                   }
                 });
             }}
-            id="input-pos-01"
+            id="new-source-name"
             key="addWordInputSource"
             className={['fullWidth', 'textField']}
           />
@@ -48,7 +47,7 @@ export const InputAddWordForm = ({ sourceList, addWordState, setMessage, setAddW
       <>
         <Select
           inputProps={{ 'aria-label': '出典' }}
-          id="demo-simple-select"
+          id="source-select"
           defaultValue={-1}
           value={addWordState.inputWord.sourceId}
           label="source"

@@ -1,12 +1,5 @@
-import type { Page } from '@playwright/test';
 import { test, expect } from '../support/fixtures';
 import { mockEnglishMasterData } from '../support/data';
-
-// 意味の表の品詞プルダウン・品詞入力欄は、出典側の要素とidが重複している影響でラベルから正しく探せないため、
-// 意味の入力欄と同じ行の中で探す
-const meaningRow = (page: Page) => page.getByRole('row').filter({ has: page.getByLabel('意味') });
-const meaningRowPosSelect = (page: Page) => meaningRow(page).getByRole('combobox');
-const meaningRowPosInput = (page: Page) => meaningRow(page).locator('#input-pos-01');
 
 test.describe('englishBot / 単語追加', () => {
   test.beforeEach(async ({ page, api }) => {
@@ -23,7 +16,7 @@ test.describe('englishBot / 単語追加', () => {
     await page.getByLabel('サブ出典').fill('公式問題集 Part5');
 
     await page.getByRole('button', { name: '行追加' }).click();
-    await meaningRowPosSelect(page).click();
+    await page.getByRole('combobox', { name: '品詞' }).click();
     await page.getByRole('option', { name: '動詞' }).click();
     await page.getByLabel('意味').fill('回復力のある');
 
@@ -47,9 +40,9 @@ test.describe('englishBot / 単語追加', () => {
     await page.getByRole('textbox', { name: '出典', exact: true }).fill('洋書');
 
     await page.getByRole('button', { name: '行追加' }).click();
-    await meaningRowPosSelect(page).click();
+    await page.getByRole('combobox', { name: '品詞' }).click();
     await page.getByRole('option', { name: 'その他' }).click();
-    await meaningRowPosInput(page).fill('名詞(不可算)');
+    await page.getByRole('textbox', { name: '品詞' }).fill('名詞(不可算)');
     await page.getByLabel('意味').fill('思いがけない幸運');
 
     await page.getByRole('button', { name: '登録' }).click();
