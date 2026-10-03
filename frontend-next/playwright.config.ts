@@ -1,8 +1,18 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
+import { coverageOptions } from './e2e/support/coverage-options';
 
-// E2Eテストの設定
-// - 対象は`pnpm run e2e:build`で書き出した静的サイト(./out)。バックエンドは起動せず、APIはテスト側でpage.route()により差し替える
-// - ブラウザはインストール済みのGoogle Chromeを使う(GitHub Actionsのubuntu-latestにも入っているため、ブラウザのダウンロードが不要)
+// カバレッジ計測(pnpm run e2e:coverage)の時だけ、monocart-reporterで実行されたコードを集計する
+// 結果は e2e-coverage/ に出力される(coverage/index.html が詳細、coverage/coverage-summary.md が要約)
+const coverageReporter: ReporterDescription[] =
+  process.env.E2E_COVERAGE === 'true'
+    ? [
+        [
+          'monocart-reporter',
+          { name: 'WAT-Quizzer E2E Coverage', outputFile: './e2e-coverage/index.html', coverage: coverageOptions }
+        ]
+      ]
+    : [];
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -10,7 +20,11 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 2 : undefined,
-  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : [['list'], ['html', { open: 'never' }]],
+  reporter: [
+    ...(process.env.CI ? [['github'] as ReporterDescription] : [['list'] as ReporterDescription]),
+    ['html', { open: 'never' }],
+    ...coverageReporter
+  ],
   use: {
     baseURL: 'http://127.0.0.1:3000',
     // 失敗したテストだけ操作の記録とスクリーンショットを残す(`pnpm exec playwright show-report`で確認できる)

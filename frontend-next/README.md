@@ -69,12 +69,14 @@ pnpm run export:mock  # モックモード（NEXT_PUBLIC_MOCK_MODE=true）で静
   pnpm run e2e      # e2e:build → playwright test
   pnpm run e2e:ui   # UIモードで1本ずつ確認しながら実行
   pnpm exec playwright show-report  # 直近の結果レポート（失敗時は操作記録・スクリーンショット付き）
+  pnpm run e2e:coverage  # カバレッジも計測する（結果は e2e-coverage/coverage/index.html）
   ```
   - ブラウザはインストール済みの Google Chrome を使う（`playwright install` は不要）
   - `e2e/support/fixtures.ts` の `test` を使うと、ログイン済みの状態で始まり、`api.on()` で API の応答を登録できる(パスは文字列の完全一致か正規表現)。登録していない API が呼ばれるとテストは失敗する
   - `e2e:build`(`e2e/support/build.mjs`)は、英単語詳細ページをビルド時に生成するため、ビルド中だけ `/english/word/num` に答えるスタブサーバーをポート3000で立てる。ポート3000を使っているサーバーがあると失敗するので止めてから実行する
   - 応答データは `e2e/support/data.ts` にまとめている
-  - GitHub Actions では develop への push 時に `develop.yml` から `.github/workflows/frontend-e2e.yml` が呼ばれて実行される。**E2E が失敗した場合、デプロイ(本番・モック環境とも)は行われない**
+  - カバレッジは Chrome の V8 カバレッジを monocart-reporter で集計する（設定は `e2e/support/coverage-options.ts`）。計測時だけソースマップを出力して元の TS/TSX に対応づける。`src/` 配下の全ファイル（Storybook 用を除く）が対象で、テストで開かれない画面も 0% として数える
+  - GitHub Actions では develop への push 時に `develop.yml` から `.github/workflows/frontend-e2e.yml` が呼ばれ、カバレッジ付きで実行される。カバレッジの要約はジョブの Summary に表示され、詳細は成果物 `e2e-coverage-report` からダウンロードできる。**E2E が失敗した場合、デプロイ(本番・モック環境とも)は行われない**
   - 運用ルール:
     - 画面や API の呼び出しを変えたときは、関係する E2E テストも同じコミットで直す
     - 成功したり失敗したりする不安定なテストが出たら、放置せずにすぐ原因を調べて直す(リトライで通ったテストも CI の結果に flaky として表示される)

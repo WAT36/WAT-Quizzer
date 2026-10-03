@@ -49,9 +49,30 @@ jobs:
             nextjs-e2e-${{ hashFiles('pnpm-lock.yaml') }}-
 
       # ブラウザはランナーにインストール済みのGoogle Chromeを使うため、playwright installは不要
-      - name: Run Playwright E2E
-        run: pnpm run e2e
+      # カバレッジも合わせて計測する(結果は frontend-next/e2e-coverage/)
+      - name: Run Playwright E2E (with coverage)
+        run: pnpm run e2e:coverage
         working-directory: frontend-next
+
+      # カバレッジの要約をジョブの画面(Summary)に表示する
+      - name: Add coverage summary
+        if: always()
+        run: |
+          if [ -f e2e-coverage/coverage/coverage-summary.md ]; then
+            cat e2e-coverage/coverage/coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+        working-directory: frontend-next
+
+      # ファイルごとのカバレッジ(どの行が実行されたか)を含む詳細レポート
+      # ダウンロードして展開し、coverage/index.html をブラウザで開く
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-coverage-report
+          path: frontend-next/e2e-coverage/
+          retention-days: 14
+          if-no-files-found: ignore
 
       # 失敗したテストの操作記録(trace)とスクリーンショットを含むレポート
       # ダウンロードして `pnpm exec playwright show-report <展開したフォルダ>` で開ける
