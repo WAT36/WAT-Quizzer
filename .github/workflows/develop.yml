@@ -9,8 +9,9 @@ permissions:
 
 jobs:
   # TODO バック、フロント、ライブラリごとに分けたい build-lib,deploy-frontend,deploy-backendみたいな。フロントバックはneeds:build-libとさせる
+  # E2Eテストはfrontend-e2e.ymlで実行する
   frontend-test:
-    name: Frontend Tests (Storybook + Playwright E2E)
+    name: Frontend Tests (Storybook)
     runs-on: ubuntu-latest
     # 2026-08-20時点でactionsがタイムアウトするため一旦無効化。落ち着いたら復活させてOK（needs: frontend-testも合わせて戻すこと）
     if: false
@@ -33,29 +34,6 @@ jobs:
           # prisma generate がスキーマ内の env() 参照を解決できればよく、実際の接続はしない
           DATABASE_URL: postgresql://user:password@localhost:5432/dummy
           DIRECT_URL: postgresql://user:password@localhost:5432/dummy
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
-        working-directory: frontend-next
-
-      - name: Run Playwright E2E (mock mode / DBなし)
-        run: pnpm run e2e
-        working-directory: frontend-next
-
-      # coverage-summary.jsonからジョブサマリー用の要約を出力し、基準値(coverage-baseline.json)を
-      # 下回っていないかを確認する。デプロイはブロックしない非ブロッキングな警告のみ。
-      - name: Add E2E coverage summary & baseline check to job summary
-        if: always()
-        run: pnpm run e2e:check-coverage-baseline
-        working-directory: frontend-next
-
-      - name: Upload E2E coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e2e-coverage-report
-          path: frontend-next/coverage-report/
-          retention-days: 30
 
       - name: Build Storybook
         run: pnpm run build-storybook

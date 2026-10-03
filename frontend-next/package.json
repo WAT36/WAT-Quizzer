@@ -17,9 +17,9 @@
     "chromatic": "chromatic",
     "git:push": "git push && chromatic",
     "export:mock": "NEXT_PUBLIC_MOCK_MODE=true NEXT_PUBLIC_URL_END=/ pnpm run export",
-    "e2e": "pnpm run export:mock && playwright test",
-    "e2e:ui": "pnpm run export:mock && playwright test --ui",
-    "e2e:check-coverage-baseline": "node e2e/check-coverage-baseline.js"
+    "e2e:build": "NEXT_PUBLIC_API_SERVER=http://127.0.0.1:3000/api NEXT_PUBLIC_URL_END=/ NEXT_PUBLIC_MOCK_MODE=false next build",
+    "e2e": "pnpm run e2e:build && playwright test",
+    "e2e:ui": "pnpm run e2e:build && playwright test --ui"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.777.0",
@@ -75,7 +75,6 @@
     "define-lazy-prop": "^2.0.0",
     "dotenv": "^16.4.7",
     "dotenv-expand": "^10.0.0",
-    "monocart-reporter": "^2.12.4",
     "object.assign": "^4.1.5",
     "postcss": "^8.5.6",
     "prettier": "^3.5.3",

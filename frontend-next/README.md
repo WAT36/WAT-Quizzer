@@ -64,12 +64,16 @@ pnpm run export:mock  # モックモード（NEXT_PUBLIC_MOCK_MODE=true）で静
   pnpm run test-storybook:report  # 上記の結果を test-result/a11y.json に出力
   ```
   Storybook では `.storybook/main.ts` で `NEXT_PUBLIC_MOCK_MODE=true` が設定され、モックデータで表示される。`chromatic` / `git:push` は Chromatic への Storybook 公開用。
-- Playwright による e2e テスト (`e2e/`)。モックモードでエクスポートした静的サイトに対して実行する:
+- Playwright による e2e テスト (`e2e/`)。モックモードを使わない通常のビルドに対して実行し、API はテストごとに `page.route()` で差し替える（バックエンド・DB は不要）:
   ```bash
-  pnpm run e2e                          # export:mock → playwright test
-  pnpm run e2e:ui
-  pnpm run e2e:check-coverage-baseline  # e2e/coverage-baseline.json との比較
+  pnpm run e2e      # e2e:build → playwright test
+  pnpm run e2e:ui   # UIモードで1本ずつ確認しながら実行
+  pnpm exec playwright show-report  # 直近の結果レポート（失敗時は操作記録・スクリーンショット付き）
   ```
+  - ブラウザはインストール済みの Google Chrome を使う（`playwright install` は不要）
+  - `e2e/support/fixtures.ts` の `test` を使うと、ログイン済みの状態で始まり、`api.on()` で API の応答を登録できる。登録していない API が呼ばれるとテストは失敗する
+  - 応答データは `e2e/support/data.ts` にまとめている
+  - GitHub Actions では develop への push 時に `.github/workflows/frontend-e2e.yml` で実行される
 
 ## 環境変数
 

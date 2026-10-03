@@ -1,0 +1,69 @@
+name: Frontend E2E
+
+# developへのpush時に、フロント(と依存するquizzer-lib)に変更があった場合だけ実行する
+# デプロイ(develop.yml)とは別のワークフローなので、失敗してもデプロイは止まらない
+on:
+  push:
+    branches: ['develop']
+    paths:
+      - 'frontend-next/**'
+      - 'quizzer-lib/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/frontend-e2e.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      # pnpmのストアをキャッシュして、2回目以降のinstallを速くする
+      - name: Setup Node.js (pnpm cache)
+        uses: actions/setup-node@v4
+        with:
+          cache: pnpm
+
+      - name: Setup dependencies(all)
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup quizzer-lib
+        run: cd ./quizzer-lib && pnpm run build
+        env:
+          # prisma generate がスキーマ内の env() 参照を解決できればよく、実際の接続はしない
+          DATABASE_URL: postgresql://user:password@localhost:5432/dummy
+          DIRECT_URL: postgresql://user:password@localhost:5432/dummy
+
+      # Next.jsのビルドキャッシュ。ソースが変わっていない部分の再ビルドを省略できる
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: frontend-next/.next/cache
+          key: nextjs-e2e-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('frontend-next/src/**', 'quizzer-lib/src/**') }}
+          restore-keys: |
+            nextjs-e2e-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      # ブラウザはランナーにインストール済みのGoogle Chromeを使うため、playwright installは不要
+      - name: Run Playwright E2E
+        run: pnpm run e2e
+        working-directory: frontend-next
+
+      # 失敗したテストの操作記録(trace)とスクリーンショットを含むレポート
+      # ダウンロードして `pnpm exec playwright show-report <展開したフォルダ>` で開ける
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend-next/playwright-report/
+          retention-days: 14
