@@ -71,7 +71,8 @@ pnpm run export:mock  # モックモード（NEXT_PUBLIC_MOCK_MODE=true）で静
   pnpm exec playwright show-report  # 直近の結果レポート（失敗時は操作記録・スクリーンショット付き）
   ```
   - ブラウザはインストール済みの Google Chrome を使う（`playwright install` は不要）
-  - `e2e/support/fixtures.ts` の `test` を使うと、ログイン済みの状態で始まり、`api.on()` で API の応答を登録できる。登録していない API が呼ばれるとテストは失敗する
+  - `e2e/support/fixtures.ts` の `test` を使うと、ログイン済みの状態で始まり、`api.on()` で API の応答を登録できる(パスは文字列の完全一致か正規表現)。登録していない API が呼ばれるとテストは失敗する
+  - `e2e:build`(`e2e/support/build.mjs`)は、英単語詳細ページをビルド時に生成するため、ビルド中だけ `/english/word/num` に答えるスタブサーバーをポート3000で立てる。ポート3000を使っているサーバーがあると失敗するので止めてから実行する
   - 応答データは `e2e/support/data.ts` にまとめている
   - GitHub Actions では develop への push 時に `.github/workflows/frontend-e2e.yml` で実行される
 

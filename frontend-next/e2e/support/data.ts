@@ -4,6 +4,7 @@ import type {
   GetQuizApiResponseDto,
   GetQuizFileApiResponseDto,
   GetQuizFormatApiResponseDto,
+  PartofSpeechApiResponse,
   SourceApiResponse
 } from 'quizzer-lib';
 import type { ApiMock } from './api-mock';
@@ -68,6 +69,17 @@ export const sources: SourceApiResponse[] = [
   { id: 1, name: 'TOEIC', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined },
   { id: 2, name: '英検準1級', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined }
 ];
+
+export const partsOfSpeech: PartofSpeechApiResponse[] = [
+  { id: 1, name: '動詞', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined },
+  { id: 2, name: '名詞', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined }
+];
+
+// englishBotの単語追加・詳細画面が開いたときに読み込む、品詞・出典の一覧を差し替える
+export const mockEnglishMasterData = (api: ApiMock) => {
+  api.on('GET', '/english/partsofspeech', { json: partsOfSpeech });
+  api.on('GET', '/english/source', { json: sources });
+};
 
 export const wordTestData: GetEnglishWordTestDataAPIResponseDto = {
   total: 120,
