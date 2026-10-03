@@ -9,7 +9,11 @@ permissions:
 
 jobs:
   # TODO バック、フロント、ライブラリごとに分けたい build-lib,deploy-frontend,deploy-backendみたいな。フロントバックはneeds:build-libとさせる
-  # E2Eテストはfrontend-e2e.ymlで実行する
+  # フロントのE2Eテスト(frontend-e2e.yml)。失敗した場合はデプロイしない
+  frontend-e2e:
+    name: Frontend E2E
+    uses: ./.github/workflows/frontend-e2e.yml
+
   frontend-test:
     name: Frontend Tests (Storybook)
     runs-on: ubuntu-latest
@@ -52,6 +56,7 @@ jobs:
 
   deploy-production:
     name: Deploy to Production (develop)
+    needs: frontend-e2e
     runs-on: ubuntu-latest
     environment: develop
 
@@ -181,6 +186,7 @@ jobs:
 
   deploy-mock:
     name: Deploy to Mock Environment
+    needs: frontend-e2e
     runs-on: ubuntu-latest
     environment: develop
 

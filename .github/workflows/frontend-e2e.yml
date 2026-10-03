@@ -1,15 +1,10 @@
 name: Frontend E2E
 
-# developへのpush時に、フロント(と依存するquizzer-lib)に変更があった場合だけ実行する
-# デプロイ(develop.yml)とは別のワークフローなので、失敗してもデプロイは止まらない
+# developへのpush時にdevelop.ymlから呼び出され、成功した場合だけデプロイに進む
+# Actionsの画面から手動でも実行できる
 on:
-  push:
-    branches: ['develop']
-    paths:
-      - 'frontend-next/**'
-      - 'quizzer-lib/**'
-      - 'pnpm-lock.yaml'
-      - '.github/workflows/frontend-e2e.yml'
+  workflow_call:
+  workflow_dispatch:
 
 permissions:
   contents: read

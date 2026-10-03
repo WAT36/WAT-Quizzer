@@ -74,7 +74,10 @@ pnpm run export:mock  # モックモード（NEXT_PUBLIC_MOCK_MODE=true）で静
   - `e2e/support/fixtures.ts` の `test` を使うと、ログイン済みの状態で始まり、`api.on()` で API の応答を登録できる(パスは文字列の完全一致か正規表現)。登録していない API が呼ばれるとテストは失敗する
   - `e2e:build`(`e2e/support/build.mjs`)は、英単語詳細ページをビルド時に生成するため、ビルド中だけ `/english/word/num` に答えるスタブサーバーをポート3000で立てる。ポート3000を使っているサーバーがあると失敗するので止めてから実行する
   - 応答データは `e2e/support/data.ts` にまとめている
-  - GitHub Actions では develop への push 時に `.github/workflows/frontend-e2e.yml` で実行される
+  - GitHub Actions では develop への push 時に `develop.yml` から `.github/workflows/frontend-e2e.yml` が呼ばれて実行される。**E2E が失敗した場合、デプロイ(本番・モック環境とも)は行われない**
+  - 運用ルール:
+    - 画面や API の呼び出しを変えたときは、関係する E2E テストも同じコミットで直す
+    - 成功したり失敗したりする不安定なテストが出たら、放置せずにすぐ原因を調べて直す(リトライで通ったテストも CI の結果に flaky として表示される)
 
 ## 環境変数
 
