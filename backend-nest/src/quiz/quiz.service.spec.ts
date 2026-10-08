@@ -396,6 +396,40 @@ describe('QuizService', () => {
     expect(await quizService.add(req)).toEqual(correctData);
   });
 
+  // add 問題文と答えの前後の半角・全角スペースが削除されて登録されること
+  it('add - 問題文と答えを前後トリムして登録', async () => {
+    const req = {
+      file_num: 1,
+      question: ' 　問題　文 　',
+      answer: '　 答え ',
+      format_id: 2,
+    };
+    (prisma.quiz.findFirst as jest.Mock).mockResolvedValue({ quiz_num: 1 });
+    (prisma.quiz.create as jest.Mock).mockResolvedValue({ id: 1 });
+    await quizService.add(req);
+    expect(prisma.quiz.create).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          quiz_sentense: '問題　文',
+          answer: '答え',
+        }),
+      }),
+    );
+  });
+
+  // add 問題文が空白のみの場合はエラー
+  it('add - NG 問題文が空白のみ', async () => {
+    const req = {
+      file_num: 1,
+      question: ' 　 ',
+      answer: '答え',
+      format_id: 2,
+    };
+    await expect(quizService.add(req)).rejects.toMatchObject({
+      message: 'ファイル番号または問題文または答えが入力されていません。',
+    });
+  });
+
   // 問題編集 正常系1
   it('edit - OK', async () => {
     // テストデータ

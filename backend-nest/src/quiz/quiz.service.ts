@@ -27,6 +27,10 @@ import {
 import { Readable } from 'stream';
 import { parse, ParseResult } from 'papaparse';
 
+// 文頭と末尾の半角・全角スペースを削除
+const trimSpaces = (str: string): string =>
+  str ? str.replace(/^[ \u3000]+|[ \u3000]+$/g, '') : str;
+
 export interface QueryType {
   query: string;
   value: (string | number)[];
@@ -398,8 +402,6 @@ export class QuizService {
     try {
       const {
         file_num,
-        question,
-        answer,
         category,
         img_file,
         format_id,
@@ -407,6 +409,9 @@ export class QuizService {
         dummyChoice,
         explanation,
       } = req;
+      // 問題文と答えは前後の半角・全角スペースを削除して登録
+      const question = trimSpaces(req.question);
+      const answer = trimSpaces(req.answer);
       if (!file_num || !question || !answer || !format_id) {
         throw new HttpException(
           `ファイル番号または問題文または答えが入力されていません。`,
@@ -1657,8 +1662,8 @@ export class QuizService {
                 format_id: +format_id, // 問題形式
                 file_num: +file_num,
                 quiz_num: new_quiz_num,
-                quiz_sentense: question,
-                answer,
+                quiz_sentense: trimSpaces(question),
+                answer: trimSpaces(answer),
                 img_file,
                 checked: false,
                 quiz_explanation: {
@@ -1784,8 +1789,8 @@ export class QuizService {
                 format_id: 3, // 四択問題
                 file_num: +file_num,
                 quiz_num: new_quiz_num,
-                quiz_sentense: question,
-                answer,
+                quiz_sentense: trimSpaces(question),
+                answer: trimSpaces(answer),
                 // img_file,
                 checked: false,
                 quiz_explanation: {
