@@ -80,4 +80,59 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     expect(api.requests('GET', '/quiz/search')).toHaveLength(2);
     expect(api.requests('GET', '/quiz/search')[1].query).toMatchObject({ file_num: '1', query: 'Promise' });
   });
+
+  test('カテゴリを複数指定してAND検索でき、カテゴリごとにNOTを指定できる', async ({ page, api }) => {
+    await page.getByLabel('問題ファイル').click();
+    await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+
+    await page.getByRole('combobox', { name: 'カテゴリ' }).click();
+    await page.getByRole('option', { name: 'JavaScript' }).click();
+    await page.getByRole('option', { name: '非同期処理' }).click();
+    await page.keyboard.press('Escape');
+
+    // 追加したカテゴリはNOTなし。OR は指定できない
+    const asyncNot = page.getByRole('button', { name: '非同期処理を含まない', exact: true });
+    await expect(asyncNot).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.getByRole('button', { name: 'OR', exact: true })).toHaveCount(0);
+
+    await page.getByRole('button', { name: '検索', exact: true }).click();
+    expect(api.requests('GET', '/quiz/search')[0].query).toMatchObject({
+      file_num: '1',
+      category_and: JSON.stringify(['JavaScript', '非同期処理'])
+    });
+
+    await asyncNot.click();
+    await expect(asyncNot).toHaveAttribute('aria-pressed', 'true');
+    // NOTの切り替えで候補リストは開かない
+    await expect(page.getByRole('listbox')).toHaveCount(0);
+
+    await page.getByRole('button', { name: '検索', exact: true }).click();
+    const query = api.requests('GET', '/quiz/search')[1].query;
+    expect(query).toMatchObject({
+      file_num: '1',
+      category_and: JSON.stringify(['JavaScript']),
+      category_not: JSON.stringify(['非同期処理'])
+    });
+    expect(query).not.toHaveProperty('category');
+  });
+
+  test('旧形式（カテゴリ1つ）で保存された検索条件はANDのカテゴリとして復元される', async ({ page, api }) => {
+    await page.evaluate(() =>
+      sessionStorage.setItem(
+        'searchQuizRequestData',
+        JSON.stringify({ query: '', file_num: 1, format_id: {}, category: 'JavaScript' })
+      )
+    );
+    await page.reload();
+
+    await expect(page.getByRole('row', { name: target.quiz_sentense })).toBeVisible();
+    expect(api.requests('GET', '/quiz/search')[0].query).toMatchObject({
+      file_num: '1',
+      category_and: JSON.stringify(['JavaScript'])
+    });
+    await expect(page.getByRole('button', { name: 'JavaScriptを含まない', exact: true })).toHaveAttribute(
+      'aria-pressed',
+      'false'
+    );
+  });
 });

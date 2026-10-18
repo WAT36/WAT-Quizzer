@@ -48,11 +48,24 @@ export const mockGetQuizAPI = async (params: any): Promise<ApiResult> => {
 
 export const mockSearchQuizAPI = async (params: any): Promise<ApiResult> => {
   const { searchQuizRequestData } = params;
-  const { query, file_num, checked, searchInOnlySentense, searchInOnlyAnswer } = searchQuizRequestData || {};
+  const {
+    query,
+    file_num,
+    checked,
+    searchInOnlySentense,
+    searchInOnlyAnswer,
+    category_and = [],
+    category_not = []
+  } = searchQuizRequestData || {};
 
   const searchResults = quizMockData.filter((quiz) => {
     if (file_num !== undefined && file_num !== -1 && quiz.file_num !== file_num) return false;
     if (checked !== undefined && quiz.checked !== checked) return false;
+    const quizCategories = quizCategoryMockData
+      .filter((category) => category.quiz_id === quiz.id && !category.deleted_at)
+      .map((category) => category.category);
+    if (!category_and.every((c: string) => quizCategories.includes(c))) return false;
+    if (category_not.some((c: string) => quizCategories.includes(c))) return false;
     if (!query) return true;
 
     const targets = searchInOnlyAnswer

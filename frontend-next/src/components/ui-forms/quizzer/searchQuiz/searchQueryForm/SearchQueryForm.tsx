@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FormControl, FormGroup, TextField as MuiTextField } from '@mui/material';
-import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import {
@@ -21,6 +20,39 @@ import { QuizFilePullDown } from '@/components/ui-elements/pullDown/quizFilePull
 import { useQuizFormatList } from '@/hooks/useQuizFormatList';
 import { useSelectedFileChange } from '@/hooks/useSelectedFileChange';
 import { getCategoryListOptions } from '@/utils/getCategoryListOptions';
+import { CategoryConditionInput } from '@/components/ui-parts/categoryConditionInput/CategoryConditionInput';
+
+// カテゴリ条件のキー（AND:すべて含む / NOT:含まない）
+const CATEGORY_CONDITION_KEYS = ['category_and', 'category_not'] as const;
+type CategoryConditionKey = (typeof CATEGORY_CONDITION_KEYS)[number];
+
+// 旧形式（category: 単一の文字列）で保存された検索条件を、AND条件に変換する
+const migrateSavedSearchQuizRequestData = (
+  saved: SearchQuizAPIRequestDto & { category?: string }
+): SearchQuizAPIRequestDto => {
+  const { category, ...rest } = saved;
+  return {
+    ...rest,
+    category_and: rest.category_and ?? (category && category !== '-1' ? [category] : []),
+    category_not: rest.category_not ?? []
+  };
+};
+
+const toSearchResultRows = (quizzes: GetQuizApiResponseDto[]) =>
+  quizzes.map((x) => {
+    return {
+      ...x,
+      category: x.quiz_category
+        ? x.quiz_category
+            .filter((x) => !x.deleted_at)
+            .map((x) => x.category)
+            .join(',')
+        : '',
+      format_name: x.quiz_format ? x.quiz_format.name.replace('問題', '') : '',
+      accuracy_rate: x.quiz_statistics_view ? +x.quiz_statistics_view.accuracy_rate : NaN,
+      explanation: x.quiz_explanation?.explanation ?? ''
+    };
+  });
 
 interface SearchQueryFormProps {
   setSearchResult: React.Dispatch<React.SetStateAction<GridRowsProp>>;
@@ -39,13 +71,26 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
   // セッションストレージキー
   const STORAGE_KEY = 'searchQuizRequestData';
 
+  const runSearch = useCallback(
+    async (requestData: SearchQuizAPIRequestDto) => {
+      setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+      const result = await searchQuizAPI({ searchQuizRequestData: requestData });
+      setMessage(result.message);
+      setTotalCount(result.total);
+      if (result.result) {
+        setSearchResult(toSearchResultRows(result.result as GetQuizApiResponseDto[]));
+      }
+    },
+    [setMessage, setSearchResult, setTotalCount]
+  );
+
   // 初期化・復元・自動検索
   useEffect(() => {
     const saved = sessionStorage.getItem(STORAGE_KEY);
     setIsRestored(true);
     if (saved) {
       try {
-        const parsed = JSON.parse(saved);
+        const parsed = migrateSavedSearchQuizRequestData(JSON.parse(saved));
         setSearchQuizRequestData(parsed);
         // file_numが有効な場合のみカテゴリリストも取得
         if (parsed.file_num !== -1) {
@@ -55,36 +100,13 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
           })();
 
           // 自動検索
-          // TODO 下のボタン押した時と処理同じだから、まとめたい
-          (async () => {
-            setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-            const result = await searchQuizAPI({ searchQuizRequestData: parsed });
-            setMessage(result.message);
-            setTotalCount(result.total);
-            if (result.result) {
-              const apiResult = (result.result as GetQuizApiResponseDto[]).map((x) => {
-                return {
-                  ...x,
-                  category: x.quiz_category
-                    ? x.quiz_category
-                        .filter((x) => !x.deleted_at)
-                        .map((x) => x.category)
-                        .join(',')
-                    : '',
-                  format_name: x.quiz_format ? x.quiz_format.name.replace('問題', '') : '',
-                  accuracy_rate: x.quiz_statistics_view ? +x.quiz_statistics_view.accuracy_rate : NaN,
-                  explanation: x.quiz_explanation?.explanation ?? ''
-                };
-              });
-              setSearchResult(apiResult);
-            }
-          })();
+          runSearch(parsed);
         }
       } catch (e) {
         // パース失敗時は何もしない
       }
     }
-  }, [setMessage, setSearchResult, setTotalCount]);
+  }, [runSearch]);
 
   // 検索条件が変わったらsessionStorageに保存（ファイル選択など、どの入力経路からの変更も漏らさないよう一箇所で行う）
   useEffect(() => {
@@ -92,17 +114,26 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(searchQuizRequestData));
   }, [isRestored, searchQuizRequestData]);
 
-  // カテゴリリストが更新されたとき、category値がリストに含まれていなければ-1にリセット
+  // カテゴリリストが更新されたとき、リストに含まれないカテゴリを各条件から取り除く
   useEffect(() => {
     if (categorylistoption.length > 0) {
-      if (
-        searchQuizRequestData.category &&
-        !categorylistoption.some((opt) => String(opt.value) === String(searchQuizRequestData.category))
-      ) {
-        setSearchQuizRequestData((prev) => ({ ...prev, category: '-1' }));
-      }
+      const categoryNames = new Set(categorylistoption.map((opt) => String(opt.value)));
+      setSearchQuizRequestData((prev) => {
+        const filtered = CATEGORY_CONDITION_KEYS.reduce(
+          (acc, key) => ({ ...acc, [key]: (prev[key] ?? []).filter((c) => categoryNames.has(c)) }),
+          {} as Pick<SearchQuizAPIRequestDto, CategoryConditionKey>
+        );
+        return {
+          ...prev,
+          ...filtered,
+          // AND条件が無くなったらonlyDirectCategoryも解除
+          onlyDirectCategory: filtered.category_and?.length ? prev.onlyDirectCategory : false
+        };
+      });
     }
   }, [categorylistoption]);
+
+  const hasAndCategory = (searchQuizRequestData.category_and ?? []).length > 0;
 
   return (
     <>
@@ -168,27 +199,24 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
           />
         </FormGroup>
 
-        <PullDown
-          label={'カテゴリ'}
+        <CategoryConditionInput
+          label="カテゴリ"
           optionList={categorylistoption}
-          searchable
-          value={searchQuizRequestData.category ?? -1}
-          onChange={(e) => {
-            const newCategory = String(e.target.value);
-            const setData = {
-              ...searchQuizRequestData,
-              category: newCategory,
-              // カテゴリが未選択になったらonlyDirectCategoryも解除
-              onlyDirectCategory: newCategory === '-1' ? false : !!searchQuizRequestData.onlyDirectCategory
-            };
-            setSearchQuizRequestData(setData);
+          value={searchQuizRequestData}
+          onChange={(categoryConditions) => {
+            setSearchQuizRequestData((prev) => ({
+              ...prev,
+              ...categoryConditions,
+              // AND条件が無くなったらonlyDirectCategoryも解除
+              ...(categoryConditions.category_and.length === 0 && { onlyDirectCategory: false })
+            }));
           }}
         />
         <Checkbox
           value="only-direct-category"
-          label="子カテゴリ未登録のみ（選択カテゴリのみ持つ問題）"
+          label="子カテゴリ未登録のみ（ANDのカテゴリのみ持つ問題）"
           checked={!!searchQuizRequestData.onlyDirectCategory}
-          disabled={!searchQuizRequestData.category || searchQuizRequestData.category === '-1'}
+          disabled={!hasAndCategory}
           onChange={(e) => {
             const setData = {
               ...searchQuizRequestData,
@@ -289,7 +317,9 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
               }}
               sx={{ width: 120 }}
             />
-            <span className="text-sm whitespace-nowrap">を表示（空欄で上位{SEARCH_LIMITS.MAX_QUIZ_SEARCH_RESULTS}件）</span>
+            <span className="text-sm whitespace-nowrap">
+              を表示（空欄で上位{SEARCH_LIMITS.MAX_QUIZ_SEARCH_RESULTS}件）
+            </span>
           </div>
         </FormControl>
       </FormGroup>
@@ -299,29 +329,7 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
         attr={'button-array'}
         variant="contained"
         color="primary"
-        onClick={async (e) => {
-          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-          const result = await searchQuizAPI({ searchQuizRequestData });
-          setMessage(result.message);
-          setTotalCount(result.total);
-          if (result.result) {
-            const apiResult = (result.result as GetQuizApiResponseDto[]).map((x) => {
-              return {
-                ...x,
-                category: x.quiz_category
-                  ? x.quiz_category
-                      .filter((x) => !x.deleted_at)
-                      .map((x) => x.category)
-                      .join(',')
-                  : '',
-                format_name: x.quiz_format ? x.quiz_format.name.replace('問題', '') : '',
-                accuracy_rate: x.quiz_statistics_view ? +x.quiz_statistics_view.accuracy_rate : NaN,
-                explanation: x.quiz_explanation?.explanation ?? ''
-              };
-            });
-            setSearchResult(apiResult);
-          }
-        }}
+        onClick={() => runSearch(searchQuizRequestData)}
       />
       <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
         ※ 検索結果は最大 {SEARCH_LIMITS.MAX_QUIZ_SEARCH_RESULTS} 問まで表示されます
