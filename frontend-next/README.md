@@ -9,7 +9,7 @@ WAT-Quizzer のフロントエンド。[Next.js](https://nextjs.org/)（Pages Ro
 | `/` | トップページ |
 | `/login` | ログイン |
 | `/settings` | 全体設定 |
-| `/quizzer` 以下 | 問題（Quiz）機能: 出題（`getQuiz`。出題設定で条件・出題形式・出題数を指定して連続出題し、終了後に正解率とカテゴリ別の得意/苦手を表示。途中で終了してそれまでの結果を表示することも可）・追加・編集・削除・検索・画像アップロード・正答率グラフ・設定 |
+| `/quizzer` 以下 | 問題（Quiz）機能: 出題（`getQuiz`。出題設定で条件・出題形式・出題数を指定して連続出題し、終了後に正解率とカテゴリ別の得意/苦手を表示。途中で終了してそれまでの結果を表示することも可）・追加・編集・削除・検索（`searchQuiz`。カテゴリは複数指定でき、指定したカテゴリをすべて持つ問題を検索する。カテゴリごとに NOT を付けると、そのカテゴリを持たない問題に絞り込む）・画像アップロード・正答率グラフ・設定 |
 | `/englishBot` 以下 | 英単語帳（EnglishBot）機能: トップ・単語追加・例文追加・単語詳細 (`detailWord/[id]`)・辞書検索・単語テスト |
 | `/storybook` | Storybook への導線ページ |
 | `/404` | 404 ページ |
@@ -73,7 +73,7 @@ pnpm run export:mock  # モックモード（NEXT_PUBLIC_MOCK_MODE=true）で静
   ```
   - ブラウザはインストール済みの Google Chrome を使う（`playwright install` は不要）
   - `e2e/support/fixtures.ts` の `test` を使うと、ログイン済みの状態で始まり、`api.on()` で API の応答を登録できる(パスは文字列の完全一致か正規表現)。登録していない API が呼ばれるとテストは失敗する
-  - `e2e:build`(`e2e/support/build.mjs`)は、英単語詳細ページをビルド時に生成するため、ビルド中だけ `/english/word/num` に答えるスタブサーバーをポート3000で立てる。ポート3000を使っているサーバーがあると失敗するので止めてから実行する
+  - `e2e:build`(`e2e/support/build.mjs`)は、英単語詳細ページをビルド時に生成するため、ビルド中だけ `/english/word/num` に答えるスタブサーバーをポート3000で立てる。ポート3000を使っているサーバーがあると失敗するので止めてから実行する。また `playwright test` もポート3000で既に動いているサーバーをそのまま使う（`playwright.config.ts` の `reuseExistingServer`）ため、`pnpm run dev` を動かしたままだと、ビルドしたものではなく開発サーバーに対してテストしてしまう
   - 応答データは `e2e/support/data.ts` にまとめている
   - カバレッジは Chrome の V8 カバレッジを monocart-reporter で集計する（設定は `e2e/support/coverage-options.ts`）。計測時だけソースマップを出力して元の TS/TSX に対応づける。`src/` 配下の全ファイル（Storybook 用を除く）が対象で、テストで開かれない画面も 0% として数える
   - GitHub Actions では develop への push 時に `develop.yml` から `.github/workflows/frontend-e2e.yml` が呼ばれ、カバレッジ付きで実行される。カバレッジの要約はジョブの Summary に表示され、詳細は成果物 `e2e-coverage-report` からダウンロードできる。**E2E が失敗した場合、デプロイ(本番・モック環境とも)は行われない**
