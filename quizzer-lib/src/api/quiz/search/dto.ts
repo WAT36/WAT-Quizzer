@@ -4,7 +4,8 @@ export interface SearchQuizAPIRequestDto {
   format_id?: { [key: string]: boolean }
   min_rate?: number
   max_rate?: number
-  category?: string
+  category_and?: string[]
+  category_not?: string[]
   checked?: boolean
   searchInOnlySentense?: boolean
   searchInOnlyAnswer?: boolean
@@ -21,7 +22,9 @@ export interface SearchQuizAPIRequestReceivedDto {
   format_id?: string
   min_rate?: string
   max_rate?: string
-  category?: string
+  // カテゴリ条件はJSON文字列化した配列で受け取る
+  category_and?: string
+  category_not?: string
   checked?: string
   searchInOnlySentense?: string
   searchInOnlyAnswer?: string

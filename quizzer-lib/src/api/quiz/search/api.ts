@@ -18,9 +18,6 @@ export const searchQuizAPI = async ({
     return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
 
-  if (searchQuizRequestData.category === '-1') {
-    delete searchQuizRequestData.category
-  }
   // API送る用に formmat_idは{ [key: string]: boolean }からformat_idカンマ区切りの羅列にする
   const format_id = searchQuizRequestData.format_id
     ? Object.entries(searchQuizRequestData.format_id)
@@ -28,6 +25,19 @@ export const searchQuizAPI = async ({
         .map((x) => x[0])
         .join(',')
     : ''
+  // カテゴリ条件はカテゴリ名にカンマが含まれ得るため、配列をJSON文字列化して送る
+  const { category_and, category_not, ...rest } =
+    searchQuizRequestData
+  const categoryParams = Object.entries({
+    category_and,
+    category_not
+  }).reduce(
+    (acc, [key, value]) =>
+      value && value.length > 0
+        ? { ...acc, [key]: JSON.stringify(value) }
+        : acc,
+    {}
+  )
 
   const result = await get(
     '/quiz/search',
@@ -53,7 +63,8 @@ export const searchQuizAPI = async ({
       }
     },
     {
-      ...searchQuizRequestData,
+      ...rest,
+      ...categoryParams,
       format_id
     }
   )
