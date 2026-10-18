@@ -5,6 +5,24 @@ import {
   SearchQuizAPIRequestReceivedDto,
 } from 'quizzer-lib';
 
+// JSON文字列化されたカテゴリ名配列をパースする（不正な値は無視し、トリム・空文字除去・重複除去する）
+const parseCategoryList = (value: string): string[] => {
+  try {
+    const parsed: unknown = JSON.parse(value);
+    if (!Array.isArray(parsed)) return [];
+    return Array.from(
+      new Set(
+        parsed
+          .filter((x): x is string => typeof x === 'string')
+          .map((x) => x.trim())
+          .filter((x) => x !== ''),
+      ),
+    );
+  } catch {
+    return [];
+  }
+};
+
 @Injectable()
 export class SearchQuizPipe implements PipeTransform<
   SearchQuizAPIRequestReceivedDto,
@@ -47,6 +65,13 @@ export class SearchQuizPipe implements PipeTransform<
               : {
                   ...acc,
                 };
+          case 'category_and':
+          case 'category_not': {
+            const categories = parseCategoryList(cur[1]);
+            return categories.length > 0
+              ? { ...acc, [key]: categories }
+              : { ...acc };
+          }
           default:
             if (cur[1] === '-1') {
               return { ...acc };

@@ -24,6 +24,7 @@ import {
   getTodayStart,
   SEARCH_LIMITS,
 } from 'quizzer-lib';
+import { Prisma } from '@prisma/client';
 import { Readable } from 'stream';
 import { parse, ParseResult } from 'papaparse';
 
@@ -773,7 +774,8 @@ export class QuizService {
         format_id,
         min_rate,
         max_rate,
-        category,
+        category_and,
+        category_not,
         checked,
         searchInOnlySentense,
         searchInOnlyAnswer,
@@ -790,19 +792,43 @@ export class QuizService {
           : SEARCH_LIMITS.MAX_QUIZ_SEARCH_RESULTS;
       const take = Math.min(rangeCount, SEARCH_LIMITS.MAX_QUIZ_SEARCH_RESULTS);
 
-      // onlyDirectCategory が true の場合、選択カテゴリの子カテゴリ名を取得
-      let childCategoryNames: string[] = [];
-      if (onlyDirectCategory && category) {
-        const parentCategory = await prisma.category.findFirst({
-          where: { name: category, file_num, deleted_at: null },
-          select: { id: true },
+      // カテゴリ条件（AND:すべて含む / NOT:含まない）
+      const categoryQuizWhere = (
+        names: string[],
+      ): Prisma.category_quizWhereInput => ({
+        category: { name: { in: names }, file_num, deleted_at: null },
+        deleted_at: null,
+      });
+      const categoryConditions: Prisma.quizWhereInput[] = [
+        ...(category_and ?? []).map((name) => ({
+          category_quiz: { some: categoryQuizWhere([name]) },
+        })),
+        ...(category_not && category_not.length > 0
+          ? [{ category_quiz: { none: categoryQuizWhere(category_not) } }]
+          : []),
+      ];
+
+      // onlyDirectCategory: AND指定カテゴリの子カテゴリ（ANDで選択済みのものを除く）を一切持たない問題のみに絞り込む
+      if (onlyDirectCategory && category_and && category_and.length > 0) {
+        const childRelations = await prisma.category_parent_child.findMany({
+          where: {
+            parent_category: {
+              name: { in: category_and },
+              file_num,
+              deleted_at: null,
+            },
+            deleted_at: null,
+          },
+          include: { child_category: { select: { name: true } } },
         });
-        if (parentCategory) {
-          const childRelations = await prisma.category_parent_child.findMany({
-            where: { parent_category_id: parentCategory.id, deleted_at: null },
-            include: { child_category: { select: { name: true } } },
+        const selectedCategories = new Set(category_and);
+        const childCategoryNames = Array.from(
+          new Set(childRelations.map((r) => r.child_category.name)),
+        ).filter((name) => !selectedCategories.has(name));
+        if (childCategoryNames.length > 0) {
+          categoryConditions.push({
+            category_quiz: { none: categoryQuizWhere(childCategoryNames) },
           });
-          childCategoryNames = childRelations.map((r) => r.child_category.name);
         }
       }
 
@@ -823,32 +849,10 @@ export class QuizService {
             lte: max_rate || 100,
           },
         },
-        ...(category && {
-          category_quiz: {
-            some: {
-              category: {
-                name: category,
-              },
-              deleted_at: null,
-            },
-          },
-        }),
+        ...(categoryConditions.length > 0 && { AND: categoryConditions }),
         ...(checked
           ? {
               checked: true,
-            }
-          : {}),
-        // onlyDirectCategory: 子カテゴリを一切持たない問題のみに絞り込む
-        ...(onlyDirectCategory && childCategoryNames.length > 0
-          ? {
-              NOT: {
-                category_quiz: {
-                  some: {
-                    category: { name: { in: childCategoryNames } },
-                    deleted_at: null,
-                  },
-                },
-              },
             }
           : {}),
         ...(query &&

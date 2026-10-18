@@ -528,7 +528,7 @@ describe('QuizService', () => {
         min_rate: 0,
         max_rate: 100,
         format_id: { '1': true },
-        category: 'カテゴリ',
+        category_and: ['カテゴリ'],
         checked: true,
         query: 'クエリ',
         searchInOnlySentense: true,
@@ -550,7 +550,7 @@ describe('QuizService', () => {
         min_rate: 0,
         max_rate: 100,
         format_id: { '1': true },
-        category: 'カテゴリ',
+        category_and: ['カテゴリ'],
         checked: true,
         query: 'クエリ',
         searchInOnlySentense: true,
@@ -559,6 +559,84 @@ describe('QuizService', () => {
       }),
     ).rejects.toMatchObject({
       message: 'error test by jest.',
+    });
+  });
+
+  describe('search - カテゴリ条件', () => {
+    const categoryQuizWhere = (names: string[]) => ({
+      category: { name: { in: names }, file_num: 1, deleted_at: null },
+      deleted_at: null,
+    });
+    // 直近のfindManyに渡されたwhere句を取得する
+    const searchWhere = async (
+      req: Partial<Parameters<QuizService['search']>[0]>,
+    ) => {
+      (prisma.quiz.findMany as jest.Mock).mockClear();
+      (prisma.quiz.findMany as jest.Mock).mockResolvedValue([]);
+      (prisma.quiz.count as jest.Mock).mockResolvedValue(0);
+      await quizService.search({ query: '', file_num: 1, ...req });
+      return (prisma.quiz.findMany as jest.Mock).mock.calls[0][0].where;
+    };
+
+    it('カテゴリ未指定ならカテゴリ条件を付けない', async () => {
+      const where = await searchWhere({});
+      expect(where.AND).toBeUndefined();
+    });
+
+    it('AND: 指定カテゴリそれぞれをすべて持つ', async () => {
+      const where = await searchWhere({ category_and: ['A', 'B'] });
+      expect(where.AND).toEqual([
+        { category_quiz: { some: categoryQuizWhere(['A']) } },
+        { category_quiz: { some: categoryQuizWhere(['B']) } },
+      ]);
+    });
+
+    it('NOT: 指定カテゴリをどれも持たない', async () => {
+      const where = await searchWhere({ category_not: ['C'] });
+      expect(where.AND).toEqual([
+        { category_quiz: { none: categoryQuizWhere(['C']) } },
+      ]);
+    });
+
+    it('AND/NOTを組み合わせられる', async () => {
+      const where = await searchWhere({
+        category_and: ['A', 'B'],
+        category_not: ['C', 'D'],
+      });
+      expect(where.AND).toEqual([
+        { category_quiz: { some: categoryQuizWhere(['A']) } },
+        { category_quiz: { some: categoryQuizWhere(['B']) } },
+        { category_quiz: { none: categoryQuizWhere(['C', 'D']) } },
+      ]);
+    });
+
+    it('onlyDirectCategory: AND指定カテゴリの子カテゴリ（選択済みを除く）を持たない', async () => {
+      (prisma.category_parent_child.findMany as jest.Mock).mockResolvedValue([
+        { child_category: { name: 'A-1' } },
+        { child_category: { name: 'A-2' } },
+        { child_category: { name: 'B' } },
+      ]);
+      const where = await searchWhere({
+        category_and: ['A', 'B'],
+        onlyDirectCategory: true,
+      });
+      expect(where.AND).toEqual([
+        { category_quiz: { some: categoryQuizWhere(['A']) } },
+        { category_quiz: { some: categoryQuizWhere(['B']) } },
+        { category_quiz: { none: categoryQuizWhere(['A-1', 'A-2']) } },
+      ]);
+    });
+
+    it('onlyDirectCategory: AND指定が無ければ無視する', async () => {
+      (prisma.category_parent_child.findMany as jest.Mock).mockClear();
+      const where = await searchWhere({
+        category_not: ['B'],
+        onlyDirectCategory: true,
+      });
+      expect(prisma.category_parent_child.findMany).not.toHaveBeenCalled();
+      expect(where.AND).toEqual([
+        { category_quiz: { none: categoryQuizWhere(['B']) } },
+      ]);
     });
   });
 
