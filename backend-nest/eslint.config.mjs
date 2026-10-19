@@ -2,7 +2,6 @@ import tseslint from 'typescript-eslint';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 
-// 旧 .eslintrc.js(ESLint 9 では読み込まれない形式)から flat config に移行したもの。ルールは移行前と同じ
 export default tseslint.config(
   {
     ignores: ['dist/**', 'node_modules/**'],
@@ -17,9 +16,37 @@ export default tseslint.config(
       },
     },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      // 分割代入で一部のプロパティを取り除く書き方({ a: _a, ...rest })は許可する
-      '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      // 分割代入で一部のプロパティを取り除く書き方({ a: _a, ...rest })と、_で始まる未使用の引数・変数は許可する
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          ignoreRestSiblings: true,
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+      eqeqeq: ['error', 'always', { null: 'ignore' }],
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+    },
+  },
+  // 型情報を使うルール(tsconfig.json の include に入っている src/ だけが対象)
+  // consistent-type-imports は、NestJSのDI(emitDecoratorMetadata)で必要なimportまで型だけのimportにしてしまうおそれがあるため入れない
+  {
+    files: ['src/**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+      '@typescript-eslint/switch-exhaustiveness-check': [
+        'error',
+        { considerDefaultExhaustiveForUnions: true },
+      ],
     },
   },
 );

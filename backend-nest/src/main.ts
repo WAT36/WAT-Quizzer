@@ -102,5 +102,5 @@ async function bootstrap() {
   }
 }
 if (process.env.APP_ENV === 'local') {
-  bootstrap();
+  void bootstrap();
 }
