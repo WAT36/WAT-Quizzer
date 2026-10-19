@@ -128,7 +128,9 @@ export class CategoryService {
           },
           select: { quiz_id: true },
         });
-        const alreadyAssignedIds = new Set(alreadyAssigned.map((q) => q.quiz_id));
+        const alreadyAssignedIds = new Set(
+          alreadyAssigned.map((q) => q.quiz_id),
+        );
         const missingIds = quizIds.filter((id) => !alreadyAssignedIds.has(id));
 
         for (const quiz_id of missingIds) {

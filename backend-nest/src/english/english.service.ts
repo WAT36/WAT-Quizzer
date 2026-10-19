@@ -63,7 +63,14 @@ export class EnglishService {
 
   // 例文追加
   async addExampleService(req: AddExampleAPIRequestDto) {
-    const { exampleEn, exampleJa, explanation, wordName, sourceId, newSourceName } = req;
+    const {
+      exampleEn,
+      exampleJa,
+      explanation,
+      wordName,
+      sourceId,
+      newSourceName,
+    } = req;
 
     // 入力単語存在チェック
     const wordData =
@@ -99,7 +106,9 @@ export class EnglishService {
       if (sourceData[0]) {
         resolvedSourceId = sourceData[0].id;
       } else {
-        const result = await prisma.source.create({ data: { name: newSourceName } });
+        const result = await prisma.source.create({
+          data: { name: newSourceName },
+        });
         resolvedSourceId = result.id;
       }
     }

@@ -18,6 +18,8 @@ export default tseslint.config(
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      // 分割代入で一部のプロパティを取り除く書き方({ a: _a, ...rest })は許可する
+      '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
     },
   },
 );

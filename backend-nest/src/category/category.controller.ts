@@ -103,7 +103,8 @@ export class CategoryController {
 
   @ApiOperation({
     summary: 'カテゴリ別問題数取得',
-    description: '指定されたファイル番号の各カテゴリに登録されている問題数を取得します。',
+    description:
+      '指定されたファイル番号の各カテゴリに登録されている問題数を取得します。',
   })
   @ApiQuery({
     name: 'file_num',
@@ -111,9 +112,14 @@ export class CategoryController {
     type: Number,
     required: true,
   })
-  @ApiResponse({ status: 200, description: 'カテゴリ別問題数の取得に成功しました。' })
+  @ApiResponse({
+    status: 200,
+    description: 'カテゴリ別問題数の取得に成功しました。',
+  })
   @Get('count')
-  async getCategoryQuizCount(@Query('file_num', ParseIntPipe) file_num: number) {
+  async getCategoryQuizCount(
+    @Query('file_num', ParseIntPipe) file_num: number,
+  ) {
     return await this.categoryService.getCategoryQuizCount(+file_num);
   }
 
@@ -141,7 +147,11 @@ export class CategoryController {
   @Post('parent-child')
   async addCategoryParentChild(
     @Body()
-    body: { file_num: number; parent_category: string; child_category: string },
+    body: {
+      file_num: number;
+      parent_category: string;
+      child_category: string;
+    },
   ) {
     return await this.categoryService.addCategoryParentChild(
       body.file_num,

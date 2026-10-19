@@ -280,10 +280,7 @@ describe('QuizService', () => {
     );
     (prisma.quiz.count as jest.Mock).mockResolvedValueOnce(2);
     expect(
-      await quizService.getQuiz(
-        { file_num: 1, count: 2 },
-        'worstRate',
-      ),
+      await quizService.getQuiz({ file_num: 1, count: 2 }, 'worstRate'),
     ).toEqual({
       total: 2,
       quizzes: getQuizResultTestBatch.map((quiz) => ({
@@ -681,12 +678,6 @@ describe('QuizService', () => {
       fromQuizId: 0,
       toQuizId: 1,
     };
-    // テストデータ 正常時の返り値
-    const testResult = [
-      {
-        category: 'カテゴリ',
-      },
-    ];
     (prisma.quiz.findUnique as jest.Mock).mockResolvedValue({
       format_id: 1,
     });

@@ -13,7 +13,6 @@ import {
   IntegrateToQuizAPIRequestDto,
   GetQuizAPIRequestDto,
   SearchQuizAPIRequestDto,
-  xor,
   prisma,
   GetAnswerLogStatisticsAPIRequestDto,
   getStartDateForStatistics,
@@ -879,9 +878,7 @@ export class QuizService {
                   ]
                 : []),
             ];
-            return conditions.length === 1
-              ? conditions[0]
-              : { OR: conditions };
+            return conditions.length === 1 ? conditions[0] : { OR: conditions };
           })()),
       };
 
@@ -1942,7 +1939,10 @@ export class QuizService {
     });
 
     // quiz_id → 解答ログのマップを作成
-    const logsByQuizId = new Map<number, { is_corrected: boolean | null; created_at: Date }[]>();
+    const logsByQuizId = new Map<
+      number,
+      { is_corrected: boolean | null; created_at: Date }[]
+    >();
     for (const log of answerLogs) {
       if (!logsByQuizId.has(log.quiz_id)) logsByQuizId.set(log.quiz_id, []);
       logsByQuizId.get(log.quiz_id)!.push(log);
@@ -1976,10 +1976,13 @@ export class QuizService {
         );
 
         // 直近30日の正解率
-        const recentLogs = catLogs.filter((log) => log.created_at >= recentDate);
+        const recentLogs = catLogs.filter(
+          (log) => log.created_at >= recentDate,
+        );
         const recentAccuracy =
           recentLogs.length > 0
-            ? recentLogs.filter((log) => log.is_corrected).length / recentLogs.length
+            ? recentLogs.filter((log) => log.is_corrected).length /
+              recentLogs.length
             : null;
 
         const reason: 'notRecent' | 'lowAccuracy' =
@@ -2006,7 +2009,9 @@ export class QuizService {
       .sort((a, b) => (a._recentAccuracy ?? 1) - (b._recentAccuracy ?? 1))
       .slice(0, 2);
 
-    const lowAccuracyNames = new Set(lowAccuracyItems.map((c) => c.category_name));
+    const lowAccuracyNames = new Set(
+      lowAccuracyItems.map((c) => c.category_name),
+    );
 
     // 放置気味: lowAccuracyで選ばれたものを除き、最終解答日が古い順で上位3件（未解答は最優先）
     const notRecentItems = scored

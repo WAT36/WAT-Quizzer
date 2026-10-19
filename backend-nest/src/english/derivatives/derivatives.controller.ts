@@ -7,9 +7,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @UseGuards(CognitoAuthGuard)
 @Controller('english/derivatives')
 export class EnglishDerivativesController {
-  constructor(
-    private readonly derivativesService: EnglishDerivativesService,
-  ) {}
+  constructor(private readonly derivativesService: EnglishDerivativesService) {}
 
   @ApiOperation({ summary: '英単語の派生語を品詞ごとに取得する' })
   @Get()
