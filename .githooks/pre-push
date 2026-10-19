@@ -1,9 +1,28 @@
 #!/bin/sh
-# push 前に全ファイルの平均行数を計算して DB に記録する（tools/update_avg_lines.sh）
-# 記録に失敗しても push は止めない
+# push 前に以下を行う
+# 1. ESLint(pnpm lint)。エラーがあれば push を止める(警告だけなら続行)
+#    CI(lint.yml)でエラーがあるとデプロイされないため、push 前に気づけるようにする
+#    どうしても push したい場合は `git push --no-verify` で飛ばせる
+# 2. 全ファイルの平均行数を計算して DB に記録する（tools/update_avg_lines.sh）
+#    記録に失敗しても push は止めない
 
 repo_root=$(git rev-parse --show-toplevel) || exit 0
 cd "$repo_root" || exit 0
+
+# 依存パッケージ未インストール（pnpm install 前）の環境では lint をスキップする
+if [ ! -x ./frontend-next/node_modules/.bin/eslint ] || ! command -v pnpm >/dev/null 2>&1; then
+  echo "⚠️  依存パッケージが無いため lint をスキップしました（pnpm install 後に有効になります）"
+else
+  echo "🔍 lint を実行しています（pnpm lint）..."
+  if ! pnpm lint >/dev/null 2>&1; then
+    echo ""
+    echo "❌ lint でエラーが見つかったため push を中止しました。"
+    echo "   pnpm lint で内容を確認して修正してください（backend の書式は pnpm --filter backend-nest lint で自動修正できます）。"
+    echo "   どうしても push する場合は git push --no-verify を使ってください。"
+    echo ""
+    exit 1
+  fi
+fi
 
 # 依存パッケージ未インストール（pnpm install 前）の環境では何もしない
 if [ ! -x ./batch/node_modules/.bin/ts-node ]; then

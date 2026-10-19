@@ -11,6 +11,7 @@
     "build:lib": "pnpm --filter quizzer-lib build",
     "build:backend": "pnpm build:lib && pnpm --filter backend-nest build",
     "build:frontend": "pnpm --filter frontend-next build",
+    "lint": "pnpm --filter quizzer-lib lint && pnpm --filter backend-nest lint:check && pnpm --filter frontend-next lint",
     "deps:check": "pnpm dlx syncpack@12 list-mismatches",
     "deps:fix": "pnpm dlx syncpack@12 fix-mismatches",
     "start:backend": "pnpm --filter backend-nest build && pnpm --filter backend-nest start:dev",

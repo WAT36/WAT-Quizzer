@@ -1,0 +1,45 @@
+name: Lint
+
+# developへのpush時にdevelop.ymlから呼び出され、エラーが無い場合だけデプロイに進む(警告だけなら成功扱い)
+# Actionsの画面から手動でも実行できる
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: ESLint (quizzer-lib / backend / frontend)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      # pnpmのストアをキャッシュして、2回目以降のinstallを速くする
+      - name: Setup Node.js (pnpm cache)
+        uses: actions/setup-node@v4
+        with:
+          cache: pnpm
+
+      - name: Setup dependencies(all)
+        run: pnpm install --frozen-lockfile
+
+      # backend・frontendの型情報を使うルールが quizzer-lib の型(dist)を参照するため、先にビルドする
+      - name: Setup quizzer-lib
+        run: cd ./quizzer-lib && pnpm run build
+        env:
+          # prisma generate がスキーマ内の env() 参照を解決できればよく、実際の接続はしない
+          DATABASE_URL: postgresql://user:password@localhost:5432/dummy
+          DIRECT_URL: postgresql://user:password@localhost:5432/dummy
+
+      # backendは --fix なしの lint:check を使う(ルートの pnpm lint)
+      - name: Run ESLint
+        run: pnpm lint
