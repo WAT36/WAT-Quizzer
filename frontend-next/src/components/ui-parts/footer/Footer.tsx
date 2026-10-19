@@ -23,7 +23,7 @@ export const Footer = ({ bgColor = '#006494', topHref }: FooterProps) => {
           color="inherit"
           onClick={async () => {
             await logoutAPI();
-            router.push('/login');
+            void router.push('/login');
           }}
           label="ログアウト"
         />

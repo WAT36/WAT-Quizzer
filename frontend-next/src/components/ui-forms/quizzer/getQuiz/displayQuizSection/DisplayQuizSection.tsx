@@ -13,11 +13,10 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
+import type { GetQuizApiResponseDto, GetImageOfQuizAPIResponseDto } from 'quizzer-lib';
 import {
   generateQuizSentense,
-  GetQuizApiResponseDto,
-  initGetQuizResponseData,
-  GetImageOfQuizAPIResponseDto
+  initGetQuizResponseData
 } from 'quizzer-lib';
 import { clearQuizAPI, failQuizAPI, reverseCheckQuizAPI, getImageOfQuizAPI } from '@/utils/api-wrapper';
 import { Chip } from '@/components/ui-elements/chip/Chip';
@@ -102,7 +101,7 @@ export const DisplayQuizSection = ({
 
       // 自動画像表示がONで、画像ファイル名がある場合は自動的に画像を取得
       if (autoDisplayImage && getQuizResponseData.img_file && setImageUrl) {
-        (async () => {
+        void (async () => {
           setMessage({ message: '画像取得中...', messageColor: '#d3d3d3', isDisplay: true });
           const result = await getImageOfQuizAPI({
             getImageOfQuizRequestData: { fileName: getQuizResponseData.img_file || '' }
@@ -129,7 +128,7 @@ export const DisplayQuizSection = ({
                 <IconButton
                   aria-label={`${displayQuiz.file_num}-${displayQuiz.quiz_num}`}
                   onClick={() => {
-                    router.push({
+                    void router.push({
                       pathname: '/quizzer/editQuiz',
                       query: { file_num: displayQuiz.file_num, quiz_num: displayQuiz.quiz_num }
                     });

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
-import { Message } from 'quizzer-lib';
+import type { Message } from 'quizzer-lib';
 import { cleanupEmptyCategoriesAPI } from '@/utils/api-wrapper';
 
 interface CategoryCleanupSectionProps {

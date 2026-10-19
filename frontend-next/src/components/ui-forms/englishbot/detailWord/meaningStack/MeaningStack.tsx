@@ -7,13 +7,8 @@ import { Modal } from '@/components/ui-elements/modal/Modal';
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {
-  Message,
-  EditWordMeanAPIRequestDto,
-  GetWordDetailAPIResponseDto,
-  PullDownOptionDto,
-  initEditMeanData
-} from 'quizzer-lib';
+import type { Message, EditWordMeanAPIRequestDto, GetWordDetailAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
+import { initEditMeanData } from 'quizzer-lib';
 import { deleteEnglishMeanAPI, editEnglishWordMeanAPI, getWordDetailAPI } from '@/utils/api-wrapper';
 
 interface MeaningStackProps {

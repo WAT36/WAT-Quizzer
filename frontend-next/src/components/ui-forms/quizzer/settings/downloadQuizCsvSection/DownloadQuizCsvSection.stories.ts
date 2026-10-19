@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { DownloadQuizCsvSection } from './DownloadQuizCsvSection';
-import { PullDownOptionDto } from 'quizzer-lib';
+import type { PullDownOptionDto } from 'quizzer-lib';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {

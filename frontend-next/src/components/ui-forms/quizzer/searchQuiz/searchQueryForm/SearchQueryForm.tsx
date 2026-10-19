@@ -2,18 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FormControl, FormGroup, TextField as MuiTextField } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
-import {
-  GetQuizApiResponseDto,
-  initSearchQuizRequestData,
-  PullDownOptionDto,
-  SearchQuizAPIRequestDto,
-  SEARCH_LIMITS
-} from 'quizzer-lib';
+import type { GetQuizApiResponseDto, PullDownOptionDto, SearchQuizAPIRequestDto } from 'quizzer-lib';
+import { initSearchQuizRequestData, SEARCH_LIMITS } from 'quizzer-lib';
 import { searchQuizAPI } from '@/utils/api-wrapper';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { Button } from '@/components/ui-elements/button/Button';
-import { GridRowsProp } from '@mui/x-data-grid';
+import type { GridRowsProp } from '@mui/x-data-grid';
 import { CheckboxGroup } from '@/components/ui-parts/checkboxGroup/CheckboxGroup';
 import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
 import { QuizFilePullDown } from '@/components/ui-elements/pullDown/quizFilePullDown/QuizFilePullDown';
@@ -96,13 +91,13 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
         setSearchQuizRequestData(parsed);
         // file_numが有効な場合のみカテゴリリストも取得
         if (parsed.file_num !== -1) {
-          (async () => {
+          void (async () => {
             const { pullDownOption } = await getCategoryListOptions(String(parsed.file_num));
             setCategorylistoption(pullDownOption);
           })();
 
           // 自動検索
-          runSearch(parsed);
+          void runSearch(parsed);
         }
       } catch (e) {
         // パース失敗時は何もしない

@@ -1,5 +1,5 @@
 import { IconButton } from '@mui/material';
-import { GridRenderCellParams } from '@mui/x-data-grid';
+import type { GridRenderCellParams } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from 'next/router';
 
@@ -24,7 +24,7 @@ export const columns = [
         <IconButton
           aria-label={params.value}
           onClick={() => {
-            router.push({
+            void router.push({
               pathname: '/quizzer/editQuiz',
               query: { file_num: params.row.file_num, quiz_num: params.row.quiz_num }
             });

@@ -7,15 +7,14 @@ import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceS
 import { SubSourceStack } from '@/components/ui-forms/englishbot/detailWord/subSourceStack/SubSourceStack';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
-import {
+import type {
   GetWordNumResponseDto,
   GetWordDetailAPIResponseDto,
   PullDownOptionDto,
-  apiResponsePullDownAdapter,
   PartofSpeechApiResponse,
-  SourceApiResponse,
-  initWordDetailResponseData
+  SourceApiResponse
 } from 'quizzer-lib';
+import { apiResponsePullDownAdapter, initWordDetailResponseData } from 'quizzer-lib';
 import {
   getWordDetailAPI,
   getPartOfSpeechListAPI,
@@ -83,7 +82,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     }
 
     // 本番環境では従来通りAPIを呼び出し
-    Promise.all([
+    void Promise.all([
       (async () => {
         const result = await getPartOfSpeechListAPI();
         result.result && setPosList(apiResponsePullDownAdapter(result.result as PartofSpeechApiResponse[]));
@@ -93,7 +92,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         result.result && setSourcelistoption(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
       })()
     ]);
-    (async () => {
+    void (async () => {
       const result = (await getWordDetailAPI({ id })).result as GetWordDetailAPIResponseDto;
       setWordDetail(result);
     })();

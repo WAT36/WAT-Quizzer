@@ -1,7 +1,8 @@
 import { Inter } from 'next/font/google';
 import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { GetSayingResponse, initSayingResponseData } from 'quizzer-lib';
+import type { GetSayingResponse } from 'quizzer-lib';
+import { initSayingResponseData } from 'quizzer-lib';
 import { getSayingAPI } from '@/utils/api-wrapper';
 import { Title } from '@/components/ui-elements/title/Title';
 import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButtonGroup';
@@ -18,7 +19,7 @@ export default function Top({}: Props) {
   const [saying, setSaying] = useState<GetSayingResponse>(initSayingResponseData);
 
   useEffect(() => {
-    Promise.all([
+    void Promise.all([
       (async () => {
         const result = await getSayingAPI({ getSayingRequestData: {} });
         result.result && setSaying(result.result as GetSayingResponse);

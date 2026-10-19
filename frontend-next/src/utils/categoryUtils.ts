@@ -1,4 +1,4 @@
-import { CategoryParentChildAPIResponseDto } from 'quizzer-lib';
+import type { CategoryParentChildAPIResponseDto } from 'quizzer-lib';
 import { getCategoryParentChildListAPI } from './api-wrapper';
 
 // カテゴリの祖先カテゴリ名を再帰的に収集する（重複なし、祖先→親の順）

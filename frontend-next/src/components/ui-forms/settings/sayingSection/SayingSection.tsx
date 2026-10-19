@@ -1,4 +1,4 @@
-import { PullDownOptionDto } from 'quizzer-lib';
+import type { PullDownOptionDto } from 'quizzer-lib';
 import { AddSayingForm } from '../addSayingForm/AddSayingForm';
 import { SearchSayingForm } from '../searchSayingForm/SearchSayingForm';
 import { EditSayingForm } from '../editSayingForm/EditSayingForm';

@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { Message } from 'quizzer-lib';
+import type { Message } from 'quizzer-lib';
 
 export const messageState = atom({
   key: 'message',

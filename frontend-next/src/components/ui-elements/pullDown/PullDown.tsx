@@ -1,11 +1,11 @@
 import React from 'react';
+import type { SelectChangeEvent } from '@mui/material';
 import {
   Autocomplete,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
   TextField
 } from '@mui/material';
 import { getRandomStr } from 'quizzer-lib';

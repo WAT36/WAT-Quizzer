@@ -3,7 +3,7 @@ import { pullDownMenuProps } from '@/constants/pullDown';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Button } from '@/components/ui-elements/button/Button';
-import { AddWordAPIRequestDto, PullDownOptionDto, Message } from 'quizzer-lib';
+import type { AddWordAPIRequestDto, PullDownOptionDto, Message } from 'quizzer-lib';
 import { addWordAPI } from '@/utils/api-wrapper';
 import React from 'react';
 

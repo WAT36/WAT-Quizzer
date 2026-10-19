@@ -1,7 +1,7 @@
 import React from 'react';
 import { AccuracyChart } from '../accuracyChart/AccuracyChart';
 import { AccuracyRadarChart } from '../accuracyRadarChart/AccuracyRadarChart';
-import { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
+import type { GetAccuracyRateByCategoryAPIResponseDto } from 'quizzer-lib';
 import { useAccuracyGraphForm } from '@/contexts/AccuracyGraphFormContext';
 
 interface DisplayAccuracyChartProps {

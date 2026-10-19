@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { CardContent, Typography, Box } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
-import { getTodayKey, GetTodoListApiResponseDto } from 'quizzer-lib';
+import type { GetTodoListApiResponseDto } from 'quizzer-lib';
+import { getTodayKey } from 'quizzer-lib';
 import { addTodoDiaryAPI, getTodoCheckStatusAPI, getTodoListAPI, saveTodoCheckStatusAPI } from '@/utils/api-wrapper';
 
 export interface Todo {
@@ -64,7 +65,7 @@ export const TodoList = ({}: TodoListProps) => {
 
   // 初回マウント時にTodoリストを取得
   useEffect(() => {
-    fetchTodos();
+    void fetchTodos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -79,7 +80,7 @@ export const TodoList = ({}: TodoListProps) => {
         // Todo日記の登録済みフラグもリセット
         todoDiaryRegisteredRef.current = false;
         // APIから再取得して、チェック状態をリセット
-        fetchTodos();
+        void fetchTodos();
       }
     };
 

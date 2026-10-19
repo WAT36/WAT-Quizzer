@@ -1,5 +1,11 @@
-import {
+import type {
   ApiResult,
+  WordSummaryApiResponse,
+  CategoryParentChildAPIResponseDto,
+  CategoryQuizCountDto,
+  RecommendedCategoryDto
+} from 'quizzer-lib';
+import {
   errorMessage,
   getRandomIntWithRange,
   MESSAGES,
@@ -11,11 +17,7 @@ import {
   selfhelpBookMockData,
   successMessage,
   englishDataMock,
-  englishExamplesMockData,
-  WordSummaryApiResponse,
-  CategoryParentChildAPIResponseDto,
-  CategoryQuizCountDto,
-  RecommendedCategoryDto
+  englishExamplesMockData
 } from 'quizzer-lib';
 
 // モック用のAPI関数群

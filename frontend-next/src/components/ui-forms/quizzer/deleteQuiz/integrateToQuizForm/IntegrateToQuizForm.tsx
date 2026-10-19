@@ -4,10 +4,9 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
+import type { GetQuizAPIRequestDto, GetQuizApiResponseDto } from 'quizzer-lib';
 import {
-  GetQuizAPIRequestDto,
   initGetQuizRequestData,
-  GetQuizApiResponseDto,
   initGetQuizResponseData
 } from 'quizzer-lib';
 import { integrateQuizAPI, getQuizAPI } from '@/utils/api-wrapper';

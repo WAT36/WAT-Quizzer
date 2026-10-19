@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { GetAccuracyRateByCategoryAPIResponseDto, GetCategoryRateAPIRequestDto } from 'quizzer-lib';
+import type { GetAccuracyRateByCategoryAPIResponseDto, GetCategoryRateAPIRequestDto } from 'quizzer-lib';
 import { getAccuracyRateByCategoryAPI } from '@/utils/api-wrapper';
 
 export const useAccuracyRateByCategory = () => {

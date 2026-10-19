@@ -6,11 +6,7 @@ import { Box, CircularProgress, IconButton, Stack, TextField, Typography } from 
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {
-  AddAntonymAPIRequestDto,
-  GetWordDetailAPIResponseDto,
-  Message
-} from 'quizzer-lib';
+import type { AddAntonymAPIRequestDto, GetWordDetailAPIResponseDto, Message } from 'quizzer-lib';
 import { addAntonymAPI, getWordDetailAPI } from '@/utils/api-wrapper';
 import React from 'react';
 

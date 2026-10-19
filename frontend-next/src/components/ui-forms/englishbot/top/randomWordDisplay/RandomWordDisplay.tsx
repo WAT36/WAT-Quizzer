@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui-elements/card/Card';
 import { CardContent, CircularProgress, Typography } from '@mui/material';
-import { GetRandomWordAPIResponse } from 'quizzer-lib';
+import type { GetRandomWordAPIResponse } from 'quizzer-lib';
 
 interface RandomWordDisplayProps {
   wordData: GetRandomWordAPIResponse;

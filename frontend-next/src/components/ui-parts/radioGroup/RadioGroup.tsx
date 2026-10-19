@@ -1,4 +1,5 @@
-import { RadioButton, RadioButtonProps } from '@/components/ui-elements/radioButton/RadioButton';
+import type { RadioButtonProps } from '@/components/ui-elements/radioButton/RadioButton';
+import { RadioButton } from '@/components/ui-elements/radioButton/RadioButton';
 import { RadioGroup as MuiRadioGroup } from '@mui/material';
 import React from 'react';
 import { useState } from 'react';

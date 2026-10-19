@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { GetAccuracyGraphForm } from './GetAccuracyGraphForm';
 import { AccuracyGraphFormProvider } from '@/contexts/AccuracyGraphFormContext';
-import { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
+import type { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {

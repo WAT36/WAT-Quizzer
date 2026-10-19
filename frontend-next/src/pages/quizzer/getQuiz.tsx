@@ -7,7 +7,8 @@ import { QuizSessionResult } from '@/components/ui-forms/quizzer/getQuiz/quizSes
 import { FinishSessionModal } from '@/components/ui-forms/quizzer/getQuiz/finishSessionModal/FinishSessionModal';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useQuizSession } from '@/hooks/useQuizSession';
-import { GetQuizAPIRequestDto, initGetQuizRequestData } from 'quizzer-lib';
+import type { GetQuizAPIRequestDto } from 'quizzer-lib';
+import { initGetQuizRequestData } from 'quizzer-lib';
 
 export default function GetQuizPage() {
   const [getQuizRequestData, setQuizRequestData] = useState<GetQuizAPIRequestDto>(initGetQuizRequestData);

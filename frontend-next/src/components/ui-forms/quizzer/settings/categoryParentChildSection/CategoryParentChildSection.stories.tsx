@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { CategoryParentChildSection } from './CategoryParentChildSection';
 import { useState } from 'react';
-import { Message, PullDownOptionDto } from 'quizzer-lib';
+import type { Message, PullDownOptionDto } from 'quizzer-lib';
 
 const mockFilelistoption: PullDownOptionDto[] = [
   { value: '1', label: '英単語ファイル' },

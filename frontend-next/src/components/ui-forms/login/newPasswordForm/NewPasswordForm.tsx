@@ -35,7 +35,7 @@ export const NewPasswordForm = ({ username, session }: NewPasswordFormProps) => 
       // accessTokenの保持はauthNewPasswordSigninAPI内で行われる
       if (data?.status === 'SUCCESS') {
         localStorage.setItem(LAST_USERNAME_STORAGE_KEY, username);
-        router.push('/');
+        void router.push('/');
       } else {
         setMessage('不明な応答が返されました' + data?.error + ' - ' + data?.message);
       }

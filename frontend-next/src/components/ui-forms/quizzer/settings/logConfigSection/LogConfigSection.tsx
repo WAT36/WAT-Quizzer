@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from '@mui/material';
 import { DeleteAnswerLogFileSection } from '../deleteAnswerLogFileSection/DeleteAnswerLogFileSection';
-import { PullDownOptionDto, Message } from 'quizzer-lib';
+import type { PullDownOptionDto, Message } from 'quizzer-lib';
 
 interface LogConfigSectionProps {
   filelistoption: PullDownOptionDto[];

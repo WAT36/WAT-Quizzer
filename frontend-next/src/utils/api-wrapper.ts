@@ -1,4 +1,4 @@
-import { ApiResult } from 'quizzer-lib';
+import type { ApiResult } from 'quizzer-lib';
 import * as mockAPI from './mock-api';
 
 // モックモードかどうかを判定する関数

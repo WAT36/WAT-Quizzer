@@ -1,7 +1,8 @@
 import React from 'react';
 import { CardContent, Input, Typography } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
-import { EditQuizAPIRequestDto, initEditQuizRequestData, insertAtArray } from 'quizzer-lib';
+import type { EditQuizAPIRequestDto } from 'quizzer-lib';
+import { initEditQuizRequestData, insertAtArray } from 'quizzer-lib';
 import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useSetRecoilState } from 'recoil';

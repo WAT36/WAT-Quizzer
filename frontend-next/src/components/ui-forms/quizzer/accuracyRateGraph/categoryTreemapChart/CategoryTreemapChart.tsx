@@ -1,7 +1,7 @@
 import React from 'react';
 import { Treemap, ResponsiveContainer, Tooltip } from 'recharts';
 import { Typography } from '@mui/material';
-import { CategoryTreemapItem } from '@/hooks/useCategoryTreemapData';
+import type { CategoryTreemapItem } from '@/hooks/useCategoryTreemapData';
 
 interface CategoryTreemapChartProps {
   data: CategoryTreemapItem[];

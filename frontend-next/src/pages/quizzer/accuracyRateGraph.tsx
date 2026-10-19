@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout } from '@/components/templates/layout/Layout';
-import { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
+import type { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
 import { AccuracyGraphFormProvider } from '@/contexts/AccuracyGraphFormContext';
 import { AccuracyRateGraphContent } from '@/components/ui-forms/quizzer/accuracyRateGraph/accuracyRateGraphContent/AccuracyRateGraphContent';
 

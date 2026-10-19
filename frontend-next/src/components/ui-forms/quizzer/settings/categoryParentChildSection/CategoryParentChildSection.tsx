@@ -3,7 +3,7 @@ import { CardContent, CardHeader } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui-elements/button/Button';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { PullDownOptionDto, Message, CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
+import type { PullDownOptionDto, Message, CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
 import {
   getCategoryListAPI,
   getCategoryParentChildListAPI,
@@ -71,9 +71,9 @@ export const CategoryParentChildSection = ({
       setCategoryCounts([]);
       return;
     }
-    fetchCategories(fileNum);
-    fetchParentChildList(fileNum);
-    fetchCategoryCounts(fileNum);
+    void fetchCategories(fileNum);
+    void fetchParentChildList(fileNum);
+    void fetchCategoryCounts(fileNum);
   }, [fileNum]);
 
   const categoryPullDownOptions: PullDownOptionDto[] = categoryNames.map((name) => ({
@@ -104,7 +104,7 @@ export const CategoryParentChildSection = ({
     });
     setMessage(result.message);
     if (result.message.messageColor === 'success.light') {
-      fetchParentChildList(fileNum);
+      void fetchParentChildList(fileNum);
     }
   };
 

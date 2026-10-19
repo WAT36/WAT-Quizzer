@@ -14,9 +14,9 @@ import {
 } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
 import { Chip } from '@/components/ui-elements/chip/Chip';
+import type { GetEnglishWordTestDataAPIResponseDto } from 'quizzer-lib';
 import {
   generateFourChoiceSentense,
-  GetEnglishWordTestDataAPIResponseDto,
   WORD_TEST_TYPE
 } from 'quizzer-lib';
 import { submitEnglishBotTestAPI, toggleWordCheckAPI } from '@/utils/api-wrapper';

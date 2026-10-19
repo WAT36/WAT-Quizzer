@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button as MuiButton, SxProps, Theme } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
+import { Button as MuiButton } from '@mui/material';
 
 interface ButtonProps {
   label: string;

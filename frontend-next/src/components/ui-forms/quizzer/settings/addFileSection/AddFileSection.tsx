@@ -1,7 +1,8 @@
 import { CardContent, CardHeader } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
-import { Message, getRandomStr } from 'quizzer-lib';
+import type { Message } from 'quizzer-lib';
+import { getRandomStr } from 'quizzer-lib';
 import { addQuizFileAPI } from '@/utils/api-wrapper';
 import { useState } from 'react';
 import React from 'react';

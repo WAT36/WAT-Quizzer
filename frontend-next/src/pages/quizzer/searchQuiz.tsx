@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GridRowsProp } from '@mui/x-data-grid';
+import type { GridRowsProp } from '@mui/x-data-grid';
 import { columns } from '../../constants/contents/table/quizzer';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';

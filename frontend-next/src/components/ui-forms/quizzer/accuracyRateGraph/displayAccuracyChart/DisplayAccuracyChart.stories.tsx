@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { DisplayAccuracyChart } from './DisplayAccuracyChart';
 import { AccuracyGraphFormProvider } from '@/contexts/AccuracyGraphFormContext';
-import { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
+import type { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
 
 const meta = {
   title: 'Organisms/Quizzer/AccuracyRateGraph/DisplayAccuracyChart',

@@ -1,8 +1,9 @@
 import { Card } from '@/components/ui-elements/card/Card';
 import { useEffect, useState, useMemo } from 'react';
-import { AnswerLogStatisticsApiResponse, GetAnswerLogStatisticsAPIRequestDto, DateUnit } from 'quizzer-lib';
+import type { AnswerLogStatisticsApiResponse, GetAnswerLogStatisticsAPIRequestDto, DateUnit } from 'quizzer-lib';
 import { getAnswerLogStatisticsDataAPI } from '@/utils/api-wrapper';
 import { Chart } from 'react-chartjs-2';
+import type { ChartData } from 'chart.js';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,7 +12,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  ChartData,
   LineElement,
   PointElement,
   LineController
@@ -51,7 +51,7 @@ export const QuizAnswerLogStatisticsCard = ({ file_num }: QuizAnswerLogStatistic
   }, [file_num, dateUnit]);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const result = await getAnswerLogStatisticsDataAPI({ getAnswerLogStatisticsData });
       result.result && setAnswerLogStatisticsData(result.result as AnswerLogStatisticsApiResponse[]);
     })();

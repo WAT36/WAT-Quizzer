@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui-elements/card/Card';
-import { WordSummaryApiResponse } from 'quizzer-lib';
+import type { WordSummaryApiResponse } from 'quizzer-lib';
 import { CircularProgress } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';

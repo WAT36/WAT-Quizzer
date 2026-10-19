@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 import { Card as MuiCard, CardHeader as MuiCardHeader } from '@mui/material';
 
 interface CardProps {

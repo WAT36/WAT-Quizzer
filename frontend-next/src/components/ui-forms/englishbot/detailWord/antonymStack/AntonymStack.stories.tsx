@@ -1,12 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { AntonymStack } from './AntonymStack';
-import {
-  GetWordDetailAPIResponseDto,
-  Message,
-  mockWordDetailLoading,
-  mockWordDetailWithAntonyms,
-  mockWordDetailWithoutAntonyms
-} from 'quizzer-lib';
+import type { GetWordDetailAPIResponseDto, Message } from 'quizzer-lib';
+import { mockWordDetailLoading, mockWordDetailWithAntonyms, mockWordDetailWithoutAntonyms } from 'quizzer-lib';
 import { useState } from 'react';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

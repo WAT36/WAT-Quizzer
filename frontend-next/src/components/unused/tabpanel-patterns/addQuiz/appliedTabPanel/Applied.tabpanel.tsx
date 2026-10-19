@@ -2,7 +2,7 @@ import { TabPanel } from '@/components/ui-elements/tabPanel/TabPanel';
 import { CardContent, Input, Typography } from '@mui/material';
 import React from 'react';
 import styles from '../../TabPanel.module.css';
-import { AddQuizAPIRequestDto, EditQuizAPIRequestDto } from 'quizzer-lib';
+import type { AddQuizAPIRequestDto, EditQuizAPIRequestDto } from 'quizzer-lib';
 
 interface AppliedTabPanelProps {
   value: number;

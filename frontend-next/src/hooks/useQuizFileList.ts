@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { GetQuizFileApiResponseDto, PullDownOptionDto, quizFileListAPIResponseToPullDownAdapter } from 'quizzer-lib';
+import type { GetQuizFileApiResponseDto, PullDownOptionDto } from 'quizzer-lib';
+import { quizFileListAPIResponseToPullDownAdapter } from 'quizzer-lib';
 import { getQuizFileListAPI } from '@/utils/api-wrapper';
 
 export const useQuizFileList = () => {
@@ -9,7 +10,7 @@ export const useQuizFileList = () => {
   const setMessage = useSetRecoilState(messageState);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       setMessage({
         message: '通信中...',
         messageColor: '#d3d3d3',

@@ -1,11 +1,7 @@
 import { Card, CardContent, FormControl, FormGroup, Paper, TextField, Typography } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
-import {
-  GetQuizAPIRequestDto,
-  GetQuizApiResponseDto,
-  initGetQuizRequestData,
-  initGetQuizResponseData
-} from 'quizzer-lib';
+import type { GetQuizAPIRequestDto, GetQuizApiResponseDto } from 'quizzer-lib';
+import { initGetQuizRequestData, initGetQuizResponseData } from 'quizzer-lib';
 import { useState } from 'react';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import React from 'react';
-import { GetExampleTestDataAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
+import type { GetExampleTestDataAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
 import { GetExampleQueryForm } from '../getExampleForm/GetExampleQueryForm';
 import { DisplayTestExampleSection } from '../displayTestExampleSection/DisplayTestExampleSection';
 

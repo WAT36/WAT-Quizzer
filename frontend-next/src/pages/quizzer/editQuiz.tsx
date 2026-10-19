@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { InputQueryForEditForm } from '@/components/ui-forms/quizzer/editQuiz/InputQueryForEditForm/InputQueryForEditForm';
-import { EditQuizAPIRequestDto, initEditQuizRequestData } from 'quizzer-lib';
+import type { EditQuizAPIRequestDto } from 'quizzer-lib';
+import { initEditQuizRequestData } from 'quizzer-lib';
 import { EditQuizForm } from '@/components/ui-forms/quizzer/editQuiz/editQuizForm/EditQuizForm';
 
 export default function EditQuizPage() {

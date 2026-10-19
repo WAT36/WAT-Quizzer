@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { Title } from '@/components/ui-elements/title/Title';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
-import { apiResponsePullDownAdapter, PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
+import type { PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
+import { apiResponsePullDownAdapter } from 'quizzer-lib';
 import { getSourceListAPI } from '@/utils/api-wrapper';
 import { RadioGroup } from '@/components/ui-parts/radioGroup/RadioGroup';
 import { WordTestSection } from '@/components/ui-forms/englishbot/testWord/WordTestSection/WordTestSection';
@@ -22,13 +23,13 @@ export default function TestWordPage({ isMock }: Props) {
 
   // 出典リスト取得
   useEffect(() => {
-    !isMock &&
-      Promise.all([
-        (async () => {
-          const result = await getSourceListAPI();
-          result.result && setSourcelistoption(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
-        })()
-      ]);
+    if (isMock) return;
+    void Promise.all([
+      (async () => {
+        const result = await getSourceListAPI();
+        result.result && setSourcelistoption(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
+      })()
+    ]);
   }, [isMock, setMessage]);
 
   const contents = () => {

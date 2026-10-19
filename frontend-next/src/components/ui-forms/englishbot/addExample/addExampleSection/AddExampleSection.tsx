@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
 import { CardContent, CardHeader, InputLabel, MenuItem, Select } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
-import { AddExampleAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
+import type { AddExampleAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
 import { addExampleAPI } from '@/utils/api-wrapper';
 import { Button } from '@/components/ui-elements/button/Button';
 import { messageState } from '@/atoms/Message';

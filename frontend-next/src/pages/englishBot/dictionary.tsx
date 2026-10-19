@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container } from '@mui/material';
 import { searchedDetailColumns } from '../../constants/contents/table/englishbot';
-import { GridRowsProp } from '@mui/x-data-grid';
+import type { GridRowsProp } from '@mui/x-data-grid';
 import { Layout } from '@/components/templates/layout/Layout';
 import { SearchInputSection } from '@/components/ui-forms/englishbot/dictionary/searchInputSection/SearchInputSection';
 import { SearchResultTable } from '@/components/ui-elements/searchResultTable/SearchResultTable';

@@ -1,6 +1,6 @@
 import { CardContent, Typography } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
-import { Message } from 'quizzer-lib';
+import type { Message } from 'quizzer-lib';
 
 interface MessageCardProps {
   messageState: Message;

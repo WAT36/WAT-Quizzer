@@ -6,7 +6,7 @@ import { Box, CircularProgress, IconButton, Stack, TextField, Typography } from 
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {
+import type {
   Message,
   AddEtymologyAPIRequestDto,
   GetWordDetailAPIResponseDto,

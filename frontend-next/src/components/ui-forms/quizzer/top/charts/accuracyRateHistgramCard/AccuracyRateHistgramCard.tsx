@@ -1,8 +1,9 @@
 import { Card } from '@/components/ui-elements/card/Card';
 import { useEffect, useState, useMemo } from 'react';
-import { GetAnswerLogStatisticsAPIRequestDto, AccuracyRateHistgramApiResponse } from 'quizzer-lib';
+import type { GetAnswerLogStatisticsAPIRequestDto, AccuracyRateHistgramApiResponse } from 'quizzer-lib';
 import { getAccuracyRateHistgramDataAPI } from '@/utils/api-wrapper';
 import { Chart } from 'react-chartjs-2';
+import type { ChartData } from 'chart.js';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,7 +12,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  ChartData,
   LineElement,
   PointElement
 } from 'chart.js';
@@ -41,7 +41,7 @@ export const AccuracyRateHistgramCard = ({ file_num }: AccuracyRateHistgramCardP
   }, [file_num]);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const result = await getAccuracyRateHistgramDataAPI({ getAccuracyRateHistgramData });
       result.result && setAccuracyRateHistgramData(result.result as AccuracyRateHistgramApiResponse);
     })();

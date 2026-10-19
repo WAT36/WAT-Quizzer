@@ -1,5 +1,6 @@
 import React from 'react';
-import { Autocomplete, Checkbox, FormControl, TextField, SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
+import { Autocomplete, Checkbox, FormControl, TextField } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import Tree, { CustomNodeElementProps, RawNodeDatum } from 'react-d3-tree';
-import { CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
+import type { CustomNodeElementProps, RawNodeDatum } from 'react-d3-tree';
+import Tree from 'react-d3-tree';
+import type { CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
 
 interface CategoryTreeGraphProps {
   parentChildList: CategoryParentChildAPIResponseDto[];

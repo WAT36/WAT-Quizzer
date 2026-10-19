@@ -1,4 +1,5 @@
-import { Checkbox, CheckboxProps } from '@/components/ui-elements/checkBox/CheckBox';
+import type { CheckboxProps } from '@/components/ui-elements/checkBox/CheckBox';
+import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
 import { FormGroup, FormLabel } from '@mui/material';
 import React from 'react';
 

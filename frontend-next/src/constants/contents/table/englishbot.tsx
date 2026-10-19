@@ -1,5 +1,5 @@
 import { Link } from '@mui/material';
-import { GridRenderCellParams } from '@mui/x-data-grid';
+import type { GridRenderCellParams } from '@mui/x-data-grid';
 
 export const searchedDetailColumns = [
   {

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
 import { CardContent } from '@mui/material';
-import { DataGrid, GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid';
+import type { GridRowSelectionModel, GridRowsProp } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { meanColumns } from '../../../../../constants/contents/table/englishbot';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
-import { AssociateExampleandWordData } from 'quizzer-lib';
+import type { AssociateExampleandWordData } from 'quizzer-lib';
 import { searchExampleAPI, submitAssociationExampleAPI } from '@/utils/api-wrapper';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';

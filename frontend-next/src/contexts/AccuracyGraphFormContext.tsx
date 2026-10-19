@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
-import { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
+import type { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
 
 export type GraphType = 'Bar' | 'Radar';
 export type OrderType = 'Rate' | 'Name';

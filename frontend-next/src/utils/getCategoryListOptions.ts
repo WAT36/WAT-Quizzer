@@ -1,4 +1,5 @@
-import { getCategoryListAPIResponseToPullDownAdapter, GetCategoryAPIResponseDto } from 'quizzer-lib';
+import type { GetCategoryAPIResponseDto } from 'quizzer-lib';
+import { getCategoryListAPIResponseToPullDownAdapter } from 'quizzer-lib';
 import { getCategoryListAPI } from '@/utils/api-wrapper';
 
 // カテゴリリスト取得

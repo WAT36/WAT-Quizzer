@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CardContent } from '@mui/material';
 import styles from '../Settings.module.css';
-import { GridRowsProp } from '@mui/x-data-grid';
+import type { GridRowsProp } from '@mui/x-data-grid';
 import { SearchResultTable } from '@/components/ui-elements/searchResultTable/SearchResultTable';
 import { Card } from '@/components/ui-elements/card/Card';
 import { TextField } from '@/components/ui-elements/textField/TextField';
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { searchSayingColumns } from '../../../../constants/contents/table/saying';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { SearchSayingAPIRequestDto } from 'quizzer-lib';
+import type { SearchSayingAPIRequestDto } from 'quizzer-lib';
 import { searchSayingAPI } from '@/utils/api-wrapper';
 
 interface SearchSayingFormProps {}

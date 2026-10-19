@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import { AddWordAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
+import type { AddWordAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
 import { pullDownMenuProps } from '@/constants/pullDown';
 // TODO @mui/material はなくす
 

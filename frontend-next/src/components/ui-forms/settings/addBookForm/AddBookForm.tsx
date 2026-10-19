@@ -6,7 +6,7 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import styles from '../Settings.module.css';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { PullDownOptionDto } from 'quizzer-lib';
+import type { PullDownOptionDto } from 'quizzer-lib';
 import { addBookAPI, listBookAPI } from '@/utils/api-wrapper';
 
 interface AddBookFormProps {

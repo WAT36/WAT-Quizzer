@@ -26,7 +26,7 @@ export default function RequiredAuthComponent({ children }: Props) {
       isMockMode() || hasValidAccessToken() || (await refreshAccessToken()) === 'success';
 
     let cancelled = false;
-    check().then((authenticated) => {
+    void check().then((authenticated) => {
       if (cancelled) return;
       if (authenticated) {
         setIsAuthenticated(true);

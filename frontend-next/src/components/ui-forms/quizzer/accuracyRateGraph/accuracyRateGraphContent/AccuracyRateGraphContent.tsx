@@ -13,8 +13,8 @@ export const AccuracyRateGraphContent = () => {
   const { treemapData, fetchTreemapData } = useCategoryTreemapData();
 
   const handleDisplayClick = () => {
-    fetchAccuracyData(getCategoryRateData);
-    fetchTreemapData(getCategoryRateData.file_num);
+    void fetchAccuracyData(getCategoryRateData);
+    void fetchTreemapData(getCategoryRateData.file_num);
   };
 
   return (

@@ -6,7 +6,7 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { FormControl, FormGroup } from '@mui/material';
 import { loginAPI } from '@/utils/api-wrapper';
 import { isMockMode } from '@/utils/api-wrapper';
-import { SignInResult } from 'quizzer-lib';
+import type { SignInResult } from 'quizzer-lib';
 import { LAST_USERNAME_STORAGE_KEY } from '@/constants/auth';
 
 interface LoginFormProps {
@@ -29,7 +29,7 @@ export const LoginForm = ({ setShowNewPasswordForm, setSession, username, setUse
       if (isMockMode()) {
         // モック環境では常にログイン成功
         setMessage('ログイン成功！');
-        router.push('/');
+        void router.push('/');
         return;
       }
 
@@ -45,7 +45,7 @@ export const LoginForm = ({ setShowNewPasswordForm, setSession, username, setUse
       if (data?.status === 'SUCCESS') {
         setMessage('ログイン成功！');
         localStorage.setItem(LAST_USERNAME_STORAGE_KEY, username);
-        router.push('/');
+        void router.push('/');
       } else if (data?.status === 'NEW_PASSWORD_REQUIRED') {
         setMessage('新しいパスワードが必要です');
         setSession(data.session);

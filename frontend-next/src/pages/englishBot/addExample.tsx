@@ -4,7 +4,8 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { AddExampleSection } from '@/components/ui-forms/englishbot/addExample/addExampleSection/AddExampleSection';
 import { AssociateExampleandWordSection } from '@/components/ui-forms/englishbot/addExample/searchRelatedWordSection/AssociateExampleandWordSection';
-import { apiResponsePullDownAdapter, PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
+import type { PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
+import { apiResponsePullDownAdapter } from 'quizzer-lib';
 import { getSourceListAPI } from '@/utils/api-wrapper';
 
 type Props = {
@@ -15,11 +16,11 @@ export default function EnglishBotAddExamplePage({ isMock }: Props) {
   const [sourceList, setSourceList] = useState<PullDownOptionDto[]>([]);
 
   useEffect(() => {
-    !isMock &&
-      (async () => {
-        const result = await getSourceListAPI();
-        result.result && setSourceList(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
-      })();
+    if (isMock) return;
+    void (async () => {
+      const result = await getSourceListAPI();
+      result.result && setSourceList(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
+    })();
   }, [isMock]);
 
   const contents = () => {

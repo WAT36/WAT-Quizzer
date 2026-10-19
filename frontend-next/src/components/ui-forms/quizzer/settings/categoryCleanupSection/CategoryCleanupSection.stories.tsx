@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { CategoryCleanupSection } from './CategoryCleanupSection';
 import { useState } from 'react';
-import { Message } from 'quizzer-lib';
+import type { Message } from 'quizzer-lib';
 
 const CategoryCleanupSectionWrapper = () => {
   const [, setMessage] = useState<Message>({ message: '', messageColor: 'success.light', isDisplay: false });

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useQuizFileList } from '@/hooks/useQuizFileList';
 import { PullDown } from '../PullDown';
-import { SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 
 type Props = {
   onFileChange: (e: SelectChangeEvent<number | string>) => void;

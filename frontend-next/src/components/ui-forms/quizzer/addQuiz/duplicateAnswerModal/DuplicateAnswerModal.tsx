@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-import { GetQuizApiResponseDto } from 'quizzer-lib';
+import type { GetQuizApiResponseDto } from 'quizzer-lib';
 import { Button } from '@/components/ui-elements/button/Button';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 

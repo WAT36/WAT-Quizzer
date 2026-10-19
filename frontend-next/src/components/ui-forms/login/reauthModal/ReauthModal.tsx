@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FormControl, FormGroup } from '@mui/material';
-import { setReauthHandler, SignInResult } from 'quizzer-lib';
+import type { SignInResult } from 'quizzer-lib';
+import { setReauthHandler } from 'quizzer-lib';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { Button } from '@/components/ui-elements/button/Button';
 import { TextField } from '@/components/ui-elements/textField/TextField';

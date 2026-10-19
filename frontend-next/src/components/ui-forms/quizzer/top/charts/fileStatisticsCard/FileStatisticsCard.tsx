@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui-elements/card/Card';
-import { QuizFileStatisticsApiResponse } from 'quizzer-lib';
+import type { QuizFileStatisticsApiResponse } from 'quizzer-lib';
 import { getQuizFileStatisticsDataAPI } from '@/utils/api-wrapper';
 import { useEffect, useState } from 'react';
 import { CircularProgress } from '@mui/material';
@@ -20,7 +20,7 @@ export const FileStatisticsCard = ({ file_num }: FileStatisticsCardProps) => {
   const [quizFileStatisticsData, setQuizFileStatisticsData] = useState<QuizFileStatisticsApiResponse>();
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const result = await getQuizFileStatisticsDataAPI({ file_num });
       result.result && setQuizFileStatisticsData(result.result as QuizFileStatisticsApiResponse);
     })();

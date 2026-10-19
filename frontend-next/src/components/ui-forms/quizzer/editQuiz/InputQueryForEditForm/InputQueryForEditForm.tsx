@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { FormControl, FormGroup, SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
+import { FormControl, FormGroup } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
+import type { EditQuizAPIRequestDto, GetQuizAPIRequestDto, GetQuizApiResponseDto } from 'quizzer-lib';
 import {
-  EditQuizAPIRequestDto,
-  GetQuizAPIRequestDto,
-  GetQuizApiResponseDto,
   getQuizAPIResponseToEditQuizAPIRequestAdapter,
   initEditQuizRequestData,
   initGetQuizRequestData
@@ -53,7 +52,7 @@ export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForE
         file_num: +file_num,
         quiz_num: +quiz_num
       });
-      getQuiz({
+      void getQuiz({
         file_num: +file_num,
         quiz_num: +quiz_num
       });
@@ -97,7 +96,7 @@ export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForE
         variant="contained"
         color="primary"
         onClick={async (e) => {
-          getQuiz(getQuizRequestData);
+          void getQuiz(getQuizRequestData);
         }}
       />
     </>

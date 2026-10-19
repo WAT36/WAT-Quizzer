@@ -1,4 +1,4 @@
-import { GetEnglishWordTestDataAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
+import type { GetEnglishWordTestDataAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
 import { GetWordQueryForm } from '../getWordForm/GetWordQueryForm';
 import { DisplayTestWordSection } from '../displayTestWordSection/DisplayTestWordSection';
 import { useState } from 'react';

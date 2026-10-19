@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { CardContent, SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
+import { CardContent } from '@mui/material';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { Button } from '@/components/ui-elements/button/Button';
 import styles from '../Settings.module.css';
@@ -7,7 +8,8 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { AddSayingAPIRequestDto, initAddSayingMockData, PullDownOptionDto } from 'quizzer-lib';
+import type { AddSayingAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
+import { initAddSayingMockData } from 'quizzer-lib';
 import { addSayingAPI } from '@/utils/api-wrapper';
 
 interface AddSayingFormProps {

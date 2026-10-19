@@ -3,9 +3,9 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material
 import { Button } from '@/components/ui-elements/button/Button';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import { GetQuizAPIRequestDto } from 'quizzer-lib';
+import type { GetQuizAPIRequestDto } from 'quizzer-lib';
 import { InputQueryForm } from '../inputQueryForm/InputQueryForm';
-import { QuizSessionMethod, StartQuizSessionParams } from '@/hooks/useQuizSession';
+import type { QuizSessionMethod, StartQuizSessionParams } from '@/hooks/useQuizSession';
 
 const QUIZ_METHOD_OPTIONS: { value: QuizSessionMethod; label: string }[] = [
   { value: 'random', label: 'ランダム' },

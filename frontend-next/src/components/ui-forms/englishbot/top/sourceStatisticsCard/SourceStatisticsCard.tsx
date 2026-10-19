@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui-elements/card/Card';
-import { PullDownOptionDto, SourceStatisticsApiResponse } from 'quizzer-lib';
+import type { PullDownOptionDto, SourceStatisticsApiResponse } from 'quizzer-lib';
 import { getSourceStatisticsDataAPI } from '@/utils/api-wrapper';
 import { useEffect, useState } from 'react';
 import { CircularProgress } from '@mui/material';
@@ -21,7 +21,7 @@ export const SourceStatisticsCard = ({}: SourceStatisticsCardProps) => {
   const selectedSourceStaticsData = sourceStatisticsData.find((x) => x.id === selectedSource);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const result = await getSourceStatisticsDataAPI({});
       result.result && setSourceStatisticsData(result.result as SourceStatisticsApiResponse[]);
       // 出典プルダウン作成

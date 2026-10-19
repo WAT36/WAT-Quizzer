@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
+import type { CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
 import { getCategoryQuizCountAPI, getCategoryParentChildListAPI } from '@/utils/api-wrapper';
 
 const COLORS_LENGTH = 10;

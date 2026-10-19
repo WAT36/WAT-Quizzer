@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, FormGroup } from '@mui/material';
-import {
-  AddWordAPIRequestDto,
-  apiResponsePullDownAdapter,
-  PartofSpeechApiResponse,
-  PullDownOptionDto,
-  SourceApiResponse
-} from 'quizzer-lib';
+import type { AddWordAPIRequestDto, PartofSpeechApiResponse, PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
+import { apiResponsePullDownAdapter } from 'quizzer-lib';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanForm/AddMeanForm';
@@ -35,17 +30,17 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
   });
 
   useEffect(() => {
-    !isMock &&
-      Promise.all([
-        (async () => {
-          const result = await getPartOfSpeechListAPI();
-          result.result && setPosList(apiResponsePullDownAdapter(result.result as PartofSpeechApiResponse[]));
-        })(),
-        (async () => {
-          const result = await getSourceListAPI();
-          result.result && setSourceList(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
-        })()
-      ]);
+    if (isMock) return;
+    void Promise.all([
+      (async () => {
+        const result = await getPartOfSpeechListAPI();
+        result.result && setPosList(apiResponsePullDownAdapter(result.result as PartofSpeechApiResponse[]));
+      })(),
+      (async () => {
+        const result = await getSourceListAPI();
+        result.result && setSourceList(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
+      })()
+    ]);
   }, [isMock, setMessage]);
 
   // TODO  単語登録入力のとこは別コンポーネントにして切り出す

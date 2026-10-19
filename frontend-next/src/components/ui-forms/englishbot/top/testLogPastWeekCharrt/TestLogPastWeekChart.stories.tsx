@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { TestLogPastWeekChart } from './TestLogPastWeekChart';
-import { GetPastWeekTestStatisticsAPIResponseDto } from 'quizzer-lib';
+import type { GetPastWeekTestStatisticsAPIResponseDto } from 'quizzer-lib';
 
 const meta = {
   title: 'Organisms/EnglishBot/Top/TestLogPastWeekChart',

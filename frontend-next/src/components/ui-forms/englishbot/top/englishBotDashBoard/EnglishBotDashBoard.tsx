@@ -5,7 +5,11 @@ import { TestLogPastWeekChart } from '../testLogPastWeekCharrt/TestLogPastWeekCh
 import { WordSummaryChart } from '../wordSummaryChart/WordSummaryChart';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { GetPastWeekTestStatisticsAPIResponseDto, GetRandomWordAPIResponse, WordSummaryApiResponse } from 'quizzer-lib';
+import type {
+  GetPastWeekTestStatisticsAPIResponseDto,
+  GetRandomWordAPIResponse,
+  WordSummaryApiResponse
+} from 'quizzer-lib';
 import { getWordSummaryDataAPI, getRandomWordAPI, getWordTestStatisticsWeekDataAPI } from '@/utils/api-wrapper';
 
 interface EnglishBotDashboardProps {}
@@ -25,7 +29,7 @@ export const EnglishBotDashboard: React.FC<EnglishBotDashboardProps> = ({}) => {
   // 問題ファイルリスト取得
   const setMessage = useSetRecoilState(messageState);
   useEffect(() => {
-    Promise.all([
+    void Promise.all([
       // TODO これ　各コンポーネント内に分けて置けられないか？　ステートも分けたい
       (async () => {
         const result = await getWordSummaryDataAPI();

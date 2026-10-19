@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { CircularProgress, Snackbar } from '@mui/material';
-import { Message } from 'quizzer-lib';
+import type { Message } from 'quizzer-lib';
 
 interface MessageBarProps {
   messageState: Message;

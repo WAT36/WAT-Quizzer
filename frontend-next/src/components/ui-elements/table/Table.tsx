@@ -1,16 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import type {
+  ColumnDef,
+  SortingState,
+  ColumnFiltersState,
+  RowSelectionState,
+  VisibilityState
+} from '@tanstack/react-table';
 import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  ColumnDef,
-  SortingState,
-  ColumnFiltersState,
-  RowSelectionState,
-  VisibilityState
+  flexRender
 } from '@tanstack/react-table';
 
 export interface TableProps<TData> {

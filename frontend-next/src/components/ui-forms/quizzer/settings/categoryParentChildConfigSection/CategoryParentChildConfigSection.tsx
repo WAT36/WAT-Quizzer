@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader } from '@mui/material';
 import { CategoryParentChildSection } from '../categoryParentChildSection/CategoryParentChildSection';
-import { PullDownOptionDto, Message } from 'quizzer-lib';
+import type { PullDownOptionDto, Message } from 'quizzer-lib';
 
 interface CategoryParentChildConfigSectionProps {
   filelistoption: PullDownOptionDto[];

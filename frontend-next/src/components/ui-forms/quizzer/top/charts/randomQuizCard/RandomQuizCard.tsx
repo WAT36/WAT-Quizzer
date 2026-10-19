@@ -9,14 +9,8 @@ import {
   Alert
 } from '@mui/material';
 import { useEffect, useState, useMemo } from 'react';
-import {
-  GetQuizApiResponseDto,
-  GetQuizAPIRequestDto,
-  initGetQuizResponseData,
-  generateQuizSentense,
-  GetQuizFileApiResponseDto,
-  Message
-} from 'quizzer-lib';
+import type { GetQuizApiResponseDto, GetQuizAPIRequestDto, GetQuizFileApiResponseDto, Message } from 'quizzer-lib';
+import { initGetQuizResponseData, generateQuizSentense } from 'quizzer-lib';
 import { getQuizAPI, getQuizFileListAPI, clearQuizAPI, failQuizAPI } from '@/utils/api-wrapper';
 import { DisplaySentence } from '@/components/ui-elements/sentence/DisplaySentence';
 import { Chip } from '@/components/ui-elements/chip/Chip';
@@ -37,7 +31,7 @@ export const RandomQuizCard = ({ file_num }: RandomQuizCardProps) => {
   };
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       let targetFileNum = file_num;
 
       // file_numが-1の場合は、実在するファイルからランダムに選択

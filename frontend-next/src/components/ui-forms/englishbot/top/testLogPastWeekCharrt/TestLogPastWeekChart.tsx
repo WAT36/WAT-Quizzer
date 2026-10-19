@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui-elements/card/Card';
-import { GetPastWeekTestStatisticsAPIResponseDto } from 'quizzer-lib';
+import type { GetPastWeekTestStatisticsAPIResponseDto } from 'quizzer-lib';
 import { CircularProgress } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';

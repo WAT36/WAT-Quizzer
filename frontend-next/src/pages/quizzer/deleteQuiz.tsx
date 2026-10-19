@@ -3,7 +3,8 @@ import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { DeleteQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/deleteQuizForm/DeleteQuizForm';
 import { IntegrateToQuizForm } from '@/components/ui-forms/quizzer/deleteQuiz/integrateToQuizForm/IntegrateToQuizForm';
-import { GetQuizApiResponseDto, initGetQuizResponseData } from 'quizzer-lib';
+import type { GetQuizApiResponseDto } from 'quizzer-lib';
+import { initGetQuizResponseData } from 'quizzer-lib';
 
 export default function DeleteQuizPage() {
   const [deleteQuizInfo, setDeleteQuizInfo] = useState<GetQuizApiResponseDto>(initGetQuizResponseData);

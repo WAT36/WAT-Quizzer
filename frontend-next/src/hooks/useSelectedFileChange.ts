@@ -1,7 +1,7 @@
-import { SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 import { getCategoryListOptions } from '@/utils/getCategoryListOptions';
-import { GetQuizAPIRequestDto, Message, PullDownOptionDto, SearchQuizAPIRequestDto } from 'quizzer-lib';
-import { SetterOrUpdater } from 'recoil';
+import type { GetQuizAPIRequestDto, Message, PullDownOptionDto, SearchQuizAPIRequestDto } from 'quizzer-lib';
+import type { SetterOrUpdater } from 'recoil';
 
 type Props = {
   setMessage: SetterOrUpdater<Message>;
@@ -33,7 +33,7 @@ export const useSelectedFileChange = ({
         file_num: +e.target.value
       }));
 
-    (async () => {
+    void (async () => {
       const { pullDownOption, message } = await getCategoryListOptions(String(e.target.value));
       setMessage(message);
       setCategorylistoption(pullDownOption);

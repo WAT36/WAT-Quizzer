@@ -1,7 +1,8 @@
 import { useCallback, useReducer } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import { GetQuizAPIRequestDto, GetQuizApiResponseDto, initGetQuizResponseData } from 'quizzer-lib';
+import type { GetQuizAPIRequestDto, GetQuizApiResponseDto } from 'quizzer-lib';
+import { initGetQuizResponseData } from 'quizzer-lib';
 import { getQuizAPI, clearQuizAPI, failQuizAPI } from '@/utils/api-wrapper';
 import { initialQuizSessionState, quizSessionReducer } from './quizSession/reducer';
 

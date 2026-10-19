@@ -1,6 +1,5 @@
 import React from 'react';
-import {
-  DataGrid,
+import type {
   GridColDef,
   GridRenderCellParams,
   GridRowClassNameParams,
@@ -8,6 +7,7 @@ import {
   GridRowsProp,
   GridValidRowModel
 } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { Tooltip } from '@/components/ui-elements/tooltip/Tooltip';
 
 interface SearchResultTableProps {

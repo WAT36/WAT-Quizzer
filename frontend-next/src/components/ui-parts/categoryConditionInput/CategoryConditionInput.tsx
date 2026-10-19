@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Autocomplete, Chip, FormControl, TextField, ToggleButton } from '@mui/material';
-import { PullDownOptionDto } from 'quizzer-lib';
+import type { PullDownOptionDto } from 'quizzer-lib';
 
 // カテゴリ検索条件（複数指定はAND検索。NOTを指定したカテゴリは「含まない」）
 export interface CategoryConditionValue {

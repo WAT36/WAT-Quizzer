@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { CategoryTreeGraph } from './CategoryTreeGraph';
-import { CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
+import type { CategoryParentChildAPIResponseDto, CategoryQuizCountDto } from 'quizzer-lib';
 import { fn } from 'storybook/test';
 
 const mockParentChildList: CategoryParentChildAPIResponseDto[] = [

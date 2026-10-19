@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { FormControl, FormGroup, FormLabel, IconButton, SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
+import { FormControl, FormGroup, FormLabel, IconButton } from '@mui/material';
 import CasinoIcon from '@mui/icons-material/Casino';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
-import { CategoryQuizCountDto, GetQuizAPIRequestDto, KeywordSearchTarget, PullDownOptionDto } from 'quizzer-lib';
+import type { CategoryQuizCountDto, GetQuizAPIRequestDto, KeywordSearchTarget, PullDownOptionDto } from 'quizzer-lib';
 import { getCategoryQuizCountAPI } from '@/utils/api-wrapper';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';

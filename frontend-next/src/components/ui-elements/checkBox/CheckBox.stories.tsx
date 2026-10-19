@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import { Checkbox, CheckboxProps } from './CheckBox';
+import type { CheckboxProps } from './CheckBox';
+import { Checkbox } from './CheckBox';
 
 const meta: Meta<typeof Checkbox> = {
   title: 'ui-elements/CheckBox',

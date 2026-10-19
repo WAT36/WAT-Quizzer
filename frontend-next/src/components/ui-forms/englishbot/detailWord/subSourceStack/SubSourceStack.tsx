@@ -3,14 +3,11 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { Box, CircularProgress, IconButton, Stack, TextField, Typography } from '@mui/material';
-import { Message } from 'quizzer-lib';
+import type { Message } from 'quizzer-lib';
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {
-  GetWordDetailAPIResponseDto,
-  EditWordSubSourceAPIRequestDto
-} from 'quizzer-lib';
+import type { GetWordDetailAPIResponseDto, EditWordSubSourceAPIRequestDto } from 'quizzer-lib';
 import { editEnglishWordSubSourceAPI, deleteEnglishWordSubSourceAPI, getWordDetailAPI } from '@/utils/api-wrapper';
 
 interface SubSourceStackProps {

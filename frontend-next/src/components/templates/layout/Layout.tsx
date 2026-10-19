@@ -11,7 +11,8 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { MessageBar } from '@/components/ui-elements/messageBar/MessageBar';
 import { messageState } from '@/atoms/Message';
 import RequiredAuthComponent from '@/components/ui-elements/requiredAuthComponent/RequiredAuthComponent';
-import { sidebar, SideBarModeType } from '@/constants/contents/sidebar';
+import type { SideBarModeType } from '@/constants/contents/sidebar';
+import { sidebar } from '@/constants/contents/sidebar';
 import { PAGE_TITLE } from '@/constants/contents/page';
 
 interface LayoutProps {

@@ -6,9 +6,9 @@ import { Card } from '@/components/ui-elements/card/Card';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
 import { useChartThemeColors } from '@/hooks/useChartThemeColors';
 import type { QuizAnswerResult } from '@/hooks/quizSession/reducer';
+import type { CategoryAnalysis } from '@/hooks/quizSession/analysis';
 import {
   analyzeQuizSession,
-  CategoryAnalysis,
   CATEGORY_JUDGE_MIN_COUNT,
   STRONG_CATEGORY_MIN_RATE,
   WEAK_CATEGORY_MAX_RATE

@@ -6,7 +6,7 @@ import { AddBookForm } from '@/components/ui-forms/settings/addBookForm/AddBookF
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
 import { Card } from '@/components/ui-elements/card/Card';
-import { PullDownOptionDto } from 'quizzer-lib';
+import type { PullDownOptionDto } from 'quizzer-lib';
 import { listBookAPI } from '@/utils/api-wrapper';
 import { SayingSection } from '@/components/ui-forms/settings/sayingSection/SayingSection';
 import { TodoSection } from '@/components/ui-forms/settings/todoSection/TodoSection';
@@ -20,7 +20,7 @@ export default function Settings({ isMock }: Props) {
   const setMessage = useSetRecoilState(messageState);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
       const result = await listBookAPI();
       setMessage(result.message);

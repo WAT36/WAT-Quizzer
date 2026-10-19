@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { RecoilRoot } from 'recoil';
 import { AccuracyGraphFormProvider } from '@/contexts/AccuracyGraphFormContext';
-import { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
+import type { GetCategoryRateAPIRequestDto } from 'quizzer-lib';
 import { AccuracyRateGraphContent } from './AccuracyRateGraphContent';
 
 const meta = {

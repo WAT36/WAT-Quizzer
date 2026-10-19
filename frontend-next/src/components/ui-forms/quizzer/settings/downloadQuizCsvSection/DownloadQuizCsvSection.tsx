@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from '@mui/material';
-import { PullDownOptionDto } from 'quizzer-lib';
+import type { PullDownOptionDto } from 'quizzer-lib';
 import { downloadQuizCsvAPI } from '@/utils/api-wrapper';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { useState } from 'react';

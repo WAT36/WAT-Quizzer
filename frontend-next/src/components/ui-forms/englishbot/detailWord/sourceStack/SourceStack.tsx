@@ -7,13 +7,8 @@ import { pullDownMenuProps } from '@/constants/pullDown';
 import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {
-  Message,
-  EditWordSourceAPIRequestDto,
-  GetWordDetailAPIResponseDto,
-  PullDownOptionDto,
-  initEditWordSourceData
-} from 'quizzer-lib';
+import type { Message, EditWordSourceAPIRequestDto, GetWordDetailAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
+import { initEditWordSourceData } from 'quizzer-lib';
 import { deleteEnglishWordSourceAPI, editEnglishWordSourceAPI, getWordDetailAPI } from '@/utils/api-wrapper';
 
 interface SourceStackProps {

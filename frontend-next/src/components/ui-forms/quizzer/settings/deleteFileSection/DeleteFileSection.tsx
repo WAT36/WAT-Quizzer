@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui-elements/button/Button';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { useState } from 'react';
-import { PullDownOptionDto, Message } from 'quizzer-lib';
+import type { PullDownOptionDto, Message } from 'quizzer-lib';
 import { deleteQuizFileAPI } from '@/utils/api-wrapper';
 import React from 'react';
 
