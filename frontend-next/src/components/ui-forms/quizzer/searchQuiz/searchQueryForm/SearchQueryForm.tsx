@@ -87,6 +87,8 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
   // 初期化・復元・自動検索
   useEffect(() => {
     const saved = sessionStorage.getItem(STORAGE_KEY);
+    // sessionStorageから検索条件を復元するため(サーバー側では読めないのでマウント後に行う)、effect内でstateを更新する
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsRestored(true);
     if (saved) {
       try {
@@ -118,6 +120,8 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
   useEffect(() => {
     if (categorylistoption.length > 0) {
       const categoryNames = new Set(categorylistoption.map((opt) => String(opt.value)));
+      // APIから取得したカテゴリ一覧に合わせて検索条件を整えるため、effect内でstateを更新する
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSearchQuizRequestData((prev) => {
         const filtered = CATEGORY_CONDITION_KEYS.reduce(
           (acc, key) => ({ ...acc, [key]: (prev[key] ?? []).filter((c) => categoryNames.has(c)) }),

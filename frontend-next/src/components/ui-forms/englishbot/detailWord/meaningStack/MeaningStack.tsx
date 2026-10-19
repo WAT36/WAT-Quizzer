@@ -109,7 +109,6 @@ export const MeaningStack = ({ posList, wordDetail, setMessage, setWordDetail }:
           <Stack spacing={2}>
             {wordDetail.mean.map((x, index) => {
               return (
-                // eslint-disable-next-line react/jsx-key
                 <Item key={x.wordmean_id}>
                   <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography component="div">

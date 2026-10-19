@@ -85,7 +85,6 @@ export const SourceStack = ({ sourceList, wordDetail, setMessage, setWordDetail 
           <Stack spacing={2}>
             {wordDetail.word_source.map((x, index) => {
               return (
-                // eslint-disable-next-line react/jsx-key
                 <Item key={index}>
                   <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography component="div">

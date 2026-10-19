@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Slider as MuiSlider } from '@mui/material';
 
 interface RangeSliderProps {
@@ -9,11 +9,14 @@ interface RangeSliderProps {
 export const RangeSlider = ({ setStater, value }: RangeSliderProps) => {
   const [internalValue, setInternalValue] = useState<number[] | number>(value ?? [0, 100]);
 
-  useEffect(() => {
+  // 親から渡されたvalueが変わったら内部の値に反映する(effectを使わず描画中に前回の値と比べて更新する)
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
     if (value !== undefined) {
       setInternalValue(value);
     }
-  }, [value]);
+  }
 
   const handleChange = (event: Event, newValue: number[] | number) => {
     setInternalValue(newValue);

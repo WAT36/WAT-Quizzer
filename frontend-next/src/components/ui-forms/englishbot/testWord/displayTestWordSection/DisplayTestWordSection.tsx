@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Card } from '@/components/ui-elements/card/Card';
 import {
   Button as MuiButton,
@@ -32,7 +32,7 @@ interface DisplayTestWordSectionProps {
 export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: DisplayTestWordSectionProps) => {
   const setMessage = useSetRecoilState(messageState);
   const [expanded, setExpanded] = useState<boolean>(false);
-  let isFourchoiceCorrect: boolean | undefined = undefined;
+  const isFourchoiceCorrectRef = useRef<boolean | undefined>(undefined);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -188,7 +188,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                     aria-labelledby="demo-radio-buttons-group-label"
                     name="radio-buttons-group"
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      isFourchoiceCorrect = (event.target as HTMLInputElement).value === 'true' ? true : false;
+                      isFourchoiceCorrectRef.current = (event.target as HTMLInputElement).value === 'true' ? true : false;
                     }}
                   >
                     {generateFourChoiceSentense({ correct: displayTestData.correct, dummy: displayTestData.dummy }).map(
@@ -216,14 +216,14 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                       wordId: displayTestData.word?.id || NaN,
                       testType: WORD_TEST_TYPE.FOUR_CHOICE
                     },
-                    selectedValue: isFourchoiceCorrect
+                    selectedValue: isFourchoiceCorrectRef.current
                   });
                   setMessage(result.message);
                   if (result.message.messageColor === 'success.light') {
                     setDisplayTestData && setDisplayTestData({});
                   }
                   setExpanded(false);
-                  isFourchoiceCorrect = undefined;
+                  isFourchoiceCorrectRef.current = undefined;
                 }}
                 disabled={
                   isNaN(displayTestData.word?.id || NaN) ||

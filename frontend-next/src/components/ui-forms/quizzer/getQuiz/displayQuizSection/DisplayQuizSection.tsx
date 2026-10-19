@@ -95,6 +95,8 @@ export const DisplayQuizSection = ({
   useEffect(() => {
     if (prevQuizSentenseRef.current !== getQuizResponseData.quiz_sentense) {
       prevQuizSentenseRef.current = getQuizResponseData.quiz_sentense;
+      // 出題が変わったときに表示状態をリセットするため、effect内でstateを更新する
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setExpanded(false);
       setImageUrl && setImageUrl('');
 
@@ -162,6 +164,8 @@ export const DisplayQuizSection = ({
           </div>
           <DisplaySentence checked={getQuizResponseData.checked} sentence={displayQuiz.quiz_sentense} />
           {imageUrl && (
+            // 取得した画像のURLはサイズが不定で、静的エクスポート(output: 'export')では画像最適化も使えないため<img>を使う
+            // eslint-disable-next-line @next/next/no-img-element
             <img src={imageUrl} alt="取得した画像" className="max-h-[192px] max-w-full object-contain my-[8px] block" />
           )}
           {displayQuiz.quiz_category &&

@@ -64,6 +64,8 @@ export const CategoryParentChildSection = ({
 
   useEffect(() => {
     if (fileNum === -1) {
+      // ファイル未選択時にAPIから取得した一覧をクリアするため、effect内でstateを更新する
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCategoryNames([]);
       setParentChildList([]);
       setCategoryCounts([]);

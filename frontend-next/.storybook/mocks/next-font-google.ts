@@ -36,7 +36,8 @@ export function Roboto(options?: FontOptions) {
 }
 
 // デフォルトエクスポート（必要に応じて）
-export default {
+const nextFontGoogle = {
   Inter,
   Roboto
 };
+export default nextFontGoogle;

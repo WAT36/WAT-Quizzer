@@ -38,6 +38,8 @@ export const RecommendedCategoryCard = ({ file_num }: RecommendedCategoryCardPro
 
   useEffect(() => {
     if (file_num === -1) {
+      // ファイルが変わったときにAPIから取得し直すため、effect内でstateを更新する
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCategories(null);
       return;
     }

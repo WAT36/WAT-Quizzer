@@ -16,6 +16,8 @@ export default function Custom404() {
     if (pathName.match(redirectPath)) {
       Router.replace(pathName); // Redirect to the right page...
     } else {
+      // window.locationはサーバー側では読めないため、マウント後のeffect内で判定してstateを更新する
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsNotFound(true);
     }
   }, []);
