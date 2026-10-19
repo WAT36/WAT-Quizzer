@@ -30,7 +30,7 @@ export const addSynonymAPI = async ({ addSynonymData }: AddSynonymAPIProps) => {
         }
       }
     }
-  ).catch((err) => {
+  ).catch(() => {
     return {
       message: {
         message: 'エラー:外部APIとの連携に失敗しました',

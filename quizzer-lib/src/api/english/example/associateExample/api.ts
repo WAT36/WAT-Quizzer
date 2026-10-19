@@ -32,7 +32,7 @@ export const submitAssociationExampleAPI = async ({
   }
 
   // TODO 配列でのデータをAPIでどう送るのが良いか？途中で失敗した時のロールバック方法とかも考えたい
-  for (let checkedId of checkedIdList) {
+  for (const checkedId of checkedIdList) {
     await post(
       '/english/example/association',
       {
@@ -59,7 +59,7 @@ export const submitAssociationExampleAPI = async ({
           }
         }
       }
-    ).catch((err) => {
+    ).catch(() => {
       return {
         message: {
           message: 'エラー:外部APIとの連携に失敗しました',

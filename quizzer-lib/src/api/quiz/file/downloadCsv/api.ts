@@ -1,12 +1,6 @@
-import { DownloadQuizCsvApiRequest, DownloadQuizCsvApiResponseDto } from '.'
-import {
-  defaultMessage,
-  errorMessage,
-  MESSAGES,
-  successMessage
-} from '../../../../..'
-import { get, ApiResult, ProcessingApiReponse, authFetch } from '../../..'
-import { Response } from 'express'
+import { DownloadQuizCsvApiRequest } from '.'
+import { errorMessage, MESSAGES, successMessage } from '../../../../..'
+import { ApiResult, authFetch } from '../../..'
 
 interface DownloadQuizCsvAPIProps {
   downloadQuizCsvApiRequest: DownloadQuizCsvApiRequest

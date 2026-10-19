@@ -13,8 +13,8 @@ export interface PullDownOptionDto {
 export const apiResponsePullDownAdapter = (
   response: PartofSpeechApiResponse[] | SourceApiResponse[]
 ) => {
-  let posList: PullDownOptionDto[] = []
-  for (var i = 0; i < response.length; i++) {
+  const posList: PullDownOptionDto[] = []
+  for (let i = 0; i < response.length; i++) {
     posList.push({
       value: String(response[i].id),
       label: response[i].name

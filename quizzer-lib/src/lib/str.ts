@@ -31,9 +31,9 @@ export const parseStrToBool = (val?: string) => {
 }
 
 export const getRandomStr = () => {
-  let chars = 'abcdefghijklmnopqrstuvwxyz'
+  const chars = 'abcdefghijklmnopqrstuvwxyz'
   let rand_str = ''
-  for (var i = 0; i < 8; i++) {
+  for (let i = 0; i < 8; i++) {
     rand_str += chars.charAt(Math.floor(Math.random() * chars.length))
   }
   return rand_str
@@ -67,7 +67,7 @@ export const generateQuizSentense = (
     // TODO 多肢多答対応で書き換えたがもっと効率化できそうな気する　リファクタしてみて
     const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     const choiceName = alphabets.substring(0, choices.length).split('')
-    choiceName.sort((a, b) => 0.5 - Math.random())
+    choiceName.sort(() => 0.5 - Math.random())
     // 答えの文作成
     const answer =
       res.quiz_dummy_choice &&

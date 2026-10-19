@@ -13,6 +13,17 @@ export default tseslint.config(
   {
     languageOptions: {
       globals: globals.node
+    },
+    rules: {
+      // ApiResponse のように、継承元として中身のない interface を使っているため許可する
+      '@typescript-eslint/no-empty-object-type': [
+        'error',
+        { allowInterfaces: 'always' }
+      ],
+      // 引数のないAPI関数も ({}: Props) の形で呼び出し側と揃えているため許可する
+      'no-empty-pattern': ['error', { allowObjectPatternsAsParameters: true }],
+      // 日本語のコメント中の全角スペースは許可する(文字列中はもともと対象外)
+      'no-irregular-whitespace': ['error', { skipComments: true }]
     }
   }
 )

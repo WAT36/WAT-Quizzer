@@ -128,12 +128,13 @@ export const getStartDateForStatistics = (
   date_unit: DateUnit
 ) => {
   switch (date_unit) {
-    case 'day':
+    case 'day': {
       // 入力した日付の00:00:00のデータを返す
       const resetDate = new Date(inputDate)
       resetDate.setHours(0, 0, 0, 0)
       return resetDate
-    case 'week':
+    }
+    case 'week': {
       // 入力した日付の週始めの日のデータを返す
       // 週の始まり（月曜日）を計算
       const startOfWeek = new Date(inputDate)
@@ -146,7 +147,8 @@ export const getStartDateForStatistics = (
       // 時間を 00:00:00 にリセット
       startOfWeek.setHours(0, 0, 0, 0)
       return startOfWeek
-    case 'month':
+    }
+    case 'month': {
       // 入力した日付の月初めの日のデータを返す
       // 月の始まり（1日）を計算
       const startOfMonth = new Date(inputDate)
@@ -155,6 +157,7 @@ export const getStartDateForStatistics = (
       // 時間を 00:00:00 にリセット
       startOfMonth.setHours(0, 0, 0, 0)
       return startOfMonth
+    }
     default:
       throw new Error('日付形式が不正です')
   }

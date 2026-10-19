@@ -3,12 +3,10 @@ import { GetTodoListApiResponseDto } from './dto'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 interface GetTodoListAPIProps {
-  getTodoListRequestData?: {}
+  getTodoListRequestData?: Record<string, never>
 }
 
-export const getTodoListAPI = async ({
-  getTodoListRequestData = {}
-}: GetTodoListAPIProps): Promise<ApiResult> => {
+export const getTodoListAPI = async ({}: GetTodoListAPIProps): Promise<ApiResult> => {
   const result = await get(
     '/todo',
     (data: ProcessingApiReponse) => {

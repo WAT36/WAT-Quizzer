@@ -7,7 +7,7 @@ export const getRandomElementsFromArray = <T>(arr: T[], n: number) => {
   const extractArr: T[] = []
   const iSet = new Set()
   while (iSet.size < n) {
-    let random = Math.floor(Math.random() * arr.length)
+    const random = Math.floor(Math.random() * arr.length)
     if (iSet.has(random)) {
       continue
     } else {

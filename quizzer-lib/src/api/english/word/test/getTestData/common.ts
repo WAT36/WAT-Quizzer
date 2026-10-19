@@ -1,4 +1,4 @@
-import { EnglishWordTestMeanData, FourChoiceData } from '.'
+import { FourChoiceData } from '.'
 
 // TODO これはlibとかに回したい
 // 英単語テスト四択APIの返り値から問題文を生成する
@@ -10,7 +10,7 @@ export const generateFourChoiceSentense = (res: FourChoiceData) => {
   const correctIndex = Math.floor(Math.random() * 4)
   const dummyChoice = res.dummy
   // ダミー選択肢の配列をランダムに並び替える
-  dummyChoice.sort((a, b) => 0.5 - Math.random())
+  dummyChoice.sort(() => 0.5 - Math.random())
 
   const choices = dummyChoice.map((x, i) => ({
     isCorrect: `false${i}`,
