@@ -1,4 +1,4 @@
-import { ApiResponse } from '../..'
+import type { ApiResponse } from '../..'
 
 // キーワード検索の対象（問題文・解答 or 解説のどちらか一方）
 export type KeywordSearchTarget = 'sentence_answer' | 'explanation'

@@ -1,5 +1,6 @@
-import { del, ApiResult, ProcessingApiReponse } from '../../../..'
-import { DeleteMeanAPIRequestDto } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../../..'
+import { del } from '../../../..'
+import type { DeleteMeanAPIRequestDto } from '.'
 
 interface DeleteEnglishMeanAPIButtonProps {
   deleteMeanData: DeleteMeanAPIRequestDto

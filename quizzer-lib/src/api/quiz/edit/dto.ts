@@ -1,4 +1,4 @@
-import { ApiResponse } from '../..'
+import type { ApiResponse } from '../..'
 
 export interface EditQuizAPIRequestDto {
   quiz_id: number

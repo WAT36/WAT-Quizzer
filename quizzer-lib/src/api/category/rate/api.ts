@@ -1,5 +1,6 @@
-import { ApiResult, get, ProcessingApiReponse } from '../..'
-import {
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { get } from '../..'
+import type {
   GetAccuracyRateByCategoryAPIResponseDto,
   GetCategoryRateAPIRequestDto
 } from './dto'

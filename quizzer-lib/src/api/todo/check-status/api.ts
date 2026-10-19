@@ -3,8 +3,9 @@ import {
   MESSAGES,
   successMessage
 } from '../../../..'
-import { ApiResult, get, put, ProcessingApiReponse } from '../..'
-import {
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { get, put } from '../..'
+import type {
   GetTodoCheckStatusAPIRequestDto,
   GetTodoCheckStatusApiResponseDto,
   SaveTodoCheckStatusAPIRequestDto,

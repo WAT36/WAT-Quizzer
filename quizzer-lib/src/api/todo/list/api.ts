@@ -1,5 +1,6 @@
-import { ApiResult, get, ProcessingApiReponse } from '../..'
-import { GetTodoListApiResponseDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { get } from '../..'
+import type { GetTodoListApiResponseDto } from './dto'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 interface GetTodoListAPIProps {

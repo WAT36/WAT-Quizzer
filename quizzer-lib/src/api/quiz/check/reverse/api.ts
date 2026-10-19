@@ -1,6 +1,7 @@
-import { GetQuizApiResponseDto } from '../..'
+import type { GetQuizApiResponseDto } from '../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import { ApiResult, post, ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { post } from '../../..'
 
 interface ReverseCheckQuizButtonProps {
   // TODO GetQuizApiResponseDto?? CheckQuizAPIRequestDto使え

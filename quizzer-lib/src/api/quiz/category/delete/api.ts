@@ -1,11 +1,11 @@
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import {
+import type {
   AddAPIResponseDto,
   ApiResult,
-  ProcessingApiReponse,
-  put
+  ProcessingApiReponse
 } from '../../..'
-import { AddCategoryToQuizAPIRequestDto } from '../add/dto'
+import { put } from '../../..'
+import type { AddCategoryToQuizAPIRequestDto } from '../add/dto'
 
 interface DeleteCategoryOfQuizAPIProps {
   // TODO プロパティ同じだからAddCategoryToQuizAPIRequestDto流用してるが、、deleteで使うのは変なので名前変えたい

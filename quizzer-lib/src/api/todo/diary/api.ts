@@ -3,8 +3,9 @@ import {
   MESSAGES,
   successMessage
 } from '../../../..'
-import { ApiResult, post, ProcessingApiReponse } from '../..'
-import { AddTodoDiaryAPIRequestDto, AddTodoDiaryApiResponseDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { post } from '../..'
+import type { AddTodoDiaryAPIRequestDto, AddTodoDiaryApiResponseDto } from './dto'
 
 interface AddTodoDiaryAPIProps {
   addTodoDiaryAPIRequest: AddTodoDiaryAPIRequestDto

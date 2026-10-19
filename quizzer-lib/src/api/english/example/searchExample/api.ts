@@ -1,5 +1,6 @@
-import { get, ProcessingApiReponse } from '../../..'
-import { SearchExampleAPIRequestDto, SearchExampleAPIResponseDto } from '.'
+import type { ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
+import type { SearchExampleAPIRequestDto, SearchExampleAPIResponseDto } from '.'
 
 // 例文検索
 interface SearchExampleAPIProps {

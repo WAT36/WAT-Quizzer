@@ -1,5 +1,6 @@
-import { WordSummaryApiResponse } from '.'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
+import type { WordSummaryApiResponse } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
 
 // englishbot用 単語熟語統計データを取ってくる
 export const getWordSummaryDataAPI = async (): Promise<ApiResult> => {

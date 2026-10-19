@@ -1,6 +1,6 @@
 // TODO このファイルはinterfaceフォルダとか作ってそこに入れたい。commonじゃなくて
 
-import { PartofSpeechApiResponse, SourceApiResponse } from '../..'
+import type { PartofSpeechApiResponse, SourceApiResponse } from '../..'
 
 //  プルダウン選択肢用
 export interface PullDownOptionDto {

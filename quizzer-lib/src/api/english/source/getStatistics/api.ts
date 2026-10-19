@@ -1,6 +1,7 @@
-import { SourceStatisticsApiResponse } from '.'
+import type { SourceStatisticsApiResponse } from '.'
 import { defaultMessage, errorMessage, MESSAGES } from '../../../../..'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
 
 interface GetSourceStatisticsDataButtonProps {}
 

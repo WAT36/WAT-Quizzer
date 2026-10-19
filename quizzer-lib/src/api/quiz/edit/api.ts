@@ -1,5 +1,6 @@
-import { EditQuizAPIRequestDto, EditQuizApiResponseDto } from './dto'
-import { ApiResult, post, ProcessingApiReponse } from '../..'
+import type { EditQuizAPIRequestDto, EditQuizApiResponseDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { post } from '../..'
 import {
   containsAny,
   errorMessage,

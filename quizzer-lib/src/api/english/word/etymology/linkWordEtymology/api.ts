@@ -1,5 +1,6 @@
-import { LinkWordEtymologyAPIRequestDto } from '.'
-import { ErrorResponse, ProcessingApiReponse, post } from '../../../..'
+import type { LinkWordEtymologyAPIRequestDto } from '.'
+import type { ErrorResponse, ProcessingApiReponse } from '../../../..'
+import { post } from '../../../..'
 
 interface LinkWordEtymologyAPIProps {
   linkWordEtymologyData: LinkWordEtymologyAPIRequestDto

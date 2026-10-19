@@ -1,5 +1,6 @@
-import { GetQuizApiResponseDto } from '../get'
-import { ApiResult, post, ProcessingApiReponse } from '../..'
+import type { GetQuizApiResponseDto } from '../get'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { post } from '../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 interface FailQuizButtonProps {

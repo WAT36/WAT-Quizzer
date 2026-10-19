@@ -1,8 +1,9 @@
-import {
+import type {
   GetEnglishWordTestDataAPIRequestDto,
   GetEnglishWordTestDataAPIResponseDto
 } from '.'
-import { get, ApiResult, ProcessingApiReponse } from '../../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../../..'
+import { get } from '../../../..'
 
 interface GetEnglishWordTestDataAPIProps {
   getEnglishWordTestData: GetEnglishWordTestDataAPIRequestDto

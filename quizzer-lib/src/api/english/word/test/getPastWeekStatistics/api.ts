@@ -1,5 +1,6 @@
-import { GetPastWeekTestStatisticsAPIResponseDto } from '.'
-import { get, ApiResult, ProcessingApiReponse } from '../../../..'
+import type { GetPastWeekTestStatisticsAPIResponseDto } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../../..'
+import { get } from '../../../..'
 
 interface GetWordTestStatisticsWeekDataAPIProps {}
 

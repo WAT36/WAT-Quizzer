@@ -1,4 +1,5 @@
-import { ApiResult, del, ProcessingApiReponse } from '../..'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { del } from '../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 export const cleanupEmptyCategoriesAPI = async (): Promise<ApiResult> => {

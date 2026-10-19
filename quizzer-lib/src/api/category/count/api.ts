@@ -1,5 +1,6 @@
-import { ApiResult, get, ProcessingApiReponse } from '../..'
-import { CategoryQuizCountDto, GetCategoryQuizCountAPIRequestDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { get } from '../..'
+import type { CategoryQuizCountDto, GetCategoryQuizCountAPIRequestDto } from './dto'
 
 interface GetCategoryQuizCountAPIProps {
   getCategoryQuizCountData: GetCategoryQuizCountAPIRequestDto

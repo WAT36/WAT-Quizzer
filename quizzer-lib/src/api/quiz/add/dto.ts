@@ -1,5 +1,5 @@
-import { ApiResponse } from '../..'
-import { EditQuizAPIRequestDto } from '../edit/dto'
+import type { ApiResponse } from '../..'
+import type { EditQuizAPIRequestDto } from '../edit/dto'
 
 export type AddQuizAPIRequestDto = Omit<
   EditQuizAPIRequestDto,

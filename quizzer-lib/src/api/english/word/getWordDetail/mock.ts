@@ -1,4 +1,4 @@
-import { GetWordDetailAPIResponseDto } from '.'
+import type { GetWordDetailAPIResponseDto } from '.'
 
 export const initWordDetailResponseData: GetWordDetailAPIResponseDto = {
   id: -1,

@@ -1,6 +1,7 @@
 import { defaultMessage, errorMessage, MESSAGES } from '../../../../..'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
-import { GetQuizFormatApiResponseDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
+import type { GetQuizFormatApiResponseDto } from './dto'
 
 // quizzer各画面用 問題形式リストをapi通信して取ってくる
 export const getQuizFormatListAPI = async (): Promise<ApiResult> => {

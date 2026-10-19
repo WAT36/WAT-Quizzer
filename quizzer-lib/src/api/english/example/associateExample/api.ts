@@ -1,5 +1,6 @@
-import { SubmitAssociationExampleAPIRequestDto } from '.'
-import { post, ProcessingApiReponse } from '../../..'
+import type { SubmitAssociationExampleAPIRequestDto } from '.'
+import type { ProcessingApiReponse } from '../../..'
+import { post } from '../../..'
 
 // TODO 名前なんか違う気するので変えたい
 // 例文と単語を紐付けしたり外したりだから・・何がいい？

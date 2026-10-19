@@ -1,5 +1,6 @@
-import { PartofSpeechApiResponse } from '.'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
+import type { PartofSpeechApiResponse } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
 
 // englishbot用 品詞リストをapi通信して取ってくる
 export const getPartOfSpeechListAPI = async (): Promise<ApiResult> => {

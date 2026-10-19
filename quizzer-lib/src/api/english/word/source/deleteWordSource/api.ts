@@ -1,5 +1,6 @@
-import { DeleteWordSourceAPIRequestDto } from '.'
-import { ProcessingApiReponse, del } from '../../../..'
+import type { DeleteWordSourceAPIRequestDto } from '.'
+import type { ProcessingApiReponse } from '../../../..'
+import { del } from '../../../..'
 
 interface DeleteEnglishWordSourceAPIRequestProps {
   deleteWordSourceData: DeleteWordSourceAPIRequestDto

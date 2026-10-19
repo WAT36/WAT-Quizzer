@@ -1,5 +1,6 @@
-import { ApiResult, post, ProcessingApiReponse } from '../../..'
-import { SubmitExampleTestDataAPIRequestDto } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { post } from '../../..'
+import type { SubmitExampleTestDataAPIRequestDto } from '.'
 
 interface SubmitExampleTestDataAPIProps {
   testResult: SubmitExampleTestDataAPIRequestDto

@@ -1,6 +1,6 @@
 // APIから受け取ったデータを変換しフロント側で処理する型
-import { Message } from '../..'
-import { Response } from 'express'
+import type { Message } from '../..'
+import type { Response } from 'express'
 
 export interface ProcessingApiReponse {
   status: number

@@ -1,6 +1,7 @@
-import { ApiResult, del, ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { del } from '../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import { DeleteCategoryParentChildAPIRequestDto } from '../dto'
+import type { DeleteCategoryParentChildAPIRequestDto } from '../dto'
 
 interface DeleteCategoryParentChildAPIProps {
   deleteCategoryParentChildData: DeleteCategoryParentChildAPIRequestDto

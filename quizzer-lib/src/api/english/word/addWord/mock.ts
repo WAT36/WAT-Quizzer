@@ -1,4 +1,4 @@
-import { AddWordAPIRequestDto } from '.'
+import type { AddWordAPIRequestDto } from '.'
 
 export const initAddWordRequestData: AddWordAPIRequestDto = {
   inputWord: {

@@ -1,5 +1,6 @@
-import { GetRandomWordAPIResponse } from '.'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
+import type { GetRandomWordAPIResponse } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
 
 // englishbot用 単語ランダム取得をapi通信して取ってくる
 export const getRandomWordAPI = async (): Promise<ApiResult> => {

@@ -1,6 +1,7 @@
-import { DownloadQuizCsvApiRequest } from '.'
+import type { DownloadQuizCsvApiRequest } from '.'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import { ApiResult, authFetch } from '../../..'
+import type { ApiResult } from '../../..'
+import { authFetch } from '../../..'
 
 interface DownloadQuizCsvAPIProps {
   downloadQuizCsvApiRequest: DownloadQuizCsvApiRequest

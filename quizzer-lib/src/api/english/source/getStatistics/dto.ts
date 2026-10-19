@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../..'
+import type { ApiResponse } from '../../..'
 
 // source/statisticsからの取得結果
 // TODO これ類 prismaの型(index.d.gs)から取ってこれるんでない？

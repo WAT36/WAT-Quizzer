@@ -119,7 +119,7 @@ export const getTodayKey = (): string => {
   return `${year}-${month}-${day}`
 }
 
-import { DateUnit } from '../api/quiz/statistics/dto'
+import type { DateUnit } from '../api/quiz/statistics/dto'
 
 // TODO エラーメッセージを定義する
 // (回答数統計データ取得APIで利用)始値を計算して取得する

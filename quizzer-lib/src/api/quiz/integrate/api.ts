@@ -1,11 +1,8 @@
-import {
-  AddQuizApiResponseDto,
-  errorMessage,
-  MESSAGES,
-  successMessage
-} from '../../../..'
-import { ApiResult, post, ProcessingApiReponse } from '../..'
-import { IntegrateToQuizAPIRequestDto } from './dto'
+import type { AddQuizApiResponseDto } from '../../../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../..'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { post } from '../..'
+import type { IntegrateToQuizAPIRequestDto } from './dto'
 
 interface IntegrateQuizAPIProps {
   integrateToQuizAPIRequestData: IntegrateToQuizAPIRequestDto

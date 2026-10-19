@@ -1,4 +1,4 @@
-import { EditWordMeanAPIRequestDto } from './dto'
+import type { EditWordMeanAPIRequestDto } from './dto'
 
 export const initEditMeanData: EditWordMeanAPIRequestDto = {
   wordId: -1,

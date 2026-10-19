@@ -1,4 +1,4 @@
-import { GetQuizAPIRequestDto } from '../get'
+import type { GetQuizAPIRequestDto } from '../get'
 // TODO file_num,quiz_num,formatだけを定義した汎用的な型が欲しい
 export type DeleteQuizAPIRequestDto = Pick<
   GetQuizAPIRequestDto,

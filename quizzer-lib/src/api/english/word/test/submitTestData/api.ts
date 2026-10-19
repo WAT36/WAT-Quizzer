@@ -1,5 +1,6 @@
-import { ApiResult, post, ProcessingApiReponse } from '../../../..'
-import { SubmitEnglishWordTestDataAPIRequestDto } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../../..'
+import { post } from '../../../..'
+import type { SubmitEnglishWordTestDataAPIRequestDto } from '.'
 
 interface SubmitEnglishBotTestButtonProps {
   testResult: SubmitEnglishWordTestDataAPIRequestDto

@@ -1,5 +1,6 @@
-import { ToggleCheckAPIRequestDto } from '.'
-import { ProcessingApiReponse, post } from '../../../..'
+import type { ToggleCheckAPIRequestDto } from '.'
+import type { ProcessingApiReponse } from '../../../..'
+import { post } from '../../../..'
 
 interface ToggleCheckAPIButtonProps {
   toggleCheckData: ToggleCheckAPIRequestDto

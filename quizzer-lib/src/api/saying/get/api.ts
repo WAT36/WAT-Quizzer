@@ -1,5 +1,6 @@
-import { ApiResult, get, ProcessingApiReponse } from '../..'
-import { GetSayingRequest, GetSayingResponse } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { get } from '../..'
+import type { GetSayingRequest, GetSayingResponse } from '.'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 // TODO APIではbook_idを引数に設定できるので　その場合でもできるようにしておきたい

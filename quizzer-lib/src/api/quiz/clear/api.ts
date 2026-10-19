@@ -1,6 +1,7 @@
-import { GetQuizApiResponseDto } from '../get'
-import { ApiResult, post, ProcessingApiReponse } from '../..'
-import { ClearQuizAPIRequestDto } from './dto'
+import type { GetQuizApiResponseDto } from '../get'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { post } from '../..'
+import type { ClearQuizAPIRequestDto } from './dto'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 interface ClearQuizButtonProps {

@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../..'
+import type { ApiResponse } from '../../..'
 
 // 英単語検索APIリクエスト型
 export interface SearchWordAPIRequestDto {

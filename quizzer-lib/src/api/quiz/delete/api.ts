@@ -1,11 +1,8 @@
-import {
-  AddQuizApiResponseDto,
-  errorMessage,
-  MESSAGES,
-  successMessage
-} from '../../../..'
-import { ApiResult, del, ProcessingApiReponse } from '../..'
-import { DeleteQuizAPIRequestDto } from './dto'
+import type { AddQuizApiResponseDto } from '../../../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../..'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { del } from '../..'
+import type { DeleteQuizAPIRequestDto } from './dto'
 
 interface DeleteQuizAPIProps {
   deleteQuizAPIRequestData: DeleteQuizAPIRequestDto

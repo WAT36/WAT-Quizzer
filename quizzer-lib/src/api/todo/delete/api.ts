@@ -3,8 +3,9 @@ import {
   MESSAGES,
   successMessage
 } from '../../../..'
-import { ApiResult, del, ProcessingApiReponse } from '../..'
-import { DeleteTodoAPIRequestDto, DeleteTodoApiResponseDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { del } from '../..'
+import type { DeleteTodoAPIRequestDto, DeleteTodoApiResponseDto } from './dto'
 
 interface DeleteTodoAPIProps {
   deleteTodoAPIRequestData: DeleteTodoAPIRequestDto

@@ -1,4 +1,4 @@
-import { GetSayingResponse } from '.'
+import type { GetSayingResponse } from '.'
 
 export const initSayingResponseData: GetSayingResponse = {
   id: -1,

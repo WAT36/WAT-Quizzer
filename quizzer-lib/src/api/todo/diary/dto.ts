@@ -1,4 +1,4 @@
-import { ApiResponse } from '../..'
+import type { ApiResponse } from '../..'
 
 export interface AddTodoDiaryAPIRequestDto {
   date: string

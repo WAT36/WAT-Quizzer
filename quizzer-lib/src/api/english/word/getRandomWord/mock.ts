@@ -1,4 +1,4 @@
-import { GetRandomWordAPIResponse } from '.'
+import type { GetRandomWordAPIResponse } from '.'
 
 export const initGetRandomWordResponseData: GetRandomWordAPIResponse = {
   id: 1,

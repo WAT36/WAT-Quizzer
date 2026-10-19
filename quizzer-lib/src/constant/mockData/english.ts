@@ -1,6 +1,6 @@
 // EnglishBot用のモックデータ
 
-import {
+import type {
   GetRandomWordAPIResponse,
   PartofSpeechApiResponse,
   SearchExampleAPIResponseDto,

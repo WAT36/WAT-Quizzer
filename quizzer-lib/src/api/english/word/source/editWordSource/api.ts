@@ -1,5 +1,6 @@
-import { EditWordSourceAPIRequestDto } from '.'
-import { ProcessingApiReponse, post } from '../../../..'
+import type { EditWordSourceAPIRequestDto } from '.'
+import type { ProcessingApiReponse } from '../../../..'
+import { post } from '../../../..'
 
 interface EditEnglishWordSourceAPIProps {
   editWordSourceData: EditWordSourceAPIRequestDto

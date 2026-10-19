@@ -1,6 +1,7 @@
-import { ApiResult, post, ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { post } from '../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import { AddCategoryParentChildAPIRequestDto } from '../dto'
+import type { AddCategoryParentChildAPIRequestDto } from '../dto'
 
 interface AddCategoryParentChildAPIProps {
   addCategoryParentChildData: AddCategoryParentChildAPIRequestDto

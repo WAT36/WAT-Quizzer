@@ -1,4 +1,4 @@
-import { GetQuizApiResponseDto } from '../..'
+import type { GetQuizApiResponseDto } from '../..'
 
 // ある文字列に 複数の指定された文字のうち 1 つでも含まれているかどうか を判定
 export const containsAny = (target: string, chars: string[]): boolean => {

@@ -1,5 +1,6 @@
-import { SourceApiResponse } from '.'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
+import type { SourceApiResponse } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
 
 // englishbot用 出典リストをapi通信して取ってくる
 export const getSourceListAPI = async (): Promise<ApiResult> => {

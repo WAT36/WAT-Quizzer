@@ -1,6 +1,7 @@
 import { defaultMessage, errorMessage, MESSAGES } from '../../../../..'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
-import { GetSelfHelpBookResponse } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
+import type { GetSelfHelpBookResponse } from './dto'
 
 // 設定ページ用 啓発本名リストをapi通信して取ってくる
 export const listBook = async (): Promise<ApiResult> => {

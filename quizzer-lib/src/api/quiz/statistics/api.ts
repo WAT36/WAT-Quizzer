@@ -1,9 +1,10 @@
-import {
+import type {
   AnswerLogStatisticsApiResponse,
   GetAnswerLogStatisticsAPIRequestDto
 } from '.'
 import { defaultMessage, errorMessage, MESSAGES } from '../../../..'
-import { get, ProcessingApiReponse } from '../..'
+import type { ProcessingApiReponse } from '../..'
+import { get } from '../..'
 
 interface GetAnswerLogStatisticsAPIProps {
   getAnswerLogStatisticsData: GetAnswerLogStatisticsAPIRequestDto

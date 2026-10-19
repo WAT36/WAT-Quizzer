@@ -1,5 +1,6 @@
-import { EditWordSubSourceAPIRequestDto } from '.'
-import { ProcessingApiReponse, post } from '../../../..'
+import type { EditWordSubSourceAPIRequestDto } from '.'
+import type { ProcessingApiReponse } from '../../../..'
+import { post } from '../../../..'
 
 interface EditEnglishWordSubSourceButtonProps {
   editWordSubSourceData: EditWordSubSourceAPIRequestDto

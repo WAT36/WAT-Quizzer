@@ -1,5 +1,6 @@
-import { ApiResult, get, ProcessingApiReponse } from '../..'
-import { GetCategoryAPIResponseDto, GetCategoryListAPIRequestDto } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { get } from '../..'
+import type { GetCategoryAPIResponseDto, GetCategoryListAPIRequestDto } from '.'
 
 interface GetCategoryListAPIProps {
   getCategoryListData: GetCategoryListAPIRequestDto

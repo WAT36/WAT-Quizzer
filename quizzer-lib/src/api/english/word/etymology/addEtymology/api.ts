@@ -1,5 +1,6 @@
-import { AddEtymologyAPIRequestDto } from '.'
-import { ErrorResponse, ProcessingApiReponse, post } from '../../../..'
+import type { AddEtymologyAPIRequestDto } from '.'
+import type { ErrorResponse, ProcessingApiReponse } from '../../../..'
+import { post } from '../../../..'
 
 interface AddEtymologyAPIProps {
   addEtymologyData: AddEtymologyAPIRequestDto

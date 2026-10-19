@@ -1,6 +1,7 @@
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
-import { RecommendedCategoryDto } from './dto'
-import { ApiResult, get, ProcessingApiReponse } from '../..'
+import type { RecommendedCategoryDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { get } from '../..'
 
 interface GetRecommendedCategoriesProps {
   file_num: number

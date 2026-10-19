@@ -1,6 +1,7 @@
-import { GetQuizAPIRequestDto, GetQuizApiResponseDto } from '.'
+import type { GetQuizAPIRequestDto, GetQuizApiResponseDto } from '.'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
-import { ApiResult, get, ProcessingApiReponse } from '../..'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { get } from '../..'
 
 interface GetQuizAPIProps {
   getQuizRequestData: GetQuizAPIRequestDto

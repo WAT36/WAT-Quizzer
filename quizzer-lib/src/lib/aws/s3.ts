@@ -4,7 +4,7 @@ import {
   PutObjectCommand,
   S3Client
 } from '@aws-sdk/client-s3'
-import { Readable } from 'stream'
+import type { Readable } from 'stream'
 import * as dotenv from 'dotenv'
 
 dotenv.config()

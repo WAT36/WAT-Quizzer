@@ -1,4 +1,4 @@
-import { ApiResponse } from '../..'
+import type { ApiResponse } from '../..'
 
 export interface GetTodoListApiResponseDto extends ApiResponse {
   id: number

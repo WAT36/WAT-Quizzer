@@ -1,11 +1,11 @@
-import { CheckQuizAPIRequestDto } from '../..'
+import type { CheckQuizAPIRequestDto } from '../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import {
+import type {
   AddAPIResponseDto,
   ApiResult,
-  ProcessingApiReponse,
-  put
+  ProcessingApiReponse
 } from '../../..'
+import { put } from '../../..'
 
 interface CheckOnQuizButtonProps {
   checkQuizRequestData: CheckQuizAPIRequestDto

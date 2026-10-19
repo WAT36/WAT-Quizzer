@@ -1,5 +1,6 @@
-import { AddDerivativeAPIRequestDto } from '.'
-import { ErrorResponse, ProcessingApiReponse, post } from '../../../..'
+import type { AddDerivativeAPIRequestDto } from '.'
+import type { ErrorResponse, ProcessingApiReponse } from '../../../..'
+import { post } from '../../../..'
 
 interface AddDerivativeAPIProps {
   addDerivativeData: AddDerivativeAPIRequestDto

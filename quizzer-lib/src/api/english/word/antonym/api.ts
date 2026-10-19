@@ -1,5 +1,6 @@
-import { AddAntonymAPIRequestDto } from '.'
-import { ErrorResponse, ProcessingApiReponse, post } from '../../..'
+import type { AddAntonymAPIRequestDto } from '.'
+import type { ErrorResponse, ProcessingApiReponse } from '../../..'
+import { post } from '../../..'
 
 interface AddAntonymAPIProps {
   addAntonymData: AddAntonymAPIRequestDto

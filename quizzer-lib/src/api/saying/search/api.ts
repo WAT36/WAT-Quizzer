@@ -1,5 +1,9 @@
-import { SearchSayingAPIRequestDto, SearchSayingAPIResponseDto } from './dto'
-import { ApiResult, get, ProcessingApiReponse } from '../..'
+import type {
+  SearchSayingAPIRequestDto,
+  SearchSayingAPIResponseDto
+} from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { get } from '../..'
 import { defaultMessage, errorMessage, MESSAGES } from '../../../..'
 
 interface searchSayingAPIProps {

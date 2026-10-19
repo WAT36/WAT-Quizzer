@@ -3,8 +3,9 @@ import {
   MESSAGES,
   successMessage
 } from '../../../..'
-import { ApiResult, put, ProcessingApiReponse } from '../..'
-import { RestoreTodoAPIRequestDto, RestoreTodoApiResponseDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { put } from '../..'
+import type { RestoreTodoAPIRequestDto, RestoreTodoApiResponseDto } from './dto'
 
 interface RestoreTodoAPIProps {
   restoreTodoAPIRequestData: RestoreTodoAPIRequestDto

@@ -1,5 +1,6 @@
-import { ApiResult, post, ProcessingApiReponse } from '../../..'
-import { AddExampleAPIRequestDto } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { post } from '../../..'
+import type { AddExampleAPIRequestDto } from '.'
 
 // 例文データ登録
 interface SubmitExampleSentenseAPIProps {

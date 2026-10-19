@@ -1,5 +1,6 @@
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
-import { GetWordDetailAPIResponseDto } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
+import type { GetWordDetailAPIResponseDto } from '.'
 
 interface GetWordDetailAPIProps {
   id: string

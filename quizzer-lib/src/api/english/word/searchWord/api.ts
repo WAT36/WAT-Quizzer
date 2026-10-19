@@ -1,5 +1,6 @@
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
-import { SearchWordAPIRequestDto, SearchWordAPIResponseDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
+import type { SearchWordAPIRequestDto, SearchWordAPIResponseDto } from './dto'
 
 interface SearchWordAPIProps {
   searchWordData: SearchWordAPIRequestDto

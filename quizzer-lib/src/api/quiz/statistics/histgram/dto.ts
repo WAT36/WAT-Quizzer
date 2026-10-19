@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../..'
+import type { ApiResponse } from '../../..'
 
 export interface GetAccuracyRateHistgramAPIRequestDto {
   file_num?: number

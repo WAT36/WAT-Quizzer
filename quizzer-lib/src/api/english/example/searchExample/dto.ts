@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../..'
+import type { ApiResponse } from '../../..'
 
 // 例文検索APIリクエスト型
 export interface SearchExampleAPIRequestDto {

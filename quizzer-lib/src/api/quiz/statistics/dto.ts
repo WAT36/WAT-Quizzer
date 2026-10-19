@@ -1,4 +1,4 @@
-import { ApiResponse } from '../..'
+import type { ApiResponse } from '../..'
 
 export type DateUnit = 'day' | 'week' | 'month'
 

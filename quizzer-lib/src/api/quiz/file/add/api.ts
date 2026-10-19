@@ -1,11 +1,8 @@
-import {
-  AddQuizApiResponseDto,
-  errorMessage,
-  MESSAGES,
-  successMessage
-} from '../../../../..'
-import { post, ApiResult, ProcessingApiReponse } from '../../..'
-import { AddQuizFileApiRequest } from './dto'
+import type { AddQuizApiResponseDto } from '../../../../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { post } from '../../..'
+import type { AddQuizFileApiRequest } from './dto'
 
 interface AddQuizFileAPIProps {
   addQuizFileApiRequest: AddQuizFileApiRequest

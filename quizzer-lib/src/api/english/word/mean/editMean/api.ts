@@ -1,5 +1,6 @@
-import { patch, ApiResult, ProcessingApiReponse } from '../../../..'
-import { EditWordMeanAPIRequestDto } from '.'
+import type { ApiResult, ProcessingApiReponse } from '../../../..'
+import { patch } from '../../../..'
+import type { EditWordMeanAPIRequestDto } from '.'
 
 interface EditEnglishWordMeanButtonProps {
   editMeanData: EditWordMeanAPIRequestDto

@@ -1,5 +1,9 @@
-import { ApiResult, authFetch } from '../../..'
-import { GetImageOfQuizAPIRequestDto, GetImageOfQuizAPIResponseDto } from '.'
+import type { ApiResult } from '../../..'
+import { authFetch } from '../../..'
+import type {
+  GetImageOfQuizAPIRequestDto,
+  GetImageOfQuizAPIResponseDto
+} from '.'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 
 interface GetImageOfQuizButtonProps {

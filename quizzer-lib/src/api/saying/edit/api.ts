@@ -1,11 +1,8 @@
-import { EditSayingAPIRequestDto } from './dto'
-import { ApiResult, patch, ProcessingApiReponse } from '../..'
-import {
-  AddQuizApiResponseDto,
-  errorMessage,
-  MESSAGES,
-  successMessage
-} from '../../../..'
+import type { EditSayingAPIRequestDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { patch } from '../..'
+import type { AddQuizApiResponseDto } from '../../../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 interface editSayingAPIProps {
   editSayingRequestData: EditSayingAPIRequestDto

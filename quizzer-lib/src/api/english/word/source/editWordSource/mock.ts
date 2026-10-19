@@ -1,4 +1,4 @@
-import { EditWordSourceAPIRequestDto } from './dto'
+import type { EditWordSourceAPIRequestDto } from './dto'
 
 export const initEditWordSourceData: EditWordSourceAPIRequestDto = {
   wordId: -1,

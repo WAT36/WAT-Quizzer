@@ -1,11 +1,8 @@
-import { AddSayingAPIRequestDto } from './dto'
-import { ApiResult, post, ProcessingApiReponse } from '../..'
-import {
-  AddQuizApiResponseDto,
-  errorMessage,
-  MESSAGES,
-  successMessage
-} from '../../../..'
+import type { AddSayingAPIRequestDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../..'
+import { post } from '../..'
+import type { AddQuizApiResponseDto } from '../../../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 interface AddSayingButtonProps {
   addSayingAPIRequest: AddSayingAPIRequestDto

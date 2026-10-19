@@ -1,6 +1,7 @@
-import { ApiResult, fileUploadAPI, ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { fileUploadAPI } from '../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import { UploadImageOfQuizAPIRequestDto } from './dto'
+import type { UploadImageOfQuizAPIRequestDto } from './dto'
 
 interface UploadImageOfQuizButtonProps {
   uploadQuizRequestData: UploadImageOfQuizAPIRequestDto

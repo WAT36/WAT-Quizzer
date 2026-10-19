@@ -1,11 +1,8 @@
-import {
-  AddQuizApiResponseDto,
-  errorMessage,
-  MESSAGES,
-  successMessage
-} from '../../../../../..'
-import { patch, ApiResult, ProcessingApiReponse } from '../../../..'
-import { DeleteAnswerLogOfFileApiRequestDto } from './dto'
+import type { AddQuizApiResponseDto } from '../../../../../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../../..'
+import { patch } from '../../../..'
+import type { DeleteAnswerLogOfFileApiRequestDto } from './dto'
 
 interface DeleteAnswerLogOfFileAPIProps {
   deleteLogOfFileRequest: DeleteAnswerLogOfFileApiRequestDto

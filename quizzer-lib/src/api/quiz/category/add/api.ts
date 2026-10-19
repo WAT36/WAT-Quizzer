@@ -1,10 +1,10 @@
-import { AddCategoryToQuizAPIRequestDto } from './dto'
-import {
+import type { AddCategoryToQuizAPIRequestDto } from './dto'
+import type {
   AddAPIResponseDto,
   ApiResult,
-  post,
   ProcessingApiReponse
 } from '../../..'
+import { post } from '../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 
 interface AddCategoryToQuizAPIProps {

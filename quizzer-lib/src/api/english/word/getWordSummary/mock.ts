@@ -1,4 +1,4 @@
-import { WordSummaryApiResponse } from '.'
+import type { WordSummaryApiResponse } from '.'
 
 export const initGetWordSummaryData: WordSummaryApiResponse[] = [
   {

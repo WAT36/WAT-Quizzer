@@ -1,4 +1,4 @@
-import { ApiResult, ProcessingApiReponse } from './'
+import type { ApiResult, ProcessingApiReponse } from './'
 import { authFetch } from './auth/token'
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || ''

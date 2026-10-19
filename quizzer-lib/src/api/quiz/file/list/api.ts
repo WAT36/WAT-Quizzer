@@ -1,6 +1,7 @@
-import { GetQuizFileApiResponseDto } from '.'
+import type { GetQuizFileApiResponseDto } from '.'
 import { defaultMessage, errorMessage, MESSAGES } from '../../../../..'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
 
 // quizzer各画面用 問題ファイルリストをapi通信して取ってくる
 export const getQuizFileListAPI = async (): Promise<ApiResult> => {

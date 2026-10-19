@@ -1,4 +1,4 @@
-import { ApiResponse } from '../..'
+import type { ApiResponse } from '../..'
 
 // 格言検索リクエスト型
 export interface SearchSayingAPIRequestDto {

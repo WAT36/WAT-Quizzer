@@ -1,5 +1,6 @@
-import { post, ApiResult, ProcessingApiReponse } from '../../..'
-import { AddWordAPIRequestDto } from './dto'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { post } from '../../..'
+import type { AddWordAPIRequestDto } from './dto'
 
 interface AddWordAPIProps {
   addWordData: AddWordAPIRequestDto

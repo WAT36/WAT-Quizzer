@@ -1,8 +1,9 @@
-import {
+import type {
   GetExampleTestDataAPIRequestDto,
   GetExampleTestDataAPIResponseDto
 } from '.'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
 
 interface GetExampleTestDataAPIProps {
   getExampleTestData: GetExampleTestDataAPIRequestDto

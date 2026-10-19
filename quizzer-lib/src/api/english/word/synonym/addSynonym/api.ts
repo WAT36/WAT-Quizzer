@@ -1,5 +1,6 @@
-import { ErrorResponse, ProcessingApiReponse, post } from '../../../..'
-import { AddSynonymAPIRequestDto } from '.'
+import type { ErrorResponse, ProcessingApiReponse } from '../../../..'
+import { post } from '../../../..'
+import type { AddSynonymAPIRequestDto } from '.'
 
 interface AddSynonymAPIProps {
   addSynonymData: AddSynonymAPIRequestDto

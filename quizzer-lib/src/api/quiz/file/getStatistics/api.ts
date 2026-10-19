@@ -1,6 +1,7 @@
-import { QuizFileStatisticsApiResponse } from '.'
+import type { QuizFileStatisticsApiResponse } from '.'
 import { defaultMessage, errorMessage, MESSAGES } from '../../../../..'
-import { get, ApiResult, ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get } from '../../..'
 
 interface GetQuizFileStatisticsDataButtonProps {
   file_num?: number
