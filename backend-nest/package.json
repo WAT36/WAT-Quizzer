@@ -80,12 +80,11 @@
     "@types/papaparse": "^5.3.15",
     "@types/pg": "^8.11.11",
     "@types/supertest": "^6.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.32.1",
-    "@typescript-eslint/parser": "^8.32.1",
     "dotenv": "^16.4.7",
     "eslint": "^9.27.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.5",
+    "globals": "^16.4.0",
     "pg": "^8.14.1",
     "prettier": "^3.5.3",
     "reflect-metadata": "^0.2.2",
@@ -96,7 +95,8 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "4.2.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.56.1"
   },
   "jest": {
     "moduleFileExtensions": [
