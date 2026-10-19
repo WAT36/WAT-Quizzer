@@ -33,6 +33,7 @@ pnpm start:backend       # backend-nest を watch モードで起動
 pnpm start:frontend      # frontend-next の開発サーバーを起動
 pnpm build:backend       # quizzer-lib の prisma 生成 + backend-nest ビルド
 pnpm build:frontend      # frontend-next のビルド
+pnpm lint                # quizzer-lib / backend-nest / frontend-next の ESLint をまとめて実行（エラーがあれば失敗。警告だけなら成功）
 pnpm deps:check          # workspace 間の依存バージョン不整合チェック (syncpack)
 pnpm deps:fix            # 上記の自動修正
 ```
@@ -50,8 +51,21 @@ pnpm deps:fix            # 上記の自動修正
 
 `.githooks/` に Git フックを置いている。`pnpm install` 時に `prepare` スクリプトが `git config core.hooksPath .githooks` を実行するので、特別な設定は不要。
 
-- `pre-push`: push 前に `tools/update_avg_lines.sh` を実行し、全ファイルの平均行数を DB に記録する（`batch/src/tools/avg_line.register.ts` 経由。DB 接続先はルートの `.env`）。記録に失敗しても push は止めない
+- `pre-push`: push 前に以下を行う
+  1. `pnpm lint` を実行し、エラーがあれば push を止める（警告だけなら続行。`pnpm install` 前の環境ではスキップ）。どうしても push する場合は `git push --no-verify`
+  2. `tools/update_avg_lines.sh` を実行し、全ファイルの平均行数を DB に記録する（`batch/src/tools/avg_line.register.ts` 経由。DB 接続先はルートの `.env`）。記録に失敗しても push は止めない
 - `pre-commit`: コードに変更があるのに、対応する README が更新されていない場合に警告を出す（コミットは止めない）。VS Code など GUI からのコミットでは、macOS の場合は通知でも知らせる。Claude Code（`claude` コマンド）が入っていない環境では何もしない。警告が出たら `/update-readmes` で確認する
+
+## Lint
+
+ESLint 9 を使い、`quizzer-lib` / `backend-nest` / `frontend-next` のそれぞれに設定ファイル（`eslint.config.mjs`）を置いている（`batch` / `infra` は対象外）。
+
+- 3パッケージ共通で、`await` していない Promise（`no-floating-promises`）、Promise を返す関数の誤った受け渡し（`no-misused-promises`）、union 型の `switch` のケース漏れ（`switch-exhaustiveness-check`）、`==` / `!=`（`eqeqeq`。`null` との比較は許可）をエラーにしている。意図して結果を待たない Promise は `void` を付けて明示する
+- `any`（`no-explicit-any`）と `console.log` など（`no-console`。`warn` / `error` は許可）は警告。frontend-next は既存の違反が多いため、未使用の変数（`no-unused-vars`）も警告にしている
+- 型だけの import は `import type` で書く（`consistent-type-imports`。quizzer-lib / frontend-next のみ。backend-nest は NestJS の DI に必要な import を壊すおそれがあるため対象外）
+- 型情報を使うルールは各パッケージの `tsconfig.json` の対象ファイル（`src/`。frontend-next は Storybook 用ファイルを除く）にだけ適用している
+
+GitHub Actions では develop への push 時に `develop.yml` から `.github/workflows/lint.yml` が呼ばれ、`pnpm lint` を実行する（`frontend-e2e.yml` と並行して実行）。**lint でエラーがある場合、デプロイ（本番・モック環境とも）は行われない**。
 
 ## 脆弱性診断
 

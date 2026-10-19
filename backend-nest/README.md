@@ -61,6 +61,15 @@ pnpm run test:e2e
 pnpm run test:cov
 ```
 
+## Lint
+
+```bash
+pnpm run lint        # ESLint（Prettier の書式チェックを含む）。--fix 付きなので書式などは自動修正される
+pnpm run lint:check  # --fix なしでチェックだけ行う（CI・pre-push フックでルートの pnpm lint から使う）
+```
+
+設定は `eslint.config.mjs`。ルールの方針はリポジトリルートの README の「Lint」を参照。
+
 ## 環境変数
 
 `quizzer-lib` 経由の DB 接続を含め、主に以下をリポジトリルートの `.env` で管理する（値は各自の環境に合わせて設定。秘密情報のためリポジトリには含まれない）。

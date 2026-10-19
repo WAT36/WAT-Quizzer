@@ -23,7 +23,7 @@ WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com
 `backend-nest` の API は CDK ではなく AWS SAM（`template.yaml` / `samconfig.toml`）でデプロイする。`BackendStack` は `SAM_APIGATEWAY_ID` でこの API Gateway を参照する。
 
 - `ApiGatewayRestApi` — API Gateway（カスタムドメイン `QuizzerApiDomainName`）。CORS は `FrontOrigin` パラメータのオリジンのみ許可し、credentials（Cookie）を許可する
-- `SamQuizzerApiFunction` — `backend-nest` を動かす Lambda（リポジトリルートの `Dockerfile` からビルドするコンテナイメージ。`/{proxy+}` の全メソッドを受ける）
+- `SamQuizzerApiFunction` — `backend-nest` を動かす Lambda（リポジトリルートの `Dockerfile` からビルドするコンテナイメージ。`/{proxy+}` の全メソッドを受ける。メモリは 512MB）
 - `WordDerivativesFunction` — 下記 `lambda/word-derivatives/` の Lambda
 
 develop ブランチへの push で `.github/workflows/develop.yml` が `sam build` / `sam deploy` を実行する（パラメータは同ワークフローの `--parameter-overrides` を参照）。

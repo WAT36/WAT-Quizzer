@@ -54,6 +54,15 @@ pnpm run export:mock  # モックモード（NEXT_PUBLIC_MOCK_MODE=true）で静
 
 モックモードでは API を呼ばずにサンプルデータを表示する（`src/utils/api-wrapper.ts`）。モック環境の詳細はリポジトリルートの `MOCK-README.md` を参照。
 
+## Lint
+
+```bash
+pnpm run lint   # ESLint（eslint .）
+pnpm run format # Prettier で src/ 配下を整形
+```
+
+設定は `eslint.config.mjs`（`eslint-config-next` + Storybook + Prettier との競合回避 + プロジェクト独自のルール）。ルールの方針はリポジトリルートの README の「Lint」を参照。
+
 ## テスト
 
 - Storybook（コンポーネントカタログ + a11y チェック）:
@@ -64,6 +73,7 @@ pnpm run export:mock  # モックモード（NEXT_PUBLIC_MOCK_MODE=true）で静
   pnpm run test-storybook:report  # 上記の結果を test-result/a11y.json に出力
   ```
   Storybook では `.storybook/main.ts` で `NEXT_PUBLIC_MOCK_MODE=true` が設定され、モックデータで表示される。`chromatic` / `git:push` は Chromatic への Storybook 公開用。
+  Story は各コンポーネントと同じディレクトリに同名で置く（例: `Button.tsx` ↔ `Button.stories.tsx`）。Story の作成率（Story があるコンポーネントの割合・未作成一覧）は Claude Code の `/storybook-coverage` スキル（`node .claude/skills/storybook-coverage/scripts/check-coverage.mjs`）で集計できる。
 - Playwright による e2e テスト (`e2e/`)。モックモードを使わない通常のビルドに対して実行し、API はテストごとに `page.route()` で差し替える（バックエンド・DB は不要）:
   ```bash
   pnpm run e2e      # e2e:build → playwright test
