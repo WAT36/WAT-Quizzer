@@ -1,6 +1,7 @@
 import type { GetQuizApiResponseDto } from '../get'
 import type { ApiResult, ProcessingApiReponse } from '../..'
 import { post } from '../..'
+import type { FailQuizAPIRequestDto } from './dto'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 interface FailQuizButtonProps {
@@ -24,11 +25,8 @@ export const failQuizAPI = async ({
   const result = await post(
     '/quiz/fail',
     {
-      quiz_id: getQuizResponseData.id,
-      format_id: getQuizResponseData.format_id,
-      file_num: getQuizResponseData.file_num,
-      quiz_num: getQuizResponseData.quiz_num
-    },
+      quiz_id: getQuizResponseData.id
+    } as FailQuizAPIRequestDto,
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
         return {

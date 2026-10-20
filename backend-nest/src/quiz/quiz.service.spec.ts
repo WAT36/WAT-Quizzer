@@ -321,12 +321,8 @@ describe('QuizService', () => {
   // 正解登録 正常系
   it('cleared - OK', async () => {
     // テストデータ
-    // TODO dtoの方にもあったがquiz_idしか使ってないので他はいらない 見直したい
     const req = {
       quiz_id: 22,
-      format_id: 0,
-      file_num: 0,
-      quiz_num: 0,
     };
     // テストデータ 正常時の返り値
     const testResult = [
@@ -341,12 +337,8 @@ describe('QuizService', () => {
   // 不正解登録 正常系
   it('failed - OK', async () => {
     // テストデータ
-    // TODO こっちも 正解登録と同じ
     const req = {
       quiz_id: 22,
-      format_id: 0,
-      file_num: 0,
-      quiz_num: 0,
     };
     // テストデータ 正常時の返り値
     const testResult = [

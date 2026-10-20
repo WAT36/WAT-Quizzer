@@ -25,10 +25,7 @@ export const clearQuizAPI = async ({
   const result = await post(
     '/quiz/clear',
     {
-      quiz_id: getQuizResponseData.id,
-      format_id: getQuizResponseData.format_id,
-      file_num: getQuizResponseData.file_num,
-      quiz_num: getQuizResponseData.quiz_num
+      quiz_id: getQuizResponseData.id
     } as ClearQuizAPIRequestDto,
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
