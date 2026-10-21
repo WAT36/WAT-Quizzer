@@ -3,11 +3,11 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material
 import { Button } from '@/components/ui-elements/button/Button';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
-import type { GetQuizAPIRequestDto } from 'quizzer-lib';
+import type { GetQuizAPIRequestDto, GetQuizMethod } from 'quizzer-lib';
 import { InputQueryForm } from '../inputQueryForm/InputQueryForm';
-import type { QuizSessionMethod, StartQuizSessionParams } from '@/hooks/useQuizSession';
+import type { StartQuizSessionParams } from '@/hooks/useQuizSession';
 
-const QUIZ_METHOD_OPTIONS: { value: QuizSessionMethod; label: string }[] = [
+const QUIZ_METHOD_OPTIONS: { value: GetQuizMethod; label: string }[] = [
   { value: 'random', label: 'ランダム' },
   { value: 'worstRate', label: '最低正解率' },
   { value: 'leastClear', label: '最小回答数' },
@@ -36,7 +36,7 @@ export const QuizSettingsPanel = ({
   onStart
 }: QuizSettingsPanelProps) => {
   // PullDownは共通コンポーネントの仕様上、常に「選択なし」(-1)を選べてしまうため、未選択を検知できる型にしている
-  const [method, setMethod] = useState<QuizSessionMethod | -1>('random');
+  const [method, setMethod] = useState<GetQuizMethod | -1>('random');
   const [count, setCount] = useState<number>(DEFAULT_QUIZ_COUNT);
   const [starting, setStarting] = useState(false);
 
@@ -62,7 +62,7 @@ export const QuizSettingsPanel = ({
           label="出題形式"
           optionList={QUIZ_METHOD_OPTIONS}
           value={method}
-          onChange={(e) => setMethod(e.target.value as QuizSessionMethod | -1)}
+          onChange={(e) => setMethod(e.target.value as GetQuizMethod | -1)}
         />
         <TextField
           label="出題数"

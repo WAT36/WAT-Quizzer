@@ -1,23 +1,14 @@
 import { useCallback, useReducer } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import type { GetQuizAPIRequestDto, GetQuizApiResponseDto } from 'quizzer-lib';
+import type { GetQuizAPIRequestDto, GetQuizApiResponseDto, GetQuizMethod } from 'quizzer-lib';
 import { initGetQuizResponseData } from 'quizzer-lib';
 import { getQuizAPI, clearQuizAPI, failQuizAPI } from '@/utils/api-wrapper';
 import { initialQuizSessionState, quizSessionReducer } from './quizSession/reducer';
 
-export type QuizSessionMethod =
-  | 'random'
-  | 'worstRate'
-  | 'leastClear'
-  | 'LRU'
-  | 'review'
-  | 'todayNotAnswered'
-  | 'recentlyUpdated';
-
 export interface StartQuizSessionParams {
   getQuizRequestData: GetQuizAPIRequestDto;
-  getQuizMethod: QuizSessionMethod;
+  getQuizMethod: GetQuizMethod;
   count: number;
 }
 

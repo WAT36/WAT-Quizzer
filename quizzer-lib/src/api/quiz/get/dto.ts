@@ -3,6 +3,16 @@ import type { ApiResponse } from '../..'
 // キーワード検索の対象（問題文・解答 or 解説のどちらか一方）
 export type KeywordSearchTarget = 'sentence_answer' | 'explanation'
 
+// 問題取得の方法（未指定時は番号指定で1問取得）
+export type GetQuizMethod =
+  | 'random'
+  | 'worstRate'
+  | 'leastClear'
+  | 'LRU'
+  | 'review'
+  | 'todayNotAnswered'
+  | 'recentlyUpdated'
+
 export interface GetQuizAPIRequestDto {
   file_num: number
   quiz_num?: number

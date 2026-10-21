@@ -12,6 +12,7 @@ import {
   AddCategoryToQuizAPIRequestDto,
   IntegrateToQuizAPIRequestDto,
   GetQuizAPIRequestDto,
+  GetQuizMethod,
   SearchQuizAPIRequestDto,
   prisma,
   GetAnswerLogStatisticsAPIRequestDto,
@@ -39,18 +40,7 @@ export interface QueryType {
 @Injectable()
 export class QuizService {
   // 問題取得
-  async getQuiz(
-    req: GetQuizAPIRequestDto,
-    // TODO ここの型をlibに持っていく　フロント側でも同じの使っている箇所あるため
-    method?:
-      | 'random'
-      | 'worstRate'
-      | 'leastClear'
-      | 'LRU'
-      | 'review'
-      | 'todayNotAnswered'
-      | 'recentlyUpdated',
-  ) {
+  async getQuiz(req: GetQuizAPIRequestDto, method?: GetQuizMethod) {
     try {
       const {
         file_num,

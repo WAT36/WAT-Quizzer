@@ -1,18 +1,15 @@
-import type { GetQuizAPIRequestDto, GetQuizApiResponseDto } from '.'
+import type {
+  GetQuizAPIRequestDto,
+  GetQuizApiResponseDto,
+  GetQuizMethod
+} from '.'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../..'
 import { get } from '../..'
 
 interface GetQuizAPIProps {
   getQuizRequestData: GetQuizAPIRequestDto
-  getQuizMethod?:
-    | 'random'
-    | 'worstRate'
-    | 'leastClear'
-    | 'LRU'
-    | 'review'
-    | 'todayNotAnswered'
-    | 'recentlyUpdated'
+  getQuizMethod?: GetQuizMethod
 }
 
 export const getQuizAPI = async ({
