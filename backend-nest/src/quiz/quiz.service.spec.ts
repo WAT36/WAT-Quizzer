@@ -6,7 +6,6 @@ import {
   xor,
   getPrismaFromPastDayRange,
 } from 'quizzer-lib';
-import { emptyResult } from '../../test/constants';
 
 jest.mock('quizzer-lib', () => {
   // prismaモックを作る
@@ -438,9 +437,16 @@ describe('QuizService', () => {
       dummy3: 'ダミー選択肢３', //四択問題のダミー選択肢３
       explanation: '説明',
     };
-    // テストデータ 正常時の返り値
-    const testResult = { result: 'Edited!' };
-    (prisma.$transaction as jest.Mock).mockResolvedValue(emptyResult);
+    // テストデータ 正常時の返り値（更新後の問題）
+    const testResult = {
+      id: 22,
+      file_num: 0,
+      quiz_num: 0,
+      format_id: 1,
+      quiz_sentense: '問題文',
+      answer: '答え',
+    };
+    (prisma.$transaction as jest.Mock).mockResolvedValueOnce(testResult);
     expect(await quizService.edit(req)).toEqual(testResult);
   });
 
@@ -498,7 +504,7 @@ describe('QuizService', () => {
     ]);
     (prisma.category.upsert as jest.Mock).mockResolvedValueOnce({ id: 1 });
     (prisma.quiz_dummy_choice.update as jest.Mock).mockClear();
-    expect(await quizService.edit(req)).toEqual({ result: 'Edited!' });
+    expect(await quizService.edit(req)).toEqual({ id: 22 });
     expect(
       (prisma.quiz_dummy_choice.update as jest.Mock).mock.calls.map(
         ([arg]) => arg,

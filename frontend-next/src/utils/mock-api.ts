@@ -257,7 +257,16 @@ export const mockEditQuizAPI = async (params: any): Promise<ApiResult> => {
       messageColor: 'success.light',
       isDisplay: true
     },
-    result: { result: 'Edited!' }
+    result: {
+      id: 1,
+      file_num: 1,
+      quiz_num: 1,
+      format_id: 1,
+      quiz_sentense: 'test',
+      answer: 'test',
+      img_file: null,
+      checked: false
+    }
   };
 };
 

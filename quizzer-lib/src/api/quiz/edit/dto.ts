@@ -34,10 +34,14 @@ export interface EditQuizAPIRequestReceivedDto {
   explanation?: string // 解説
 }
 
-// 問題編集APIのレスポンス（ログだけ）
+// 問題編集APIのレスポンス（更新後の問題）
 export interface EditQuizApiResponseDto extends ApiResponse {
+  id: number
   file_num: number
   quiz_num: number
+  format_id: number
   quiz_sentense: string
   answer: string
+  img_file: string | null
+  checked: boolean | null
 }

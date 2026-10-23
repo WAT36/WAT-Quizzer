@@ -599,7 +599,7 @@ export class QuizService {
       }
 
       // クエリ用意
-      await prisma.$transaction(async (prisma) => {
+      const updatedQuiz = await prisma.$transaction(async (prisma) => {
         // 更新
         const updatedQuiz = await prisma.quiz.update({
           data: {
@@ -747,8 +747,10 @@ export class QuizService {
             quiz_id,
           },
         });
+        return updatedQuiz;
       });
-      return { result: 'Edited!' };
+      // 更新後の問題を返す
+      return updatedQuiz;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
