@@ -978,6 +978,14 @@ export class QuizService {
     try {
       const { fromQuizId, toQuizId } = req;
 
+      // 同じ問題同士は統合させない（統合先の問題が削除されてしまうため）
+      if (fromQuizId === toQuizId) {
+        throw new HttpException(
+          `統合元と統合先に同じ問題は指定できません`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       // 統合前の問題取得
       const pre_data = await prisma.quiz.findUnique({
         select: {
@@ -1047,6 +1055,14 @@ export class QuizService {
           deleted_at: null,
         },
       });
+
+      // 統合元・統合先の問題が存在しない場合はエラー
+      if (!pre_data || !post_data) {
+        throw new HttpException(
+          `統合${!pre_data ? '元' : '先'}の問題が見つかりません(${!pre_data ? fromQuizId : toQuizId})`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
       // 問題形式違う場合は統合させない
       if (pre_data.format_id !== post_data.format_id) {
@@ -1161,7 +1177,10 @@ export class QuizService {
         result: 'OK!',
       };
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (error instanceof HttpException) {
+        // 404・400系はそのまま返す
+        throw error;
+      } else if (error instanceof Error) {
         throw new HttpException(
           error.message,
           HttpStatus.INTERNAL_SERVER_ERROR,

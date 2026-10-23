@@ -773,6 +773,51 @@ describe('QuizService', () => {
     });
   });
 
+  // 問題統合 異常系2 統合元の問題が存在しない
+  it('integrate - NG2 fromQuiz not found', async () => {
+    // テストデータ
+    const req = {
+      fromQuizId: 0,
+      toQuizId: 1,
+    };
+    (prisma.quiz.findUnique as jest.Mock)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({ format_id: 1 });
+    await expect(quizService.integrate(req)).rejects.toMatchObject({
+      message: '統合元の問題が見つかりません(0)',
+      status: 404,
+    });
+  });
+
+  // 問題統合 異常系3 統合先の問題が存在しない
+  it('integrate - NG3 toQuiz not found', async () => {
+    // テストデータ
+    const req = {
+      fromQuizId: 0,
+      toQuizId: 1,
+    };
+    (prisma.quiz.findUnique as jest.Mock)
+      .mockResolvedValueOnce({ format_id: 1 })
+      .mockResolvedValueOnce(null);
+    await expect(quizService.integrate(req)).rejects.toMatchObject({
+      message: '統合先の問題が見つかりません(1)',
+      status: 404,
+    });
+  });
+
+  // 問題統合 異常系4 統合元と統合先が同じ問題
+  it('integrate - NG4 same quiz', async () => {
+    // テストデータ
+    const req = {
+      fromQuizId: 1,
+      toQuizId: 1,
+    };
+    await expect(quizService.integrate(req)).rejects.toMatchObject({
+      message: '統合元と統合先に同じ問題は指定できません',
+      status: 400,
+    });
+  });
+
   // 問題にカテゴリ追加 正常系1
   it('addCategoryToQuiz - OK', async () => {
     // テストデータ
