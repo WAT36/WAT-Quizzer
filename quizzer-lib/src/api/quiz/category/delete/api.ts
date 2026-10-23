@@ -1,11 +1,8 @@
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import type {
-  AddAPIResponseDto,
-  ApiResult,
-  ProcessingApiReponse
-} from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { put } from '../../..'
 import type { AddCategoryToQuizAPIRequestDto } from '../add/dto'
+import type { QuizWithCategoryApiResponseDto } from '../..'
 
 interface DeleteCategoryOfQuizAPIProps {
   // TODO プロパティ同じだからAddCategoryToQuizAPIRequestDto流用してるが、、deleteで使うのは変なので名前変えたい
@@ -29,7 +26,7 @@ export const deleteCategoryOfQuizAPI = async ({
     },
     (data: ProcessingApiReponse) => {
       if (String(data.status)[0] === '2' || String(data.status)[0] === '3') {
-        const result: AddAPIResponseDto = data.body as AddAPIResponseDto
+        const result = data.body as QuizWithCategoryApiResponseDto[]
         return {
           message: successMessage(MESSAGES.SUCCESS.MSG00004),
           result

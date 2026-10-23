@@ -753,15 +753,17 @@ describe('QuizService', () => {
       fromQuizId: 0,
       toQuizId: 1,
     };
+    // テストデータ 正常時の返り値（統合後の統合先問題）
+    const testResult = {
+      id: 1,
+      format_id: 1,
+      category_quiz: [{ category: { name: 'カテゴリ1' } }],
+    };
     (prisma.quiz.findUnique as jest.Mock).mockResolvedValue({
       format_id: 1,
     });
-    (prisma.$transaction as jest.Mock).mockResolvedValue({
-      result: 'OK!',
-    });
-    expect(await quizService.integrate(req)).toEqual({
-      result: 'OK!',
-    });
+    (prisma.$transaction as jest.Mock).mockResolvedValue(testResult);
+    expect(await quizService.integrate(req)).toEqual(testResult);
   });
 
   // 問題統合 異常系1
@@ -831,12 +833,12 @@ describe('QuizService', () => {
       quiz_id: '0',
       category: 'カテゴリ1',
     };
-    (prisma.$transaction as jest.Mock).mockResolvedValue({
-      result: 'OK!',
-    });
-    expect(await quizService.addCategoryToQuiz(req)).toEqual({
-      result: 'OK!',
-    });
+    // テストデータ 正常時の返り値（カテゴリ追加後の問題）
+    const testResult = [
+      { id: 0, category_quiz: [{ category: { name: 'カテゴリ1' } }] },
+    ];
+    (prisma.$transaction as jest.Mock).mockResolvedValue(testResult);
+    expect(await quizService.addCategoryToQuiz(req)).toEqual(testResult);
   });
 
   // 問題にカテゴリ追加 異常系1
@@ -861,10 +863,10 @@ describe('QuizService', () => {
       quiz_id: '0',
       category: 'カテゴリ1',
     };
-    (prisma.$transaction as jest.Mock).mockResolvedValue({});
-    expect(await quizService.removeCategoryFromQuiz(req)).toEqual({
-      result: 'OK!',
-    });
+    // テストデータ 正常時の返り値（カテゴリ削除後の問題）
+    const testResult = [{ id: 0, category_quiz: [] }];
+    (prisma.$transaction as jest.Mock).mockResolvedValue(testResult);
+    expect(await quizService.removeCategoryFromQuiz(req)).toEqual(testResult);
   });
 
   // 問題からカテゴリ削除 異常系1
@@ -888,12 +890,19 @@ describe('QuizService', () => {
   it('check - OK', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_id: '1,2',
     };
-    (prisma.$transaction as jest.Mock).mockResolvedValue({});
-    expect(await quizService.check(req)).toEqual({
-      result: 'OK!',
-    });
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.quiz.update as jest.Mock)
+      .mockResolvedValueOnce({ id: 1, checked: true })
+      .mockResolvedValueOnce({ id: 2, checked: true });
+    // 更新後の問題が指定順に返る
+    expect(await quizService.check(req)).toEqual([
+      { id: 1, checked: true },
+      { id: 2, checked: true },
+    ]);
   });
 
   // 問題にチェック追加 異常系1
@@ -914,12 +923,19 @@ describe('QuizService', () => {
   it('uncheck - OK', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_id: '1,2',
     };
-    (prisma.$transaction as jest.Mock).mockResolvedValue({});
-    expect(await quizService.uncheck(req)).toEqual({
-      result: 'OK!',
-    });
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.quiz.update as jest.Mock)
+      .mockResolvedValueOnce({ id: 1, checked: false })
+      .mockResolvedValueOnce({ id: 2, checked: false });
+    // 更新後の問題が指定順に返る
+    expect(await quizService.uncheck(req)).toEqual([
+      { id: 1, checked: false },
+      { id: 2, checked: false },
+    ]);
   });
 
   // 問題にチェック外す 異常系1
@@ -970,9 +986,11 @@ describe('QuizService', () => {
     const req = {
       file_id: 0,
     };
-    (prisma.answer_log.updateMany as jest.Mock).mockResolvedValue({});
+    (prisma.answer_log.updateMany as jest.Mock).mockResolvedValue({
+      count: 3,
+    });
     expect(await quizService.deleteAnswerLogByFile(req)).toEqual({
-      result: 'Deleted!',
+      count: 3,
     });
   });
 

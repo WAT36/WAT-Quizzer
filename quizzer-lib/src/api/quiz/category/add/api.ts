@@ -1,9 +1,6 @@
 import type { AddCategoryToQuizAPIRequestDto } from './dto'
-import type {
-  AddAPIResponseDto,
-  ApiResult,
-  ProcessingApiReponse
-} from '../../..'
+import type { QuizWithCategoryApiResponseDto } from '../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { post } from '../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 
@@ -30,7 +27,7 @@ export const addCategoryToQuizAPI = async ({
     },
     (data: ProcessingApiReponse) => {
       if (String(data.status)[0] === '2' || String(data.status)[0] === '3') {
-        const result: AddAPIResponseDto = data.body as AddAPIResponseDto
+        const result = data.body as QuizWithCategoryApiResponseDto[]
         return {
           message: successMessage(MESSAGES.SUCCESS.MSG00004),
           result

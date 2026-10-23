@@ -21,7 +21,3 @@ export interface ApiResult {
   result?: ApiResponse | ApiResponse[] | Response
   total?: number
 }
-
-export interface AddAPIResponseDto {
-  result: string
-}

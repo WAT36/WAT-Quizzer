@@ -32,6 +32,22 @@ import { parse, ParseResult } from 'papaparse';
 const trimSpaces = (str: string): string =>
   str ? str.replace(/^[ \u3000]+|[ \u3000]+$/g, '') : str;
 
+// 問題を有効なカテゴリ付きで返す際のinclude条件
+const includeActiveCategories = {
+  category_quiz: {
+    where: {
+      deleted_at: null,
+    },
+    select: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  },
+} satisfies Prisma.quizInclude;
+
 export interface QueryType {
   query: string;
   value: (string | number)[];
@@ -1102,7 +1118,7 @@ export class QuizService {
       );
 
       // トランザクション
-      await prisma.$transaction(async (prisma) => {
+      const integratedQuiz = await prisma.$transaction(async (prisma) => {
         // 問題統合(カテゴリのみ)
         //// 元問題のカテゴリ削除
         await prisma.category_quiz.updateMany({
@@ -1173,11 +1189,17 @@ export class QuizService {
             quiz_id: fromQuizId,
           },
         });
+
+        // 統合後の統合先問題を返す
+        return prisma.quiz.findUnique({
+          include: includeActiveCategories,
+          where: {
+            id: toQuizId,
+          },
+        });
       });
 
-      return {
-        result: 'OK!',
-      };
+      return integratedQuiz;
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         // 404・400系はそのまま返す
@@ -1206,7 +1228,7 @@ export class QuizService {
       });
       const categories = category.split(',');
       // トランザクション
-      await prisma.$transaction(async (prisma) => {
+      const updatedQuizzes = await prisma.$transaction(async (prisma) => {
         for (const quiz_id of quiz_ids) {
           // quiz_idからfile_numを取得
           const quiz = await prisma.quiz.findUnique({
@@ -1253,11 +1275,19 @@ export class QuizService {
             });
           }
         }
+
+        // カテゴリ追加後の問題を返す
+        return prisma.quiz.findMany({
+          include: includeActiveCategories,
+          where: {
+            id: { in: quiz_ids },
+          },
+          orderBy: {
+            id: 'asc',
+          },
+        });
       });
-      // TODO 問題追加系の返り値の扱い　なんか違う方がいい
-      return {
-        result: 'OK!',
-      };
+      return updatedQuizzes;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -1283,7 +1313,7 @@ export class QuizService {
       });
       const categories = category.split(',');
       // トランザクション
-      await prisma.$transaction(async (prisma) => {
+      const updatedQuizzes = await prisma.$transaction(async (prisma) => {
         // 更新
         for (const quiz_id of quiz_ids) {
           // quiz_idからfile_numを取得
@@ -1333,10 +1363,19 @@ export class QuizService {
             }
           }
         }
+
+        // カテゴリ削除後の問題を返す（存在しない問題は含まない）
+        return prisma.quiz.findMany({
+          include: includeActiveCategories,
+          where: {
+            id: { in: quiz_ids },
+          },
+          orderBy: {
+            id: 'asc',
+          },
+        });
       });
-      return {
-        result: 'OK!',
-      };
+      return updatedQuizzes;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -1361,22 +1400,25 @@ export class QuizService {
         return +x;
       });
       // トランザクション
-      await prisma.$transaction(async (prisma) => {
+      const updatedQuizzes = await prisma.$transaction(async (prisma) => {
         // 更新
+        const updatedQuizzes = [];
         for (const quiz_id of quiz_ids) {
-          await prisma.quiz.update({
-            data: {
-              checked: true,
-            },
-            where: {
-              id: quiz_id,
-            },
-          });
+          updatedQuizzes.push(
+            await prisma.quiz.update({
+              data: {
+                checked: true,
+              },
+              where: {
+                id: quiz_id,
+              },
+            }),
+          );
         }
+        return updatedQuizzes;
       });
-      return {
-        result: 'OK!',
-      };
+      // 更新後の問題を返す
+      return updatedQuizzes;
     } catch (error) {
       throw error;
     }
@@ -1396,22 +1438,25 @@ export class QuizService {
         return +x;
       });
       // トランザクション
-      await prisma.$transaction(async (prisma) => {
+      const updatedQuizzes = await prisma.$transaction(async (prisma) => {
         // 更新
+        const updatedQuizzes = [];
         for (const quiz_id of quiz_ids) {
-          await prisma.quiz.update({
-            data: {
-              checked: false,
-            },
-            where: {
-              id: quiz_id,
-            },
-          });
+          updatedQuizzes.push(
+            await prisma.quiz.update({
+              data: {
+                checked: false,
+              },
+              where: {
+                id: quiz_id,
+              },
+            }),
+          );
         }
+        return updatedQuizzes;
       });
-      return {
-        result: 'OK!',
-      };
+      // 更新後の問題を返す
+      return updatedQuizzes;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -1465,7 +1510,7 @@ export class QuizService {
     try {
       const { file_id } = req;
       // 指定ファイルの回答ログ削除
-      await prisma.answer_log.updateMany({
+      const { count } = await prisma.answer_log.updateMany({
         data: {
           deleted_at: new Date(),
         },
@@ -1476,9 +1521,8 @@ export class QuizService {
           deleted_at: null,
         },
       });
-      return {
-        result: 'Deleted!',
-      };
+      // 削除した回答ログの件数を返す
+      return { count };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

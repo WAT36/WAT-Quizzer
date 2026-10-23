@@ -1,10 +1,6 @@
-import type { CheckQuizAPIRequestDto } from '../..'
+import type { CheckQuizAPIRequestDto, QuizApiResponseDto } from '../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import type {
-  AddAPIResponseDto,
-  ApiResult,
-  ProcessingApiReponse
-} from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { put } from '../../..'
 
 interface CheckOffQuizButtonProps {
@@ -25,7 +21,7 @@ export const checkOffQuizAPI = async ({
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
-        const result: AddAPIResponseDto = data.body as AddAPIResponseDto
+        const result = data.body as QuizApiResponseDto[]
         return {
           message: successMessage(MESSAGES.SUCCESS.MSG00005),
           result

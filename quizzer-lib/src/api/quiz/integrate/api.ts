@@ -1,4 +1,4 @@
-import type { AddQuizApiResponseDto } from '../../../..'
+import type { QuizWithCategoryApiResponseDto } from '..'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../..'
 import { post } from '../..'
@@ -25,7 +25,7 @@ export const integrateQuizAPI = async ({
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
-        const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
+        const result = data.body as QuizWithCategoryApiResponseDto
         return {
           message: successMessage(
             MESSAGES.SUCCESS.MSG00014,

@@ -250,6 +250,18 @@ export const mockAddQuizAPI = async (params: any): Promise<ApiResult> => {
   };
 };
 
+// 更新・操作系APIが返す問題データ（更新後の状態）のモック
+const mockUpdatedQuiz = {
+  id: 1,
+  file_num: 1,
+  quiz_num: 1,
+  format_id: 1,
+  quiz_sentense: 'test',
+  answer: 'test',
+  img_file: null,
+  checked: false
+};
+
 export const mockEditQuizAPI = async (params: any): Promise<ApiResult> => {
   return {
     message: {
@@ -257,16 +269,7 @@ export const mockEditQuizAPI = async (params: any): Promise<ApiResult> => {
       messageColor: 'success.light',
       isDisplay: true
     },
-    result: {
-      id: 1,
-      file_num: 1,
-      quiz_num: 1,
-      format_id: 1,
-      quiz_sentense: 'test',
-      answer: 'test',
-      img_file: null,
-      checked: false
-    }
+    result: mockUpdatedQuiz
   };
 };
 
@@ -635,7 +638,7 @@ export const mockAddCategoryToQuizAPI = async (params: any): Promise<ApiResult> 
 
   return {
     message: successMessage(MESSAGES.SUCCESS.MSG00004),
-    result: { id: 999 }
+    result: [{ ...mockUpdatedQuiz, category_quiz: [{ category: { name: 'test' } }] }]
   };
 };
 
@@ -650,7 +653,7 @@ export const mockDeleteCategoryOfQuizAPI = async (params: any): Promise<ApiResul
 
   return {
     message: successMessage(MESSAGES.SUCCESS.MSG00004),
-    result: { id: 999 }
+    result: [{ ...mockUpdatedQuiz, category_quiz: [{ category: { name: 'test' } }] }]
   };
 };
 
@@ -665,7 +668,7 @@ export const mockCheckOnQuizAPI = async (params: any): Promise<ApiResult> => {
 
   return {
     message: successMessage(MESSAGES.SUCCESS.MSG00005),
-    result: { id: 999 }
+    result: [mockUpdatedQuiz]
   };
 };
 
@@ -680,7 +683,7 @@ export const mockCheckOffQuizAPI = async (params: any): Promise<ApiResult> => {
 
   return {
     message: successMessage(MESSAGES.SUCCESS.MSG00005),
-    result: { id: 999 }
+    result: [mockUpdatedQuiz]
   };
 };
 
@@ -700,7 +703,7 @@ export const mockIntegrateQuizAPI = async (params: any): Promise<ApiResult> => {
       String(integrateToQuizAPIRequestData.fromQuizId),
       String(integrateToQuizAPIRequestData.toQuizId)
     ),
-    result: { id: 999 }
+    result: { ...mockUpdatedQuiz, category_quiz: [{ category: { name: 'test' } }] }
   };
 };
 
@@ -811,7 +814,7 @@ export const mockDeleteAnswerLogOfQuizFileAPI = async (params: any): Promise<Api
 
   return {
     message: successMessage(MESSAGES.SUCCESS.MSG00003, String(deleteLogOfFileRequest.file_id)),
-    result: { result: 'Deleted.' }
+    result: { count: 0 }
   };
 };
 

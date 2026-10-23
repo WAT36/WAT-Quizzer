@@ -1,4 +1,4 @@
-import type { ApiResponse } from '../..'
+import type { QuizApiResponseDto } from '../dto'
 
 export interface EditQuizAPIRequestDto {
   quiz_id: number
@@ -35,13 +35,4 @@ export interface EditQuizAPIRequestReceivedDto {
 }
 
 // 問題編集APIのレスポンス（更新後の問題）
-export interface EditQuizApiResponseDto extends ApiResponse {
-  id: number
-  file_num: number
-  quiz_num: number
-  format_id: number
-  quiz_sentense: string
-  answer: string
-  img_file: string | null
-  checked: boolean | null
-}
+export type EditQuizApiResponseDto = QuizApiResponseDto

@@ -1,8 +1,10 @@
-import type { AddQuizApiResponseDto } from '../../../../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../../..'
 import { patch } from '../../../..'
-import type { DeleteAnswerLogOfFileApiRequestDto } from './dto'
+import type {
+  DeleteAnswerLogOfFileApiRequestDto,
+  DeleteAnswerLogOfFileApiResponseDto
+} from './dto'
 
 interface DeleteAnswerLogOfFileAPIProps {
   deleteLogOfFileRequest: DeleteAnswerLogOfFileApiRequestDto
@@ -18,7 +20,7 @@ export const deleteAnswerLogOfQuizFileAPI = async ({
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200 || data.status === 201) {
-        const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
+        const result = data.body as DeleteAnswerLogOfFileApiResponseDto
         return {
           message: successMessage(
             MESSAGES.SUCCESS.MSG00003,
