@@ -976,7 +976,6 @@ export class QuizService {
   // 問題統合（とりあえず基礎問題のみ）
   async integrate(req: IntegrateToQuizAPIRequestDto) {
     try {
-      // TODO ここがfile_num,quiz_numなので　quiz_idを送る形式に変更したい
       const { fromQuizId, toQuizId } = req;
 
       // 統合前の問題取得
