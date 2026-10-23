@@ -243,6 +243,9 @@ export class QuizService {
             dummy_choice_sentense: true,
             is_corrected: true,
           },
+          orderBy: {
+            id: 'asc' as const,
+          },
         },
         quiz_basis_linkage: {
           select: {
@@ -661,32 +664,34 @@ export class QuizService {
             });
           }
         }
-        // ダミー選択肢更新
-        // TODO もっと効率いい方法ないか..
+        // ダミー選択肢更新（id昇順で取得し、画面の並び順と対応させて更新する）
         if (dummyChoice) {
-          for (let i = 0; i < dummyChoice.length; i++) {
-            // ダミー選択肢のID取得
-            const dummyChoiceId = await prisma.quiz_dummy_choice.findFirst({
-              select: {
-                id: true,
-              },
-              where: {
-                quiz_id: updatedQuiz.id,
-              },
-              orderBy: {
-                id: 'asc',
-              },
-              skip: i,
-              take: 1,
-            });
-            // ダミー選択肢更新
+          const dummyChoiceIds = await prisma.quiz_dummy_choice.findMany({
+            select: {
+              id: true,
+            },
+            where: {
+              quiz_id: updatedQuiz.id,
+            },
+            orderBy: {
+              id: 'asc',
+            },
+          });
+          // 登録済みのダミー選択肢と件数が異なる場合はエラー
+          if (dummyChoiceIds.length !== dummyChoice.length) {
+            throw new HttpException(
+              MESSAGES.ERROR.MSG00019,
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+          for (const [i, { id }] of dummyChoiceIds.entries()) {
             await prisma.quiz_dummy_choice.update({
               data: {
                 dummy_choice_sentense: dummyChoice[i].sentense,
                 is_corrected: dummyChoice[i].isCorrect,
               },
               where: {
-                id: dummyChoiceId.id,
+                id,
               },
             });
           }

@@ -29,7 +29,7 @@ jest.mock('quizzer-lib', () => {
       upsert: jest.fn(),
     },
     quiz_dummy_choice: {
-      findFirst: jest.fn(),
+      findMany: jest.fn(),
       update: jest.fn(),
     },
     category: {
@@ -55,6 +55,7 @@ jest.mock('quizzer-lib', () => {
     getPrismaFromPastDayRange: jest.fn(),
     getTodayStart: jest.fn(),
     xor: jest.fn(),
+    MESSAGES: jest.requireActual('quizzer-lib').MESSAGES,
     SEARCH_LIMITS: {
       MAX_QUIZ_SEARCH_RESULTS: 200,
     },
@@ -467,6 +468,82 @@ describe('QuizService', () => {
     await expect(quizService.edit(req)).rejects.toMatchObject({
       message: 'error test by jest.',
     });
+  });
+
+  // 問題編集 正常系2 ダミー選択肢をid昇順の対応で更新する
+  it('edit - OK2 dummyChoice', async () => {
+    // テストデータ
+    const req = {
+      quiz_id: 22,
+      format_id: 3,
+      file_num: 0,
+      quiz_num: 0,
+      question: '問題文',
+      answer: '答え',
+      category: 'カテゴリ',
+      dummyChoice: [
+        { sentense: 'ダミー選択肢１', isCorrect: false },
+        { sentense: 'ダミー選択肢２', isCorrect: true },
+        { sentense: 'ダミー選択肢３', isCorrect: false },
+      ],
+    };
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.quiz.update as jest.Mock).mockResolvedValueOnce({ id: 22 });
+    (prisma.quiz_dummy_choice.findMany as jest.Mock).mockResolvedValueOnce([
+      { id: 5 },
+      { id: 6 },
+      { id: 7 },
+    ]);
+    (prisma.category.upsert as jest.Mock).mockResolvedValueOnce({ id: 1 });
+    (prisma.quiz_dummy_choice.update as jest.Mock).mockClear();
+    expect(await quizService.edit(req)).toEqual({ result: 'Edited!' });
+    expect(
+      (prisma.quiz_dummy_choice.update as jest.Mock).mock.calls.map(
+        ([arg]) => arg,
+      ),
+    ).toEqual(
+      [5, 6, 7].map((id, i) => ({
+        data: {
+          dummy_choice_sentense: req.dummyChoice[i].sentense,
+          is_corrected: req.dummyChoice[i].isCorrect,
+        },
+        where: { id },
+      })),
+    );
+  });
+
+  // 問題編集 異常系2 ダミー選択肢の件数が登録済みのものと異なる
+  it('edit - NG2 dummyChoice count mismatch', async () => {
+    // テストデータ
+    const req = {
+      quiz_id: 22,
+      format_id: 3,
+      file_num: 0,
+      quiz_num: 0,
+      question: '問題文',
+      answer: '答え',
+      category: 'カテゴリ',
+      dummyChoice: [
+        { sentense: 'ダミー選択肢１', isCorrect: false },
+        { sentense: 'ダミー選択肢２', isCorrect: false },
+        { sentense: 'ダミー選択肢３', isCorrect: false },
+      ],
+    };
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.quiz.update as jest.Mock).mockResolvedValueOnce({ id: 22 });
+    (prisma.quiz_dummy_choice.findMany as jest.Mock).mockResolvedValueOnce([
+      { id: 5 },
+      { id: 6 },
+    ]);
+    (prisma.quiz_dummy_choice.update as jest.Mock).mockClear();
+    await expect(quizService.edit(req)).rejects.toMatchObject({
+      message: 'エラー:ダミー選択肢の数が登録済みのものと一致しません',
+    });
+    expect(prisma.quiz_dummy_choice.update).not.toHaveBeenCalled();
   });
 
   // 問題検索 正常系1

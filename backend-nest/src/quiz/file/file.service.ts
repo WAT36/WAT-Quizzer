@@ -195,6 +195,9 @@ export class QuizFileService {
               select: {
                 dummy_choice_sentense: true,
               },
+              orderBy: {
+                id: 'asc',
+              },
             },
           },
           where: {
