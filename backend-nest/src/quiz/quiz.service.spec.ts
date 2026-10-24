@@ -18,6 +18,10 @@ jest.mock('quizzer-lib', () => {
       create: jest.fn(),
       update: jest.fn(),
       count: jest.fn(),
+      aggregate: jest.fn(),
+    },
+    quiz_file: {
+      findMany: jest.fn(),
     },
     answer_log: {
       create: jest.fn(),
@@ -55,6 +59,7 @@ jest.mock('quizzer-lib', () => {
     getTodayStart: jest.fn(),
     xor: jest.fn(),
     MESSAGES: jest.requireActual('quizzer-lib').MESSAGES,
+    containsAny: jest.requireActual('quizzer-lib').containsAny,
     SEARCH_LIMITS: {
       MAX_QUIZ_SEARCH_RESULTS: 200,
     },
@@ -1006,5 +1011,71 @@ describe('QuizService', () => {
     await expect(quizService.deleteAnswerLogByFile(req)).rejects.toMatchObject({
       message: 'error test by jest.',
     });
+  });
+
+  // 四択問題CSV登録 正常系 ファイルごとに問題番号を振り、答えの数に応じて正解を設定する
+  it('uploadFourChoiceFile - OK', async () => {
+    const file = {
+      buffer: Buffer.from(
+        '1,2,問題文1,答え,D1,D2,D3,解説,カテゴリ\n1,1,問題文2,答え,D1,D2,D3,,\n',
+      ),
+    } as Express.Multer.File;
+    (prisma.quiz_file.findMany as jest.Mock).mockResolvedValueOnce([
+      { file_num: 1 },
+    ]);
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce([]);
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.quiz.aggregate as jest.Mock).mockResolvedValueOnce({
+      _max: { quiz_num: 10 },
+    });
+    (prisma.quiz.create as jest.Mock)
+      .mockClear()
+      .mockResolvedValueOnce({ id: 101 })
+      .mockResolvedValueOnce({ id: 102 });
+    (prisma.category.upsert as jest.Mock).mockResolvedValueOnce({ id: 1 });
+    (prisma.category_quiz.create as jest.Mock).mockClear();
+
+    expect(await quizService.uploadFourChoiceFile(file)).toEqual({
+      result: 'All Registered!!',
+    });
+    const created = (prisma.quiz.create as jest.Mock).mock.calls.map(
+      ([arg]) => arg.data,
+    );
+    expect(created).toEqual([
+      expect.objectContaining({
+        quiz_num: 11,
+        quiz_sentense: '問題文1',
+        quiz_explanation: { create: { explanation: '解説' } },
+        quiz_dummy_choice: {
+          createMany: {
+            data: [
+              { dummy_choice_sentense: 'D1', is_corrected: true },
+              { dummy_choice_sentense: 'D2', is_corrected: false },
+              { dummy_choice_sentense: 'D3', is_corrected: false },
+            ],
+          },
+        },
+      }),
+      expect.objectContaining({ quiz_num: 12, quiz_sentense: '問題文2' }),
+    ]);
+    expect(created[1].quiz_explanation).toBeUndefined();
+    expect(prisma.category_quiz.create).toHaveBeenCalledTimes(1);
+  });
+
+  // 問題CSV登録 異常系 バリデーションエラーは登録せず400で返す
+  it('uploadFile - NG validation', async () => {
+    const file = {
+      buffer: Buffer.from('3,1,問題文,答え,,,\n'),
+    } as Express.Multer.File;
+    (prisma.$transaction as jest.Mock).mockClear();
+    await expect(quizService.uploadFile(file)).rejects.toMatchObject({
+      status: 400,
+      response: {
+        errors: ['1行目: 問題形式は1(基礎)か2(応用)にしてください(3)'],
+      },
+    });
+    expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 });
