@@ -35,7 +35,8 @@ export const PullDown = ({ optionList, label, className, value, onChange, search
   if (searchable) {
     const selectedOption = optionList.find((x) => String(x.value) === String(value)) ?? null;
     return (
-      <FormControl disabled={isDisabled} className={`min-w-[200px] ${className || ''}`}>
+      // MUIのFormControlのmin-width: 0がTailwindのクラスより優先されるため、sxで幅を指定する
+      <FormControl disabled={isDisabled} className={className} sx={{ minWidth: 240 }}>
         <Autocomplete
           className="my-[8px]"
           options={optionList}

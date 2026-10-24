@@ -81,6 +81,9 @@ export const CategoryParentChildSection = ({
     label: name,
   }));
 
+  // 選択解除時はPullDownから-1が渡されるため、未選択（空文字）として扱う
+  const toCategory = (value: number | string) => (value === -1 ? '' : String(value));
+
   const handleAdd = async () => {
     if (fileNum === -1) {
       setMessage({ message: 'エラー:問題ファイルを選択して下さい', messageColor: 'error', isDisplay: true });
@@ -139,15 +142,17 @@ export const CategoryParentChildSection = ({
           <CardContent className="flex items-center gap-2 flex-wrap">
             <PullDown
               label="親カテゴリ"
+              searchable
               optionList={categoryPullDownOptions}
               value={parentCategory}
-              onChange={(e) => setParentCategory(String(e.target.value))}
+              onChange={(e) => setParentCategory(toCategory(e.target.value))}
             />
             <PullDown
               label="子カテゴリ"
+              searchable
               optionList={categoryPullDownOptions}
               value={childCategory}
-              onChange={(e) => setChildCategory(String(e.target.value))}
+              onChange={(e) => setChildCategory(toCategory(e.target.value))}
             />
             <Button label="追加" variant="contained" attr="after-inline" onClick={handleAdd} />
           </CardContent>
