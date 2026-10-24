@@ -45,7 +45,20 @@ try {
       Authorization: `Bearer ${data.accessToken}`
     }
   })
-  console.log(result)
-  console.log('Success!!')
+  console.log('Status:', result.status)
+  console.log(result.ok ? 'Success!!' : 'Error!!')
+  if (!result.ok) {
+    // エラー内容を表示（CSVのバリデーションエラーは行ごとの一覧）
+    const body = await result.text()
+    try {
+      const { message, errors } = JSON.parse(body)
+      console.error(message)
+      for (const e of errors ?? []) {
+        console.error(`  ${e}`)
+      }
+    } catch {
+      console.error(body)
+    }
+  }
   return true
 })()

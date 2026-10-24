@@ -9,7 +9,9 @@ import {
   Query,
   UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { SayingService } from './saying.service';
 import { AddBookDto } from './dto/add-book.dto';
 import { AddSayingDto } from './dto/add-saying.dto';
@@ -77,6 +79,7 @@ export class SayingController {
   }
 
   @Post('/upload')
+  @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'ファイルをアップロードします。' })
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     return await this.sayingService.uploadFile(file);

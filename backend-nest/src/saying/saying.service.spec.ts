@@ -4,14 +4,18 @@ import { prisma, getRandomElementFromArray } from 'quizzer-lib';
 jest.mock('quizzer-lib', () => {
   // prismaモックを作る
   const mockPrisma = {
+    $transaction: jest.fn(),
     selfhelp_book: {
       create: jest.fn(),
       findMany: jest.fn(),
+      findFirst: jest.fn(),
     },
     saying: {
       findMany: jest.fn(),
       groupBy: jest.fn(),
       create: jest.fn(),
+      createMany: jest.fn(),
+      aggregate: jest.fn(),
       update: jest.fn(),
     },
   };
@@ -171,5 +175,58 @@ describe('SayingService', () => {
     await expect(sayingService.editSayingService(req)).rejects.toMatchObject({
       message: 'error test by jest.',
     });
+  });
+
+  // 格言CSV登録 正常系 格言がまだない本には1から番号を振る
+  it('uploadFile - OK', async () => {
+    const file = {
+      buffer: Buffer.from('3\n格言1,解説1\n格言2,解説2\n'),
+    } as Express.Multer.File;
+    (prisma.selfhelp_book.findFirst as jest.Mock).mockResolvedValueOnce({
+      id: 3,
+    });
+    (prisma.saying.findMany as jest.Mock).mockResolvedValueOnce([]);
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.saying.aggregate as jest.Mock).mockResolvedValueOnce({
+      _max: { book_saying_id: null },
+    });
+    (prisma.saying.createMany as jest.Mock).mockClear();
+    expect(await sayingService.uploadFile(file)).toEqual({
+      result: 'All Registered!!',
+    });
+    expect(prisma.saying.createMany).toHaveBeenCalledWith({
+      data: [
+        {
+          book_id: 3,
+          book_saying_id: 1,
+          saying: '格言1',
+          explanation: '解説1',
+        },
+        {
+          book_id: 3,
+          book_saying_id: 2,
+          saying: '格言2',
+          explanation: '解説2',
+        },
+      ],
+    });
+  });
+
+  // 格言CSV登録 異常系 バリデーションエラーは登録せず400で返す
+  it('uploadFile - NG validation', async () => {
+    const file = {
+      buffer: Buffer.from('3\n,解説1\n'),
+    } as Express.Multer.File;
+    (prisma.selfhelp_book.findFirst as jest.Mock).mockResolvedValueOnce({
+      id: 3,
+    });
+    (prisma.$transaction as jest.Mock).mockClear();
+    await expect(sayingService.uploadFile(file)).rejects.toMatchObject({
+      status: 400,
+      response: { errors: ['2行目: 格言が空です'] },
+    });
+    expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 });

@@ -25,8 +25,7 @@ import {
   SEARCH_LIMITS,
 } from 'quizzer-lib';
 import { Prisma } from '@prisma/client';
-import { Readable } from 'stream';
-import { parse, ParseResult } from 'papaparse';
+import { parseCsv } from '../common/csv/parseCsv';
 import {
   CsvQuizRecordBase,
   validateFourChoiceQuizCsv,
@@ -1643,25 +1642,6 @@ export class QuizService {
     });
   }
 
-  parseCsv = async <T>(file: Express.Multer.File): Promise<ParseResult<T>> => {
-    const stream = Readable.from(file.buffer);
-    return new Promise((resolve, reject) => {
-      parse(stream, {
-        header: false,
-        skipEmptyLines: true,
-        transform: (value: string): string => {
-          return value.trim();
-        },
-        complete: (results: ParseResult<T>) => {
-          return resolve(results);
-        },
-        error: (error: Error) => {
-          return reject(error);
-        },
-      });
-    });
-  };
-
   // CSVから読み込んだ問題を登録する（バリデーション済みのデータを渡すこと）
   // 問題数が多くてもトランザクションの時間制限に収まるよう、各テーブルへまとめて登録する
   private async registerCsvQuizzes<T extends CsvQuizRecordBase>(
@@ -1790,7 +1770,7 @@ export class QuizService {
   // アップロードされた問題CSV(基礎・応用)を登録
   async uploadFile(file: Express.Multer.File) {
     try {
-      const csvData = await this.parseCsv<string[]>(file);
+      const csvData = await parseCsv(file);
       const records = await validateQuizCsv(prisma, csvData);
       await this.registerCsvQuizzes(records, (record) => ({
         format_id: record.format_id,
@@ -1814,7 +1794,7 @@ export class QuizService {
   // アップロードされた四択問題CSVを登録
   async uploadFourChoiceFile(file: Express.Multer.File) {
     try {
-      const csvData = await this.parseCsv<string[]>(file);
+      const csvData = await parseCsv(file);
       const records = await validateFourChoiceQuizCsv(prisma, csvData);
       await this.registerCsvQuizzes(
         records,

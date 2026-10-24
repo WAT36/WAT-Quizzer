@@ -85,6 +85,9 @@ pnpm exec ts-node src/englishword.source.register.ts <ファイル名> --source-
 (...の連続)
 ```
 
+- 出典IDは登録済みの本のもの。格言は必須（256文字以内）で、登録済み・ファイル内のどちらとも重複しないこと。解説は空欄可
+- 問題のアップロードと同じく、誤りが 1 件でもあれば 1 件も登録せず、行ごとのエラー一覧を表示して終了する
+
 # tools/avg_line.register.ts
 
 全ファイルの合計行数・ファイル数から平均行数を計算し記録する（API を経由せず `quizzer-lib` の `prisma` クライアントで直接 DB に書き込む）。

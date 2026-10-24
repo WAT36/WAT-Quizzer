@@ -1,6 +1,12 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { ParseResult } from 'papaparse';
-import { containsAny, prisma } from 'quizzer-lib';
+import { prisma } from 'quizzer-lib';
+import {
+  checkParseResult,
+  checkRequiredText,
+  RowErrors,
+  throwIfErrors,
+  toPositiveInt,
+} from '../../common/csv/csvValidation';
 
 // 問題文・答え・ダミー選択肢に使えない文字（画面からの登録と同じ）
 const NG_CHARS = [',', '-'];
@@ -37,40 +43,6 @@ export interface FourChoiceQuizCsvRecord extends CsvQuizRecordBase {
 // バリデーションで使うDB操作（トランザクション外のprismaを渡す想定）
 type CsvValidationDb = Pick<typeof prisma, 'quiz' | 'quiz_file'>;
 
-// 1行分のエラーを集める
-class RowErrors {
-  readonly messages: string[] = [];
-
-  constructor(private readonly lineNumber: number) {}
-
-  add(message: string) {
-    this.messages.push(`${this.lineNumber}行目: ${message}`);
-  }
-}
-
-// 1以上の整数か
-const toPositiveInt = (value: string): number | undefined =>
-  /^[1-9]\d*$/.test(value) ? +value : undefined;
-
-// 必須の文字列項目をチェック
-const checkRequiredText = (
-  errors: RowErrors,
-  label: string,
-  value: string,
-  { maxLength, ngChars }: { maxLength?: number; ngChars?: string[] } = {},
-) => {
-  if (value === '') {
-    errors.add(`${label}が空です`);
-    return;
-  }
-  if (maxLength && value.length > maxLength) {
-    errors.add(`${label}は${maxLength}文字以内にしてください`);
-  }
-  if (ngChars && containsAny(value, ngChars)) {
-    errors.add(`${label}にカンマ(,)、ハイフン(-)は使えません`);
-  }
-};
-
 // ':'区切りのカテゴリを分割する（空要素・重複は除く）
 const parseCategories = (errors: RowErrors, value: string): string[] => {
   const categories = Array.from(
@@ -89,18 +61,6 @@ const parseCategories = (errors: RowErrors, value: string): string[] => {
     }
   }
   return categories;
-};
-
-// CSV全体の読み込みエラー・件数をチェック
-const checkParseResult = (csvData: ParseResult<string[]>): string[] => {
-  const errors = csvData.errors.map(
-    (e) =>
-      `${e.row !== undefined ? `${e.row + 1}行目: ` : ''}CSVの読み込みに失敗しました(${e.message})`,
-  );
-  if (csvData.data.length === 0) {
-    errors.push('登録する問題がありません');
-  }
-  return errors;
 };
 
 // 基礎・応用問題CSVの各行をチェックし、登録用のデータに変換する
@@ -284,25 +244,12 @@ export const checkCsvRecordsWithDb = async (
   return errors;
 };
 
-// エラーがあればまとめて400で返す
-const throwIfErrors = (errors: string[]) => {
-  if (errors.length > 0) {
-    throw new HttpException(
-      {
-        message: `CSVの内容に誤りがあります(${errors.length}件)`,
-        errors,
-      },
-      HttpStatus.BAD_REQUEST,
-    );
-  }
-};
-
 // 基礎・応用問題CSVを検証し、登録用のデータを返す
 export const validateQuizCsv = async (
   db: CsvValidationDb,
   csvData: ParseResult<string[]>,
 ): Promise<QuizCsvRecord[]> => {
-  throwIfErrors(checkParseResult(csvData));
+  throwIfErrors(checkParseResult(csvData, '登録する問題がありません'));
   const { records, errors } = parseQuizCsvRows(csvData.data);
   throwIfErrors([...errors, ...(await checkCsvRecordsWithDb(db, records))]);
   return records;
@@ -313,7 +260,7 @@ export const validateFourChoiceQuizCsv = async (
   db: CsvValidationDb,
   csvData: ParseResult<string[]>,
 ): Promise<FourChoiceQuizCsvRecord[]> => {
-  throwIfErrors(checkParseResult(csvData));
+  throwIfErrors(checkParseResult(csvData, '登録する問題がありません'));
   const { records, errors } = parseFourChoiceQuizCsvRows(csvData.data);
   throwIfErrors([...errors, ...(await checkCsvRecordsWithDb(db, records))]);
   return records;
