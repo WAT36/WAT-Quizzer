@@ -26,7 +26,7 @@ WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com
 - `SamQuizzerApiFunction` — `backend-nest` を動かす Lambda（リポジトリルートの `Dockerfile` からビルドするコンテナイメージ。`/{proxy+}` の全メソッドを受ける。メモリは 512MB）
 - `WordDerivativesFunction` — 下記 `lambda/word-derivatives/` の Lambda
 
-develop ブランチへの push で `.github/workflows/develop.yml` が `sam build` / `sam deploy` を実行する（パラメータは同ワークフローの `--parameter-overrides` を参照）。
+develop ブランチへの push で `.github/workflows/develop.yml` の `deploy-backend` ジョブが `sam build` / `sam deploy` を実行する（バックエンドに関係する変更があるときのみ。パラメータは同ワークフローの `--parameter-overrides` を参照）。CDK の `BackendStack` / `FrontendStack` は `deploy-frontend` ジョブでデプロイする。
 
 ## Lambda (`lambda/`)
 
