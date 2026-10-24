@@ -67,6 +67,21 @@ ESLint 9 を使い、`quizzer-lib` / `backend-nest` / `frontend-next` のそれ�
 
 GitHub Actions では develop への push 時に `develop.yml` から `.github/workflows/lint.yml` が呼ばれ、`pnpm lint` を実行する（`frontend-e2e.yml` と並行して実行）。**lint でエラーがある場合、デプロイ（本番・モック環境とも）は行われない**。
 
+## デプロイ（GitHub Actions）
+
+develop への push で `develop.yml` が dev 環境にデプロイする。最初の `changes` ジョブが「最後に成功した run のコミット」からの変更ファイルを見て、必要なものだけをデプロイする（失敗・キャンセルされた run の変更も次の run で拾われる）。
+
+| 変更されたパス | バックエンド (`backend-test` → `deploy-backend`: SAM) | フロントエンド (`frontend-e2e` → `deploy-frontend`: CDK・S3 / `deploy-mock`) |
+| --- | --- | --- |
+| `backend-nest/`・`Dockerfile`・`infra/template.yaml`・`infra/samconfig.toml`・`infra/lambda/` | ○ | |
+| `frontend-next/`・`infra/bin/`・`infra/lib/`・`infra/cdk.json` など CDK 関連 | | ○ |
+| `quizzer-lib/`・`.github/`・ルートの `package.json` / `pnpm-lock.yaml` / `pnpm-workspace.yaml` / `tsconfig.json` | ○ | ○ |
+
+- lint は常に実行し、エラーがあればどちらもデプロイしない。バックエンドとフロントエンドのデプロイは並列に動く
+- Actions の画面から手動実行（`workflow_dispatch`）すると、変更の有無にかかわらず全てデプロイする
+- 同時に複数の run が走らないよう、前の run が終わるまで次の run は待機する
+- pnpm のセットアップ・依存インストール・quizzer-lib のビルドは共通アクション `.github/actions/setup` にまとめている
+
 ## 脆弱性診断
 
 Claude Code の `/security-review` スキルで、現在のブランチの差分に対して SQL インジェクション・XSS・認証/認可の不備・シークレット露出などの脆弱性診断ができる（対象は差分ベースなので、リポジトリ全体を診断したい場合は別途調査が必要）。

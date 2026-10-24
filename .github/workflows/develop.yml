@@ -3,46 +3,117 @@ name: Deploy to AWS (dev)
 on:
   push:
     branches: ['develop']
+  # Actionsの画面から手動実行した場合は、変更の有無にかかわらず全てデプロイする
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# 前のデプロイが終わるまで次のrunを待たせる（同時に走って古いコミットが後からデプロイされるのを防ぐ）
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  # TODO バック、フロント、ライブラリごとに分けたい build-lib,deploy-frontend,deploy-backendみたいな。フロントバックはneeds:build-libとさせる
-  # フロントのE2Eテスト(frontend-e2e.yml)。失敗した場合はデプロイしない
-  frontend-e2e:
-    name: Frontend E2E
-    uses: ./.github/workflows/frontend-e2e.yml
+  # 最後に成功したrunからの変更ファイルを見て、バックエンド・フロントエンドのどちらをデプロイするか判定する
+  # 直前のpushとの差分ではなく最後の成功runと比べるので、失敗・キャンセルされたrunの変更も次のrunでデプロイされる
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read # 最後に成功したrunを調べるため
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Filter changed paths
+        id: filter
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          deploy_all() {
+            echo "$1 → 全てデプロイする" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "backend=true" >> "$GITHUB_OUTPUT"
+            echo "frontend=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+
+          [ "${{ github.event_name }}" = "workflow_dispatch" ] && deploy_all "手動実行"
+
+          base=$(gh run list --workflow develop.yml --branch develop --status success --limit 1 --json headSha --jq '.[0].headSha')
+          if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
+            deploy_all "比較元の成功runが見つからない"
+          fi
+          files=$(git diff --name-only "$base" HEAD)
+
+          # 両方に影響するもの: 共通ライブラリ・ワークフロー・ルートの依存/設定
+          shared='^(quizzer-lib/|\.github/|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|tsconfig\.json$)'
+          # バックエンド: SAM(template.yaml + Dockerfile)でデプロイされるもの
+          backend='^(backend-nest/|Dockerfile$|infra/template\.yaml$|infra/samconfig\.toml$|infra/lambda/)'
+          # フロントエンド: Next.js と CDK(BackendStack・FrontendStack はDynamoDB等のインフラでフロントのジョブでデプロイ)
+          frontend='^(frontend-next/|infra/(bin|lib)/|infra/cdk\.json$|infra/package(-lock)?\.json$|infra/tsconfig\.json$)'
+
+          has() { printf '%s\n' "$files" | grep -qE "$1|$shared" && echo true || echo false; }
+          echo "backend=$(has "$backend")" >> "$GITHUB_OUTPUT"
+          echo "frontend=$(has "$frontend")" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "比較元: \`$base\`"
+            echo "- backend: $(has "$backend")"
+            echo "- frontend: $(has "$frontend")"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # 3パッケージのESLint(lint.yml)。エラーがある場合はデプロイしない
   lint:
     name: Lint
     uses: ./.github/workflows/lint.yml
 
+  # バックエンドのUT。失敗した場合はバックエンドをデプロイしない
+  backend-test:
+    name: Backend Unit Tests
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup
+
+      - name: Backend Unit test
+        run: pnpm run test
+        working-directory: backend-nest
+
+  # フロントのE2Eテスト(frontend-e2e.yml)。失敗した場合はフロントをデプロイしない
+  frontend-e2e:
+    name: Frontend E2E
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    uses: ./.github/workflows/frontend-e2e.yml
+
   frontend-test:
     name: Frontend Tests (Storybook)
     runs-on: ubuntu-latest
-    # 2026-08-20時点でactionsがタイムアウトするため一旦無効化。落ち着いたら復活させてOK（needs: frontend-testも合わせて戻すこと）
+    # 2026-08-20時点でactionsがタイムアウトするため一旦無効化。落ち着いたら復活させてOK（deploy-frontend・deploy-mockのneedsにも追加すること）
     if: false
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
-      # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: actions/checkout@v4
 
       # AWS認証情報は不要（モックモードビルドのみで完結するテスト）
-      - name: Setup dependencies(all)
-        run: pnpm install --frozen-lockfile
-
-      - name: Setup quizzer-lib
-        run: cd ./quizzer-lib && pnpm run build
-        env:
-          # prisma generate がスキーマ内の env() 参照を解決できればよく、実際の接続はしない
-          DATABASE_URL: postgresql://user:password@localhost:5432/dummy
-          DIRECT_URL: postgresql://user:password@localhost:5432/dummy
+      - name: Setup workspace
+        uses: ./.github/actions/setup
 
       - name: Build Storybook
         run: pnpm run build-storybook
@@ -59,15 +130,17 @@ jobs:
           pnpm run test-storybook
         working-directory: frontend-next
 
-  deploy-production:
-    name: Deploy to Production (develop)
-    needs: [frontend-e2e, lint]
+  # SAMでAPI(backend-nest)をデプロイする。ビルドはDockerfile内で行うためpnpmのセットアップは不要
+  deploy-backend:
+    name: Deploy Backend (develop)
+    needs: [changes, lint, backend-test]
+    if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     environment: develop
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # AWS認証
       - name: Configure AWS credentials
@@ -144,25 +217,37 @@ jobs:
             xargs -I {} aws ecr batch-delete-image --repository-name $REPO_NAME --image-ids imageTag={} || true
           fi
 
-      # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+  # CDKスタックとフロントエンド(S3 + CloudFront)をデプロイする。SAMとは別スタックなのでdeploy-backendと並列に動かせる
+  deploy-frontend:
+    name: Deploy Frontend (develop)
+    needs: [changes, lint, frontend-e2e]
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    environment: develop
 
-      - name: Setup dependencies(all)
-        id: setup-dependencies
-        run: pnpm install --frozen-lockfile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup quizzer-lib
-        id: setup-quizzer-lib
-        run: cd ./quizzer-lib && pnpm run build
+      # AWS認証
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Prepare .env file
+        run: |
+          aws ssm get-parameter --name /github/quizzer/dev --output json | jq -r .Parameter.Value > .env
+          cut -d= -f2 .env  | xargs -I arg echo ::add-mask::arg
+          cat .env >> "$GITHUB_ENV"
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup
 
       - name: Setup dependencies(infra)
-        id: setup-infra-dependencies
         run: cd ./infra && npm ci --production
-
-      # backendをUT（時間かかってactionsがtimeoutする場合削除してOK）
-      - name: Backend Unit test
-        run: cd ./backend-nest && pnpm run test
 
       # frontendをビルド
       - name: Next.js Build and Export(Frontend)
@@ -172,11 +257,9 @@ jobs:
         run: cd ./frontend-next && rm -rf storybook-static && pnpm run build-storybook && mkdir -p out/storybook && cp -r storybook-static/* out/storybook/
 
       - name: Deploy backend stack
-        id: cdk-deploy-backend
         run: cd ./infra && npx cdk deploy BackendStack --require-approval never
 
       - name: Deploy frontend stack
-        id: cdk-deploy-frontend
         run: cd ./infra && npx cdk deploy FrontendStack --require-approval never
 
       - name: Frontend Deploy # S3にデプロイ
@@ -191,13 +274,14 @@ jobs:
 
   deploy-mock:
     name: Deploy to Mock Environment
-    needs: [frontend-e2e, lint]
+    needs: [changes, lint, frontend-e2e]
+    if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     environment: develop
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -206,15 +290,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup dependencies(all)
-        run: pnpm install --frozen-lockfile
-
-      - name: Setup quizzer-lib
-        run: cd ./quizzer-lib && pnpm run build
+      - name: Setup workspace
+        uses: ./.github/actions/setup
 
       - name: Setup dependencies(infra)
         run: cd ./infra && npm ci --production

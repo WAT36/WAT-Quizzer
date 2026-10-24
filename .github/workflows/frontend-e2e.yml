@@ -19,25 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      # pnpmのストアをキャッシュして、2回目以降のinstallを速くする
-      - name: Setup Node.js (pnpm cache)
-        uses: actions/setup-node@v4
-        with:
-          cache: pnpm
-
-      - name: Setup dependencies(all)
-        run: pnpm install --frozen-lockfile
-
-      - name: Setup quizzer-lib
-        run: cd ./quizzer-lib && pnpm run build
-        env:
-          # prisma generate がスキーマ内の env() 参照を解決できればよく、実際の接続はしない
-          DATABASE_URL: postgresql://user:password@localhost:5432/dummy
-          DIRECT_URL: postgresql://user:password@localhost:5432/dummy
+      # pnpm・依存インストール・quizzer-libのビルド
+      - name: Setup workspace
+        uses: ./.github/actions/setup
 
       # Next.jsのビルドキャッシュ。ソースが変わっていない部分の再ビルドを省略できる
       - name: Cache Next.js build

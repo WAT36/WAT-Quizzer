@@ -86,7 +86,7 @@ pnpm run format # Prettier で src/ 配下を整形
   - `e2e:build`(`e2e/support/build.mjs`)は、英単語詳細ページをビルド時に生成するため、ビルド中だけ `/english/word/num` に答えるスタブサーバーをポート3000で立てる。ポート3000を使っているサーバーがあると失敗するので止めてから実行する。また `playwright test` もポート3000で既に動いているサーバーをそのまま使う（`playwright.config.ts` の `reuseExistingServer`）ため、`pnpm run dev` を動かしたままだと、ビルドしたものではなく開発サーバーに対してテストしてしまう
   - 応答データは `e2e/support/data.ts` にまとめている
   - カバレッジは Chrome の V8 カバレッジを monocart-reporter で集計する（設定は `e2e/support/coverage-options.ts`）。計測時だけソースマップを出力して元の TS/TSX に対応づける。`src/` 配下の全ファイル（Storybook 用を除く）が対象で、テストで開かれない画面も 0% として数える
-  - GitHub Actions では develop への push 時に `develop.yml` から `.github/workflows/frontend-e2e.yml` が呼ばれ、カバレッジ付きで実行される。カバレッジの要約はジョブの Summary に表示され、詳細は成果物 `e2e-coverage-report` からダウンロードできる。**E2E が失敗した場合、デプロイ(本番・モック環境とも)は行われない**
+  - GitHub Actions では develop への push 時に `develop.yml` から `.github/workflows/frontend-e2e.yml` が呼ばれ、カバレッジ付きで実行される。カバレッジの要約はジョブの Summary に表示され、詳細は成果物 `e2e-coverage-report` からダウンロードできる。**E2E が失敗した場合、フロントエンドのデプロイ(本番・モック環境とも)は行われない**(フロントエンドに関係する変更が無い push では E2E 自体をスキップする)
   - 運用ルール:
     - 画面や API の呼び出しを変えたときは、関係する E2E テストも同じコミットで直す
     - 成功したり失敗したりする不安定なテストが出たら、放置せずにすぐ原因を調べて直す(リトライで通ったテストも CI の結果に flaky として表示される)

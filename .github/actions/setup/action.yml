@@ -1,0 +1,29 @@
+name: Setup pnpm workspace
+description: pnpmのセットアップ・依存インストール・quizzer-libのビルドをまとめて行う（actions/checkout の後に呼ぶこと）
+
+runs:
+  using: composite
+  steps:
+    # pnpm セットアップ（バージョンはルート package.json の packageManager から読み取る）
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+
+    # pnpmのストアをキャッシュして、2回目以降のinstallを速くする
+    - name: Setup Node.js (pnpm cache)
+      uses: actions/setup-node@v4
+      with:
+        cache: pnpm
+
+    - name: Setup dependencies(all)
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    # prisma generate がスキーマ内の env() 参照を解決できればよく、実際の接続はしない
+    # 既に .env から DATABASE_URL 等が読み込まれている場合はそちらを使う
+    - name: Setup quizzer-lib
+      shell: bash
+      run: |
+        export DATABASE_URL="${DATABASE_URL:-postgresql://user:password@localhost:5432/dummy}"
+        export DIRECT_URL="${DIRECT_URL:-postgresql://user:password@localhost:5432/dummy}"
+        pnpm run build
+      working-directory: quizzer-lib
