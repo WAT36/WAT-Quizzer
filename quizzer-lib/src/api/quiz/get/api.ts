@@ -17,12 +17,12 @@ export const getQuizAPI = async ({
   getQuizMethod
 }: GetQuizAPIProps): Promise<ApiResult> => {
   if (getQuizRequestData.file_num === -1) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   } else if (
     !getQuizMethod &&
     (!getQuizRequestData.quiz_num || getQuizRequestData.quiz_num === -1)
   ) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00002) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00002) }
   }
   if (getQuizRequestData.category === '-1') {
     delete getQuizRequestData.category

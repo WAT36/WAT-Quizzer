@@ -16,6 +16,7 @@ export const searchWordAPI = async ({
 
   if (isEmptyQuery) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:検索語句を入力して下さい',
         messageColor: 'error',

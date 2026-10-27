@@ -26,6 +26,7 @@ export const getTodoCheckStatusAPI = async ({
     !dateRegex.test(getTodoCheckStatusAPIRequest.date)
   ) {
     return {
+      isSuccess: false,
       message: errorMessage('エラー:日付はYYYY-MM-DD形式で入力してください')
     }
   }
@@ -62,6 +63,7 @@ export const saveTodoCheckStatusAPI = async ({
     !dateRegex.test(saveTodoCheckStatusAPIRequest.date)
   ) {
     return {
+      isSuccess: false,
       message: errorMessage('エラー:日付はYYYY-MM-DD形式で入力してください')
     }
   }

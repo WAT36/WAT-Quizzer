@@ -16,7 +16,7 @@ export const searchQuizAPI = async ({
   searchQuizRequestData
 }: SearchQuizButtonProps): Promise<ApiResult> => {
   if (searchQuizRequestData.file_num === -1) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
 
   // API送る用に formmat_idは{ [key: string]: boolean }からformat_idカンマ区切りの羅列にする

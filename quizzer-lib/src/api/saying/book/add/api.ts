@@ -12,7 +12,7 @@ export const addBookAPI = async ({
   addBookAPIRequest
 }: AddBookButtonProps): Promise<ApiResult> => {
   if (!addBookAPIRequest.book_name || addBookAPIRequest.book_name === '') {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00013) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00013) }
   }
 
   const result = await post(

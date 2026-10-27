@@ -14,7 +14,7 @@ export const getImageOfQuizAPI = async ({
   getImageOfQuizRequestData
 }: GetImageOfQuizButtonProps): Promise<ApiResult> => {
   if (!getImageOfQuizRequestData.fileName) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
 
   // TODO ここだけは共通APIを使えてないので共通APIを使うようにしたい
@@ -26,12 +26,13 @@ export const getImageOfQuizAPI = async ({
     }
   )
   if (!result.ok) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00017) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00017) }
   }
   const { base64, mimeType } = await result.json()
   const imageUrl = `data:${mimeType};base64,${base64}`
 
   return {
+    isSuccess: true,
     message: successMessage(MESSAGES.SUCCESS.MSG00021),
     result: {
       imageUrl

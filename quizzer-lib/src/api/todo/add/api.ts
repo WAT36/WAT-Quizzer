@@ -15,7 +15,7 @@ export const addTodoAPI = async ({
   addTodoAPIRequest
 }: AddTodoAPIProps): Promise<ApiResult> => {
   if (!addTodoAPIRequest.todo || addTodoAPIRequest.todo === '') {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00012) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00012) }
   }
 
   const result = await post(

@@ -1,5 +1,5 @@
 import type { SubmitAssociationExampleAPIRequestDto } from '.'
-import type { ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { post } from '../../..'
 
 // TODO 名前なんか違う気するので変えたい
@@ -10,11 +10,12 @@ interface SubmitAssociationExampleButtonProps {
 
 export const submitAssociationExampleAPI = async ({
   submitAssociationExampleData
-}: SubmitAssociationExampleButtonProps) => {
+}: SubmitAssociationExampleButtonProps): Promise<ApiResult> => {
   const { wordName, checkedIdList, isAssociation } =
     submitAssociationExampleData
   if (!wordName) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:単語が入力されていません',
         messageColor: 'error',
@@ -24,6 +25,7 @@ export const submitAssociationExampleAPI = async ({
   }
   if (!checkedIdList) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:チェックしたIDリストがありません',
         messageColor: 'error',
@@ -71,6 +73,7 @@ export const submitAssociationExampleAPI = async ({
     })
   }
   return {
+    isSuccess: true,
     message: {
       message: '処理が終了しました',
       messageColor: 'success.light',

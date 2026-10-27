@@ -21,6 +21,7 @@ export const addTodoDiaryAPI = async ({
     !dateRegex.test(addTodoDiaryAPIRequest.date)
   ) {
     return {
+      isSuccess: false,
       message: errorMessage('エラー:日付はYYYY-MM-DD形式で入力してください')
     }
   }

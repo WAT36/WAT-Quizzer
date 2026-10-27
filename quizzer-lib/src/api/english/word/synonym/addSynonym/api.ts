@@ -1,4 +1,4 @@
-import type { ErrorResponse, ProcessingApiReponse } from '../../../..'
+import type { ErrorResponse, ApiResult, ProcessingApiReponse } from '../../../..'
 import { post } from '../../../..'
 import type { AddSynonymAPIRequestDto } from '.'
 
@@ -6,7 +6,7 @@ interface AddSynonymAPIProps {
   addSynonymData: AddSynonymAPIRequestDto
 }
 
-export const addSynonymAPI = async ({ addSynonymData }: AddSynonymAPIProps) => {
+export const addSynonymAPI = async ({ addSynonymData }: AddSynonymAPIProps): Promise<ApiResult> => {
   const result = await post(
     '/english/word/synonym',
     addSynonymData,
@@ -33,6 +33,7 @@ export const addSynonymAPI = async ({ addSynonymData }: AddSynonymAPIProps) => {
     }
   ).catch(() => {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:外部APIとの連携に失敗しました',
         messageColor: 'error',

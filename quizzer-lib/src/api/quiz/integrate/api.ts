@@ -15,7 +15,7 @@ export const integrateQuizAPI = async ({
     !integrateToQuizAPIRequestData.fromQuizId ||
     !integrateToQuizAPIRequestData.toQuizId
   ) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00010) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00010) }
   }
 
   const result = await post(

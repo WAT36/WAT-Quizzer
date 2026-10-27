@@ -16,7 +16,7 @@ export const deleteQuiz = async ({
     deleteQuizAPIRequestData.file_num === -1 ||
     deleteQuizAPIRequestData.quiz_num === -1
   ) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00009) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00009) }
   }
 
   const result = await del(

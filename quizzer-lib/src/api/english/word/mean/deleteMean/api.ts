@@ -33,6 +33,7 @@ export const deleteEnglishMeanAPI = async ({
     }
   ).catch(() => {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:外部APIとの連携に失敗しました',
         messageColor: 'error',

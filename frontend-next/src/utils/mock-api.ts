@@ -43,10 +43,11 @@ export const mockGetQuizAPI = async (params: any): Promise<ApiResult> => {
 
   return quiz
     ? {
+        isSuccess: true,
         message: successMessage(MESSAGES.SUCCESS.MSG00001),
         result: quiz
       }
-    : { message: errorMessage(MESSAGES.ERROR.MSG00004) };
+    : { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00004) };
 };
 
 export const mockSearchQuizAPI = async (params: any): Promise<ApiResult> => {

@@ -18,7 +18,7 @@ export const restoreTodoAPI = async ({
     !restoreTodoAPIRequestData.id ||
     restoreTodoAPIRequestData.id === -1
   ) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00009) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00009) }
   }
 
   const result = await put(

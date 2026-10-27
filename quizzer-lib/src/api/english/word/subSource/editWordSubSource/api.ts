@@ -1,5 +1,5 @@
 import type { EditWordSubSourceAPIRequestDto } from '.'
-import type { ProcessingApiReponse } from '../../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../../..'
 import { post } from '../../../..'
 
 interface EditEnglishWordSubSourceButtonProps {
@@ -8,12 +8,13 @@ interface EditEnglishWordSubSourceButtonProps {
 
 export const editEnglishWordSubSourceAPI = async ({
   editWordSubSourceData
-}: EditEnglishWordSubSourceButtonProps) => {
+}: EditEnglishWordSubSourceButtonProps): Promise<ApiResult> => {
   if (
     !editWordSubSourceData.subSource ||
     editWordSubSourceData.subSource === ''
   ) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:サブ出典を入力して下さい',
         messageColor: 'error',
@@ -46,6 +47,7 @@ export const editEnglishWordSubSourceAPI = async ({
     }
   ).catch(() => {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:外部APIとの連携に失敗しました',
         messageColor: 'error',

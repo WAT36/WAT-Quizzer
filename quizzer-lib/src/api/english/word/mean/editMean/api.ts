@@ -11,6 +11,7 @@ export const editEnglishWordMeanAPI = async ({
 }: EditEnglishWordMeanButtonProps): Promise<ApiResult> => {
   if (editMeanData.partofspeechId === -1) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:品詞を選択して下さい',
         messageColor: 'error',
@@ -43,6 +44,7 @@ export const editEnglishWordMeanAPI = async ({
     }
   ).catch(() => {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:外部APIとの連携に失敗しました',
         messageColor: 'error',

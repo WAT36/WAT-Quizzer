@@ -16,7 +16,7 @@ export const deleteCategoryOfQuizAPI = async ({
     !deleteCategoryToQuizRequestData.quiz_id ||
     deleteCategoryToQuizRequestData.quiz_id === ''
   ) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
 
   const result = await put(

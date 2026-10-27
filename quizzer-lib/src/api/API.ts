@@ -1,4 +1,4 @@
-import type { ApiResult, ProcessingApiReponse } from './'
+import type { ApiResult, ApiResultBody, ProcessingApiReponse } from './'
 import { authFetch } from './auth/token'
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || ''
@@ -10,11 +10,11 @@ const request = (url: string, init: RequestInit, needAuth?: boolean) =>
 // TODO メソッドごとに分けてるけどまとめられないか？
 export const get = async (
   path: string,
-  func: (data: ProcessingApiReponse) => ApiResult,
+  func: (data: ProcessingApiReponse) => ApiResultBody,
   queryParam?: { [key: string]: string | number | boolean },
   bodyData?: object,
   needAuth?: boolean
-) => {
+): Promise<ApiResult> => {
   const query = queryParam
     ? `?${new URLSearchParams(
         Object.keys(queryParam).reduce(
@@ -80,9 +80,9 @@ export const getApiAndGetValue = async (
 export const post = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => ApiResult,
+  func: (data: ProcessingApiReponse) => ApiResultBody,
   needAuth?: boolean
-) => {
+): Promise<ApiResult> => {
   return await request(
     baseURL + path,
     {
@@ -119,8 +119,8 @@ export const post = async (
 export const put = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => ApiResult
-) => {
+  func: (data: ProcessingApiReponse) => ApiResultBody
+): Promise<ApiResult> => {
   return await authFetch(baseURL + path, {
     method: 'PUT',
     body: JSON.stringify(jsondata),
@@ -153,8 +153,8 @@ export const put = async (
 export const del = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => ApiResult
-) => {
+  func: (data: ProcessingApiReponse) => ApiResultBody
+): Promise<ApiResult> => {
   return await authFetch(baseURL + path, {
     method: 'DELETE',
     body: JSON.stringify(jsondata),
@@ -187,8 +187,8 @@ export const del = async (
 export const patch = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => ApiResult
-) => {
+  func: (data: ProcessingApiReponse) => ApiResultBody
+): Promise<ApiResult> => {
   return await authFetch(baseURL + path, {
     method: 'PATCH',
     body: JSON.stringify(jsondata),
@@ -222,9 +222,9 @@ export const patch = async (
 export const fileUploadAPI = async (
   path: string,
   file: File,
-  func: (data: ProcessingApiReponse) => ApiResult,
+  func: (data: ProcessingApiReponse) => ApiResultBody,
   needAuth?: boolean
-) => {
+): Promise<ApiResult> => {
   const formData = new FormData()
   formData.append('file', file)
   return await request(

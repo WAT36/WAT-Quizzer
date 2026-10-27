@@ -13,6 +13,7 @@ export const submitEnglishBotTestAPI = async ({
 }: SubmitEnglishBotTestButtonProps): Promise<ApiResult> => {
   if (selectedValue === undefined) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:解答が入力されていません',
         messageColor: 'error',
@@ -48,6 +49,7 @@ export const submitEnglishBotTestAPI = async ({
     }
   ).catch(() => {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:外部APIとの連携に失敗しました',
         messageColor: 'error',

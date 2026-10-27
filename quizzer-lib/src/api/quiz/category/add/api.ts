@@ -16,6 +16,7 @@ export const addCategoryToQuizAPI = async ({
     addCategoryToQuizRequestData.quiz_id === ''
   ) {
     return {
+      isSuccess: false,
       message: errorMessage(MESSAGES.ERROR.MSG00001)
     }
   }

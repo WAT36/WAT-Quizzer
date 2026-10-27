@@ -15,6 +15,7 @@ export const downloadQuizCsvAPI = async ({
     downloadQuizCsvApiRequest.file_num === -1
   ) {
     return {
+      isSuccess: false,
       message: errorMessage(MESSAGES.ERROR.MSG00001)
     }
   }
@@ -27,6 +28,9 @@ export const downloadQuizCsvAPI = async ({
       method: 'GET'
     }
   )
+  if (!result.ok) {
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00004) }
+  }
   const blob = await result.blob()
 
   const url = window.URL.createObjectURL(blob)
@@ -36,6 +40,7 @@ export const downloadQuizCsvAPI = async ({
   a.click()
   window.URL.revokeObjectURL(url)
   return {
+    isSuccess: true,
     message: successMessage(MESSAGES.SUCCESS.MSG00022),
     result: {}
   }

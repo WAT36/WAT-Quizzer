@@ -1,5 +1,5 @@
 import type { EditWordSourceAPIRequestDto } from '.'
-import type { ProcessingApiReponse } from '../../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../../..'
 import { post } from '../../../..'
 
 interface EditEnglishWordSourceAPIProps {
@@ -8,9 +8,10 @@ interface EditEnglishWordSourceAPIProps {
 
 export const editEnglishWordSourceAPI = async ({
   editWordSourceData
-}: EditEnglishWordSourceAPIProps) => {
+}: EditEnglishWordSourceAPIProps): Promise<ApiResult> => {
   if (editWordSourceData.newSourceId === -1) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:出典を選択して下さい',
         messageColor: 'error',
@@ -43,6 +44,7 @@ export const editEnglishWordSourceAPI = async ({
     }
   ).catch(() => {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:外部APIとの連携に失敗しました',
         messageColor: 'error',

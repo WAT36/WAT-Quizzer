@@ -16,6 +16,7 @@ export const getSayingAPI = async ({
     (isNaN(getSayingRequestData.id) || getSayingRequestData.id === -1)
   ) {
     return {
+      isSuccess: false,
       message: errorMessage(
         MESSAGES.ERROR.MSG00014,
         String(getSayingRequestData.id)

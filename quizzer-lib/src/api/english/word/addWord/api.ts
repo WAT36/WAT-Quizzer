@@ -12,6 +12,7 @@ export const addWordAPI = async ({
 }: AddWordAPIProps): Promise<ApiResult> => {
   if (addWordData.inputWord.wordName === '') {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:単語が入力されておりません',
         messageColor: 'error',
@@ -26,6 +27,7 @@ export const addWordAPI = async ({
         !addWordData.meanArrayData[i].partOfSpeechName)
     ) {
       return {
+        isSuccess: false,
         message: {
           message: `エラー:${i + 1}行目の品詞を入力してください`,
           messageColor: 'error',
@@ -37,6 +39,7 @@ export const addWordAPI = async ({
       addWordData.meanArrayData[i].meaning === ''
     ) {
       return {
+        isSuccess: false,
         message: {
           message: `エラー:${i + 1}行目の意味を入力してください`,
           messageColor: 'error',
@@ -70,6 +73,7 @@ export const addWordAPI = async ({
     }
   ).catch((err: Error) => {
     return {
+      isSuccess: false,
       message: {
         message: err.message,
         messageColor: 'error',

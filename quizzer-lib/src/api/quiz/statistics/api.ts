@@ -3,7 +3,7 @@ import type {
   GetAnswerLogStatisticsAPIRequestDto
 } from '.'
 import { defaultMessage, errorMessage, MESSAGES } from '../../../..'
-import type { ProcessingApiReponse } from '../..'
+import type { ApiResult, ProcessingApiReponse } from '../..'
 import { get } from '../..'
 
 interface GetAnswerLogStatisticsAPIProps {
@@ -12,7 +12,7 @@ interface GetAnswerLogStatisticsAPIProps {
 
 export const getAnswerLogStatisticsDataAPI = async ({
   getAnswerLogStatisticsData
-}: GetAnswerLogStatisticsAPIProps) => {
+}: GetAnswerLogStatisticsAPIProps): Promise<ApiResult> => {
   const result = await get(
     '/quiz/statistics',
     (data: ProcessingApiReponse) => {

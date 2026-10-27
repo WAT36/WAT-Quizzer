@@ -11,7 +11,7 @@ export const checkOnQuizAPI = async ({
   checkQuizRequestData
 }: CheckOnQuizButtonProps): Promise<ApiResult> => {
   if (!checkQuizRequestData.quiz_id || checkQuizRequestData.quiz_id === '') {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00007) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00007) }
   }
 
   const result = await put(

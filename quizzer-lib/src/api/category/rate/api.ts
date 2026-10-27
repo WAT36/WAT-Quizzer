@@ -14,6 +14,7 @@ export const getAccuracyRateByCategoryAPI = async ({
 }: GetAccuracyProps): Promise<ApiResult> => {
   if (getCategoryRateData.file_num === -1) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:問題ファイルを選択して下さい',
         messageColor: 'error',

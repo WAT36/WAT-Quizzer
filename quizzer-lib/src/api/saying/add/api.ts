@@ -12,9 +12,9 @@ export const addSayingAPI = async ({
   addSayingAPIRequest
 }: AddSayingButtonProps): Promise<ApiResult> => {
   if (!addSayingAPIRequest.book_id || addSayingAPIRequest.book_id === -1) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00011) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00011) }
   } else if (!addSayingAPIRequest.saying || addSayingAPIRequest.saying === '') {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00012) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00012) }
   }
 
   const result = await post(

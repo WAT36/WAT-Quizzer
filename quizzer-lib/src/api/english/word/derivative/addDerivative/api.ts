@@ -1,5 +1,5 @@
 import type { AddDerivativeAPIRequestDto } from '.'
-import type { ErrorResponse, ProcessingApiReponse } from '../../../..'
+import type { ErrorResponse, ApiResult, ProcessingApiReponse } from '../../../..'
 import { post } from '../../../..'
 
 interface AddDerivativeAPIProps {
@@ -8,9 +8,10 @@ interface AddDerivativeAPIProps {
 
 export const addDerivativeAPI = async ({
   addDerivativeData
-}: AddDerivativeAPIProps) => {
+}: AddDerivativeAPIProps): Promise<ApiResult> => {
   if (!addDerivativeData.wordName || addDerivativeData.wordName === '') {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:元単語名が入力されていません',
         messageColor: 'error',
@@ -23,6 +24,7 @@ export const addDerivativeAPI = async ({
     addDerivativeData.derivativeName === ''
   ) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:追加する単語名を入力して下さい',
         messageColor: 'error',
@@ -57,6 +59,7 @@ export const addDerivativeAPI = async ({
     }
   ).catch(() => {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:外部APIとの連携に失敗しました',
         messageColor: 'error',

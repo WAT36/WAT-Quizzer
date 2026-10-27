@@ -3,7 +3,7 @@ import type {
   GetAccuracyRateHistgramAPIRequestDto
 } from '.'
 import { defaultMessage, errorMessage, MESSAGES } from '../../../../..'
-import type { ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { get } from '../../..'
 
 interface GetAccuracyRateHistgramAPIProps {
@@ -12,7 +12,7 @@ interface GetAccuracyRateHistgramAPIProps {
 
 export const getAccuracyRateHistgramDataAPI = async ({
   getAccuracyRateHistgramData
-}: GetAccuracyRateHistgramAPIProps) => {
+}: GetAccuracyRateHistgramAPIProps): Promise<ApiResult> => {
   const result = await get(
     '/quiz/statistics/histgram',
     (data: ProcessingApiReponse) => {

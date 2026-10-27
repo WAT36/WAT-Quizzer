@@ -1,5 +1,5 @@
 import type { DeleteWordSubSourceAPIRequestDto } from '.'
-import type { ProcessingApiReponse } from '../../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../../..'
 import { del } from '../../../..'
 
 interface DeleteWordSubSourceAPIProps {
@@ -8,9 +8,10 @@ interface DeleteWordSubSourceAPIProps {
 
 export const deleteEnglishWordSubSourceAPI = async ({
   deleteWordSubSourceData
-}: DeleteWordSubSourceAPIProps) => {
+}: DeleteWordSubSourceAPIProps): Promise<ApiResult> => {
   if (!deleteWordSubSourceData.id || deleteWordSubSourceData.id === -1) {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:サブ出典を入力して下さい',
         messageColor: 'error',
@@ -43,6 +44,7 @@ export const deleteEnglishWordSubSourceAPI = async ({
     }
   ).catch(() => {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:外部APIとの連携に失敗しました',
         messageColor: 'error',

@@ -1,4 +1,4 @@
-import type { ProcessingApiReponse } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { get } from '../../..'
 import type { SearchExampleAPIRequestDto, SearchExampleAPIResponseDto } from '.'
 
@@ -9,9 +9,10 @@ interface SearchExampleAPIProps {
 
 export const searchExampleAPI = async ({
   searchExampleData
-}: SearchExampleAPIProps) => {
+}: SearchExampleAPIProps): Promise<ApiResult> => {
   if (!searchExampleData.query || searchExampleData.query === '') {
     return {
+      isSuccess: false,
       message: {
         message: 'エラー:検索語句を入力して下さい',
         messageColor: 'error',

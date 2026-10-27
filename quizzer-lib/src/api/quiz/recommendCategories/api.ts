@@ -11,7 +11,7 @@ export const getRecommendedCategoriesAPI = async ({
   file_num
 }: GetRecommendedCategoriesProps): Promise<ApiResult> => {
   if (file_num === -1) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
 
   return await get(

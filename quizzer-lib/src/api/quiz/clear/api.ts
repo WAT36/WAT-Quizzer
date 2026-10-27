@@ -12,14 +12,14 @@ export const clearQuizAPI = async ({
   getQuizResponseData
 }: ClearQuizButtonProps): Promise<ApiResult> => {
   if (getQuizResponseData.file_num === -1) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00001) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   } else if (getQuizResponseData.quiz_num === -1) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00007) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00007) }
   } else if (
     !getQuizResponseData.quiz_sentense ||
     !getQuizResponseData.answer
   ) {
-    return { message: errorMessage(MESSAGES.ERROR.MSG00008) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00008) }
   }
 
   const result = await post(
