@@ -44,9 +44,13 @@ export const get = async (
         body: data
       }))
     )
-    .then(func)
+    .then((data) => ({
+      isSuccess: data.status >= 200 && data.status < 300,
+      ...func(data)
+    }))
     .catch((error) => {
       return {
+        isSuccess: false,
         message: {
           message: String(error.message),
           messageColor: 'error',
@@ -96,9 +100,13 @@ export const post = async (
         body: data
       }))
     )
-    .then(func)
+    .then((data) => ({
+      isSuccess: data.status >= 200 && data.status < 300,
+      ...func(data)
+    }))
     .catch((error) => {
       return {
+        isSuccess: false,
         message: {
           message: String(error.message),
           messageColor: 'error',
@@ -126,9 +134,13 @@ export const put = async (
         body: data
       }))
     )
-    .then(func)
+    .then((data) => ({
+      isSuccess: data.status >= 200 && data.status < 300,
+      ...func(data)
+    }))
     .catch((error) => {
       return {
+        isSuccess: false,
         message: {
           message: String(error.message),
           messageColor: 'error',
@@ -156,9 +168,13 @@ export const del = async (
         body: data
       }))
     )
-    .then(func)
+    .then((data) => ({
+      isSuccess: data.status >= 200 && data.status < 300,
+      ...func(data)
+    }))
     .catch((error) => {
       return {
+        isSuccess: false,
         message: {
           message: String(error.message),
           messageColor: 'error',
@@ -186,9 +202,13 @@ export const patch = async (
         body: data
       }))
     )
-    .then(func)
+    .then((data) => ({
+      isSuccess: data.status >= 200 && data.status < 300,
+      ...func(data)
+    }))
     .catch((error) => {
       return {
+        isSuccess: false,
         message: {
           message: String(error.message),
           messageColor: 'error',
@@ -221,9 +241,13 @@ export const fileUploadAPI = async (
         body: data
       }))
     )
-    .then(func)
+    .then((data) => ({
+      isSuccess: data.status >= 200 && data.status < 300,
+      ...func(data)
+    }))
     .catch((error) => {
       return {
+        isSuccess: false,
         message: {
           message: String(error.message),
           messageColor: 'error',

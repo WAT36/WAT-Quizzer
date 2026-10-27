@@ -164,8 +164,7 @@ export const AddExampleSection = ({ sourceList }: AddExampleSectionProps) => {
             setMessage && setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
             const result = await addExampleAPI({ addExampleData });
             setMessage && setMessage(result.message);
-            // TODO 成功時の条件
-            if (result.message.messageColor === 'success.light') {
+            if (result.isSuccess) {
               setAddExampleData({
                 exampleEn: '',
                 exampleJa: '',

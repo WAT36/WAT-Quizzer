@@ -296,6 +296,7 @@ export const mockAddWordAPI = async (params: any): Promise<ApiResult> => {
 
 export const mockAddExampleAPI = async (params: any): Promise<ApiResult> => {
   return {
+    isSuccess: true,
     message: {
       message: '例文を追加しました',
       messageColor: 'success.light',
