@@ -30,7 +30,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
     const result = await addQuizAPI({ addQuizRequestData });
     setMessage(result.message);
     setAddLog(result.result ? (result.result as AddQuizApiResponseDto).log : '');
-    result.message.messageColor === 'success.light' &&
+    result.isSuccess &&
       setAddQuizRequestData({
         ...initAddQuizRequestData,
         format_id: addQuizRequestData.format_id,

@@ -18,7 +18,7 @@ export interface ErrorResponse extends ApiResponse {
 // このquizzer-libのAPIが返すデータ型（Messageを付加する）
 export interface ApiResult {
   // API処理が成功したか（API.tsの共通処理でHTTPステータスから付与。各APIの変換関数で上書き可）
-  // TODO 全画面をisSuccess判定に移行し、モックにも付与したら必須にする
+  // TODO 各APIの入力チェックで早期returnする箇所やサインインAPIにも付与し、必須にする
   isSuccess?: boolean
   message: Message
   result?: ApiResponse | ApiResponse[] | Response

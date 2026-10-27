@@ -119,9 +119,8 @@ export const SourceStack = ({ sourceList, wordDetail, setMessage, setWordDetail 
                       editWordSourceData
                     });
                     setMessage && setMessage(result.message);
-                    // TODO 成功時の判定法
                     // 更新確認後、単語の意味を再取得させる
-                    if (result.message.messageColor === 'success.light') {
+                    if (result.isSuccess) {
                       const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
                         .result as GetWordDetailAPIResponseDto;
                       setWordDetail && setWordDetail(newWordDetail);
@@ -145,9 +144,8 @@ export const SourceStack = ({ sourceList, wordDetail, setMessage, setWordDetail 
                       }
                     });
                     setMessage && setMessage(result.message);
-                    // TODO 成功時の判定法
                     // 更新確認後、単語の意味を再取得させる
-                    if (result.message.messageColor === 'success.light') {
+                    if (result.isSuccess) {
                       const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
                         .result as GetWordDetailAPIResponseDto;
                       setWordDetail && setWordDetail(newWordDetail);

@@ -106,7 +106,7 @@ export const CategoryParentChildSection = ({
       },
     });
     setMessage(result.message);
-    if (result.message.messageColor === 'success.light') {
+    if (result.isSuccess) {
       void fetchParentChildList(fileNum);
     }
   };
@@ -117,7 +117,7 @@ export const CategoryParentChildSection = ({
       deleteCategoryParentChildData: { id },
     });
     setMessage(result.message);
-    if (result.message.messageColor === 'success.light') {
+    if (result.isSuccess) {
       setParentChildList((prev) => prev.filter((r) => r.id !== id));
     }
   };

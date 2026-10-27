@@ -123,7 +123,7 @@ export const RandomQuizCard = ({ file_num }: RandomQuizCardProps) => {
                           getQuizResponseData: randomQuizData
                         });
                         setMessage(result.message);
-                        if (result.message.messageColor === 'success.light') {
+                        if (result.isSuccess) {
                           setIsAnswered(true);
                         }
                       }}
@@ -140,7 +140,7 @@ export const RandomQuizCard = ({ file_num }: RandomQuizCardProps) => {
                           getQuizResponseData: randomQuizData
                         });
                         setMessage(result.message);
-                        if (result.message.messageColor === 'success.light') {
+                        if (result.isSuccess) {
                           setIsAnswered(true);
                         }
                       }}

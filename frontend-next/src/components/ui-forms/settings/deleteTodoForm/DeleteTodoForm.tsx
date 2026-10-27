@@ -52,7 +52,7 @@ export const DeleteTodoForm = ({}: DeleteTodoFormProps) => {
       setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
       const result = await deleteTodoAPI({ deleteTodoAPIRequestData: { id } });
       setMessage(result.message);
-      if (result.message.messageColor === 'success.light') {
+      if (result.isSuccess) {
         await fetchTodoList(showDeleted);
       }
     },
@@ -65,7 +65,7 @@ export const DeleteTodoForm = ({}: DeleteTodoFormProps) => {
       setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
       const result = await restoreTodoAPI({ restoreTodoAPIRequestData: { id } });
       setMessage(result.message);
-      if (result.message.messageColor === 'success.light') {
+      if (result.isSuccess) {
         await fetchTodoList(showDeleted);
       }
     },

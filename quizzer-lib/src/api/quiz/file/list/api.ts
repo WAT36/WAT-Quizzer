@@ -30,6 +30,7 @@ export const getQuizFileListAPI = async (): Promise<ApiResult> => {
   } else {
     // 既にsession storageに値が入っている場合はそれを利用する
     return {
+      isSuccess: true,
       message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
       result: JSON.parse(savedFileList) as GetQuizFileApiResponseDto[]
     }

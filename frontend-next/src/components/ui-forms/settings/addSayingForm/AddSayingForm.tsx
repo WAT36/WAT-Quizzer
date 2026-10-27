@@ -73,7 +73,7 @@ export const AddSayingForm = ({ booklistoption }: AddSayingFormProps) => {
               });
               const result = await addSayingAPI({ addSayingAPIRequest });
               setMessage(result.message);
-              if (result.message.messageColor === 'success.light') {
+              if (result.isSuccess) {
                 setAddSayingAPIRequest(initAddSayingMockData);
               }
             }}

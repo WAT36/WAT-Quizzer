@@ -60,7 +60,7 @@ export const DisplayTestExampleSection = ({ displayTestData, setDisplayTestData 
                   selectedValue: true
                 });
                 setMessage(result.message);
-                if (result.message.messageColor === 'success.light') {
+                if (result.isSuccess) {
                   setDisplayTestData && setDisplayTestData({});
                   setExpanded(false);
                 }
@@ -79,7 +79,7 @@ export const DisplayTestExampleSection = ({ displayTestData, setDisplayTestData 
                   selectedValue: false
                 });
                 setMessage(result.message);
-                if (result.message.messageColor === 'success.light') {
+                if (result.isSuccess) {
                   setDisplayTestData && setDisplayTestData({});
                   setExpanded(false);
                 }

@@ -27,9 +27,9 @@ export const searchSayingAPI = async ({
         data.status === 404 ||
         (Array.isArray(data.body) && data.body?.length === 0)
       ) {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
+        return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00003) }
       } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+        return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     },
     {

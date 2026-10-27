@@ -105,7 +105,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                         selectedValue: true
                       });
                       setMessage(result.message);
-                      if (result.message.messageColor === 'success.light') {
+                      if (result.isSuccess) {
                         setDisplayTestData && setDisplayTestData({});
                       }
                       setExpanded(false);
@@ -131,7 +131,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                         selectedValue: false
                       });
                       setMessage(result.message);
-                      if (result.message.messageColor === 'success.light') {
+                      if (result.isSuccess) {
                         setDisplayTestData && setDisplayTestData({});
                       }
                       setExpanded(false);
@@ -219,7 +219,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                     selectedValue: isFourchoiceCorrectRef.current
                   });
                   setMessage(result.message);
-                  if (result.message.messageColor === 'success.light') {
+                  if (result.isSuccess) {
                     setDisplayTestData && setDisplayTestData({});
                   }
                   setExpanded(false);
@@ -287,7 +287,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                         selectedValue: true
                       });
                       setMessage(result.message);
-                      if (result.message.messageColor === 'success.light') {
+                      if (result.isSuccess) {
                         setDisplayTestData && setDisplayTestData({});
                       }
                       setExpanded(false);
@@ -313,7 +313,7 @@ export const DisplayTestWordSection = ({ displayTestData, setDisplayTestData }: 
                         selectedValue: false
                       });
                       setMessage(result.message);
-                      if (result.message.messageColor === 'success.light') {
+                      if (result.isSuccess) {
                         setDisplayTestData && setDisplayTestData({});
                       }
                       setExpanded(false);

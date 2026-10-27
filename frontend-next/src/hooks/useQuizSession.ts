@@ -46,8 +46,7 @@ export const useQuizSession = () => {
         ? await clearQuizAPI({ getQuizResponseData: currentQuiz })
         : await failQuizAPI({ getQuizResponseData: currentQuiz });
       setMessage(result.message);
-      // TODO 成功時の判定法（DisplayQuizSectionの既存実装と同様のmessageColorでの判定）
-      if (result.message.messageColor !== 'success.light') {
+      if (!result.isSuccess) {
         return null;
       }
       return () => dispatch({ type: 'ANSWER', isCorrect });

@@ -83,7 +83,7 @@ export const DisplayQuizSection = ({
       : await failQuizAPI({ getQuizResponseData });
     setMessage(result.message);
     // TODO 成功時の判定法
-    if (result.message.messageColor === 'success.light' && setQuizResponseData) {
+    if (result.isSuccess && setQuizResponseData) {
       setQuizResponseData(initGetQuizResponseData);
       setExpanded(false);
       setImageUrl && setImageUrl('');
@@ -230,7 +230,7 @@ export const DisplayQuizSection = ({
                 });
                 setMessage(result.message);
                 // TODO 成功時の判定法
-                result.message.messageColor === 'success.light' &&
+                result.isSuccess &&
                   setQuizResponseData &&
                   setQuizResponseData((prev) => ({
                     ...prev,

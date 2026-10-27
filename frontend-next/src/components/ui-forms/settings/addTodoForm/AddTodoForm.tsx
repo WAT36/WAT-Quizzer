@@ -43,7 +43,7 @@ export const AddTodoForm = ({}: AddTodoFormProps) => {
               });
               const result = await addTodoAPI({ addTodoAPIRequest });
               setMessage(result.message);
-              if (result.message.messageColor === 'success.light') {
+              if (result.isSuccess) {
                 setAddTodoAPIRequest({ todo: '' });
               }
             }}

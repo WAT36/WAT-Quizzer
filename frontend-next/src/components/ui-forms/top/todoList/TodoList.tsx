@@ -133,7 +133,7 @@ export const TodoList = ({}: TodoListProps) => {
         }
       })
         .then((result) => {
-          if (result.message.messageColor === 'success.light') {
+          if (result.isSuccess) {
             // 登録成功時、その日の登録済みフラグを設定
             todoDiaryRegisteredRef.current = true;
           }

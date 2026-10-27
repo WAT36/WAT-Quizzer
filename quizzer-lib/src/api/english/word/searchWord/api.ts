@@ -47,6 +47,7 @@ export const searchWordAPI = async ({
         (Array.isArray(data.body) && data.body?.length === 0)
       ) {
         return {
+          isSuccess: false,
           message: {
             message: 'エラー:条件に合致するデータはありません',
             messageColor: 'error',
@@ -55,6 +56,7 @@ export const searchWordAPI = async ({
         }
       } else {
         return {
+          isSuccess: false,
           message: {
             message: 'エラー:外部APIとの連携に失敗しました',
             messageColor: 'error',

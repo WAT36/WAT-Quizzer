@@ -43,7 +43,7 @@ export const DeleteAnswerLogFileSection = ({ filelistoption, setMessage }: Delet
     });
     const result = await deleteAnswerLogOfQuizFileAPI({ deleteLogOfFileRequest: { file_id: deleteLogOfFileNum } });
     setMessage(result.message);
-    if (result.message.messageColor === 'success.light') {
+    if (result.isSuccess) {
       setDeleteLogOfFileNum(-1);
     }
   };

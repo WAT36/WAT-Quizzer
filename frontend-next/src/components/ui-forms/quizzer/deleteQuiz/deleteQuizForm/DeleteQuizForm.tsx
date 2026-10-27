@@ -112,7 +112,7 @@ export const DeleteQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: DeleteQuiz
             }
           });
           setMessage(result.message);
-          if (result.message.messageColor === 'success.light') {
+          if (result.isSuccess) {
             setQuizRequestData(initGetQuizRequestData);
             setDeleteQuizInfo(initGetQuizResponseData);
           }

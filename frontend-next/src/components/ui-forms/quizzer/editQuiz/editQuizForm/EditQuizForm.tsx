@@ -191,8 +191,7 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
           }
           const result = await editQuizAPI({ editQuizRequestData: { ...editQuizRequestData, category: expandedCategory } });
           setMessage(result.message);
-          // TODO 成功時の判定法
-          if (result.message.messageColor === 'success.light') {
+          if (result.isSuccess) {
             setEditQuizRequestData({
               ...initEditQuizRequestData,
               file_num: editQuizRequestData.file_num,

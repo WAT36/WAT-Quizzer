@@ -49,7 +49,7 @@ export const DeleteFileSection = ({ filelistoption, setMessage }: DeleteFileSect
     });
     const result = await deleteQuizFileAPI({ deleteQuizFileApiRequest: { file_id: deleteFileNum } });
     setMessage(result.message);
-    if (result.message.messageColor === 'success.light') {
+    if (result.isSuccess) {
       setDeleteFileNum(-1);
     }
   };

@@ -28,6 +28,7 @@ export const searchExampleAPI = async ({
 
         if (result.length === 0) {
           return {
+            isSuccess: false,
             message: {
               message: 'エラー:条件に合うデータはありません',
               messageColor: 'error',

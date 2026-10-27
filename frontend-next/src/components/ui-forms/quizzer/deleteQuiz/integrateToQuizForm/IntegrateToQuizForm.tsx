@@ -114,7 +114,7 @@ export const IntegrateToQuizForm = ({ deleteQuizInfo, setDeleteQuizInfo }: Integ
             }
           });
           setMessage(result.message);
-          if (result.message.messageColor === 'success.light') {
+          if (result.isSuccess) {
             setQuizRequestData(initGetQuizRequestData);
             setQuizResponseData(initGetQuizResponseData);
             setDeleteQuizInfo(initGetQuizResponseData);

@@ -58,9 +58,9 @@ export const searchQuizAPI = async ({
           total: body.total
         }
       } else if (data.status === 404 || data.body) {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
+        return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00003) }
       } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+        return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     },
     {

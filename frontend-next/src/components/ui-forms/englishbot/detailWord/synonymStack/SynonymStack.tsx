@@ -113,10 +113,9 @@ export const SynonymStack = ({ wordDetail, setMessage, setWordDetail }: SynonymS
                       addSynonymData
                     });
                     setMessage && setMessage(result.message);
-                    // TODO 成功時の判定法
                     // 更新確認後、単語の意味を再取得させる
                     // TODO この再取得の部分は共通関数化できないかな
-                    if (result.message.messageColor === 'success.light') {
+                    if (result.isSuccess) {
                       const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
                         .result as GetWordDetailAPIResponseDto;
                       setWordDetail && setWordDetail(newWordDetail);

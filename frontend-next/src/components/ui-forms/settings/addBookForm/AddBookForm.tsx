@@ -33,7 +33,7 @@ export const AddBookForm = ({ setBooklistoption }: AddBookFormProps) => {
               });
               const result = await addBookAPI({ addBookAPIRequest: { book_name: bookName } });
               setMessage(result.message);
-              if (result.message.messageColor === 'success.light') {
+              if (result.isSuccess) {
                 // 問題ファイル再取得
                 const result = await listBookAPI();
                 if (result.result && Array.isArray(result.result)) {

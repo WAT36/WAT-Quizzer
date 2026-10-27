@@ -140,7 +140,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
                   }
                 });
                 setMessage(result.message);
-                if (result.message.messageColor === 'success.light') {
+                if (result.isSuccess) {
                   const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
                     .result as GetWordDetailAPIResponseDto;
                   setWordDetail && setWordDetail(newWordDetail);

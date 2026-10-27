@@ -97,8 +97,7 @@ export const InputAddWordForm = ({ sourceList, addWordState, setMessage, setAddW
             });
           const result = await addWordAPI({ addWordData: addWordState });
           setMessage && setMessage(result.message);
-          // TODO 成功時の条件
-          if (result.message.messageColor === 'success.light') {
+          if (result.isSuccess) {
             setAddWordState &&
               setAddWordState({
                 inputWord: {

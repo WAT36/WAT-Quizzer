@@ -26,7 +26,7 @@ export const getRecommendedCategoriesAPI = async ({
       } else if (data.status === 404) {
         return { message: errorMessage(MESSAGES.ERROR.MSG00003) }
       } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+        return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00004) }
       }
     },
     { file_num }

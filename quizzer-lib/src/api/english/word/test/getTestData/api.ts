@@ -29,6 +29,7 @@ export const getEnglishWordTestDataAPI = async ({
         }
       } else if (data.status === 404 || !data.body) {
         return {
+          isSuccess: false,
           message: {
             message: 'エラー:条件に合致するデータはありません',
             messageColor: 'error',
@@ -37,6 +38,7 @@ export const getEnglishWordTestDataAPI = async ({
         }
       } else {
         return {
+          isSuccess: false,
           message: {
             message: 'エラー:外部APIとの連携に失敗しました',
             messageColor: 'error',
