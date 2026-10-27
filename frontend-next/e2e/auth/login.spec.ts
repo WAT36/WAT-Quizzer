@@ -19,7 +19,7 @@ test.describe('認証 / ログイン', () => {
 
   test('ログインに成功するとトップ画面に移る', async ({ page, api }) => {
     api.on('POST', '/auth/signin', { json: { status: 'SUCCESS', accessToken: createDummyAccessToken() } });
-    // トップ画面で読み込む格言・TODO
+    // トップ画面で読み込む格言・todo
     api.on('GET', '/saying', { json: { id: 1, saying: '継続は力なり' } });
     api.on('GET', '/todo', { json: [] });
     api.on('GET', /^\/todo\/check-status\/\d{4}-\d{2}-\d{2}$/, { json: { completedTodoIds: [] } });
