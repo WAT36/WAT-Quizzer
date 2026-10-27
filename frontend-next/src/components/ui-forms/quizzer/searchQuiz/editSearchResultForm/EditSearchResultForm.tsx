@@ -68,7 +68,7 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
             category
           }
         });
-        if (result.message.messageColor === 'error') {
+        if (!result.isSuccess) {
           setMessage({ ...result.message });
           return;
         }
@@ -106,7 +106,7 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
           category: changedCategory
         }
       });
-      if (result.message.messageColor === 'error') {
+      if (!result.isSuccess) {
         setMessage({ ...result.message });
         return;
       }
@@ -133,7 +133,7 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
       const result = await checkOnQuizAPI({
         checkQuizRequestData: { quiz_id: chunks[i].map(String).join(',') }
       });
-      if (result.message.messageColor === 'error') {
+      if (!result.isSuccess) {
         setMessage({ ...result.message });
         return;
       }
@@ -160,7 +160,7 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
       const result = await checkOffQuizAPI({
         checkQuizRequestData: { quiz_id: chunks[i].map(String).join(',') }
       });
-      if (result.message.messageColor === 'error') {
+      if (!result.isSuccess) {
         setMessage({ ...result.message });
         return;
       }
