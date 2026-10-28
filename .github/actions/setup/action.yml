@@ -8,10 +8,12 @@ runs:
     - name: Setup pnpm
       uses: pnpm/action-setup@v4
 
+    # Node.js のバージョンはルートの .nvmrc から読み取る
     # pnpmのストアをキャッシュして、2回目以降のinstallを速くする
     - name: Setup Node.js (pnpm cache)
       uses: actions/setup-node@v4
       with:
+        node-version-file: .nvmrc
         cache: pnpm
 
     - name: Setup dependencies(all)
