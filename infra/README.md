@@ -10,8 +10,7 @@ WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com
   - `BackendStack`（`lib/stack/backend-stack.ts`）— `backend-nest` 用インフラ
   - `FrontendStack`（`lib/stack/frontend-stack.ts`）— `frontend-next` の静的サイト配信用インフラ（S3 バケット等。`BackendStack` の `todoCheckStatusTable` を参照）と、Cognito（ユーザープール・アプリクライアント・ID プール）。アプリクライアントのトークン有効期限は accessToken / idToken 1時間、refreshToken 6時間
   - `UsEast1Stack`（`lib/stack/us-east1-stack.ts`）— us-east-1 リージョン依存のリソース（CloudFront 用証明書と連携）
-  - `MockStack`（`lib/stack/mock-stack.ts`）— モック環境用スタック
-- `mock-infra.ts` — `MockStack` のみをデプロイする、モック/ローカル確認用の簡易エントリーポイント
+  - `MockStack`（`lib/stack/mock-stack.ts`）— モック環境用スタック。単体でデプロイする場合は `npx cdk deploy MockStack`
 
 ## 補助リソース (`lib/service/`)
 
