@@ -94,4 +94,44 @@ test.describe('englishBot / 単語詳細', () => {
     });
     expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
   });
+
+  test('派生語を追加すると、更新後の単語情報を取り直して表示される', async ({ page, api }) => {
+    api.on('POST', '/english/word/derivative', { status: 201, json: {} });
+    // 派生語追加の後に取り直したときは、追加した派生語が含まれている
+    api.on('GET', `/english/word/${wordDetail.id}`, () => ({
+      json:
+        api.requests('POST', '/english/word/derivative').length > 0
+          ? {
+              ...wordDetail,
+              derivative: {
+                derivative_group_id: 1,
+                derivative_group: {
+                  derivative: [
+                    { word_id: wordDetail.id, word: { name: wordDetail.name } },
+                    { word_id: 11, word: { name: 'abandonment' } }
+                  ]
+                }
+              }
+            }
+          : wordDetail
+    }));
+
+    await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
+
+    await page.getByRole('button', { name: '派生語追加' }).click();
+    // 元の単語と同じ名前は入力できない
+    await page.getByLabel('派生語名').fill('abandon');
+    await expect(page.getByText('元の単語は入力できません')).toBeVisible();
+    await expect(page.getByRole('button', { name: '派生語追加' }).last()).toBeDisabled();
+
+    await page.getByLabel('派生語名').fill('abandonment');
+    await page.getByRole('button', { name: '派生語追加' }).last().click();
+
+    await expect(page.getByText('abandonment')).toBeVisible();
+    expect(api.requests('POST', '/english/word/derivative')[0].body).toEqual({
+      wordName: wordDetail.name,
+      derivativeName: 'abandonment'
+    });
+    expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
+  });
 });
