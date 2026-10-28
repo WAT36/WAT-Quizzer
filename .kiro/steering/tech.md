@@ -40,7 +40,7 @@
 - **AWS CDK** v2（`BackendStack`、`FrontendStack`、`MockStack`）
 - SAM も併用（`template.yaml` / `samconfig.toml`）
 - **CI/CD**: GitHub Actions（`develop` ブランチへの push をトリガー）
-- pnpm workspace には含まれない独立プロジェクト（npm で管理）
+- pnpm workspace で管理（CDK コマンドは `infra/` で `pnpm exec cdk ...`）
 
 ## コードスタイル
 

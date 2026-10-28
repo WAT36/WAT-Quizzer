@@ -1,10 +1,10 @@
 # pnpm ワークスペース定義（npm の package.json "workspaces" に相当）
-# infra は独立した CDK プロジェクトのため対象外（従来通り npm で管理）
 packages:
   - backend-nest
   - frontend-next
   - quizzer-lib
   - batch
+  - infra
 
 # 依存パッケージのインストールスクリプト（postinstall 等）の実行可否
 # pnpm は既定で全てブロックするため、必要なものだけ true にする

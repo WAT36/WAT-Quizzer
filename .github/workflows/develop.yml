@@ -58,7 +58,7 @@ jobs:
           # バックエンド: SAM(template.yaml + Dockerfile)でデプロイされるもの
           backend='^(backend-nest/|Dockerfile$|infra/template\.yaml$|infra/samconfig\.toml$|infra/lambda/)'
           # フロントエンド: Next.js と CDK(BackendStack・FrontendStack はDynamoDB等のインフラでフロントのジョブでデプロイ)
-          frontend='^(frontend-next/|infra/(bin|lib)/|infra/cdk\.json$|infra/package(-lock)?\.json$|infra/tsconfig\.json$)'
+          frontend='^(frontend-next/|infra/(bin|lib)/|infra/cdk\.json$|infra/package\.json$|infra/tsconfig\.json$)'
 
           has() { printf '%s\n' "$files" | grep -qE "$1|$shared" && echo true || echo false; }
           echo "backend=$(has "$backend")" >> "$GITHUB_OUTPUT"
@@ -246,9 +246,6 @@ jobs:
       - name: Setup workspace
         uses: ./.github/actions/setup
 
-      - name: Setup dependencies(infra)
-        run: cd ./infra && npm ci --production
-
       # frontendをビルド
       - name: Next.js Build and Export(Frontend)
         run: cd ./frontend-next && pnpm run export
@@ -257,10 +254,10 @@ jobs:
         run: cd ./frontend-next && rm -rf storybook-static && pnpm run build-storybook && mkdir -p out/storybook && cp -r storybook-static/* out/storybook/
 
       - name: Deploy backend stack
-        run: cd ./infra && npx cdk deploy BackendStack --require-approval never
+        run: cd ./infra && pnpm exec cdk deploy BackendStack --require-approval never
 
       - name: Deploy frontend stack
-        run: cd ./infra && npx cdk deploy FrontendStack --require-approval never
+        run: cd ./infra && pnpm exec cdk deploy FrontendStack --require-approval never
 
       - name: Frontend Deploy # S3にデプロイ
         run: cd ./frontend-next && aws s3 sync --region ap-northeast-1 ./out s3://dev-quizzer-front-bucket --delete
@@ -292,9 +289,6 @@ jobs:
 
       - name: Setup workspace
         uses: ./.github/actions/setup
-
-      - name: Setup dependencies(infra)
-        run: cd ./infra && npm ci --production
 
       # モック環境用フロントエンドビルド
       - name: Next.js Build and Export(Frontend for Mock)

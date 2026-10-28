@@ -8,7 +8,8 @@ module.exports = {
     'frontend-next/package.json',
     'backend-nest/package.json',
     'quizzer-lib/package.json',
-    'batch/package.json'
+    'batch/package.json',
+    'infra/package.json'
   ],
   versionGroups: [
     {

@@ -10,7 +10,7 @@
 | [`frontend-next/`](frontend-next/README.md) | Next.js 製フロントエンド（静的エクスポート） |
 | [`batch/`](batch/README.md) | 単発実行するバッチ/CLIスクリプト集 |
 | `quizzer-lib/` | backend-nest / batch / frontend-next 共有パッケージ（Prisma スキーマ・共通型・API クライアント・ユーティリティ） |
-| [`infra/`](infra/README.md) | AWS CDK によるインフラ定義（pnpm workspace には含まれない独立プロジェクト。npm で管理） |
+| [`infra/`](infra/README.md) | AWS CDK によるインフラ定義 |
 | `container/` | ローカル用 MySQL コンテナ定義 |
 | `tools/` | リポジトリ全体向けの補助スクリプト（`update_avg_lines.sh`: 全ファイルの平均行数を集計して DB に記録） |
 

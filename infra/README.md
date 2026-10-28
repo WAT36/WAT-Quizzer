@@ -1,6 +1,6 @@
 # infra
 
-WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com/cdk/)（TypeScript）プロジェクト。pnpm workspace には含まれず、独立した CDK アプリとして npm で管理する（`infra/` で `npm install`）。
+WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com/cdk/)（TypeScript）プロジェクト。pnpm workspace の一員として管理する（依存はリポジトリルートの `pnpm install` で一括インストール。CDK コマンドは `infra/` で `pnpm exec cdk ...`）。
 
 ## エントリーポイント (`bin/`)
 
