@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "22.13.14",
+    "@types/node": "24.19.2",
     "dotenv": "^16.4.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
