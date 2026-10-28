@@ -134,4 +134,43 @@ test.describe('englishBot / 単語詳細', () => {
     });
     expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
   });
+
+  test('語源を紐付けると、更新後の単語情報を取り直して表示される', async ({ page, api }) => {
+    api.on('POST', '/english/word/etymology/link', { status: 201, json: {} });
+    // 語源紐付けの後に取り直したときは、紐付けた語源が含まれている
+    api.on('GET', `/english/word/${wordDetail.id}`, () => ({
+      json:
+        api.requests('POST', '/english/word/etymology/link').length > 0
+          ? { ...wordDetail, word_etymology: [{ etymology: { id: 1, name: 'ラテン語 bandon' } }] }
+          : wordDetail
+    }));
+
+    await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
+
+    await page.getByRole('button', { name: '語源紐付け' }).click();
+    await page.getByLabel('語源名').fill('ラテン語 bandon');
+    await page.getByRole('button', { name: '語源紐付け' }).last().click();
+
+    await expect(page.getByText('ラテン語 bandon')).toBeVisible();
+    expect(api.requests('POST', '/english/word/etymology/link')[0].body).toEqual({
+      etymologyName: 'ラテン語 bandon',
+      wordId: wordDetail.id
+    });
+    expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
+  });
+
+  test('語源を新規登録すると、登録APIが呼ばれる', async ({ page, api }) => {
+    api.on('POST', '/english/word/etymology', { status: 201, json: {} });
+
+    await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
+
+    await page.getByRole('button', { name: '語源追加' }).click();
+    await page.getByLabel('語源名').fill('ラテン語 bandon');
+    await page.getByRole('button', { name: '語源追加' }).last().click();
+
+    await expect(page.getByLabel('語源名')).toBeHidden();
+    expect(api.requests('POST', '/english/word/etymology')[0].body).toEqual({ etymologyName: 'ラテン語 bandon' });
+    // 語源の新規登録だけでは単語への紐付けは行わないため、単語情報は取り直さない
+    expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(1);
+  });
 });

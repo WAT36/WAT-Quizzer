@@ -1,18 +1,11 @@
-import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
-import { Modal } from '@/components/ui-elements/modal/Modal';
-import { Box, CircularProgress, IconButton, Stack, TextField, Typography } from '@mui/material';
-import { style } from '../Stack.style';
+import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import type {
-  Message,
-  AddEtymologyAPIRequestDto,
-  GetWordDetailAPIResponseDto,
-  LinkWordEtymologyAPIRequestDto
-} from 'quizzer-lib';
-import { addEtymologyAPI, getWordDetailAPI, linkWordEtymologyAPI } from '@/utils/api-wrapper';
+import type { Message, GetWordDetailAPIResponseDto } from 'quizzer-lib';
+import { AddEtymologyModal } from '../addEtymologyModal/AddEtymologyModal';
+import { LinkEtymologyModal } from '../linkEtymologyModal/LinkEtymologyModal';
 
 interface EtymologyStackProps {
   wordDetail: GetWordDetailAPIResponseDto;
@@ -23,34 +16,12 @@ interface EtymologyStackProps {
 export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: EtymologyStackProps) => {
   const [etymologyModalOpen, setEtymologyModalOpen] = useState<boolean>(false);
   const [addEtymologyModalOpen, setAddEtymologyModalOpen] = useState<boolean>(false);
-  const [linkWordEtymologyData, setLinkWordEtymologyData] = useState<LinkWordEtymologyAPIRequestDto>({
-    etymologyName: '',
-    wordId: -1
-  });
-  const [addEtymologyData, setAddEtymologyData] = useState<AddEtymologyAPIRequestDto>({
-    etymologyName: ''
-  });
-
-  const handleAddEtymologyModalOpen = () => {
-    setAddEtymologyData({
-      etymologyName: ''
-    });
-    setAddEtymologyModalOpen(true);
-  };
-
-  const handleEtymologyModalOpen = () => {
-    setLinkWordEtymologyData({
-      ...linkWordEtymologyData,
-      wordId: wordDetail.id
-    });
-    setEtymologyModalOpen(true);
-  };
 
   return (
     <Card variant="outlined" attr={['silver-card']}>
       <Typography align="left" variant="h4" component="p">
         {'語源'}
-        <IconButton aria-label="語源追加" onClick={(e) => handleAddEtymologyModalOpen()}>
+        <IconButton aria-label="語源追加" onClick={() => setAddEtymologyModalOpen(true)}>
           <AddCircleOutlineIcon />
         </IconButton>
       </Typography>
@@ -77,93 +48,21 @@ export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: Etymol
               );
             })}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton aria-label="語源追加" onClick={(e) => handleEtymologyModalOpen()}>
+              <IconButton aria-label="語源紐付け" onClick={() => setEtymologyModalOpen(true)}>
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>
-            {/* TODO モーダル類は別コンポーネントに切り分けたい */}
-            <Modal isOpen={etymologyModalOpen} setIsOpen={setEtymologyModalOpen}>
-              <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h4" component="h4">
-                  {'語源紐付け'}
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  語源名：
-                  <TextField
-                    variant="outlined"
-                    defaultValue={linkWordEtymologyData.etymologyName}
-                    onChange={(e) => {
-                      setLinkWordEtymologyData({
-                        ...linkWordEtymologyData,
-                        etymologyName: e.target.value
-                      });
-                    }}
-                  />
-                </Typography>
-                <Button
-                  label={'語源紐付け'}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  onClick={async (e) => {
-                    setEtymologyModalOpen(false);
-                    const result = await linkWordEtymologyAPI({
-                      linkWordEtymologyData
-                    });
-                    setMessage && setMessage(result.message);
-                    // 更新確認後、単語の意味を再取得させる
-                    // TODO この再取得の部分は共通関数化できないかな
-                    if (result.isSuccess) {
-                      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                        .result as GetWordDetailAPIResponseDto;
-                      setWordDetail && setWordDetail(newWordDetail);
-                    }
-                    setLinkWordEtymologyData({
-                      etymologyName: '',
-                      wordId: -1
-                    });
-                  }}
-                />
-              </Box>
-            </Modal>
+            <LinkEtymologyModal
+              isOpen={etymologyModalOpen}
+              setIsOpen={setEtymologyModalOpen}
+              wordDetail={wordDetail}
+              setMessage={setMessage}
+              setWordDetail={setWordDetail}
+            />
           </Stack>
         )}
       </Box>
-      <Modal isOpen={addEtymologyModalOpen} setIsOpen={setAddEtymologyModalOpen}>
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h4" component="h4">
-            {'語源追加'}
-          </Typography>
-          <Typography sx={{ mt: 2 }}>
-            語源名：
-            <TextField
-              variant="outlined"
-              defaultValue={linkWordEtymologyData.etymologyName}
-              onChange={(e) => {
-                setAddEtymologyData({
-                  etymologyName: e.target.value
-                });
-              }}
-            />
-          </Typography>
-          <Button
-            label={'語源追加'}
-            attr={'button-array'}
-            variant="contained"
-            color="primary"
-            onClick={async (e) => {
-              setAddEtymologyModalOpen(false);
-              const result = await addEtymologyAPI({
-                addEtymologyData
-              });
-              setMessage && setMessage(result.message);
-              setAddEtymologyData({
-                etymologyName: ''
-              });
-            }}
-          />
-        </Box>
-      </Modal>
+      <AddEtymologyModal isOpen={addEtymologyModalOpen} setIsOpen={setAddEtymologyModalOpen} setMessage={setMessage} />
     </Card>
   );
 };
