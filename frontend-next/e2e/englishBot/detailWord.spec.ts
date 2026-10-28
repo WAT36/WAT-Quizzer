@@ -59,4 +59,39 @@ test.describe('englishBot / 単語詳細', () => {
     expect(api.requests('POST', '/english/word/check/toggle')[0].body).toEqual({ wordId: wordDetail.id });
     expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
   });
+
+  test('対義語を追加すると、更新後の単語情報を取り直して表示される', async ({ page, api }) => {
+    api.on('POST', '/english/word/antonym', { status: 201, json: {} });
+    // 対義語追加の後に取り直したときは、追加した対義語が含まれている
+    api.on('GET', `/english/word/${wordDetail.id}`, () => ({
+      json:
+        api.requests('POST', '/english/word/antonym').length > 0
+          ? {
+              ...wordDetail,
+              antonym_original: [
+                ...wordDetail.antonym_original,
+                { word_id: 7, antonym_word_id: 10, antonym_word: { name: 'retain' } }
+              ]
+            }
+          : wordDetail
+    }));
+
+    await expect(page.getByText('keep')).toBeVisible();
+
+    await page.getByRole('button', { name: '反意語追加' }).click();
+    // 元の単語と同じ名前は入力できない
+    await page.getByLabel('対義語名').fill('abandon');
+    await expect(page.getByText('元の単語は入力できません')).toBeVisible();
+    await expect(page.getByRole('button', { name: '対義語追加' })).toBeDisabled();
+
+    await page.getByLabel('対義語名').fill('retain');
+    await page.getByRole('button', { name: '対義語追加' }).click();
+
+    await expect(page.getByText('retain')).toBeVisible();
+    expect(api.requests('POST', '/english/word/antonym')[0].body).toEqual({
+      wordId: wordDetail.id,
+      antonymWordName: 'retain'
+    });
+    expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
+  });
 });
