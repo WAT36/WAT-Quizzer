@@ -1,7 +1,5 @@
 import {
   IconButton,
-  MenuItem,
-  Select,
   Stack,
   Table,
   TableBody,
@@ -14,7 +12,8 @@ import {
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { AddWordAPIRequestDto, PullDownOptionDto } from 'quizzer-lib';
-import { pullDownMenuProps } from '@/constants/pullDown';
+import { PULLDOWN_NONE_VALUE, PULLDOWN_OTHER_VALUE } from '@/constants/pullDown';
+import { PullDownWithOther } from '@/components/ui-parts/pullDownWithOther/PullDownWithOther';
 // TODO @mui/material はなくす
 
 interface AddMeanFormProps {
@@ -24,72 +23,20 @@ interface AddMeanFormProps {
 }
 
 export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanFormProps) => {
-  // 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
-  // TODO こういう系もlibに回すべきか
-  const displayPosInput = (i: number) => {
-    const posInput =
-      addWordState.meanArrayData[i] && addWordState.meanArrayData[i].partOfSpeechId === -2 ? (
-        <>
-          <TextField
-            id={`new-pos-name-${i}`}
-            label="品詞"
-            variant="outlined"
-            key={i}
-            sx={{ width: 1 }}
-            onChange={(e) => {
-              inputPos(e.target.value, i);
-            }}
-          />
-        </>
-      ) : (
-        <></>
-      );
-
-    return (
-      <>
-        <Select
-          inputProps={{ 'aria-label': '品詞' }}
-          id={`pos-select-${i}`}
-          defaultValue={-1}
-          label="partOfSpeech"
-          key={i}
-          sx={{ width: 1 }}
-          onChange={(e) => {
-            changePosSelect(String(e.target.value), i);
-          }}
-          MenuProps={pullDownMenuProps}
-        >
-          <MenuItem value={-1} key={-1}>
-            選択なし
-          </MenuItem>
-          {posList.map((x) => (
-            <MenuItem value={x.value} key={x.value}>
-              {x.label}
-            </MenuItem>
-          ))}
-          <MenuItem value={-2} key={-2}>
-            その他
-          </MenuItem>
-        </Select>
-        {posInput}
-      </>
-    );
-  };
-
   // 品詞プルダウン変更時の入力の更新
-  const changePosSelect = (value: string, i: number) => {
+  const changePosSelect = (value: number, i: number) => {
     const copyMeanRowList = [...addWordState.meanArrayData];
     if (i >= copyMeanRowList.length) {
       while (i >= copyMeanRowList.length) {
         copyMeanRowList.push({
-          partOfSpeechId: -1,
+          partOfSpeechId: PULLDOWN_NONE_VALUE,
           meaning: ''
         });
       }
     }
     copyMeanRowList[i] = {
-      partOfSpeechId: Number(value),
-      partOfSpeechName: Number(value) === -2 ? copyMeanRowList[i].partOfSpeechName : undefined,
+      partOfSpeechId: value,
+      partOfSpeechName: value === PULLDOWN_OTHER_VALUE ? copyMeanRowList[i].partOfSpeechName : undefined,
       meaning: copyMeanRowList[i].meaning
     };
     setAddWordState &&
@@ -120,7 +67,7 @@ export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanF
     if (i >= copyMeanRowList.length) {
       while (i >= copyMeanRowList.length) {
         copyMeanRowList.push({
-          partOfSpeechId: -1,
+          partOfSpeechId: PULLDOWN_NONE_VALUE,
           meaning: ''
         });
       }
@@ -141,7 +88,7 @@ export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanF
   const addTableRow = () => {
     const copyMeanRowList = [...addWordState.meanArrayData];
     copyMeanRowList.push({
-      partOfSpeechId: -1,
+      partOfSpeechId: PULLDOWN_NONE_VALUE,
       partOfSpeechName: undefined,
       meaning: ''
     });
@@ -178,7 +125,15 @@ export const AddMeanForm = ({ posList, addWordState, setAddWordState }: AddMeanF
               return (
                 <TableRow key={index}>
                   <TableCell>
-                    {displayPosInput(index)}
+                    <PullDownWithOther
+                      label="品詞"
+                      id={`pos-select-${index}`}
+                      optionList={posList}
+                      value={meanDto.partOfSpeechId}
+                      otherValue={meanDto.partOfSpeechName}
+                      onChange={(value) => changePosSelect(value, index)}
+                      onOtherChange={(value) => inputPos(value, index)}
+                    />
                   </TableCell>
                   <TableCell>
                     <TextField

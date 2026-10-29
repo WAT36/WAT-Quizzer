@@ -54,6 +54,36 @@ test.describe('englishBot / 単語追加', () => {
     });
   });
 
+  test('「その他」から別の選択肢に戻すと、入力していた新しい名前は送らない', async ({ page, api }) => {
+    await page.getByLabel('New Word').fill('resilient');
+    await page.getByRole('combobox', { name: '出典' }).click();
+    await page.getByRole('option', { name: 'その他' }).click();
+    await page.getByRole('textbox', { name: '出典', exact: true }).fill('洋書');
+    await page.getByRole('combobox', { name: '出典' }).click();
+    await page.getByRole('option', { name: 'TOEIC' }).click();
+    await expect(page.getByRole('textbox', { name: '出典', exact: true })).toBeHidden();
+
+    await page.getByRole('button', { name: '行追加' }).click();
+    await page.getByRole('combobox', { name: '品詞' }).click();
+    await page.getByRole('option', { name: 'その他' }).click();
+    await page.getByRole('textbox', { name: '品詞' }).fill('名詞(不可算)');
+    await page.getByRole('combobox', { name: '品詞' }).click();
+    await page.getByRole('option', { name: '動詞' }).click();
+    await expect(page.getByRole('textbox', { name: '品詞' })).toBeHidden();
+    await page.getByLabel('意味').fill('回復力のある');
+
+    await page.getByRole('button', { name: '登録' }).click();
+
+    await expect(page.getByText('単語「resilient」を登録しました')).toBeVisible();
+    const body = api.requests('POST', '/english/word')[0].body;
+    expect(body).toMatchObject({
+      inputWord: { wordName: 'resilient', sourceId: 1 },
+      meanArrayData: [{ partOfSpeechId: 1, meaning: '回復力のある' }]
+    });
+    expect(body.inputWord).not.toHaveProperty('newSourceName');
+    expect(body.meanArrayData[0]).not.toHaveProperty('partOfSpeechName');
+  });
+
   test('意味の品詞を選んでいない場合はエラーになり、登録しない', async ({ page, api }) => {
     await page.getByLabel('New Word').fill('resilient');
     await page.getByRole('button', { name: '行追加' }).click();

@@ -8,3 +8,7 @@ export const pullDownMenuProps = {
     }
   }
 };
+
+// プルダウンの「選択なし」「その他」の値
+export const PULLDOWN_NONE_VALUE = -1;
+export const PULLDOWN_OTHER_VALUE = -2;
