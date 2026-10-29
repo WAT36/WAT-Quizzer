@@ -245,4 +245,66 @@ test.describe('englishBot / 単語詳細', () => {
     // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
     await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
   });
+
+  test('サブ出典を更新すると、更新後の単語情報を取り直して表示される', async ({ page, api }) => {
+    api.on('POST', '/english/word/subsource', { status: 201, json: {} });
+    // サブ出典更新の後に取り直したときは、更新後のサブ出典になっている
+    api.on('GET', `/english/word/${wordDetail.id}`, () => ({
+      json:
+        api.requests('POST', '/english/word/subsource').length > 0
+          ? { ...wordDetail, word_subsource: [{ ...wordDetail.word_subsource[0], subsource: '公式問題集 Part6' }] }
+          : wordDetail
+    }));
+
+    await expect(page.getByText('公式問題集 Part5')).toBeVisible();
+
+    // サブ出典の編集ボタンは、意味(2件)・出典(1件)の編集ボタンの後に並ぶ
+    await page.getByRole('button', { name: '編集' }).nth(3).click();
+    await expect(page.getByLabel('サブ出典', { exact: true })).toHaveValue('公式問題集 Part5');
+    await page.getByLabel('サブ出典', { exact: true }).fill('公式問題集 Part6');
+    await page.getByRole('button', { name: 'サブ出典更新' }).click();
+
+    await expect(page.getByText('公式問題集 Part6')).toBeVisible();
+    expect(api.requests('POST', '/english/word/subsource')[0].body).toEqual({
+      id: 1,
+      wordId: wordDetail.id,
+      subSource: '公式問題集 Part6'
+    });
+    expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
+  });
+
+  test('サブ出典を追加すると、id=-1で登録APIが呼ばれる', async ({ page, api }) => {
+    api.on('POST', '/english/word/subsource', { status: 201, json: {} });
+
+    await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'サブ出典追加' }).click();
+    // 新規追加では削除できない
+    await expect(page.getByRole('button', { name: 'サブ出典削除' })).toBeDisabled();
+    await page.getByLabel('サブ出典', { exact: true }).fill('金のフレーズ');
+    await page.getByRole('button', { name: 'サブ出典追加' }).last().click();
+
+    await expect(page.getByLabel('サブ出典', { exact: true })).toBeHidden();
+    expect(api.requests('POST', '/english/word/subsource')[0].body).toEqual({
+      id: -1,
+      wordId: wordDetail.id,
+      subSource: '金のフレーズ'
+    });
+    // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
+    await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
+  });
+
+  test('サブ出典を削除すると、削除APIが呼ばれて単語情報を取り直す', async ({ page, api }) => {
+    api.on('DELETE', '/english/word/subsource', { json: {} });
+
+    await expect(page.getByText('公式問題集 Part5')).toBeVisible();
+
+    await page.getByRole('button', { name: '編集' }).nth(3).click();
+    await page.getByRole('button', { name: 'サブ出典削除' }).click();
+
+    await expect(page.getByLabel('サブ出典', { exact: true })).toBeHidden();
+    expect(api.requests('DELETE', '/english/word/subsource')[0].body).toEqual({ id: 1 });
+    // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
+    await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
+  });
 });

@@ -1,14 +1,12 @@
 import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
-import { Modal } from '@/components/ui-elements/modal/Modal';
-import { Box, CircularProgress, IconButton, Stack, TextField, Typography } from '@mui/material';
+import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import type { Message } from 'quizzer-lib';
-import { style } from '../Stack.style';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import type { GetWordDetailAPIResponseDto, EditWordSubSourceAPIRequestDto } from 'quizzer-lib';
-import { editEnglishWordSubSourceAPI, deleteEnglishWordSubSourceAPI, getWordDetailAPI } from '@/utils/api-wrapper';
+import type { GetWordDetailAPIResponseDto } from 'quizzer-lib';
+import { EditSubSourceModal } from '../editSubSourceModal/EditSubSourceModal';
 
 interface SubSourceStackProps {
   wordDetail: GetWordDetailAPIResponseDto;
@@ -17,21 +15,11 @@ interface SubSourceStackProps {
 }
 
 export const SubSourceStack = ({ wordDetail, setMessage, setWordDetail }: SubSourceStackProps) => {
-  const initEditWordSubSourceData = {
-    id: -1,
-    wordId: -1,
-    subSource: ''
-  };
   const [subSourceModalOpen, setSubSourceModalOpen] = useState(false);
-  const [editWordSubSourceData, setEditWordSubSourceData] =
-    useState<EditWordSubSourceAPIRequestDto>(initEditWordSubSourceData);
+  const [selectedSubSourceIndex, setSelectedSubSourceIndex] = useState<number>(-1);
 
   const handleOpen = (index: number) => {
-    setEditWordSubSourceData({
-      id: index === -1 ? index : wordDetail.word_subsource[index].id,
-      wordId: wordDetail.id,
-      subSource: index === -1 ? '' : wordDetail.word_subsource[index].subsource
-    });
+    setSelectedSubSourceIndex(index);
     setSubSourceModalOpen(true);
   };
 
@@ -69,70 +57,17 @@ export const SubSourceStack = ({ wordDetail, setMessage, setWordDetail }: SubSou
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>
-            {/* TODO このモーダル系別コンポーネントに切り出したい。他のスタックのとこのも同様に */}
-            <Modal isOpen={subSourceModalOpen} setIsOpen={setSubSourceModalOpen}>
-              <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h4" component="h4">
-                  {'サブ出典' + (editWordSubSourceData.id === -1 ? '追加' : '更新')}
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  サブ出典：
-                  <TextField
-                    variant="outlined"
-                    defaultValue={editWordSubSourceData.subSource}
-                    onChange={(e) => {
-                      setEditWordSubSourceData({
-                        ...editWordSubSourceData,
-                        subSource: e.target.value
-                      });
-                    }}
-                  />
-                </Typography>
-                <Button
-                  label={'サブ出典' + (editWordSubSourceData.id === -1 ? '追加' : '更新')}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  onClick={async (e) => {
-                    setSubSourceModalOpen(false);
-                    const result = await editEnglishWordSubSourceAPI({
-                      editWordSubSourceData
-                    });
-                    setMessage && setMessage(result.message);
-                    // 更新確認後、単語の意味を再取得させる
-                    if (result.isSuccess) {
-                      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                        .result as GetWordDetailAPIResponseDto;
-                      setWordDetail && setWordDetail(newWordDetail);
-                    }
-                    setEditWordSubSourceData(initEditWordSubSourceData);
-                  }}
-                />
-                <Button
-                  label={'サブ出典削除'}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  disabled={editWordSubSourceData.id === -1}
-                  onClick={async (e) => {
-                    setSubSourceModalOpen(false);
-                    const result = await deleteEnglishWordSubSourceAPI({
-                      deleteWordSubSourceData: {
-                        id: editWordSubSourceData.id
-                      }
-                    });
-                    setMessage && setMessage(result.message);
-                    // 更新確認後、単語の意味を再取得させる
-                    if (result.isSuccess) {
-                      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                        .result as GetWordDetailAPIResponseDto;
-                      setWordDetail && setWordDetail(newWordDetail);
-                    }
-                    setEditWordSubSourceData(initEditWordSubSourceData);
-                  }}
-                />
-              </Box>
-            </Modal>
+            {/* 開くたびに入力を初期化するため、開いている間だけ描画する */}
+            {subSourceModalOpen && (
+              <EditSubSourceModal
+                isOpen={subSourceModalOpen}
+                setIsOpen={setSubSourceModalOpen}
+                subSourceIndex={selectedSubSourceIndex}
+                wordDetail={wordDetail}
+                setMessage={setMessage}
+                setWordDetail={setWordDetail}
+              />
+            )}
           </Stack>
         )}
       </Box>
