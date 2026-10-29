@@ -850,57 +850,102 @@ export class EnglishWordService {
   }
 
   // 派生語を追加する
+  // 1つの単語が属せる派生語グループは1つだけなので、両単語の所属状況に応じてグループに追加・作成・統合する
   async addDerivativeService(req: AddDerivativeAPIRequestDto) {
     try {
       const { wordName, derivativeName } = req;
-      // まず入力単語あるか確認;
-      const derivativeData = await prisma.word.findFirst({
-        select: {
-          id: true,
-        },
-        where: {
-          name: derivativeName,
-        },
-      });
-      // 存在しない場合エラー
-      if (!derivativeData) {
-        throw new HttpException(
-          `入力単語(${derivativeName}})は存在しません`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
-      // 元単語の派生語グループIDを取得
-      const wordData = await prisma.word.findFirst({
-        select: {
-          id: true,
-          derivative: {
-            select: {
-              derivative_group_id: true,
-            },
+      // 元単語・派生語それぞれの、所属している派生語グループIDを取得
+      const selectWithGroup = {
+        id: true,
+        derivative: {
+          select: {
+            derivative_group_id: true,
           },
         },
+      };
+      const wordData = await prisma.word.findFirst({
+        select: selectWithGroup,
         where: {
           name: wordName,
         },
       });
+      // 存在しない場合エラー
+      if (!wordData) {
+        throw new HttpException(
+          `元単語(${wordName})は存在しません`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const derivativeData = await prisma.word.findFirst({
+        select: selectWithGroup,
+        where: {
+          name: derivativeName,
+        },
+      });
+      if (!derivativeData) {
+        throw new HttpException(
+          `入力単語(${derivativeName})は存在しません`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (wordData.id === derivativeData.id) {
+        throw new HttpException(
+          `同じ単語(${derivativeName})は派生語に登録できません`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const wordGroupId = wordData.derivative?.derivative_group_id;
+      const derivativeGroupId = derivativeData.derivative?.derivative_group_id;
+      if (wordGroupId && wordGroupId === derivativeGroupId) {
+        throw new HttpException(
+          `入力単語(${derivativeName})はすでに派生語として登録されています`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
       //トランザクション実行準備
-      // TODO もし元単語と派生語が既にグループIDを持っていてかつ両方違うものだった場合・・エラー起こる
       const result = [];
       await prisma.$transaction(async (prisma) => {
-        if (wordData.derivative) {
-          // 元単語にすでに派生語データがあるとき -> その派生語グループに登録
+        if (wordGroupId && derivativeGroupId) {
+          // 両方とも別のグループに属しているとき -> 派生語側のグループの単語を全て元単語のグループに移し、空になったグループを消す
+          result.push(
+            await prisma.derivative.updateMany({
+              data: {
+                derivative_group_id: wordGroupId,
+              },
+              where: {
+                derivative_group_id: derivativeGroupId,
+              },
+            }),
+          );
+          await prisma.derivative_group.delete({
+            where: {
+              id: derivativeGroupId,
+            },
+          });
+        } else if (wordGroupId) {
+          // 元単語だけグループに属しているとき -> そのグループに派生語を登録
           result.push(
             await prisma.derivative.create({
               data: {
-                derivative_group_id: wordData.derivative[0].derivative_group_id,
+                derivative_group_id: wordGroupId,
                 word_id: derivativeData.id,
               },
             }),
           );
+        } else if (derivativeGroupId) {
+          // 派生語だけグループに属しているとき -> そのグループに元単語を登録
+          result.push(
+            await prisma.derivative.create({
+              data: {
+                derivative_group_id: derivativeGroupId,
+                word_id: wordData.id,
+              },
+            }),
+          );
         } else {
-          // 元単語に派生語データがない時
+          // どちらもグループに属していないとき
           // 派生語グループにデータ登録
           const groupData = await prisma.derivative_group.create({
             data: {
