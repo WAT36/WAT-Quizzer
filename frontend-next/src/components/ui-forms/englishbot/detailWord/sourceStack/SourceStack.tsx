@@ -9,13 +9,14 @@ import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import type { Message, EditWordSourceAPIRequestDto, GetWordDetailAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
 import { initEditWordSourceData } from 'quizzer-lib';
-import { deleteEnglishWordSourceAPI, editEnglishWordSourceAPI, getWordDetailAPI } from '@/utils/api-wrapper';
+import { deleteEnglishWordSourceAPI, editEnglishWordSourceAPI } from '@/utils/api-wrapper';
 
 interface SourceStackProps {
   sourceList: PullDownOptionDto[];
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
 // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
@@ -53,7 +54,7 @@ const displaySourceInput = (
   );
 };
 
-export const SourceStack = ({ sourceList, wordDetail, setMessage, setWordDetail }: SourceStackProps) => {
+export const SourceStack = ({ sourceList, wordDetail, setMessage, onUpdated }: SourceStackProps) => {
   // TODO word-sourceの構造変えたらここも直したい
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [editWordSourceData, setEditWordSourceData] = useState<EditWordSourceAPIRequestDto>(initEditWordSourceData);
@@ -121,9 +122,7 @@ export const SourceStack = ({ sourceList, wordDetail, setMessage, setWordDetail 
                     setMessage && setMessage(result.message);
                     // 更新確認後、単語の意味を再取得させる
                     if (result.isSuccess) {
-                      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                        .result as GetWordDetailAPIResponseDto;
-                      setWordDetail && setWordDetail(newWordDetail);
+                      await onUpdated?.();
                     }
                     setEditWordSourceData(initEditWordSourceData);
                     setSelectedWordSourceIndex(-1);
@@ -146,9 +145,7 @@ export const SourceStack = ({ sourceList, wordDetail, setMessage, setWordDetail 
                     setMessage && setMessage(result.message);
                     // 更新確認後、単語の意味を再取得させる
                     if (result.isSuccess) {
-                      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                        .result as GetWordDetailAPIResponseDto;
-                      setWordDetail && setWordDetail(newWordDetail);
+                      await onUpdated?.();
                     }
                     setEditWordSourceData(initEditWordSourceData);
                     setSelectedWordSourceIndex(-1);

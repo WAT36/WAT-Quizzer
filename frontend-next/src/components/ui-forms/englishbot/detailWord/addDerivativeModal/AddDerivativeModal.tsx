@@ -3,14 +3,15 @@ import { TextField, Typography } from '@mui/material';
 import type { GetWordDetailAPIResponseDto, Message } from 'quizzer-lib';
 import { Button } from '@/components/ui-elements/button/Button';
 import { DialogModal } from '@/components/ui-parts/dialogModal/DialogModal';
-import { addDerivativeAPI, getWordDetailAPI } from '@/utils/api-wrapper';
+import { addDerivativeAPI } from '@/utils/api-wrapper';
 
 interface AddDerivativeModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
 // 単語詳細画面で派生語を追加するモーダル
@@ -19,7 +20,7 @@ export const AddDerivativeModal = ({
   setIsOpen,
   wordDetail,
   setMessage,
-  setWordDetail
+  onUpdated
 }: AddDerivativeModalProps) => {
   const [derivativeName, setDerivativeName] = useState<string>('');
   const isSameAsOriginal = derivativeName === wordDetail.name;
@@ -43,11 +44,8 @@ export const AddDerivativeModal = ({
             });
             setMessage && setMessage(result.message);
             // 更新確認後、単語の意味を再取得させる
-            // TODO この再取得の部分は共通関数化できないかな
             if (result.isSuccess) {
-              const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                .result as GetWordDetailAPIResponseDto;
-              setWordDetail && setWordDetail(newWordDetail);
+              await onUpdated?.();
             }
             setDerivativeName('');
           }}

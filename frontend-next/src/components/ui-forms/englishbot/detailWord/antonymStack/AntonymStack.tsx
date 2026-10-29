@@ -10,10 +10,11 @@ import { AddAntonymModal } from '../addAntonymModal/AddAntonymModal';
 interface AntonymStackProps {
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
-export const AntonymStack = ({ wordDetail, setMessage, setWordDetail }: AntonymStackProps) => {
+export const AntonymStack = ({ wordDetail, setMessage, onUpdated }: AntonymStackProps) => {
   const [antonymModalOpen, setAntonymModalOpen] = useState<boolean>(false);
 
   return (
@@ -70,7 +71,7 @@ export const AntonymStack = ({ wordDetail, setMessage, setWordDetail }: AntonymS
               setIsOpen={setAntonymModalOpen}
               wordDetail={wordDetail}
               setMessage={setMessage}
-              setWordDetail={setWordDetail}
+              onUpdated={onUpdated}
             />
           </Stack>
         )}

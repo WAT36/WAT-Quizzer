@@ -10,7 +10,7 @@ import type {
 import { Button } from '@/components/ui-elements/button/Button';
 import { DialogModal } from '@/components/ui-parts/dialogModal/DialogModal';
 import { pullDownMenuProps } from '@/constants/pullDown';
-import { deleteEnglishMeanAPI, editEnglishWordMeanAPI, getWordDetailAPI } from '@/utils/api-wrapper';
+import { deleteEnglishMeanAPI, editEnglishWordMeanAPI } from '@/utils/api-wrapper';
 
 interface EditMeanModalProps {
   isOpen: boolean;
@@ -20,7 +20,8 @@ interface EditMeanModalProps {
   posList: PullDownOptionDto[];
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
 // 編集対象の意味から入力の初期値を作る。新規追加の場合は既存の最大wordmean_id+1を採番する
@@ -54,7 +55,7 @@ export const EditMeanModal = ({
   posList,
   wordDetail,
   setMessage,
-  setWordDetail
+  onUpdated
 }: EditMeanModalProps) => {
   const [editMeanData, setEditMeanData] = useState<EditWordMeanAPIRequestDto>(() =>
     createEditMeanData(wordDetail, meanIndex)
@@ -65,9 +66,7 @@ export const EditMeanModal = ({
   const handleResult = async (result: ApiResult) => {
     setMessage && setMessage(result.message);
     if (result.isSuccess) {
-      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-        .result as GetWordDetailAPIResponseDto;
-      setWordDetail && setWordDetail(newWordDetail);
+      await onUpdated?.();
     }
   };
 

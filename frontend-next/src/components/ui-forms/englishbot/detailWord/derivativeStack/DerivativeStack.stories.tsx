@@ -46,11 +46,8 @@ const DerivativeStackWithState = ({ wordDetail }: { wordDetail: GetWordDetailAPI
     messageColor: 'common.black',
     isDisplay: false
   });
-  const [currentWordDetail, setCurrentWordDetail] = useState<GetWordDetailAPIResponseDto>(wordDetail);
 
-  return (
-    <DerivativeStack wordDetail={currentWordDetail} setMessage={setMessage} setWordDetail={setCurrentWordDetail} />
-  );
+  return <DerivativeStack wordDetail={wordDetail} setMessage={setMessage} />;
 };
 
 export const WithDerivatives: Story = {

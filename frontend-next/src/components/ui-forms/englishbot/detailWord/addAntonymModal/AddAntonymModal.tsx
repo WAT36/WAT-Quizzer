@@ -3,18 +3,19 @@ import { TextField, Typography } from '@mui/material';
 import type { GetWordDetailAPIResponseDto, Message } from 'quizzer-lib';
 import { Button } from '@/components/ui-elements/button/Button';
 import { DialogModal } from '@/components/ui-parts/dialogModal/DialogModal';
-import { addAntonymAPI, getWordDetailAPI } from '@/utils/api-wrapper';
+import { addAntonymAPI } from '@/utils/api-wrapper';
 
 interface AddAntonymModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
 // 単語詳細画面で対義語を追加するモーダル
-export const AddAntonymModal = ({ isOpen, setIsOpen, wordDetail, setMessage, setWordDetail }: AddAntonymModalProps) => {
+export const AddAntonymModal = ({ isOpen, setIsOpen, wordDetail, setMessage, onUpdated }: AddAntonymModalProps) => {
   const [antonymWordName, setAntonymWordName] = useState<string>('');
   const isSameAsOriginal = antonymWordName === wordDetail.name;
 
@@ -37,11 +38,8 @@ export const AddAntonymModal = ({ isOpen, setIsOpen, wordDetail, setMessage, set
             });
             setMessage && setMessage(result.message);
             // 更新確認後、単語の意味を再取得させる
-            // TODO この再取得の部分は共通関数化できないかな
             if (result.isSuccess) {
-              const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                .result as GetWordDetailAPIResponseDto;
-              setWordDetail && setWordDetail(newWordDetail);
+              await onUpdated?.();
             }
             setAntonymWordName('');
           }}

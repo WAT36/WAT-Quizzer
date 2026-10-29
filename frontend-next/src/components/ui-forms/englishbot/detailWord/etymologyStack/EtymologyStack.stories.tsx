@@ -26,9 +26,8 @@ const EtymologyStackWithState = ({ wordDetail }: { wordDetail: GetWordDetailAPIR
     messageColor: 'common.black',
     isDisplay: false
   });
-  const [currentWordDetail, setCurrentWordDetail] = useState<GetWordDetailAPIResponseDto>(wordDetail);
 
-  return <EtymologyStack wordDetail={currentWordDetail} setMessage={setMessage} setWordDetail={setCurrentWordDetail} />;
+  return <EtymologyStack wordDetail={wordDetail} setMessage={setMessage} />;
 };
 
 // Mock data for stories

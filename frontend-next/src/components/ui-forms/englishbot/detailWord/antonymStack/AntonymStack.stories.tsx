@@ -26,9 +26,8 @@ const AntonymStackWithState = ({ wordDetail }: { wordDetail: GetWordDetailAPIRes
     messageColor: 'common.black',
     isDisplay: false
   });
-  const [currentWordDetail, setCurrentWordDetail] = useState<GetWordDetailAPIResponseDto>(wordDetail);
 
-  return <AntonymStack wordDetail={currentWordDetail} setMessage={setMessage} setWordDetail={setCurrentWordDetail} />;
+  return <AntonymStack wordDetail={wordDetail} setMessage={setMessage} />;
 };
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args

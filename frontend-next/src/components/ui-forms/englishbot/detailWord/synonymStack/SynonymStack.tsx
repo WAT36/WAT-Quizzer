@@ -10,10 +10,11 @@ import { AddSynonymModal } from '../addSynonymModal/AddSynonymModal';
 interface SynonymStackProps {
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
-export const SynonymStack = ({ wordDetail, setMessage, setWordDetail }: SynonymStackProps) => {
+export const SynonymStack = ({ wordDetail, setMessage, onUpdated }: SynonymStackProps) => {
   const [synonymModalOpen, setSynonymModalOpen] = useState<boolean>(false);
 
   return (
@@ -70,7 +71,7 @@ export const SynonymStack = ({ wordDetail, setMessage, setWordDetail }: SynonymS
               setIsOpen={setSynonymModalOpen}
               wordDetail={wordDetail}
               setMessage={setMessage}
-              setWordDetail={setWordDetail}
+              onUpdated={onUpdated}
             />
           </Stack>
         )}

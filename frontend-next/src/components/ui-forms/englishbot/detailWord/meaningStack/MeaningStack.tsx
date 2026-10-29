@@ -11,10 +11,11 @@ interface MeaningStackProps {
   posList: PullDownOptionDto[];
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
-export const MeaningStack = ({ posList, wordDetail, setMessage, setWordDetail }: MeaningStackProps) => {
+export const MeaningStack = ({ posList, wordDetail, setMessage, onUpdated }: MeaningStackProps) => {
   const [meaningModalopen, setMeaningModalOpen] = useState(false);
   // TODO これいる？（sourcestackも）
   const [selectedMeanIndex, setSelectedMeanIndex] = useState<number>(-1); //仮
@@ -66,7 +67,7 @@ export const MeaningStack = ({ posList, wordDetail, setMessage, setWordDetail }:
                 posList={posList}
                 wordDetail={wordDetail}
                 setMessage={setMessage}
-                setWordDetail={setWordDetail}
+                onUpdated={onUpdated}
               />
             )}
           </Stack>

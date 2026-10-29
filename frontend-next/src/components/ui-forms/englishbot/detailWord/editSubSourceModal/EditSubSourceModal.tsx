@@ -3,7 +3,7 @@ import { TextField, Typography } from '@mui/material';
 import type { ApiResult, EditWordSubSourceAPIRequestDto, GetWordDetailAPIResponseDto, Message } from 'quizzer-lib';
 import { Button } from '@/components/ui-elements/button/Button';
 import { DialogModal } from '@/components/ui-parts/dialogModal/DialogModal';
-import { deleteEnglishWordSubSourceAPI, editEnglishWordSubSourceAPI, getWordDetailAPI } from '@/utils/api-wrapper';
+import { deleteEnglishWordSubSourceAPI, editEnglishWordSubSourceAPI } from '@/utils/api-wrapper';
 
 interface EditSubSourceModalProps {
   isOpen: boolean;
@@ -12,7 +12,8 @@ interface EditSubSourceModalProps {
   subSourceIndex: number;
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
 // 編集対象のサブ出典から入力の初期値を作る
@@ -33,7 +34,7 @@ export const EditSubSourceModal = ({
   subSourceIndex,
   wordDetail,
   setMessage,
-  setWordDetail
+  onUpdated
 }: EditSubSourceModalProps) => {
   const [editWordSubSourceData, setEditWordSubSourceData] = useState<EditWordSubSourceAPIRequestDto>(() =>
     createEditWordSubSourceData(wordDetail, subSourceIndex)
@@ -44,9 +45,7 @@ export const EditSubSourceModal = ({
   const handleResult = async (result: ApiResult) => {
     setMessage && setMessage(result.message);
     if (result.isSuccess) {
-      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-        .result as GetWordDetailAPIResponseDto;
-      setWordDetail && setWordDetail(newWordDetail);
+      await onUpdated?.();
     }
   };
 

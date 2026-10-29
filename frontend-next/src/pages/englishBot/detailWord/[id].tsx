@@ -15,13 +15,7 @@ import type {
   SourceApiResponse
 } from 'quizzer-lib';
 import { apiResponsePullDownAdapter, initWordDetailResponseData } from 'quizzer-lib';
-import {
-  getWordDetailAPI,
-  getPartOfSpeechListAPI,
-  getSourceListAPI,
-  toggleWordCheckAPI,
-  getWordNumAPI
-} from '@/utils/api-wrapper';
+import { getPartOfSpeechListAPI, getSourceListAPI, toggleWordCheckAPI, getWordNumAPI } from '@/utils/api-wrapper';
 import { isMockMode } from '@/utils/api-wrapper';
 import { englishDataMock } from 'quizzer-lib';
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
@@ -30,6 +24,7 @@ import { DerivativeStack } from '@/components/ui-forms/englishbot/detailWord/der
 import { EtymologyStack } from '@/components/ui-forms/englishbot/detailWord/etymologyStack/EtymologyStack';
 import { Button } from '@/components/ui-elements/button/Button';
 import React from 'react';
+import { useWordDetail } from '@/hooks/useWordDetail';
 
 type EachWordPageProps = {
   id: string;
@@ -69,9 +64,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
   }, [id, isMock]);
 
   // モック環境では初期値を設定、本番環境では空の初期値
-  const [wordDetail, setWordDetail] = useState<GetWordDetailAPIResponseDto>(
-    mockData?.wordDetail || initWordDetailResponseData
-  );
+  const { wordDetail, refetchWordDetail } = useWordDetail(id, mockData?.wordDetail || initWordDetailResponseData);
   const [posList, setPosList] = useState<PullDownOptionDto[]>(mockData?.posList || []);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionDto[]>(mockData?.sourceList || []);
 
@@ -92,11 +85,8 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         result.result && setSourcelistoption(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
       })()
     ]);
-    void (async () => {
-      const result = (await getWordDetailAPI({ id })).result as GetWordDetailAPIResponseDto;
-      setWordDetail(result);
-    })();
-  }, [id, isMock]);
+    void refetchWordDetail();
+  }, [id, isMock, refetchWordDetail]);
 
   const contents = () => {
     return (
@@ -141,9 +131,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
                 });
                 setMessage(result.message);
                 if (result.isSuccess) {
-                  const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                    .result as GetWordDetailAPIResponseDto;
-                  setWordDetail && setWordDetail(newWordDetail);
+                  await refetchWordDetail();
                 }
               }}
             />
@@ -151,18 +139,18 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         )}
 
         {/* TODO スタックは共通化できる？ */}
-        <MeaningStack posList={posList} wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
+        <MeaningStack posList={posList} wordDetail={wordDetail} setMessage={setMessage} onUpdated={refetchWordDetail} />
         <SourceStack
           sourceList={sourcelistoption}
           wordDetail={wordDetail}
           setMessage={setMessage}
-          setWordDetail={setWordDetail}
+          onUpdated={refetchWordDetail}
         />
-        <SubSourceStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
-        <SynonymStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
-        <AntonymStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
-        <DerivativeStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
-        <EtymologyStack wordDetail={wordDetail} setMessage={setMessage} setWordDetail={setWordDetail} />
+        <SubSourceStack wordDetail={wordDetail} setMessage={setMessage} onUpdated={refetchWordDetail} />
+        <SynonymStack wordDetail={wordDetail} setMessage={setMessage} onUpdated={refetchWordDetail} />
+        <AntonymStack wordDetail={wordDetail} setMessage={setMessage} onUpdated={refetchWordDetail} />
+        <DerivativeStack wordDetail={wordDetail} setMessage={setMessage} onUpdated={refetchWordDetail} />
+        <EtymologyStack wordDetail={wordDetail} setMessage={setMessage} onUpdated={refetchWordDetail} />
       </Container>
     );
   };

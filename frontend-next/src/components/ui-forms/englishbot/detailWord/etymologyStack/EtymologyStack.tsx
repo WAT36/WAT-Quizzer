@@ -10,10 +10,11 @@ import { LinkEtymologyModal } from '../linkEtymologyModal/LinkEtymologyModal';
 interface EtymologyStackProps {
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
-export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: EtymologyStackProps) => {
+export const EtymologyStack = ({ wordDetail, setMessage, onUpdated }: EtymologyStackProps) => {
   const [etymologyModalOpen, setEtymologyModalOpen] = useState<boolean>(false);
   const [addEtymologyModalOpen, setAddEtymologyModalOpen] = useState<boolean>(false);
 
@@ -57,7 +58,7 @@ export const EtymologyStack = ({ wordDetail, setMessage, setWordDetail }: Etymol
               setIsOpen={setEtymologyModalOpen}
               wordDetail={wordDetail}
               setMessage={setMessage}
-              setWordDetail={setWordDetail}
+              onUpdated={onUpdated}
             />
           </Stack>
         )}

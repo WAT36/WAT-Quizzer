@@ -26,9 +26,8 @@ const SynonymStackWithState = ({ wordDetail }: { wordDetail: GetWordDetailAPIRes
     messageColor: 'common.black',
     isDisplay: false
   });
-  const [currentWordDetail, setCurrentWordDetail] = useState<GetWordDetailAPIResponseDto>(wordDetail);
 
-  return <SynonymStack wordDetail={currentWordDetail} setMessage={setMessage} setWordDetail={setCurrentWordDetail} />;
+  return <SynonymStack wordDetail={wordDetail} setMessage={setMessage} />;
 };
 
 // Mock data for stories

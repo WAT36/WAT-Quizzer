@@ -60,6 +60,23 @@ test.describe('englishBot / 単語詳細', () => {
     expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
   });
 
+  test('更新後の単語情報の取り直しに失敗しても、画面はそのまま表示してエラーを出す', async ({ page, api }) => {
+    api.on('POST', '/english/word/check/toggle', { status: 201, json: {} });
+    // チェック反転の後に取り直したときは失敗する
+    api.on('GET', `/english/word/${wordDetail.id}`, () =>
+      api.requests('POST', '/english/word/check/toggle').length > 0 ? { status: 500, json: {} } : { json: wordDetail }
+    );
+
+    await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'チェック反転' }).click();
+
+    await expect(page.getByText('エラー:外部APIとの連携に失敗しました')).toBeVisible();
+    expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
+    await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
+    await expect(page.getByText('捨てる、見捨てる')).toBeVisible();
+  });
+
   test('対義語を追加すると、更新後の単語情報を取り直して表示される', async ({ page, api }) => {
     api.on('POST', '/english/word/antonym', { status: 201, json: {} });
     // 対義語追加の後に取り直したときは、追加した対義語が含まれている

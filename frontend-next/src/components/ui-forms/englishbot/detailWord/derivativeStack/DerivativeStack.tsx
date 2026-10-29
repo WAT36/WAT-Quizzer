@@ -10,10 +10,11 @@ import { AddDerivativeModal } from '../addDerivativeModal/AddDerivativeModal';
 interface DerivativeStackProps {
   wordDetail: GetWordDetailAPIResponseDto;
   setMessage?: React.Dispatch<React.SetStateAction<Message>>;
-  setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
+  // 更新が成功した後に呼ぶ。単語詳細を取り直す
+  onUpdated?: () => Promise<void>;
 }
 
-export const DerivativeStack = ({ wordDetail, setMessage, setWordDetail }: DerivativeStackProps) => {
+export const DerivativeStack = ({ wordDetail, setMessage, onUpdated }: DerivativeStackProps) => {
   const [derivativeModalOpen, setDerivativeModalOpen] = useState<boolean>(false);
 
   return (
@@ -59,7 +60,7 @@ export const DerivativeStack = ({ wordDetail, setMessage, setWordDetail }: Deriv
               setIsOpen={setDerivativeModalOpen}
               wordDetail={wordDetail}
               setMessage={setMessage}
-              setWordDetail={setWordDetail}
+              onUpdated={onUpdated}
             />
           </Stack>
         )}
