@@ -64,8 +64,7 @@ test.describe('englishBot / 英単語テスト', () => {
   test('意味当てテストでは、意味を出題して答えで単語を表示する', async ({ page, api }) => {
     // 画面の処理が動き出してから(出典一覧の取得後に)テスト形式を切り替える
     await expect.poll(() => api.requests('GET', '/english/source').length).toBeGreaterThan(0);
-    // TODO RadioGroupの全グループが同じname属性のため選択状態が表示に反映されない。直したらcheck()にする
-    await page.getByLabel('意味当て').click();
+    await page.getByLabel('意味当て').check();
     await page.getByRole('button', { name: 'Random Word' }).click();
 
     await expect(page.getByText('[動詞]捨てる、見捨てる')).toBeVisible();
@@ -91,8 +90,9 @@ test.describe('englishBot / 英単語テスト', () => {
 
     // 画面の処理が動き出してから(出典一覧の取得後に)テスト形式を切り替える
     await expect.poll(() => api.requests('GET', '/english/source').length).toBeGreaterThan(0);
-    // TODO RadioGroupの全グループが同じname属性のため選択状態が表示に反映されない。直したらcheck()にする
-    await page.getByLabel('四択').click();
+    await page.getByLabel('四択').check();
+    // ほかのラジオボタンのグループの選択は外れない
+    await expect(page.getByRole('radio', { name: 'Word', exact: true })).toBeChecked();
     await page.getByRole('button', { name: 'Random Word' }).click();
 
     await expect(page.getByText('abandon')).toBeVisible();
