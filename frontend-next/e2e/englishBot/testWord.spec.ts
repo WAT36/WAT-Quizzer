@@ -60,4 +60,46 @@ test.describe('englishBot / 英単語テスト', () => {
 
     expect(api.requests('GET', '/english/word/test')[0].query).toMatchObject({ source: String(sources[1].id) });
   });
+
+  test('意味当てテストでは、意味を出題して答えで単語を表示する', async ({ page, api }) => {
+    // 画面の処理が動き出してから(出典一覧の取得後に)テスト形式を切り替える
+    await expect.poll(() => api.requests('GET', '/english/source').length).toBeGreaterThan(0);
+    // TODO RadioGroupの全グループが同じname属性のため選択状態が表示に反映されない。直したらcheck()にする
+    await page.getByLabel('意味当て').click();
+    await page.getByRole('button', { name: 'Random Word' }).click();
+
+    await expect(page.getByText('[動詞]捨てる、見捨てる')).toBeVisible();
+    // 答えを開くまで単語は表示しない
+    await expect(page.getByText('abandon')).toBeHidden();
+
+    await page.getByRole('button', { name: '答え' }).click();
+    await expect(page.getByText('abandon')).toBeVisible();
+    await page.getByRole('button', { name: '正解!!' }).click();
+
+    await expect(page.getByText('正解+1! 登録しました')).toBeVisible();
+    expect(api.requests('POST', '/english/word/test/clear')[0].body).toEqual({ wordId: 501, testType: 2 });
+  });
+
+  test('四択テストでは、選んだ選択肢で正解・不正解を登録する', async ({ page, api }) => {
+    api.on('GET', '/english/word/test', {
+      json: {
+        ...wordTestData,
+        correct: { mean: '捨てる、見捨てる' },
+        dummy: [{ mean: '受け入れる' }, { mean: '保つ' }, { mean: '始める' }]
+      }
+    });
+
+    // 画面の処理が動き出してから(出典一覧の取得後に)テスト形式を切り替える
+    await expect.poll(() => api.requests('GET', '/english/source').length).toBeGreaterThan(0);
+    // TODO RadioGroupの全グループが同じname属性のため選択状態が表示に反映されない。直したらcheck()にする
+    await page.getByLabel('四択').click();
+    await page.getByRole('button', { name: 'Random Word' }).click();
+
+    await expect(page.getByText('abandon')).toBeVisible();
+    await page.getByLabel('保つ').check();
+    await page.getByRole('button', { name: 'SUBMIT' }).click();
+
+    await expect(page.getByText('不正解+1.. 登録しました')).toBeVisible();
+    expect(api.requests('POST', '/english/word/test/fail')[0].body).toEqual({ wordId: 501, testType: 1 });
+  });
 });
