@@ -1,15 +1,11 @@
 import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
-import { Box, CircularProgress, IconButton, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
-import { pullDownMenuProps } from '@/constants/pullDown';
-import { Modal } from '@/components/ui-elements/modal/Modal';
-import { style } from '../Stack.style';
+import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import type { Message, EditWordMeanAPIRequestDto, GetWordDetailAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
-import { initEditMeanData } from 'quizzer-lib';
-import { deleteEnglishMeanAPI, editEnglishWordMeanAPI, getWordDetailAPI } from '@/utils/api-wrapper';
+import type { Message, GetWordDetailAPIResponseDto, PullDownOptionDto } from 'quizzer-lib';
+import { EditMeanModal } from '../editMeanModal/EditMeanModal';
 
 interface MeaningStackProps {
   posList: PullDownOptionDto[];
@@ -18,79 +14,13 @@ interface MeaningStackProps {
   setWordDetail?: React.Dispatch<React.SetStateAction<GetWordDetailAPIResponseDto>>;
 }
 
-// 品詞プルダウン表示、「その他」だったら入力用テキストボックスを出す
-const displayPosInput = (
-  i: number,
-  posList: PullDownOptionDto[],
-  editMeanData: EditWordMeanAPIRequestDto,
-  setEditMeanData: React.Dispatch<React.SetStateAction<EditWordMeanAPIRequestDto>>
-) => {
-  return (
-    <Select
-      inputProps={{ 'aria-label': '品詞' }}
-      id="edit-pos-select"
-      defaultValue={editMeanData.partofspeechId || -1}
-      label="partOfSpeech"
-      key={i}
-      sx={{ width: 1 }}
-      MenuProps={pullDownMenuProps}
-      onChange={(e) => {
-        let posData;
-        for (let i = 0; i < posList.length; i++) {
-          if (+posList[i].value === +e.target.value) {
-            posData = posList[i];
-            break;
-          }
-        }
-        if (posData) {
-          setEditMeanData({
-            ...editMeanData,
-            partofspeechId: +posData.value
-          });
-        }
-      }}
-    >
-      <MenuItem value={-1} key={-1}>
-        選択なし
-      </MenuItem>
-      {posList.map((x) => (
-        <MenuItem value={x.value} key={x.value}>
-          {x.label}
-        </MenuItem>
-      ))}
-    </Select>
-  );
-};
-
 export const MeaningStack = ({ posList, wordDetail, setMessage, setWordDetail }: MeaningStackProps) => {
   const [meaningModalopen, setMeaningModalOpen] = useState(false);
-  const [editMeanData, setEditMeanData] = useState<EditWordMeanAPIRequestDto>(initEditMeanData);
   // TODO これいる？（sourcestackも）
   const [selectedMeanIndex, setSelectedMeanIndex] = useState<number>(-1); //仮
   const handleOpen = (wordMeanIndex: number) => {
-    setMeaningModalOpen(true);
-    setEditMeanData(
-      wordMeanIndex === -1
-        ? {
-            wordId: wordDetail.id,
-            wordMeanId:
-              wordDetail.mean.reduce(
-                (previousValue, currentValue) => Math.max(previousValue, currentValue.wordmean_id),
-                -1
-              ) + 1,
-            meanId: -1,
-            partofspeechId: -1,
-            meaning: ''
-          }
-        : {
-            wordId: wordDetail.id,
-            wordMeanId: wordDetail.mean[wordMeanIndex].wordmean_id,
-            meanId: wordDetail.mean[wordMeanIndex].id,
-            partofspeechId: wordDetail.mean[wordMeanIndex].partsofspeech.id,
-            meaning: wordDetail.mean[wordMeanIndex].meaning
-          }
-    );
     setSelectedMeanIndex(wordMeanIndex);
+    setMeaningModalOpen(true);
   };
   return (
     <Card variant="outlined" attr={['silver-card']}>
@@ -127,75 +57,18 @@ export const MeaningStack = ({ posList, wordDetail, setMessage, setWordDetail }:
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>
-            {/* TODO  このモーダルは別コンポーネントにしたい */}
-            {/* 意味新規追加ボタン押すと出る意味編集モーダル */}
-            <Modal isOpen={meaningModalopen} setIsOpen={setMeaningModalOpen}>
-              <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h4" component="h4">
-                  {'意味' + (selectedMeanIndex === -1 ? '追加' : '更新')}
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  品詞：
-                  {displayPosInput(1, posList, editMeanData, setEditMeanData)}
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  意味：
-                  <TextField
-                    variant="outlined"
-                    defaultValue={editMeanData.meaning || ''}
-                    onChange={(e) => {
-                      setEditMeanData({
-                        ...editMeanData,
-                        meaning: e.target.value
-                      });
-                    }}
-                  />
-                </Typography>
-                <Button
-                  label={'意味' + (selectedMeanIndex === -1 ? '追加' : '更新')}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  onClick={async (e) => {
-                    setMeaningModalOpen(false);
-                    const result = await editEnglishWordMeanAPI({ editMeanData });
-                    setMessage && setMessage(result.message);
-                    // 更新確認後、単語の意味を再取得させる
-                    if (result.isSuccess) {
-                      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                        .result as GetWordDetailAPIResponseDto;
-                      setWordDetail && setWordDetail(newWordDetail);
-                    }
-                    setEditMeanData(initEditMeanData);
-                    setSelectedMeanIndex(-1);
-                  }}
-                />
-                <Button
-                  label={'意味削除'}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  disabled={selectedMeanIndex === -1}
-                  onClick={async (e) => {
-                    setMeaningModalOpen(false);
-                    const result = await deleteEnglishMeanAPI({
-                      deleteMeanData: {
-                        meanId: editMeanData.meanId
-                      }
-                    });
-                    setMessage && setMessage(result.message);
-                    // 更新確認後、単語の意味を再取得させる
-                    if (result.isSuccess) {
-                      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                        .result as GetWordDetailAPIResponseDto;
-                      setWordDetail && setWordDetail(newWordDetail);
-                    }
-                    setEditMeanData(initEditMeanData);
-                    setSelectedMeanIndex(-1);
-                  }}
-                />
-              </Box>
-            </Modal>
+            {/* 意味新規追加ボタン・編集ボタンを押すと出る意味編集モーダル（開くたびに入力を初期化するため、開いている間だけ描画する） */}
+            {meaningModalopen && (
+              <EditMeanModal
+                isOpen={meaningModalopen}
+                setIsOpen={setMeaningModalOpen}
+                meanIndex={selectedMeanIndex}
+                posList={posList}
+                wordDetail={wordDetail}
+                setMessage={setMessage}
+                setWordDetail={setWordDetail}
+              />
+            )}
           </Stack>
         )}
       </Box>

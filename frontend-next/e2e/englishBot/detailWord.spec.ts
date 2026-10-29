@@ -173,4 +173,76 @@ test.describe('englishBot / 単語詳細', () => {
     // 語源の新規登録だけでは単語への紐付けは行わないため、単語情報は取り直さない
     expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(1);
   });
+
+  test('意味を更新すると、更新後の単語情報を取り直して表示される', async ({ page, api }) => {
+    api.on('PATCH', `/english/word/${wordDetail.id}`, { json: {} });
+    // 意味更新の後に取り直したときは、更新後の意味になっている
+    api.on('GET', `/english/word/${wordDetail.id}`, () => ({
+      json:
+        api.requests('PATCH', `/english/word/${wordDetail.id}`).length > 0
+          ? { ...wordDetail, mean: [{ ...wordDetail.mean[0], meaning: '見捨てる' }, wordDetail.mean[1]] }
+          : wordDetail
+    }));
+
+    await expect(page.getByText('捨てる、見捨てる')).toBeVisible();
+
+    // 編集途中で閉じても、開き直すと元の意味に戻っている
+    await page.getByRole('button', { name: '編集' }).first().click();
+    await page.getByLabel('意味', { exact: true }).fill('途中まで入力');
+    await page.keyboard.press('Escape');
+    await page.getByRole('button', { name: '編集' }).first().click();
+    await expect(page.getByLabel('意味', { exact: true })).toHaveValue('捨てる、見捨てる');
+
+    await page.getByLabel('意味', { exact: true }).fill('見捨てる');
+    await page.getByRole('button', { name: '意味更新' }).click();
+
+    await expect(page.getByText('見捨てる', { exact: true })).toBeVisible();
+    expect(api.requests('PATCH', `/english/word/${wordDetail.id}`)[0].body).toEqual({
+      wordId: wordDetail.id,
+      wordMeanId: 1,
+      meanId: 1,
+      partofspeechId: 1,
+      meaning: '見捨てる'
+    });
+    expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
+  });
+
+  test('意味を追加すると、既存の最大wordmean_id+1で登録される', async ({ page, api }) => {
+    api.on('PATCH', `/english/word/${wordDetail.id}`, { json: {} });
+
+    await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
+
+    await page.getByRole('button', { name: '意味追加' }).click();
+    // 新規追加では削除できない
+    await expect(page.getByRole('button', { name: '意味削除' })).toBeDisabled();
+    await page.getByRole('combobox', { name: '品詞' }).click();
+    await page.getByRole('option', { name: '名詞' }).click();
+    await page.getByLabel('意味', { exact: true }).fill('放棄');
+    await page.getByRole('button', { name: '意味追加' }).last().click();
+
+    await expect(page.getByLabel('意味', { exact: true })).toBeHidden();
+    expect(api.requests('PATCH', `/english/word/${wordDetail.id}`)[0].body).toEqual({
+      wordId: wordDetail.id,
+      wordMeanId: 3,
+      meanId: -1,
+      partofspeechId: 2,
+      meaning: '放棄'
+    });
+    // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
+    await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
+  });
+
+  test('意味を削除すると、削除APIが呼ばれて単語情報を取り直す', async ({ page, api }) => {
+    api.on('DELETE', '/english/word/mean', { json: {} });
+
+    await expect(page.getByText('自由奔放')).toBeVisible();
+
+    await page.getByRole('button', { name: '編集' }).nth(1).click();
+    await page.getByRole('button', { name: '意味削除' }).click();
+
+    await expect(page.getByLabel('意味', { exact: true })).toBeHidden();
+    expect(api.requests('DELETE', '/english/word/mean')[0].body).toEqual({ meanId: 2 });
+    // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
+    await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
+  });
 });
