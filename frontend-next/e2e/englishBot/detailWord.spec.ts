@@ -307,4 +307,39 @@ test.describe('englishBot / 単語詳細', () => {
     // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
     await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
   });
+
+  test('類義語を追加すると、更新後の単語情報を取り直して表示される', async ({ page, api }) => {
+    api.on('POST', '/english/word/synonym', { status: 201, json: {} });
+    // 類義語追加の後に取り直したときは、追加した類義語が含まれている
+    api.on('GET', `/english/word/${wordDetail.id}`, () => ({
+      json:
+        api.requests('POST', '/english/word/synonym').length > 0
+          ? {
+              ...wordDetail,
+              synonym_original: [
+                ...wordDetail.synonym_original,
+                { word_id: 7, synonym_word_id: 12, synonym_word: { name: 'forsake' } }
+              ]
+            }
+          : wordDetail
+    }));
+
+    await expect(page.getByText('desert')).toBeVisible();
+
+    await page.getByRole('button', { name: '類義語追加' }).click();
+    // 元の単語と同じ名前は入力できない
+    await page.getByLabel('類義語名').fill('abandon');
+    await expect(page.getByText('元の単語は入力できません')).toBeVisible();
+    await expect(page.getByRole('button', { name: '類義語追加' }).last()).toBeDisabled();
+
+    await page.getByLabel('類義語名').fill('forsake');
+    await page.getByRole('button', { name: '類義語追加' }).last().click();
+
+    await expect(page.getByText('forsake')).toBeVisible();
+    expect(api.requests('POST', '/english/word/synonym')[0].body).toEqual({
+      wordId: wordDetail.id,
+      synonymWordName: 'forsake'
+    });
+    expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
+  });
 });

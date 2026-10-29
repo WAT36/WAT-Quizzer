@@ -1,14 +1,11 @@
-import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
 import { Item } from '@/components/ui-elements/item/Item';
-import { Modal } from '@/components/ui-elements/modal/Modal';
-import { Box, CircularProgress, IconButton, Stack, TextField, Typography } from '@mui/material';
-import { style } from '../Stack.style';
+import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import type { GetWordDetailAPIResponseDto, AddSynonymAPIRequestDto, Message } from 'quizzer-lib';
-import { getWordDetailAPI, addSynonymAPI } from '@/utils/api-wrapper';
+import type { GetWordDetailAPIResponseDto, Message } from 'quizzer-lib';
 import React from 'react';
+import { AddSynonymModal } from '../addSynonymModal/AddSynonymModal';
 
 interface SynonymStackProps {
   wordDetail: GetWordDetailAPIResponseDto;
@@ -18,18 +15,6 @@ interface SynonymStackProps {
 
 export const SynonymStack = ({ wordDetail, setMessage, setWordDetail }: SynonymStackProps) => {
   const [synonymModalOpen, setSynonymModalOpen] = useState<boolean>(false);
-  const [addSynonymData, setAddSynonymData] = useState<AddSynonymAPIRequestDto>({
-    wordId: -1,
-    synonymWordName: ''
-  });
-
-  const handleSynonymModalOpen = () => {
-    setAddSynonymData({
-      ...addSynonymData,
-      wordId: wordDetail.id
-    });
-    setSynonymModalOpen(true);
-  };
 
   return (
     <Card variant="outlined" attr={['silver-card']}>
@@ -76,58 +61,17 @@ export const SynonymStack = ({ wordDetail, setMessage, setWordDetail }: SynonymS
               })}
             </>
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-              <IconButton aria-label="類義語追加" onClick={(e) => handleSynonymModalOpen()}>
+              <IconButton aria-label="類義語追加" onClick={() => setSynonymModalOpen(true)}>
                 <AddCircleOutlineIcon />
               </IconButton>
             </Stack>
-            {/* TODO モーダル類は別コンポーネントに切り分けたい */}
-            <Modal isOpen={synonymModalOpen} setIsOpen={setSynonymModalOpen}>
-              <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h4" component="h4">
-                  {'類義語追加'}
-                </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  類義語名：
-                  <TextField
-                    error={addSynonymData.synonymWordName === wordDetail.name}
-                    helperText={addSynonymData.synonymWordName === wordDetail.name ? '元の単語は入力できません' : ' '}
-                    variant="outlined"
-                    defaultValue={addSynonymData.synonymWordName}
-                    onChange={(e) => {
-                      setAddSynonymData({
-                        ...addSynonymData,
-                        synonymWordName: e.target.value
-                      });
-                    }}
-                  />
-                </Typography>
-                <Button
-                  label={'類義語追加'}
-                  attr={'button-array'}
-                  variant="contained"
-                  color="primary"
-                  disabled={addSynonymData.synonymWordName === wordDetail.name}
-                  onClick={async (e) => {
-                    setSynonymModalOpen(false);
-                    const result = await addSynonymAPI({
-                      addSynonymData
-                    });
-                    setMessage && setMessage(result.message);
-                    // 更新確認後、単語の意味を再取得させる
-                    // TODO この再取得の部分は共通関数化できないかな
-                    if (result.isSuccess) {
-                      const newWordDetail = (await getWordDetailAPI({ id: String(wordDetail.id) }))
-                        .result as GetWordDetailAPIResponseDto;
-                      setWordDetail && setWordDetail(newWordDetail);
-                    }
-                    setAddSynonymData({
-                      wordId: -1,
-                      synonymWordName: ''
-                    });
-                  }}
-                />
-              </Box>
-            </Modal>
+            <AddSynonymModal
+              isOpen={synonymModalOpen}
+              setIsOpen={setSynonymModalOpen}
+              wordDetail={wordDetail}
+              setMessage={setMessage}
+              setWordDetail={setWordDetail}
+            />
           </Stack>
         )}
       </Box>
