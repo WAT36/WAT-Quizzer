@@ -168,7 +168,7 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
           });
           setMessage(result.message);
           setTotalCount && setTotalCount(result.total);
-          if (result.message.messageColor === 'common.black') {
+          if (result.isSuccess) {
             setDisplayTestData &&
               setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
           }
@@ -190,7 +190,7 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
           });
           setMessage(result.message);
           setTotalCount && setTotalCount(result.total);
-          if (result.message.messageColor === 'common.black') {
+          if (result.isSuccess) {
             setDisplayTestData &&
               setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
           }
@@ -212,7 +212,7 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
           });
           setMessage(result.message);
           setTotalCount && setTotalCount(result.total);
-          if (result.message.messageColor === 'common.black') {
+          if (result.isSuccess) {
             setDisplayTestData &&
               setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
           }

@@ -32,6 +32,15 @@ test.describe('englishBot / 英単語テスト', () => {
     await expect(answerButton).toBeHidden();
   });
 
+  test('条件に合う単語がないときは、エラーを表示して出題しない', async ({ page, api }) => {
+    api.on('GET', '/english/word/test', { status: 404, json: {} });
+
+    await page.getByRole('button', { name: 'Random Word' }).click();
+
+    await expect(page.getByText('エラー:条件に合致するデータはありません')).toBeVisible();
+    await expect(page.getByRole('button', { name: '答え' })).toBeHidden();
+  });
+
   test('不正解を登録できる', async ({ page, api }) => {
     await page.getByRole('button', { name: 'Random Word' }).click();
     await page.getByRole('button', { name: '答え' }).click();

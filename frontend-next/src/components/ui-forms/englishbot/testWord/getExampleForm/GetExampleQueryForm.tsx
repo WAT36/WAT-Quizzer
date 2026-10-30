@@ -47,9 +47,8 @@ export const GetExampleQueryForm = ({
           });
           setMessage(result.message);
           setTotalCount && setTotalCount(result.total);
-          if (result.message.messageColor === 'common.black') {
-            setDisplayTestData &&
-              setDisplayTestData(result.result as GetExampleTestDataAPIResponseDto);
+          if (result.isSuccess) {
+            setDisplayTestData && setDisplayTestData(result.result as GetExampleTestDataAPIResponseDto);
           }
         }}
       />
