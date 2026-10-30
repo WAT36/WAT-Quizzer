@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui-elements/card/Card';
-import { Item } from '@/components/ui-elements/item/Item';
+import { WordDetailItem } from '../wordDetailItem/WordDetailItem';
 import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -29,36 +29,10 @@ export const SynonymStack = ({ wordDetail, setMessage, onUpdated }: SynonymStack
           <Stack spacing={2}>
             <>
               {wordDetail.synonym_original.map((x, xindex) => {
-                return (
-                  <Item key={xindex}>
-                    <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography component="div">
-                        <Typography align="left" variant="h5" component="p">
-                          {x.synonym_word.name}
-                        </Typography>
-                      </Typography>
-                      {/* <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                          <Button label="編集" variant="outlined" onClick={(e) => handleOpen(index)}></Button>
-                        </Typography> */}
-                    </Typography>
-                  </Item>
-                );
+                return <WordDetailItem key={xindex} title={x.synonym_word.name} />;
               })}
               {wordDetail.synonym_word.map((x, xindex) => {
-                return (
-                  <Item key={xindex}>
-                    <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography component="div">
-                        <Typography align="left" variant="h5" component="p">
-                          {x.synonym_original.name}
-                        </Typography>
-                      </Typography>
-                      {/* <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                          <Button label="編集" variant="outlined" onClick={(e) => handleOpen(index)}></Button>
-                        </Typography> */}
-                    </Typography>
-                  </Item>
-                );
+                return <WordDetailItem key={xindex} title={x.synonym_original.name} />;
               })}
             </>
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>

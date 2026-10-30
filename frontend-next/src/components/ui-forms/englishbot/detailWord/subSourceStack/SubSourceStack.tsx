@@ -1,6 +1,5 @@
-import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
-import { Item } from '@/components/ui-elements/item/Item';
+import { WordDetailItem } from '../wordDetailItem/WordDetailItem';
 import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import type { Message } from 'quizzer-lib';
 import { useState } from 'react';
@@ -36,21 +35,12 @@ export const SubSourceStack = ({ wordDetail, setMessage, onUpdated }: SubSourceS
           <Stack spacing={2}>
             {wordDetail.word_subsource.map((x, index) => {
               return (
-                <Item key={index}>
-                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography component="div">
-                      <Typography align="left" variant="h5" component="p">
-                        {x.subsource}
-                      </Typography>
-                      <Typography align="left" sx={{ fontSize: 14 }} color="text.secondary" component="p">
-                        {`[${x.created_at.replaceAll('-', '/').replaceAll(/T.*/gi, '')}]`}
-                      </Typography>
-                    </Typography>
-                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(index)}></Button>
-                    </Typography>
-                  </Typography>
-                </Item>
+                <WordDetailItem
+                  key={index}
+                  title={x.subsource}
+                  bottomCaption={`[${x.created_at.replaceAll('-', '/').replaceAll(/T.*/gi, '')}]`}
+                  onEdit={() => handleOpen(index)}
+                />
               );
             })}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>

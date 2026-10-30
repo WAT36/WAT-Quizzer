@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui-elements/card/Card';
-import { Item } from '@/components/ui-elements/item/Item';
+import { WordDetailItem } from '../wordDetailItem/WordDetailItem';
 import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -27,29 +27,12 @@ export const DerivativeStack = ({ wordDetail, setMessage, onUpdated }: Derivativ
           <CircularProgress aria-label="読み込み中" />
         ) : (
           <Stack spacing={2}>
-            {wordDetail.derivative ? (
-              wordDetail.derivative.derivative_group.derivative.map((x, xindex) => {
-                return x.word_id !== wordDetail.id ? (
-                  // TODO ここも別コンポーネント化できない？
-                  <Item key={xindex}>
-                    <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography component="div">
-                        <Typography align="left" variant="h5" component="p">
-                          {x.word.name}
-                        </Typography>
-                      </Typography>
-                      {/* <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                          <Button label="編集" variant="outlined" onClick={(e) => handleOpen(index)}></Button>
-                        </Typography> */}
-                    </Typography>
-                  </Item>
-                ) : (
-                  <></>
-                );
-              })
-            ) : (
-              <></>
-            )}
+            {/* 派生語グループには元単語自身も含まれるので除く */}
+            {wordDetail.derivative?.derivative_group.derivative
+              .filter((x) => x.word_id !== wordDetail.id)
+              .map((x) => (
+                <WordDetailItem key={x.word_id} title={x.word.name} />
+              ))}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
               <IconButton aria-label="派生語追加" onClick={() => setDerivativeModalOpen(true)}>
                 <AddCircleOutlineIcon />

@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
-import { Item } from '@/components/ui-elements/item/Item';
+import { WordDetailItem } from '../wordDetailItem/WordDetailItem';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 import { Box, CircularProgress, IconButton, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { pullDownMenuProps } from '@/constants/pullDown';
@@ -80,20 +80,7 @@ export const SourceStack = ({ sourceList, wordDetail, setMessage, onUpdated }: S
         ) : (
           <Stack spacing={2}>
             {wordDetail.word_source.map((x, index) => {
-              return (
-                <Item key={index}>
-                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography component="div">
-                      <Typography align="left" variant="h5" component="p">
-                        {x.source.name}
-                      </Typography>
-                    </Typography>
-                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(index)} />
-                    </Typography>
-                  </Typography>
-                </Item>
-              );
+              return <WordDetailItem key={index} title={x.source.name} onEdit={() => handleOpen(index)} />;
             })}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
               <IconButton aria-label="出典追加" onClick={(e) => handleOpen(-1)}>

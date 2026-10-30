@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui-elements/card/Card';
-import { Item } from '@/components/ui-elements/item/Item';
+import { WordDetailItem } from '../wordDetailItem/WordDetailItem';
 import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -34,18 +34,7 @@ export const EtymologyStack = ({ wordDetail, setMessage, onUpdated }: EtymologyS
             {wordDetail.word_etymology.map((x, xindex) => {
               return (
                 // TODO ここも別コンポーネント化できない？
-                <Item key={xindex}>
-                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography component="div">
-                      <Typography align="left" variant="h5" component="p">
-                        {x.etymology.name}
-                      </Typography>
-                    </Typography>
-                    {/* <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                          <Button label="編集" variant="outlined" onClick={(e) => handleOpen(index)}></Button>
-                        </Typography> */}
-                  </Typography>
-                </Item>
+                <WordDetailItem key={xindex} title={x.etymology.name} />
               );
             })}
             <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>

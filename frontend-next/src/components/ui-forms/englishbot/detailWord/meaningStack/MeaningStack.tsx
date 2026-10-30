@@ -1,6 +1,5 @@
-import { Button } from '@/components/ui-elements/button/Button';
 import { Card } from '@/components/ui-elements/card/Card';
-import { Item } from '@/components/ui-elements/item/Item';
+import { WordDetailItem } from '../wordDetailItem/WordDetailItem';
 import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -35,21 +34,12 @@ export const MeaningStack = ({ posList, wordDetail, setMessage, onUpdated }: Mea
           <Stack spacing={2}>
             {wordDetail.mean.map((x, index) => {
               return (
-                <Item key={x.wordmean_id}>
-                  <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography component="div">
-                      <Typography align="left" sx={{ fontSize: 14 }} color="text.secondary" component="p">
-                        {`[${x.partsofspeech.name}]`}
-                      </Typography>
-                      <Typography align="left" variant="h5" component="p">
-                        {x.meaning}
-                      </Typography>
-                    </Typography>
-                    <Typography component="div" sx={{ marginLeft: 'auto' }}>
-                      <Button label="編集" variant="outlined" onClick={(e) => handleOpen(index)}></Button>
-                    </Typography>
-                  </Typography>
-                </Item>
+                <WordDetailItem
+                  key={x.wordmean_id}
+                  title={x.meaning}
+                  topCaption={`[${x.partsofspeech.name}]`}
+                  onEdit={() => handleOpen(index)}
+                />
               );
             })}
             {/* 意味の新規追加ボタン */}
