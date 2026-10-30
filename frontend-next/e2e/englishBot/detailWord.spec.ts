@@ -263,6 +263,71 @@ test.describe('englishBot / 単語詳細', () => {
     await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
   });
 
+  test('出典を更新すると、更新後の単語情報を取り直して表示される', async ({ page, api }) => {
+    api.on('POST', '/english/word/source', { status: 201, json: {} });
+    // 出典更新の後に取り直したときは、更新後の出典になっている
+    api.on('GET', `/english/word/${wordDetail.id}`, () => ({
+      json:
+        api.requests('POST', '/english/word/source').length > 0
+          ? { ...wordDetail, word_source: [{ source: { id: 2, name: '英検準1級' } }] }
+          : wordDetail
+    }));
+
+    await expect(page.getByText('TOEIC', { exact: true })).toBeVisible();
+
+    // 出典の編集ボタンは、意味(2件)の編集ボタンの後に並ぶ
+    await page.getByRole('button', { name: '編集' }).nth(2).click();
+    await expect(page.getByRole('combobox', { name: '出典' })).toHaveText('TOEIC');
+    await page.getByRole('combobox', { name: '出典' }).click();
+    await page.getByRole('option', { name: '英検準1級' }).click();
+    await page.getByRole('button', { name: '出典更新' }).click();
+
+    await expect(page.getByText('英検準1級', { exact: true })).toBeVisible();
+    expect(api.requests('POST', '/english/word/source')[0].body).toEqual({
+      wordId: wordDetail.id,
+      oldSourceId: 1,
+      newSourceId: 2
+    });
+    expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
+  });
+
+  test('出典を追加すると、oldSourceId=-1で登録APIが呼ばれる', async ({ page, api }) => {
+    api.on('POST', '/english/word/source', { status: 201, json: {} });
+
+    await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
+
+    await page.getByRole('button', { name: '出典追加', exact: true }).click();
+    // 新規追加では削除できない
+    await expect(page.getByRole('button', { name: '出典削除' })).toBeDisabled();
+    await expect(page.getByRole('combobox', { name: '出典' })).toHaveText('選択なし');
+    await page.getByRole('combobox', { name: '出典' }).click();
+    await page.getByRole('option', { name: '英検準1級' }).click();
+    await page.getByRole('button', { name: '出典追加', exact: true }).last().click();
+
+    await expect(page.getByRole('combobox', { name: '出典' })).toBeHidden();
+    expect(api.requests('POST', '/english/word/source')[0].body).toEqual({
+      wordId: wordDetail.id,
+      oldSourceId: -1,
+      newSourceId: 2
+    });
+    // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
+    await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
+  });
+
+  test('出典を削除すると、削除APIが呼ばれて単語情報を取り直す', async ({ page, api }) => {
+    api.on('DELETE', '/english/word/source', { json: {} });
+
+    await expect(page.getByText('TOEIC', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: '編集' }).nth(2).click();
+    await page.getByRole('button', { name: '出典削除' }).click();
+
+    await expect(page.getByRole('combobox', { name: '出典' })).toBeHidden();
+    expect(api.requests('DELETE', '/english/word/source')[0].body).toEqual({ word_id: wordDetail.id, source_id: 1 });
+    // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
+    await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
+  });
+
   test('サブ出典を更新すると、更新後の単語情報を取り直して表示される', async ({ page, api }) => {
     api.on('POST', '/english/word/subsource', { status: 201, json: {} });
     // サブ出典更新の後に取り直したときは、更新後のサブ出典になっている
