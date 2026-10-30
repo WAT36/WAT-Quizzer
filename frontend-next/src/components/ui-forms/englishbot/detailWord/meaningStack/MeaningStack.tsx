@@ -16,8 +16,8 @@ interface MeaningStackProps {
 
 export const MeaningStack = ({ posList, wordDetail, setMessage, onUpdated }: MeaningStackProps) => {
   const [meaningModalopen, setMeaningModalOpen] = useState(false);
-  // TODO これいる？（sourcestackも）
-  const [selectedMeanIndex, setSelectedMeanIndex] = useState<number>(-1); //仮
+  // 編集する意味のwordDetail.mean上の番号。-1は新規追加
+  const [selectedMeanIndex, setSelectedMeanIndex] = useState<number>(-1);
   const handleOpen = (wordMeanIndex: number) => {
     setSelectedMeanIndex(wordMeanIndex);
     setMeaningModalOpen(true);

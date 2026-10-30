@@ -58,7 +58,8 @@ export const SourceStack = ({ sourceList, wordDetail, setMessage, onUpdated }: S
   // TODO word-sourceの構造変えたらここも直したい
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [editWordSourceData, setEditWordSourceData] = useState<EditWordSourceAPIRequestDto>(initEditWordSourceData);
-  const [selectedWordSourceIndex, setSelectedWordSourceIndex] = useState<number>(-1); //仮
+  // 編集する出典のwordDetail.word_source上の番号。-1は新規追加
+  const [selectedWordSourceIndex, setSelectedWordSourceIndex] = useState<number>(-1);
 
   const handleOpen = (index: number) => {
     setSourceModalOpen(true);
