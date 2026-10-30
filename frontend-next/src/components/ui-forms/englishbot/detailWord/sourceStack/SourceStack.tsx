@@ -21,7 +21,6 @@ interface SourceStackProps {
 
 // 出典プルダウン表示、「その他」だったら入力用テキストボックスを出す
 const displaySourceInput = (
-  i: number, // TODO iはキーだけ使ってるんでuuidとかで代用できるので消す
   sourceList: PullDownOptionDto[],
   editWordSourceData: EditWordSourceAPIRequestDto,
   setEditWordSourceData: React.Dispatch<React.SetStateAction<EditWordSourceAPIRequestDto>>
@@ -32,7 +31,7 @@ const displaySourceInput = (
       id="edit-source-select"
       defaultValue={editWordSourceData.oldSourceId || -1}
       label="source"
-      key={i}
+      key="edit-source-select"
       sx={{ width: 1 }}
       MenuProps={pullDownMenuProps}
       onChange={(e) => {
@@ -95,7 +94,7 @@ export const SourceStack = ({ sourceList, wordDetail, setMessage, onUpdated }: S
                 </Typography>
                 <Typography sx={{ mt: 2 }}>
                   出典：
-                  {displaySourceInput(3, sourceList, editWordSourceData, setEditWordSourceData)}
+                  {displaySourceInput(sourceList, editWordSourceData, setEditWordSourceData)}
                 </Typography>
                 <Button
                   label={'出典' + (selectedWordSourceIndex === -1 ? '追加' : '更新')}
