@@ -11,7 +11,7 @@ import type {
   GetEnglishWordTestDataAPIResponseDto,
   PullDownOptionDto
 } from 'quizzer-lib';
-import { getDateForSqlString } from 'quizzer-lib';
+import { getDateForSqlString, WORD_TEST_TYPE } from 'quizzer-lib';
 import { getEnglishWordTestDataAPI } from '@/utils/api-wrapper';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
 import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
@@ -27,8 +27,7 @@ interface GetWordQueryFormProps {
 export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTotalCount }: GetWordQueryFormProps) => {
   const [queryOfTestData, setQueryOfTestData] = useState<GetEnglishWordTestDataAPIRequestDto>({ format: 'random' });
   const setMessage = useSetRecoilState(messageState);
-  // TODO テスト形式の値の管理方法　他のファイルでプロパティ形式で管理した方が良い？ constant.tsみたいなの作って　quizzeer側にもこんなのあったよね
-  const [testType, setTestType] = useState<string>('0');
+  const [testType, setTestType] = useState<string>(String(WORD_TEST_TYPE.NAME));
 
   const isRangeInvalid =
     queryOfTestData.result_from !== undefined &&
@@ -143,7 +142,7 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
             テスト形式：
             <RadioGroup
               radioButtonProps={englishTestTypeRadioButton}
-              defaultValue={'0'}
+              defaultValue={String(WORD_TEST_TYPE.NAME)}
               setQueryofQuizStater={(value: string) => {
                 setTestType(value);
               }}

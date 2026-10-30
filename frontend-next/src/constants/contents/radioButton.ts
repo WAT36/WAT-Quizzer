@@ -1,14 +1,16 @@
+import { WORD_TEST_TYPE } from 'quizzer-lib';
+
 export const englishTestTypeRadioButton = [
   {
-    value: '0',
+    value: String(WORD_TEST_TYPE.NAME),
     label: '単語名'
   },
   {
-    value: '1',
+    value: String(WORD_TEST_TYPE.FOUR_CHOICE),
     label: '四択'
   },
   {
-    value: '2',
+    value: String(WORD_TEST_TYPE.MEANING),
     label: '意味当て'
   }
 ];

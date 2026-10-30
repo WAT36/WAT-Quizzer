@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { RecoilRoot } from 'recoil';
+import { WORD_TEST_TYPE } from 'quizzer-lib';
 import { FourChoiceTestContent } from './FourChoiceTestContent';
 import { sampleWordTestData } from '../testWordStoryData';
 
@@ -18,6 +19,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Main: Story = {
   args: {
-    displayTestData: { ...sampleWordTestData, testType: '1' }
+    displayTestData: { ...sampleWordTestData, testType: String(WORD_TEST_TYPE.FOUR_CHOICE) }
   }
 };
