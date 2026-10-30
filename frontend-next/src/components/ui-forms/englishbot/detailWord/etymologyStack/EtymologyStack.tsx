@@ -33,7 +33,6 @@ export const EtymologyStack = ({ wordDetail, setMessage, onUpdated }: EtymologyS
           <Stack spacing={2}>
             {wordDetail.word_etymology.map((x, xindex) => {
               return (
-                // TODO ここも別コンポーネント化できない？
                 <WordDetailItem key={xindex} title={x.etymology.name} />
               );
             })}
