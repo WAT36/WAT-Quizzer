@@ -14,7 +14,7 @@ WAT-Quizzer のフロントエンド。[Next.js](https://nextjs.org/)（Pages Ro
 | `/storybook` | Storybook への導線ページ |
 | `/404` | 404 ページ |
 
-`src/components/`（`ui-elements` / `ui-forms` / `ui-parts` / `templates` / `unused`）、`src/hooks/`、`src/contexts/`、`src/atoms/`（Recoil）、`src/utils/` に実装が分かれる。API 呼び出しやモックデータ、型は `../quizzer-lib`（backend-nest / batch と共有のパッケージ）を利用する。
+`src/components/`（`ui-elements` / `ui-forms` / `ui-parts` / `templates` / `unused`）、`src/hooks/`、`src/contexts/`、`src/atoms/`（Recoil）、`src/constants/`（プルダウン・ラジオボタンの選択肢などの定数）、`src/utils/` に実装が分かれる。API 呼び出しやモックデータ、型は `../quizzer-lib`（backend-nest / batch と共有のパッケージ）を利用する。
 
 ## 主要ライブラリ
 

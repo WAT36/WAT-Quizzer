@@ -21,7 +21,7 @@
 パッケージマネージャは [pnpm](https://pnpm.io/) を使用する（バージョンはルート `package.json` の `packageManager` を参照）。依存関係はリポジトリルートで一括インストールする。
 
 ```bash
-pnpm install             # 全ワークスペース（backend-nest / frontend-next / quizzer-lib / batch）の依存をインストール
+pnpm install             # 全ワークスペース（backend-nest / frontend-next / quizzer-lib / batch / infra）の依存をインストール
 ```
 
 各サブプロジェクトを個別に動かす場合はルートの `package.json` に以下のスクリプトがある。
