@@ -104,11 +104,32 @@ export class CategoryService {
           HttpStatus.NOT_FOUND,
         );
       }
-      const record = await prisma.category_parent_child.create({
-        data: {
+      const existing = await prisma.category_parent_child.findFirst({
+        where: {
+          parent_category_id: parent.id,
+          child_category_id: child.id,
+          deleted_at: null,
+        },
+      });
+      if (existing) {
+        throw new HttpException(
+          '既に登録されている親子関係です',
+          HttpStatus.CONFLICT,
+        );
+      }
+      // 削除は論理削除のため、過去に削除した親子関係はユニーク制約に残っている。その場合は復活させる
+      const record = await prisma.category_parent_child.upsert({
+        where: {
+          parent_category_id_child_category_id: {
+            parent_category_id: parent.id,
+            child_category_id: child.id,
+          },
+        },
+        create: {
           parent_category_id: parent.id,
           child_category_id: child.id,
         },
+        update: { deleted_at: null },
       });
 
       // 子カテゴリが付与されている問題に親カテゴリが付与されていなければ付与する
