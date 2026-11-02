@@ -11,6 +11,11 @@ interface AccuracyChartProps {
 }
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+// 1データ(1行)あたりの高さ(px)
+const ROW_HEIGHT = 50;
+// 横軸の目盛りとその余白の高さ(px)
+const X_AXIS_HEIGHT = 40;
+
 export const AccuracyChart = ({ accuracyData, order }: AccuracyChartProps) => {
   const chartRef = useChartAriaLabel('カテゴリ別正答率グラフ');
   const { gridColor, textColor } = useChartThemeColors();
@@ -50,9 +55,9 @@ export const AccuracyChart = ({ accuracyData, order }: AccuracyChartProps) => {
     ]
   };
 
-  // グラフ領域の縦の長さ（＝50 * データの個数）
-  // TODO データたくさんある場合は見やすいが　１個の時は逆に見にくかった　ここの計算式を策定してほしい
-  const graph_height = 50 * data.datasets[0].data.length;
+  // グラフ領域の縦の長さ（＝横軸の目盛り部分 + 1行の高さ * データの個数）
+  // 横軸の目盛り部分はデータの個数によらず一定なので別に足し、データが少なくても1行の高さが変わらないようにする
+  const graph_height = X_AXIS_HEIGHT + ROW_HEIGHT * data.datasets[0].data.length;
 
   const options = {
     indexAxis: 'y' as const,
@@ -66,7 +71,8 @@ export const AccuracyChart = ({ accuracyData, order }: AccuracyChartProps) => {
     },
     scales: {
       x: { grid: { color: gridColor }, ticks: { color: textColor } },
-      y: { grid: { color: gridColor }, ticks: { color: textColor } }
+      // カテゴリ名を間引かずにすべて表示する
+      y: { grid: { color: gridColor }, ticks: { color: textColor, autoSkip: false } }
     },
     maintainAspectRatio: false
   };
