@@ -70,7 +70,8 @@ export const AccuracyChart = ({ accuracyData, order }: AccuracyChartProps) => {
       }
     },
     scales: {
-      x: { grid: { color: gridColor }, ticks: { color: textColor } },
+      // 正解率(%)なので、データによらず常に0〜100で表示する
+      x: { min: 0, max: 100, grid: { color: gridColor }, ticks: { color: textColor } },
       // カテゴリ名を間引かずにすべて表示する
       y: { grid: { color: gridColor }, ticks: { color: textColor, autoSkip: false } }
     },
