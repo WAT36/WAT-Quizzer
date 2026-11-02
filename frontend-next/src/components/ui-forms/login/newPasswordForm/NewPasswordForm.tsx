@@ -4,6 +4,7 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { authNewPasswordSigninAPI } from 'quizzer-lib';
+import type { SignInResult } from 'quizzer-lib';
 import { LAST_USERNAME_STORAGE_KEY } from '@/constants/auth';
 
 interface NewPasswordFormProps {
@@ -29,15 +30,16 @@ export const NewPasswordForm = ({ username, session }: NewPasswordFormProps) => 
           session
         }
       });
-      // TODO 型定義する
-      const data = res.result as any;
+      const data = res.result as SignInResult | undefined;
 
       // accessTokenの保持はauthNewPasswordSigninAPI内で行われる
       if (data?.status === 'SUCCESS') {
         localStorage.setItem(LAST_USERNAME_STORAGE_KEY, username);
         void router.push('/');
       } else {
-        setMessage('不明な応答が返されました' + data?.error + ' - ' + data?.message);
+        // 200以外のときはエラー内容のbodyが返る
+        const errorBody = res.result as { error?: string; message?: string } | undefined;
+        setMessage('不明な応答が返されました' + errorBody?.error + ' - ' + errorBody?.message);
       }
     } catch (err: any) {
       console.error(err);

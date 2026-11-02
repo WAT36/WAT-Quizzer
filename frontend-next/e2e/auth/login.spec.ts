@@ -47,12 +47,16 @@ test.describe('認証 / ログイン', () => {
     await page.getByLabel('パスワード').fill('wrong-password');
     await page.getByRole('button', { name: 'ログイン' }).click();
 
-    await expect(page.getByText('ログイン失敗: NotAuthorizedException - Incorrect username or password.')).toBeVisible();
+    await expect(
+      page.getByText('ログイン失敗: NotAuthorizedException - Incorrect username or password.')
+    ).toBeVisible();
     await expect(page).toHaveURL(/\/login\/?$/);
   });
 
   test('新しいパスワードが必要な場合は、パスワード設定のフォームが表示される', async ({ page, api }) => {
-    api.on('POST', '/auth/signin', { json: { status: 'NEW_PASSWORD_REQUIRED', session: 'session-123', username: 'wat' } });
+    api.on('POST', '/auth/signin', {
+      json: { status: 'NEW_PASSWORD_REQUIRED', session: 'session-123', username: 'wat' }
+    });
 
     await page.goto('/login/');
     await page.getByLabel('ユーザー名').fill('wat');
@@ -61,6 +65,54 @@ test.describe('認証 / ログイン', () => {
 
     await expect(page.getByText('新しいパスワードでログイン')).toBeVisible();
     await expect(page.getByLabel('新しいパスワード')).toBeVisible();
+  });
+
+  test('新しいパスワードを設定すると、トップ画面に移る', async ({ page, api }) => {
+    api.on('POST', '/auth/signin', {
+      json: { status: 'NEW_PASSWORD_REQUIRED', session: 'session-123', username: 'wat' }
+    });
+    api.on('POST', '/auth/newpassword', { json: { status: 'SUCCESS', accessToken: createDummyAccessToken() } });
+    // トップ画面で読み込む格言・todo
+    api.on('GET', '/saying', { json: { id: 1, saying: '継続は力なり' } });
+    api.on('GET', '/todo', { json: [] });
+    api.on('GET', /^\/todo\/check-status\/\d{4}-\d{2}-\d{2}$/, { json: { completedTodoIds: [] } });
+
+    await page.goto('/login/');
+    await page.getByLabel('ユーザー名').fill('wat');
+    await page.getByLabel('パスワード').fill('temporary-password');
+    await page.getByRole('button', { name: 'ログイン' }).click();
+    await page.getByLabel('新しいパスワード').fill('new-password123');
+    await page.getByRole('button', { name: 'パスワード変更してログイン' }).click();
+
+    await expect(page).toHaveURL(/\/$/);
+    expect(api.requests('POST', '/auth/newpassword')[0].body).toEqual({
+      username: 'wat',
+      password: 'new-password123',
+      session: 'session-123'
+    });
+    expect(await page.evaluate((key) => localStorage.getItem(key), LAST_USERNAME_STORAGE_KEY)).toBe('wat');
+  });
+
+  test('新しいパスワードの設定に失敗すると、失敗した理由が表示される', async ({ page, api }) => {
+    api.on('POST', '/auth/signin', {
+      json: { status: 'NEW_PASSWORD_REQUIRED', session: 'session-123', username: 'wat' }
+    });
+    api.on('POST', '/auth/newpassword', {
+      status: 400,
+      json: { error: 'InvalidPasswordException', message: 'Password does not conform to policy.' }
+    });
+
+    await page.goto('/login/');
+    await page.getByLabel('ユーザー名').fill('wat');
+    await page.getByLabel('パスワード').fill('temporary-password');
+    await page.getByRole('button', { name: 'ログイン' }).click();
+    await page.getByLabel('新しいパスワード').fill('short');
+    await page.getByRole('button', { name: 'パスワード変更してログイン' }).click();
+
+    await expect(
+      page.getByText('不明な応答が返されましたInvalidPasswordException - Password does not conform to policy.')
+    ).toBeVisible();
+    await expect(page).toHaveURL(/\/login\/?$/);
   });
 });
 
@@ -89,7 +141,10 @@ test.describe('認証 / 再ログイン', () => {
     await page.goto('/englishBot/testWord/');
   });
 
-  test('操作中に認証が切れると再ログインのモーダルが出て、再ログイン後に元の操作が続けられる', async ({ page, api }) => {
+  test('操作中に認証が切れると再ログインのモーダルが出て、再ログイン後に元の操作が続けられる', async ({
+    page,
+    api
+  }) => {
     await page.getByRole('button', { name: 'Random Word' }).click();
 
     const modal = reauthModal(page);
