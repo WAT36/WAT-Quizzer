@@ -2,7 +2,7 @@ import React from 'react';
 import { CardContent, Input, Typography } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
 import type { EditQuizAPIRequestDto } from 'quizzer-lib';
-import { initEditQuizRequestData, insertAtArray } from 'quizzer-lib';
+import { initEditQuizRequestData } from 'quizzer-lib';
 import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useSetRecoilState } from 'recoil';
@@ -33,8 +33,7 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
               id="question"
               value={editQuizRequestData.question || ''}
               onChange={(e) => {
-                // TODO ここのany
-                setEditQuizRequestData((prev: any) => ({
+                setEditQuizRequestData((prev) => ({
                   ...prev,
                   question: e.target.value
                 }));
@@ -50,7 +49,7 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
               id="answer"
               value={editQuizRequestData.answer || ''}
               onChange={(e) => {
-                setEditQuizRequestData((prev: any) => ({
+                setEditQuizRequestData((prev) => ({
                   ...prev,
                   answer: e.target.value
                 }));
@@ -66,7 +65,7 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
               id="category"
               value={editQuizRequestData.category || ''}
               onChange={(e) => {
-                setEditQuizRequestData((prev: any) => ({
+                setEditQuizRequestData((prev) => ({
                   ...prev,
                   category: e.target.value
                 }));
@@ -83,7 +82,7 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
               id="imgFile"
               value={editQuizRequestData.img_file || ''}
               onChange={(e) => {
-                setEditQuizRequestData((prev: any) => ({
+                setEditQuizRequestData((prev) => ({
                   ...prev,
                   img_file: e.target.value
                 }));
@@ -100,7 +99,7 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
               id="relatedBasisNum"
               value={editQuizRequestData.matched_basic_quiz_id || ''}
               onChange={(e) => {
-                setEditQuizRequestData((prev: any) => ({
+                setEditQuizRequestData((prev) => ({
                   ...prev,
                   matched_basic_quiz_id: e.target.value
                 }));
@@ -116,7 +115,7 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
               id="description"
               value={editQuizRequestData.explanation || ''}
               onChange={(e) => {
-                setEditQuizRequestData((prev: any) => ({
+                setEditQuizRequestData((prev) => ({
                   ...prev,
                   explanation: e.target.value
                 }));
@@ -143,12 +142,11 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
                         editQuizRequestData.dummyChoice ? editQuizRequestData.dummyChoice[index].isCorrect : false
                       }
                       onChange={(e) => {
-                        setEditQuizRequestData((prev: any) => ({
+                        setEditQuizRequestData((prev) => ({
                           ...prev,
-                          dummyChoice: insertAtArray(prev.dummyChoice, index, {
-                            ...prev.dummyChoice[index],
-                            isCorrect: e.target.checked
-                          })
+                          dummyChoice: prev.dummyChoice?.map((x, i) =>
+                            i === index ? { ...x, isCorrect: e.target.checked } : x
+                          )
                         }));
                       }}
                     />
@@ -159,12 +157,11 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
                       id={inputId}
                       value={choice.sentense || ''}
                       onChange={(e) => {
-                        setEditQuizRequestData((prev: any) => ({
+                        setEditQuizRequestData((prev) => ({
                           ...prev,
-                          dummyChoice: insertAtArray(prev.dummyChoice, index, {
-                            ...prev.dummyChoice[index],
-                            sentense: e.target.value
-                          })
+                          dummyChoice: prev.dummyChoice?.map((x, i) =>
+                            i === index ? { ...x, sentense: e.target.value } : x
+                          )
                         }));
                       }}
                     />
@@ -185,11 +182,16 @@ export const EditQuizForm = ({ editQuizRequestData, setEditQuizRequestData }: Ed
           // カテゴリを祖先カテゴリも含めて展開してから送信
           let expandedCategory = editQuizRequestData.category;
           if (editQuizRequestData.category && editQuizRequestData.file_num !== -1) {
-            const categories = editQuizRequestData.category.split(',').map((s) => s.trim()).filter(Boolean);
+            const categories = editQuizRequestData.category
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean);
             const expanded = await expandCategoriesWithAncestors(categories, editQuizRequestData.file_num);
             expandedCategory = expanded.join(',');
           }
-          const result = await editQuizAPI({ editQuizRequestData: { ...editQuizRequestData, category: expandedCategory } });
+          const result = await editQuizAPI({
+            editQuizRequestData: { ...editQuizRequestData, category: expandedCategory }
+          });
           setMessage(result.message);
           if (result.isSuccess) {
             setEditQuizRequestData({

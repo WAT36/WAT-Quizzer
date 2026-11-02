@@ -4,7 +4,13 @@ import type { CategoryParentChildAPIResponseDto } from 'quizzer-lib';
 
 // 「非同期処理」の親カテゴリが「JavaScript」という親子関係
 const categoryParentChildList: CategoryParentChildAPIResponseDto[] = [
-  { id: 1, parent_category_id: 1, parent_category_name: 'JavaScript', child_category_id: 2, child_category_name: '非同期処理' }
+  {
+    id: 1,
+    parent_category_id: 1,
+    parent_category_name: 'JavaScript',
+    child_category_id: 2,
+    child_category_name: '非同期処理'
+  }
 ];
 
 test.describe('quizzer / 問題検索 → 編集', () => {
@@ -63,6 +69,38 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     // 更新が終わると入力欄が空になり、続けて更新できない
     await expect(page.getByLabel('問題文')).toHaveValue('');
     await expect(page.getByRole('button', { name: '更新' })).toBeDisabled();
+  });
+
+  test('四択問題では、ダミー選択肢の文と多答設定を編集して更新できる', async ({ page, api }) => {
+    api.on('GET', '/quiz', {
+      json: {
+        ...target,
+        format_id: 3,
+        quiz_dummy_choice: [
+          { dummy_choice_sentense: 'pending', is_corrected: false },
+          { dummy_choice_sentense: 'rejected', is_corrected: false },
+          { dummy_choice_sentense: 'settled', is_corrected: false }
+        ]
+      }
+    });
+
+    await page.goto('/quizzer/editQuiz/?file_num=1&quiz_num=2');
+    await expect(page.getByLabel('ダミー選択肢2：')).toHaveValue('rejected');
+
+    await page.getByLabel('ダミー選択肢2：').fill('resolved');
+    await page.getByLabel('(多答設定、この選択肢も正解にする)').nth(2).check();
+    await page.getByRole('button', { name: '更新' }).click();
+
+    await expect(page.getByText('Success!! 問題を更新できました!')).toBeVisible();
+    // 編集した選択肢だけが変わり、ほかの選択肢はそのまま送られる
+    expect(api.requests('POST', '/quiz/edit')[0].body).toMatchObject({
+      format_id: 3,
+      dummyChoice: [
+        { sentense: 'pending', isCorrect: false },
+        { sentense: 'resolved', isCorrect: false },
+        { sentense: 'settled', isCorrect: true }
+      ]
+    });
   });
 
   test('編集画面から戻ると、前回の検索条件で自動的に再検索される', async ({ page, api }) => {
