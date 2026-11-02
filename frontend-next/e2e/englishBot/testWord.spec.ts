@@ -59,6 +59,13 @@ test.describe('englishBot / 英単語テスト', () => {
     expect(api.requests('GET', '/english/word/test')[0].query).toMatchObject({ format: 'lru', source: '1' });
   });
 
+  test('REVIEWで出題すると、format=reviewでAPIが呼ばれる', async ({ page, api }) => {
+    await page.getByRole('button', { name: 'REVIEW' }).click();
+
+    await expect(page.getByText('abandon')).toBeVisible();
+    expect(api.requests('GET', '/english/word/test')[0].query).toMatchObject({ format: 'review' });
+  });
+
   test('出典が1件だけでも選択できる', async ({ page, api }) => {
     api.on('GET', '/english/source', { json: [sources[1]] });
     await page.reload();

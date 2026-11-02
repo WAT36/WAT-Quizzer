@@ -24,6 +24,13 @@ interface GetWordQueryFormProps {
   setTotalCount?: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
+// 出題ボタン。ボタンを増やすときはここに追加する
+const testDataButtons: { label: string; format: GetEnglishWordTestDataAPIRequestDto['format'] }[] = [
+  { label: 'Random Word', format: 'random' },
+  { label: 'LRU', format: 'lru' },
+  { label: 'REVIEW', format: 'review' }
+];
+
 export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTotalCount }: GetWordQueryFormProps) => {
   const [queryOfTestData, setQueryOfTestData] = useState<GetEnglishWordTestDataAPIRequestDto>({ format: 'random' });
   const setMessage = useSetRecoilState(messageState);
@@ -33,6 +40,18 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
     queryOfTestData.result_from !== undefined &&
     queryOfTestData.result_to !== undefined &&
     queryOfTestData.result_from > queryOfTestData.result_to;
+
+  // 指定した出題形式でテストデータを取得して表示する
+  const handleGetTestData = async (format: GetEnglishWordTestDataAPIRequestDto['format']) => {
+    setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
+    const result = await getEnglishWordTestDataAPI({ getEnglishWordTestData: { ...queryOfTestData, format } });
+    setMessage(result.message);
+    setTotalCount && setTotalCount(result.total);
+    if (result.isSuccess) {
+      setDisplayTestData &&
+        setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
+    }
+  };
 
   return (
     <>
@@ -150,73 +169,17 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
           </FormControl>
         </FormGroup>
       </Card>
-      {/* TODO API共通化した結果処理同じようなボタン２つ並ぶことになった　これコンポーネントまとめれないか？  */}
-      <Button
-        label={'Random Word'}
-        attr={'button-array'}
-        variant="contained"
-        color="primary"
-        disabled={isRangeInvalid}
-        onClick={async (e) => {
-          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-          const result = await getEnglishWordTestDataAPI({
-            getEnglishWordTestData: {
-              ...queryOfTestData,
-              format: 'random'
-            }
-          });
-          setMessage(result.message);
-          setTotalCount && setTotalCount(result.total);
-          if (result.isSuccess) {
-            setDisplayTestData &&
-              setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
-          }
-        }}
-      />
-      <Button
-        label={'LRU'}
-        attr={'button-array'}
-        variant="contained"
-        color="primary"
-        disabled={isRangeInvalid}
-        onClick={async (e) => {
-          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-          const result = await getEnglishWordTestDataAPI({
-            getEnglishWordTestData: {
-              ...queryOfTestData,
-              format: 'lru'
-            }
-          });
-          setMessage(result.message);
-          setTotalCount && setTotalCount(result.total);
-          if (result.isSuccess) {
-            setDisplayTestData &&
-              setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
-          }
-        }}
-      />
-      <Button
-        label={'REVIEW'}
-        attr={'button-array'}
-        variant="contained"
-        color="primary"
-        disabled={isRangeInvalid}
-        onClick={async (e) => {
-          setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-          const result = await getEnglishWordTestDataAPI({
-            getEnglishWordTestData: {
-              ...queryOfTestData,
-              format: 'review'
-            }
-          });
-          setMessage(result.message);
-          setTotalCount && setTotalCount(result.total);
-          if (result.isSuccess) {
-            setDisplayTestData &&
-              setDisplayTestData({ ...(result.result as GetEnglishWordTestDataAPIResponseDto), testType });
-          }
-        }}
-      />
+      {testDataButtons.map((x) => (
+        <Button
+          key={x.format}
+          label={x.label}
+          attr={'button-array'}
+          variant="contained"
+          color="primary"
+          disabled={isRangeInvalid}
+          onClick={() => handleGetTestData(x.format)}
+        />
+      ))}
     </>
   );
 };
