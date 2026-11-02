@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { WordSummaryChart } from './WordSummaryChart';
-import { initGetWordSummaryData } from 'quizzer-lib';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -17,9 +16,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const Main: Story = {
-  args: {
-    wordSummaryData: initGetWordSummaryData
-  }
-};
+// api-wrapper.ts の NEXT_PUBLIC_MOCK_MODE=true 設定（.storybook/main.ts）により
+// getWordSummaryDataAPI は自動的にモックデータへ差し替わる
+export const Main: Story = {};

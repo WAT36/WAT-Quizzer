@@ -5,14 +5,22 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
 import { useChartThemeColors } from '@/hooks/useChartThemeColors';
+import { useEffect, useState } from 'react';
+import { getWordSummaryDataAPI } from '@/utils/api-wrapper';
 ChartJS.register(ArcElement, Tooltip, Legend);
-interface WordSummaryChartProps {
-  wordSummaryData: WordSummaryApiResponse[];
-}
 
-export const WordSummaryChart = ({ wordSummaryData }: WordSummaryChartProps) => {
+export const WordSummaryChart = () => {
   const chartRef = useChartAriaLabel('単熟語登録数グラフ');
   const { textColor } = useChartThemeColors();
+  const [wordSummaryData, setWordSummaryData] = useState<WordSummaryApiResponse[]>([]);
+
+  useEffect(() => {
+    void (async () => {
+      const result = await getWordSummaryDataAPI();
+      Array.isArray(result.result) && setWordSummaryData(result.result as WordSummaryApiResponse[]);
+    })();
+  }, []);
+
   const data = {
     labels: wordSummaryData.filter((x) => x.name !== 'all').map((x) => x.name),
     datasets: [

@@ -5,16 +5,26 @@ import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { useChartAriaLabel } from '@/hooks/useChartAriaLabel';
 import { useChartThemeColors } from '@/hooks/useChartThemeColors';
-
-interface TestLogPastWeekChartProps {
-  wordTestPastWeekStatisticsData: GetPastWeekTestStatisticsAPIResponseDto[];
-}
+import { useEffect, useState } from 'react';
+import { getWordTestStatisticsWeekDataAPI } from '@/utils/api-wrapper';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export const TestLogPastWeekChart = ({ wordTestPastWeekStatisticsData }: TestLogPastWeekChartProps) => {
+export const TestLogPastWeekChart = () => {
   const chartRef = useChartAriaLabel('過去１週間の回答数グラフ');
   const { gridColor, textColor } = useChartThemeColors();
+  const [wordTestPastWeekStatisticsData, setWordTestPastWeekStatisticsData] = useState<
+    GetPastWeekTestStatisticsAPIResponseDto[]
+  >([]);
+
+  useEffect(() => {
+    void (async () => {
+      const result = await getWordTestStatisticsWeekDataAPI({});
+      Array.isArray(result.result) &&
+        setWordTestPastWeekStatisticsData(result.result as GetPastWeekTestStatisticsAPIResponseDto[]);
+    })();
+  }, []);
+
   const data = {
     labels: wordTestPastWeekStatisticsData.map((x) => {
       return x.date;

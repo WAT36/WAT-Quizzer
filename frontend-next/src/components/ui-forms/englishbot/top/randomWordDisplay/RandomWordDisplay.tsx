@@ -1,12 +1,25 @@
 import { Card } from '@/components/ui-elements/card/Card';
 import { CardContent, CircularProgress, Typography } from '@mui/material';
 import type { GetRandomWordAPIResponse } from 'quizzer-lib';
+import { useEffect, useState } from 'react';
+import { getRandomWordAPI } from '@/utils/api-wrapper';
 
-interface RandomWordDisplayProps {
-  wordData: GetRandomWordAPIResponse;
-}
+export const RandomWordDisplay = () => {
+  const [wordData, setWordData] = useState<GetRandomWordAPIResponse>({
+    id: -1,
+    name: '',
+    pronounce: '',
+    mean: [],
+    word_source: []
+  });
 
-export const RandomWordDisplay = ({ wordData }: RandomWordDisplayProps) => {
+  useEffect(() => {
+    void (async () => {
+      const result = await getRandomWordAPI();
+      !Array.isArray(result.result) && setWordData(result.result as GetRandomWordAPIResponse);
+    })();
+  }, []);
+
   return (
     <Card variant="outlined" attr={['margin-vertical']}>
       <CardContent>
