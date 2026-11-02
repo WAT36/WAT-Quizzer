@@ -1157,7 +1157,7 @@ export const mockAddSynonymAPI = async (params: any): Promise<ApiResult> => {
 export const mockEditEnglishWordSourceAPI = async (params: any): Promise<ApiResult> => {
   const { editWordSourceData } = params;
 
-  if (editWordSourceData.newSourceId === -1) {
+  if (editWordSourceData.sourceId === -1) {
     return {
       isSuccess: false,
       message: {
@@ -1181,7 +1181,7 @@ export const mockEditEnglishWordSourceAPI = async (params: any): Promise<ApiResu
 export const mockDeleteEnglishWordSourceAPI = async (params: any): Promise<ApiResult> => {
   const { deleteWordSourceData } = params;
 
-  if (!deleteWordSourceData.word_id || !deleteWordSourceData.source_id) {
+  if (!deleteWordSourceData.id) {
     return {
       isSuccess: false,
       message: {

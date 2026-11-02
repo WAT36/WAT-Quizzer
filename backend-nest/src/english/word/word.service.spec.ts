@@ -22,6 +22,11 @@ jest.mock('quizzer-lib', () => {
       create: jest.fn(),
       delete: jest.fn(),
     },
+    word_source: {
+      findFirst: jest.fn(),
+      upsert: jest.fn(),
+      delete: jest.fn(),
+    },
   };
   return {
     prisma: mockPrisma,
@@ -331,6 +336,70 @@ describe('EnglishWordService', () => {
       ).rejects.toMatchObject({
         message: '入力単語(active)は存在しません',
         status: 400,
+      });
+    });
+  });
+
+  describe('upsertSourceOfWordById', () => {
+    beforeEach(() => {
+      [prisma.word_source.findFirst, prisma.word_source.upsert].forEach((x) =>
+        (x as jest.Mock).mockReset(),
+      );
+    });
+
+    it('id=-1なら新規追加として、単語と出典を紐付ける', async () => {
+      (prisma.word_source.findFirst as jest.Mock).mockResolvedValue(null);
+      await englishWordService.upsertSourceOfWordById({
+        id: -1,
+        wordId: 7,
+        sourceId: 2,
+      });
+      expect(prisma.word_source.upsert).toHaveBeenCalledWith({
+        where: { id: -1 },
+        update: { source_id: 2 },
+        create: { word_id: 7, source_id: 2 },
+      });
+    });
+
+    it('既存のidなら、その紐付けの出典を更新する', async () => {
+      (prisma.word_source.findFirst as jest.Mock).mockResolvedValue(null);
+      await englishWordService.upsertSourceOfWordById({
+        id: 3,
+        wordId: 7,
+        sourceId: 2,
+      });
+      // 重複確認では更新対象自身を除く
+      expect(prisma.word_source.findFirst).toHaveBeenCalledWith({
+        where: { word_id: 7, source_id: 2, NOT: { id: 3 } },
+      });
+      expect(prisma.word_source.upsert).toHaveBeenCalledWith({
+        where: { id: 3 },
+        update: { source_id: 2 },
+        create: { word_id: 7, source_id: 2 },
+      });
+    });
+
+    it('同じ出典がすでに紐付いている場合、400エラーにして登録しない', async () => {
+      (prisma.word_source.findFirst as jest.Mock).mockResolvedValue({ id: 4 });
+      await expect(
+        englishWordService.upsertSourceOfWordById({
+          id: -1,
+          wordId: 7,
+          sourceId: 2,
+        }),
+      ).rejects.toMatchObject({
+        message: 'その出典はすでに登録されています',
+        status: 400,
+      });
+      expect(prisma.word_source.upsert).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('deleteSourceOfWordById', () => {
+    it('word_sourceのidで紐付けを削除する', async () => {
+      await englishWordService.deleteSourceOfWordById({ id: 3 });
+      expect(prisma.word_source.delete).toHaveBeenCalledWith({
+        where: { id: 3 },
       });
     });
   });

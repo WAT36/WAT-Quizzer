@@ -138,12 +138,14 @@ export const englishWordDetailMockData: GetWordDetailAPIResponseDto = {
   ],
   word_source: [
     {
+      id: 1,
       source: {
         id: 1,
         name: '単語集A'
       }
     },
     {
+      id: 2,
       source: {
         id: 2,
         name: 'TARGET B'

@@ -16,7 +16,7 @@ type Story = StoryObj<typeof meta>;
 
 const wordDetail = {
   ...mockWordDetailWithAntonyms,
-  word_source: [{ source: { id: 1, name: 'TOEIC' } }]
+  word_source: [{ id: 1, source: { id: 1, name: 'TOEIC' } }]
 };
 
 const sourceList = [

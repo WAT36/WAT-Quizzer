@@ -116,7 +116,7 @@ export class EnglishWordController {
   @UseGuards(CognitoAuthGuard)
   @Post('source')
   async editSourceOfWordById(@Body() req: EditWordSourceAPIRequestDto) {
-    return await this.englishWordService.editSourceOfWordById(req);
+    return await this.englishWordService.upsertSourceOfWordById(req);
   }
 
   @ApiOperation({ summary: '英単語の出典情報を削除' })

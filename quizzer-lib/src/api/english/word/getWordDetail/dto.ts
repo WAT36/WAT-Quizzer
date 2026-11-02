@@ -16,6 +16,7 @@ export interface GetWordDetailAPIResponseDto extends ApiResponse {
     meaning: string
   }[]
   word_source: {
+    id: number
     source: {
       id: number
       name: string

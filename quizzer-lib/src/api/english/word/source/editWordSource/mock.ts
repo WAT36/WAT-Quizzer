@@ -1,7 +1,7 @@
 import type { EditWordSourceAPIRequestDto } from './dto'
 
 export const initEditWordSourceData: EditWordSourceAPIRequestDto = {
+  id: -1,
   wordId: -1,
-  oldSourceId: -1,
-  newSourceId: -1
+  sourceId: -1
 }

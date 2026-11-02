@@ -9,7 +9,7 @@ interface EditEnglishWordSourceAPIProps {
 export const editEnglishWordSourceAPI = async ({
   editWordSourceData
 }: EditEnglishWordSourceAPIProps): Promise<ApiResult> => {
-  if (editWordSourceData.newSourceId === -1) {
+  if (editWordSourceData.sourceId === -1) {
     return {
       isSuccess: false,
       message: {

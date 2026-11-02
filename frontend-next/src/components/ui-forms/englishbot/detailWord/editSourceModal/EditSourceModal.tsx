@@ -25,14 +25,14 @@ interface EditSourceModalProps {
 }
 
 // 編集対象の出典から入力の初期値を作る
-// TODO word-sourceの構造変えたらここも直したい
 const createEditWordSourceData = (
   wordDetail: GetWordDetailAPIResponseDto,
   sourceIndex: number
-): EditWordSourceAPIRequestDto => {
-  const sourceId = sourceIndex === -1 ? PULLDOWN_NONE_VALUE : wordDetail.word_source[sourceIndex].source.id;
-  return { wordId: wordDetail.id, oldSourceId: sourceId, newSourceId: sourceId };
-};
+): EditWordSourceAPIRequestDto => ({
+  id: sourceIndex === -1 ? -1 : wordDetail.word_source[sourceIndex].id,
+  wordId: wordDetail.id,
+  sourceId: sourceIndex === -1 ? PULLDOWN_NONE_VALUE : wordDetail.word_source[sourceIndex].source.id
+});
 
 // 単語詳細画面で出典を追加・更新・削除するモーダル
 // 入力の初期値はマウント時に作るため、呼び出し側では開いている間だけ描画する
@@ -84,9 +84,7 @@ export const EditSourceModal = ({
             onClick={async () => {
               setIsOpen(false);
               await handleResult(
-                await deleteEnglishWordSourceAPI({
-                  deleteWordSourceData: { word_id: wordDetail.id, source_id: editWordSourceData.oldSourceId }
-                })
+                await deleteEnglishWordSourceAPI({ deleteWordSourceData: { id: editWordSourceData.id } })
               );
             }}
           />
@@ -98,13 +96,13 @@ export const EditSourceModal = ({
         <Select
           inputProps={{ 'aria-label': '出典' }}
           id="edit-source-select"
-          value={editWordSourceData.newSourceId}
+          value={editWordSourceData.sourceId}
           sx={{ width: 1 }}
           MenuProps={pullDownMenuProps}
           onChange={(e) => {
             setEditWordSourceData({
               ...editWordSourceData,
-              newSourceId: +e.target.value
+              sourceId: +e.target.value
             });
           }}
         >

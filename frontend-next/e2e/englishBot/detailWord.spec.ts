@@ -12,7 +12,7 @@ const wordDetail: GetWordDetailAPIResponseDto = {
     { id: 1, wordmean_id: 1, meaning: '捨てる、見捨てる', partsofspeech: { id: 1, name: '動詞' } },
     { id: 2, wordmean_id: 2, meaning: '自由奔放', partsofspeech: { id: 2, name: '名詞' } }
   ],
-  word_source: [{ source: { id: 1, name: 'TOEIC' } }],
+  word_source: [{ id: 3, source: { id: 1, name: 'TOEIC' } }],
   word_subsource: [{ id: 1, subsource: '公式問題集 Part5', created_at: '2024-01-01T00:00:00Z' }],
   synonym_original: [{ word_id: 7, synonym_word_id: 8, synonym_word: { name: 'desert' } }],
   synonym_word: [],
@@ -269,7 +269,7 @@ test.describe('englishBot / 単語詳細', () => {
     api.on('GET', `/english/word/${wordDetail.id}`, () => ({
       json:
         api.requests('POST', '/english/word/source').length > 0
-          ? { ...wordDetail, word_source: [{ source: { id: 2, name: '英検準1級' } }] }
+          ? { ...wordDetail, word_source: [{ id: 3, source: { id: 2, name: '英検準1級' } }] }
           : wordDetail
     }));
 
@@ -284,14 +284,14 @@ test.describe('englishBot / 単語詳細', () => {
 
     await expect(page.getByText('英検準1級', { exact: true })).toBeVisible();
     expect(api.requests('POST', '/english/word/source')[0].body).toEqual({
+      id: 3,
       wordId: wordDetail.id,
-      oldSourceId: 1,
-      newSourceId: 2
+      sourceId: 2
     });
     expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
   });
 
-  test('出典を追加すると、oldSourceId=-1で登録APIが呼ばれる', async ({ page, api }) => {
+  test('出典を追加すると、id=-1で登録APIが呼ばれる', async ({ page, api }) => {
     api.on('POST', '/english/word/source', { status: 201, json: {} });
 
     await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
@@ -306,9 +306,9 @@ test.describe('englishBot / 単語詳細', () => {
 
     await expect(page.getByRole('combobox', { name: '出典' })).toBeHidden();
     expect(api.requests('POST', '/english/word/source')[0].body).toEqual({
+      id: -1,
       wordId: wordDetail.id,
-      oldSourceId: -1,
-      newSourceId: 2
+      sourceId: 2
     });
     // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
     await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
@@ -323,7 +323,7 @@ test.describe('englishBot / 単語詳細', () => {
     await page.getByRole('button', { name: '出典削除' }).click();
 
     await expect(page.getByRole('combobox', { name: '出典' })).toBeHidden();
-    expect(api.requests('DELETE', '/english/word/source')[0].body).toEqual({ word_id: wordDetail.id, source_id: 1 });
+    expect(api.requests('DELETE', '/english/word/source')[0].body).toEqual({ id: 3 });
     // 単語情報の取り直しは非同期のため、呼ばれるまで待つ
     await expect.poll(() => api.requests('GET', `/english/word/${wordDetail.id}`).length).toBe(2);
   });

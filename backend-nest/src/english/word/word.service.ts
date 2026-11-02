@@ -355,42 +355,40 @@ export class EnglishWordService {
   }
 
   // 単語の出典追加・更新
-  async editSourceOfWordById(req: EditWordSourceAPIRequestDto) {
+  async upsertSourceOfWordById(req: EditWordSourceAPIRequestDto) {
     try {
-      const { wordId, oldSourceId, newSourceId } = req;
-      const result = [];
-      //トランザクション実行準備
-      await prisma.$transaction(async (prisma) => {
-        if (oldSourceId === -1) {
-          // 出典追加
-          result.push(
-            await prisma.word_source.create({
-              data: {
-                word_id: wordId,
-                source_id: newSourceId,
-              },
-            }),
-          );
-        } else {
-          // 出典更新
-          result.push(
-            await prisma.word_source.update({
-              data: {
-                source_id: newSourceId,
-              },
-              where: {
-                word_id_source_id: {
-                  word_id: wordId,
-                  source_id: oldSourceId,
-                },
-              },
-            }),
-          );
-        }
+      const { id, wordId, sourceId } = req;
+      // 同じ出典がすでに紐付いていたらエラー（更新対象自身は除く）
+      const duplicated = await prisma.word_source.findFirst({
+        where: {
+          word_id: wordId,
+          source_id: sourceId,
+          NOT: { id },
+        },
       });
-      return result;
+      if (duplicated) {
+        throw new HttpException(
+          `その出典はすでに登録されています`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      return await prisma.word_source.upsert({
+        where: {
+          id,
+        },
+        update: {
+          source_id: sourceId,
+        },
+        create: {
+          word_id: wordId,
+          source_id: sourceId,
+        },
+      });
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else if (error instanceof Error) {
         throw new HttpException(
           error.message,
           HttpStatus.INTERNAL_SERVER_ERROR,
@@ -402,13 +400,10 @@ export class EnglishWordService {
   // 単語の出典削除
   async deleteSourceOfWordById(req: DeleteWordSourceAPIRequestDto) {
     try {
-      const { word_id, source_id } = req;
+      const { id } = req;
       return await prisma.word_source.delete({
         where: {
-          word_id_source_id: {
-            word_id,
-            source_id,
-          },
+          id,
         },
       });
     } catch (error: unknown) {
