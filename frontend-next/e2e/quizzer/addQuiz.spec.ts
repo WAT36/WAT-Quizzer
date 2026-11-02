@@ -57,6 +57,32 @@ test.describe('quizzer / 問題追加', () => {
     expect(api.requests('POST', '/quiz')).toHaveLength(1);
   });
 
+  test('四択問題では、ダミー選択肢と多答設定も登録され、登録後は入力欄が空になる', async ({ page, api }) => {
+    await page.getByLabel('四択問題').check();
+    await page.getByLabel('問題文').fill('Promiseが成功したときの状態名は？');
+    await page.getByLabel('答え').fill('fulfilled');
+    await page.getByLabel('ダミー選択肢1：').fill('pending');
+    await page.getByLabel('ダミー選択肢2：').fill('rejected');
+    await page.getByLabel('ダミー選択肢3：').fill('resolved');
+    await page.getByLabel('(多答設定、この選択肢も正解にする)').nth(2).check();
+
+    await page.getByRole('button', { name: '問題登録' }).click();
+
+    await expect(page.getByText('Success!! 問題を追加できました!')).toBeVisible();
+    expect(api.requests('POST', '/quiz')[0].body).toMatchObject({
+      format_id: 3,
+      dummyChoice: [
+        { sentense: 'pending', isCorrect: false },
+        { sentense: 'rejected', isCorrect: false },
+        { sentense: 'resolved', isCorrect: true }
+      ]
+    });
+    // 続けて登録できるよう、ダミー選択肢の入力欄も空に戻る
+    await expect(page.getByLabel('ダミー選択肢1：')).toHaveValue('');
+    await expect(page.getByLabel('ダミー選択肢2：')).toHaveValue('');
+    await expect(page.getByLabel('ダミー選択肢3：')).toHaveValue('');
+  });
+
   test('答えにカンマが含まれている場合は登録しない', async ({ page, api }) => {
     await page.getByLabel('問題文').fill('JavaScriptの変数宣言キーワードは？');
     await page.getByLabel('答え').fill('let, const');

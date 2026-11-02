@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { SelectChangeEvent } from '@mui/material';
 import { Card, CardContent, FormGroup, IconButton, Input, Stack, Typography } from '@mui/material';
 import type { AddQuizAPIRequestDto, AddQuizApiResponseDto, GetQuizApiResponseDto } from 'quizzer-lib';
-import { initAddQuizRequestData, insertAtArray } from 'quizzer-lib';
+import { initAddQuizRequestData } from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { Button } from '@/components/ui-elements/button/Button';
@@ -72,7 +72,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
               <label>問題ファイル：</label>
               <QuizFilePullDown
                 onFileChange={(e: SelectChangeEvent<number | string>) => {
-                  setAddQuizRequestData((prev: any) => ({
+                  setAddQuizRequestData((prev: AddQuizAPIRequestDto) => ({
                     ...prev,
                     file_num: +e.target.value
                   }));
@@ -93,7 +93,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
                   }),
                   defaultValue: '1',
                   setQueryofQuizStater: (value: string) => {
-                    setAddQuizRequestData((prev: any) => ({
+                    setAddQuizRequestData((prev: AddQuizAPIRequestDto) => ({
                       ...prev,
                       format_id: +value
                     }));
@@ -218,10 +218,9 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
                           onChange={(e) => {
                             setAddQuizRequestData((prev: AddQuizAPIRequestDto) => ({
                               ...prev,
-                              dummyChoice: insertAtArray(prev.dummyChoice!, index, {
-                                ...prev.dummyChoice![index],
-                                isCorrect: e.target.checked
-                              })
+                              dummyChoice: prev.dummyChoice?.map((x, i) =>
+                                i === index ? { ...x, isCorrect: e.target.checked } : x
+                              )
                             }));
                           }}
                         />
@@ -234,10 +233,9 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
                           onChange={(e) => {
                             setAddQuizRequestData((prev: AddQuizAPIRequestDto) => ({
                               ...prev,
-                              dummyChoice: insertAtArray(prev.dummyChoice!, index, {
-                                ...prev.dummyChoice![index],
-                                sentense: e.target.value
-                              })
+                              dummyChoice: prev.dummyChoice?.map((x, i) =>
+                                i === index ? { ...x, sentense: e.target.value } : x
+                              )
                             }));
                           }}
                         />
