@@ -76,7 +76,6 @@ export const SourceStatisticsCard = ({}: SourceStatisticsCardProps) => {
   return (
     <>
       <Card variant="outlined" attr={['margin-vertical']}>
-        {/*TODO quizzer形式のプルダウン結構使うから　あらかじめquizzerのファイル値が入った状態のプルダウンをコンポーネントとして用意したほうがいい気した */}
         <PullDown label={'出典'} optionList={sourcelistoption} onChange={(e) => setSelectedSource(+e.target.value)} />
         <Card variant="outlined" attr={['rect-600', 'margin-vertical']}>
           {sourceStatisticsData.length > 0 ? (
