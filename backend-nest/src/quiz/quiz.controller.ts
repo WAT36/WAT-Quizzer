@@ -30,6 +30,8 @@ import {
 import { GetQuizPipe } from './pipe/getQuiz.pipe';
 import { SearchQuizPipe } from './pipe/searchQuiz.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { quizImageUploadOptions } from './quizImageUpload.options';
+import { getQuizImageMimeType } from './quizImageMimeType';
 import { Express } from 'express';
 import { GetAnswerLogStatisticsPipe } from './pipe/getAnswerLogStatistics.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
@@ -276,7 +278,7 @@ export class QuizController {
     description: 'クイズで使用する画像ファイルをアップロードします。',
   })
   @Post('/image/upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', quizImageUploadOptions))
   async uploadQuizImage(@UploadedFile() file: Express.Multer.File) {
     return await this.quizService.uploadQuizImage(file);
   }
@@ -290,15 +292,9 @@ export class QuizController {
     try {
       const buffer = await this.quizService.downloadQuizImage(fileName);
       const base64 = buffer.toString('base64');
-      let mimeType = 'image/png';
-      if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
-        mimeType = 'image/jpeg';
-      } else if (fileName.endsWith('.gif')) {
-        mimeType = 'image/gif';
-      }
       return {
         base64,
-        mimeType,
+        mimeType: getQuizImageMimeType(fileName),
       };
     } catch (err) {
       console.error(err);

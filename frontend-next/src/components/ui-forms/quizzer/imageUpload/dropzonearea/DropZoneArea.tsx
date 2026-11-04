@@ -1,12 +1,15 @@
 import Dropzone from 'react-dropzone';
+import type { FileRejection } from 'react-dropzone';
 import { useState } from 'react';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
 import { uploadImageOfQuizAPI } from '@/utils/api-wrapper';
+import { QUIZ_IMAGE_LIMITS } from 'quizzer-lib';
 
 interface DropZoneAreaProps {}
 
-// TODO  画像アップロードだが回数制限を設けた方がいいと思う、何かあった時用に
+const acceptImageTypes = Object.fromEntries(QUIZ_IMAGE_LIMITS.MIME_TYPES.map((type) => [type, []]));
+
 export const DropZoneArea = ({}: DropZoneAreaProps) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const setMessage = useSetRecoilState(messageState);
@@ -15,7 +18,17 @@ export const DropZoneArea = ({}: DropZoneAreaProps) => {
     return uploadImageOfQuizAPI({ uploadQuizRequestData: { file } });
   };
 
-  const handleOnDrop = (files: File[]) => {
+  const handleOnDrop = (files: File[], rejections: FileRejection[]) => {
+    // 条件に合わないファイルが1つでもあれば、どれもアップロードしない
+    if (rejections.length > 0) {
+      setMessage({
+        message: `エラー：${QUIZ_IMAGE_LIMITS.MAX_FILE_SIZE_MB}MB以下のPNG・JPEG・GIF・WebP・AVIF画像のみアップロードできます`,
+        messageColor: 'error',
+        isDisplay: true
+      });
+      return;
+    }
+
     setIsUploading(true);
     setMessage({
       message: '　',
@@ -24,13 +37,22 @@ export const DropZoneArea = ({}: DropZoneAreaProps) => {
     });
 
     Promise.all(files.map((file) => uploadImage(file)))
-      .then((image) => {
+      .then((results) => {
         setIsUploading(false);
-        setMessage({
-          message: `${files.length}件のアップロードが完了しました`,
-          messageColor: 'success.light',
-          isDisplay: true
-        });
+        const failedCount = results.filter((result) => !result.isSuccess).length;
+        setMessage(
+          failedCount > 0
+            ? {
+                message: `エラー：${files.length}件中${failedCount}件のアップロードに失敗しました`,
+                messageColor: 'error',
+                isDisplay: true
+              }
+            : {
+                message: `${files.length}件のアップロードが完了しました`,
+                messageColor: 'success.light',
+                isDisplay: true
+              }
+        );
       })
       .catch((e) => {
         console.error(e);
@@ -44,7 +66,11 @@ export const DropZoneArea = ({}: DropZoneAreaProps) => {
   };
 
   return (
-    <Dropzone onDrop={handleOnDrop}>
+    <Dropzone
+      onDrop={handleOnDrop}
+      accept={acceptImageTypes}
+      maxSize={QUIZ_IMAGE_LIMITS.MAX_FILE_SIZE_MB * 1024 * 1024}
+    >
       {({ getRootProps, getInputProps }) => (
         <section>
           <div
