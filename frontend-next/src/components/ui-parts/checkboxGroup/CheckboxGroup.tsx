@@ -19,12 +19,9 @@ export const CheckboxGroup = ({ checkboxProps, setQueryofQuizStater, label }: Ch
     }
   };
 
-  // TODO コンポーネントにForGroupを入れるべきか否か　他はないものもあるから全部統一したい
   return (
     <FormGroup row className="inline-flex flex-wrap gap-2 items-center">
-      <FormLabel className="mr-4" id="demo-row-checkbox-buttons-group-section-label">
-        {label}
-      </FormLabel>
+      <FormLabel className="mr-4">{label}</FormLabel>
       {checkboxProps.map((x) => (
         <Checkbox key={x.value} onChange={handleCheck} {...x} />
       ))}
