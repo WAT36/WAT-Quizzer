@@ -1,13 +1,6 @@
-import {
-  CardContent,
-  CardHeader,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
+import { SettingsCardItem } from '../settingsCardItem/SettingsCardItem';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import type { PullDownOptionDto, Message } from 'quizzer-lib';
 import { deleteAnswerLogOfQuizFileAPI } from '@/utils/api-wrapper';
@@ -49,46 +42,38 @@ export const DeleteAnswerLogFileSection = ({ filelistoption, setMessage }: Delet
   };
 
   return (
-    <>
-      <CardHeader subheader="ファイル選択" />
-      <CardContent className="flex w-full">
-        <PullDown
-          className={'cardContent'}
-          optionList={filelistoption}
-          onChange={(e) => {
-            setDeleteLogOfFileNum(+e.target.value);
-          }}
-        />
-        <Button
-          label="削除"
-          variant="contained"
-          attr="after-inline"
-          onClick={(e) => setDeleteLogOfFileAlertOpen(true)}
-        />
-        <Dialog
-          open={deleteLogOfFileAlertOpen}
-          onClose={(e) => setDeleteLogOfFileAlertOpen(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">本当に削除しますか？</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              指定ファイルのこれまでの回答データが削除されます。
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button label="キャンセル" onClick={(e) => setDeleteLogOfFileAlertOpen(false)} variant="outlined" />
-            <Button
-              label="削除"
-              onClick={(e) => {
-                void deleteAnswerData();
-              }}
-              variant="contained"
-            />
-          </DialogActions>
-        </Dialog>
-      </CardContent>
-    </>
+    <SettingsCardItem subheader="ファイル選択" className="flex w-full">
+      <PullDown
+        className={'cardContent'}
+        optionList={filelistoption}
+        onChange={(e) => {
+          setDeleteLogOfFileNum(+e.target.value);
+        }}
+      />
+      <Button label="削除" variant="contained" attr="after-inline" onClick={(e) => setDeleteLogOfFileAlertOpen(true)} />
+      <Dialog
+        open={deleteLogOfFileAlertOpen}
+        onClose={(e) => setDeleteLogOfFileAlertOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">本当に削除しますか？</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            指定ファイルのこれまでの回答データが削除されます。
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button label="キャンセル" onClick={(e) => setDeleteLogOfFileAlertOpen(false)} variant="outlined" />
+          <Button
+            label="削除"
+            onClick={(e) => {
+              void deleteAnswerData();
+            }}
+            variant="contained"
+          />
+        </DialogActions>
+      </Dialog>
+    </SettingsCardItem>
   );
 };

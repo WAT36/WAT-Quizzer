@@ -1,4 +1,4 @@
-import { CardContent, CardHeader } from '@mui/material';
+import { SettingsCardItem } from '../settingsCardItem/SettingsCardItem';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
 import type { Message } from 'quizzer-lib';
@@ -30,12 +30,9 @@ export const AddFileSection = ({ setMessage }: AddFileSectionProps) => {
   };
 
   return (
-    <>
-      <CardHeader subheader="ファイル新規追加" />
-      <CardContent className="flex w-full">
-        <TextField label="新規ファイル名" setStater={setFileName} className={['flex']} />
-        <Button label="追加" variant="contained" attr="after-inline" onClick={async (e) => await addFile()} />
-      </CardContent>
-    </>
+    <SettingsCardItem subheader="ファイル新規追加" className="flex w-full">
+      <TextField label="新規ファイル名" setStater={setFileName} className={['flex']} />
+      <Button label="追加" variant="contained" attr="after-inline" onClick={async (e) => await addFile()} />
+    </SettingsCardItem>
   );
 };

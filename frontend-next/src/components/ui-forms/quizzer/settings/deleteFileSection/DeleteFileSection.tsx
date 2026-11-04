@@ -1,13 +1,6 @@
-import {
-  CardContent,
-  CardHeader,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { Button } from '@/components/ui-elements/button/Button';
+import { SettingsCardItem } from '../settingsCardItem/SettingsCardItem';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
 import { useState } from 'react';
 import type { PullDownOptionDto, Message } from 'quizzer-lib';
@@ -55,41 +48,38 @@ export const DeleteFileSection = ({ filelistoption, setMessage }: DeleteFileSect
   };
 
   return (
-    <>
-      <CardHeader subheader="ファイル削除" />
-      <CardContent className="flex w-full">
-        <PullDown
-          className={'cardContent'}
-          optionList={filelistoption}
-          onChange={(e) => {
-            setDeleteFileNum(+e.target.value);
-          }}
-        />
-        <Button label="削除" variant="contained" attr="after-inline" onClick={() => handleClickOpen()} />
-        <Dialog
-          open={alertOpen}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">本当に削除しますか？</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              指定ファイルだけでなく、ファイルの問題全ても同時に削除されます。
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button label="キャンセル" onClick={handleClose} variant="outlined" />
-            <Button
-              label="削除"
-              onClick={async () => {
-                await deleteFile();
-              }}
-              variant="contained"
-            />
-          </DialogActions>
-        </Dialog>
-      </CardContent>
-    </>
+    <SettingsCardItem subheader="ファイル削除" className="flex w-full">
+      <PullDown
+        className={'cardContent'}
+        optionList={filelistoption}
+        onChange={(e) => {
+          setDeleteFileNum(+e.target.value);
+        }}
+      />
+      <Button label="削除" variant="contained" attr="after-inline" onClick={() => handleClickOpen()} />
+      <Dialog
+        open={alertOpen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">本当に削除しますか？</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            指定ファイルだけでなく、ファイルの問題全ても同時に削除されます。
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button label="キャンセル" onClick={handleClose} variant="outlined" />
+          <Button
+            label="削除"
+            onClick={async () => {
+              await deleteFile();
+            }}
+            variant="contained"
+          />
+        </DialogActions>
+      </Dialog>
+    </SettingsCardItem>
   );
 };

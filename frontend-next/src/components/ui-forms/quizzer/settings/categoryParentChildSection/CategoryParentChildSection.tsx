@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CardContent, CardHeader } from '@mui/material';
+import { SettingsCardItem } from '../settingsCardItem/SettingsCardItem';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui-elements/button/Button';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
@@ -124,8 +124,7 @@ export const CategoryParentChildSection = ({
 
   return (
     <>
-      <CardHeader subheader="ファイル選択" />
-      <CardContent>
+      <SettingsCardItem subheader="ファイル選択">
         <PullDown
           optionList={filelistoption}
           onChange={(e) => {
@@ -134,12 +133,11 @@ export const CategoryParentChildSection = ({
             setChildCategory('');
           }}
         />
-      </CardContent>
+      </SettingsCardItem>
 
       {fileNum !== -1 && (
         <>
-          <CardHeader subheader="親子関係追加" />
-          <CardContent className="flex items-center gap-2 flex-wrap">
+          <SettingsCardItem subheader="親子関係追加" className="flex items-center gap-2 flex-wrap">
             <PullDown
               label="親カテゴリ"
               searchable
@@ -155,16 +153,15 @@ export const CategoryParentChildSection = ({
               onChange={(e) => setChildCategory(toCategory(e.target.value))}
             />
             <Button label="追加" variant="contained" attr="after-inline" onClick={handleAdd} />
-          </CardContent>
+          </SettingsCardItem>
 
-          <CardHeader subheader="登録済み親子関係" />
-          <CardContent>
+          <SettingsCardItem subheader="登録済み親子関係">
             <CategoryTreeGraph
               parentChildList={parentChildList}
               categoryCounts={categoryCounts}
               onDelete={handleDelete}
             />
-          </CardContent>
+          </SettingsCardItem>
         </>
       )}
     </>

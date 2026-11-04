@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader } from '@mui/material';
+import { SettingsCard } from '../settingsCard/SettingsCard';
 import { CategoryParentChildSection } from '../categoryParentChildSection/CategoryParentChildSection';
 import type { PullDownOptionDto, Message } from 'quizzer-lib';
 
@@ -13,13 +13,8 @@ export const CategoryParentChildConfigSection = ({
   setMessage,
 }: CategoryParentChildConfigSectionProps) => {
   return (
-    <Card variant="outlined" className="!my-[10px]">
-      <CardHeader title="カテゴリ親子関係" />
-      <CardContent>
-        <Card variant="outlined">
-          <CategoryParentChildSection filelistoption={filelistoption} setMessage={setMessage} />
-        </Card>
-      </CardContent>
-    </Card>
+    <SettingsCard title="カテゴリ親子関係">
+      <CategoryParentChildSection filelistoption={filelistoption} setMessage={setMessage} />
+    </SettingsCard>
   );
 };
