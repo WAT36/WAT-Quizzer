@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { CardContent, Checkbox, FormControlLabel, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
+import { CardContent, Checkbox, FormControlLabel } from '@mui/material';
 import styles from '../Settings.module.css';
 import { Card } from '@/components/ui-elements/card/Card';
 import { useSetRecoilState } from 'recoil';
@@ -9,7 +7,7 @@ import { messageState } from '@/atoms/Message';
 import type { GetTodoListApiResponseDto } from 'quizzer-lib';
 import { getTodoListAPI, getTodoListAllAPI, deleteTodoAPI, restoreTodoAPI } from '@/utils/api-wrapper';
 import { SearchResultTable } from '@/components/ui-elements/searchResultTable/SearchResultTable';
-import type { GridColDef, GridValidRowModel } from '@mui/x-data-grid';
+import { createTodoColumns } from '@/constants/contents/table/todo';
 
 interface DeleteTodoFormProps {}
 
@@ -72,46 +70,8 @@ export const DeleteTodoForm = ({}: DeleteTodoFormProps) => {
     [fetchTodoList, setMessage, showDeleted]
   );
 
-  // カラム定義
-  // TODO カラム定義類はあどこか別ファイルに置いておきたい
-  const columns: GridColDef<GridValidRowModel>[] = useMemo(
-    () => [
-      {
-        field: 'id',
-        headerName: 'ID',
-        width: 100
-      },
-      {
-        field: 'todo',
-        headerName: 'TODO',
-        flex: 1,
-        minWidth: 200
-      },
-      {
-        field: 'actions',
-        headerName: '',
-        width: 60,
-        sortable: false,
-        disableColumnMenu: true,
-        renderCell: (params) => {
-          const isDeleted = !!params.row.deleted_at;
-          return isDeleted ? (
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => handleRestore(params.row.id as number)}
-              title="復元"
-            >
-              <RestoreFromTrashIcon fontSize="small" />
-            </IconButton>
-          ) : (
-            <IconButton size="small" color="error" onClick={() => handleDelete(params.row.id as number)} title="削除">
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          );
-        }
-      }
-    ],
+  const columns = useMemo(
+    () => createTodoColumns({ onDelete: handleDelete, onRestore: handleRestore }),
     [handleDelete, handleRestore]
   );
 

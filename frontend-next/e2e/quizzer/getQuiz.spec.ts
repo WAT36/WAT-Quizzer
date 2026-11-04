@@ -33,6 +33,8 @@ test.describe('quizzer / 問題出題', () => {
     await page.getByRole('button', { name: '答え' }).click();
     await page.getByRole('button', { name: '不正解...' }).click();
 
+    await expect(page.getByText('2問中1問正解でした')).toBeVisible();
+
     // 回答した問題ごとに、正解・不正解が登録されている
     expect(api.requests('POST', '/quiz/clear').map((r) => r.body)).toEqual([
       expect.objectContaining({ quiz_id: quizzes[0].id })
@@ -40,8 +42,6 @@ test.describe('quizzer / 問題出題', () => {
     expect(api.requests('POST', '/quiz/fail').map((r) => r.body)).toEqual([
       expect.objectContaining({ quiz_id: quizzes[1].id })
     ]);
-
-    await expect(page.getByText('2問中1問正解でした')).toBeVisible();
 
     await page.getByRole('button', { name: '出題設定に戻る' }).click();
     await expect(page.getByText('出題設定から条件を設定して出題してください。')).toBeVisible();

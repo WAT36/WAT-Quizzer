@@ -48,8 +48,8 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     await page.getByRole('row', { name: target.quiz_sentense }).getByRole('button', { name: '問題1-2を編集' }).click();
 
     await expect(page).toHaveURL(/\/quizzer\/editQuiz\/?\?file_num=1&quiz_num=2$/);
-    expect(api.requests('GET', '/quiz')[0].query).toMatchObject({ file_num: '1', quiz_num: '2' });
     await expect(page.getByLabel('問題文')).toHaveValue(target.quiz_sentense);
+    expect(api.requests('GET', '/quiz')[0].query).toMatchObject({ file_num: '1', quiz_num: '2' });
     await expect(page.getByLabel('答え')).toHaveValue(target.answer);
 
     await page.getByLabel('答え').fill('fulfilled(履行済み)');
