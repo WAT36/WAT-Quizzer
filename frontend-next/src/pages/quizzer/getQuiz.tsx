@@ -64,9 +64,11 @@ export default function GetQuizPage() {
             />
             <DisplayQuizSection
               getQuizResponseData={quizSession.currentQuiz}
+              checked={quizSession.currentChecked}
               imageUrl={imageUrl}
               setImageUrl={setImageUrl}
               onAnswer={quizSession.answer}
+              onCheckReversed={quizSession.reverseChecked}
             />
           </>
         )}

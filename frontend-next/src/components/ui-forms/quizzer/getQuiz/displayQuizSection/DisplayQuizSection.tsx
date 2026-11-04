@@ -14,11 +14,8 @@ import { Button } from '@/components/ui-elements/button/Button';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import type { GetQuizApiResponseDto, GetImageOfQuizAPIResponseDto } from 'quizzer-lib';
-import {
-  generateQuizSentense,
-  initGetQuizResponseData
-} from 'quizzer-lib';
-import { clearQuizAPI, failQuizAPI, reverseCheckQuizAPI, getImageOfQuizAPI } from '@/utils/api-wrapper';
+import { generateQuizSentense } from 'quizzer-lib';
+import { reverseCheckQuizAPI, getImageOfQuizAPI } from '@/utils/api-wrapper';
 import { Chip } from '@/components/ui-elements/chip/Chip';
 import { DisplaySentence } from '@/components/ui-elements/sentence/DisplaySentence';
 import EditIcon from '@mui/icons-material/Edit';
@@ -26,20 +23,24 @@ import { useRouter } from 'next/router';
 
 interface DisplayQuizSectionProps {
   getQuizResponseData: GetQuizApiResponseDto;
-  setQuizResponseData?: React.Dispatch<React.SetStateAction<GetQuizApiResponseDto>>;
+  // 問題文に✅を付けるかどうか
+  checked?: boolean;
   imageUrl: string;
   setImageUrl?: React.Dispatch<React.SetStateAction<string>>;
-  // 指定時は正解/不正解ボタン押下時にこちらへ委譲する。結果登録に成功したら、実際に次の問題へ進める「確定関数」を返す
+  // 正解/不正解ボタン押下時に呼ぶ。結果登録に成功したら、実際に次の問題へ進める「確定関数」を返す
   // （答えの表示エリアが閉じきってから確定関数を呼ぶことで、次の問題の答えが一瞬見えてしまうのを防ぐ）
-  onAnswer?: (isCorrect: boolean) => Promise<(() => void) | null>;
+  onAnswer: (isCorrect: boolean) => Promise<(() => void) | null>;
+  // チェックの登録が成功した後に呼ぶ
+  onCheckReversed: (quizId: number) => void;
 }
 
 export const DisplayQuizSection = ({
   getQuizResponseData,
-  setQuizResponseData,
+  checked,
   imageUrl,
   setImageUrl,
-  onAnswer
+  onAnswer,
+  onCheckReversed
 }: DisplayQuizSectionProps) => {
   const setMessage = useSetRecoilState(messageState);
   const [expanded, setExpanded] = useState<boolean>(false);
@@ -67,27 +68,13 @@ export const DisplayQuizSection = ({
     setExpanded(!expanded);
   };
 
-  // 正解/不正解ボタン押下時の処理。onAnswerが指定されていればそちらに委譲する
+  // 正解/不正解ボタン押下時の処理
   const handleAnswer = async (isCorrect: boolean) => {
-    if (onAnswer) {
-      const advance = await onAnswer(isCorrect);
-      if (!advance) return;
-      // 答えの表示エリアを閉じ始める。実際に次の問題へ進めるのはCollapseが閉じきってから（onExited）
-      pendingAdvanceRef.current = advance;
-      setExpanded(false);
-      return;
-    }
-    setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
-    const result = isCorrect
-      ? await clearQuizAPI({ getQuizResponseData })
-      : await failQuizAPI({ getQuizResponseData });
-    setMessage(result.message);
-    // TODO 成功時の判定法
-    if (result.isSuccess && setQuizResponseData) {
-      setQuizResponseData(initGetQuizResponseData);
-      setExpanded(false);
-      setImageUrl && setImageUrl('');
-    }
+    const advance = await onAnswer(isCorrect);
+    if (!advance) return;
+    // 答えの表示エリアを閉じ始める。実際に次の問題へ進めるのはCollapseが閉じきってから（onExited）
+    pendingAdvanceRef.current = advance;
+    setExpanded(false);
   };
 
   // 出題変わったら閉じる、画像自動表示の場合は画像を取得
@@ -161,7 +148,7 @@ export const DisplayQuizSection = ({
               />
             </div>
           </div>
-          <DisplaySentence checked={getQuizResponseData.checked} sentence={displayQuiz.quiz_sentense} />
+          <DisplaySentence checked={checked} sentence={displayQuiz.quiz_sentense} />
           {imageUrl && (
             // 取得した画像のURLはサイズが不定で、静的エクスポート(output: 'export')では画像最適化も使えないため<img>を使う
             // eslint-disable-next-line @next/next/no-img-element
@@ -229,14 +216,9 @@ export const DisplayQuizSection = ({
                   getQuizResponseData
                 });
                 setMessage(result.message);
-                // TODO 成功時の判定法
-                result.isSuccess &&
-                  setQuizResponseData &&
-                  setQuizResponseData((prev) => ({
-                    ...prev,
-                    checked: prev.checked !== undefined && !prev.checked
-                    // checked: result.result ? (result.result as GetQuizApiResponseDto).checked : false
-                  }));
+                if (result.isSuccess) {
+                  onCheckReversed(getQuizResponseData.id);
+                }
               }}
             />
           </CardContent>

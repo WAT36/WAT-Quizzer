@@ -63,6 +63,83 @@ test.describe('quizzer / 問題出題', () => {
     await expect(page.getByText('2問中1問目')).toBeVisible();
   });
 
+  test('チェックをつける/外すと、問題文の✅が切り替わる', async ({ page, api }) => {
+    // 奇数回目のチェック反転でチェック済みになる
+    api.on('POST', '/quiz/check', () => ({
+      status: 201,
+      json: { checked: api.requests('POST', '/quiz/check').length % 2 === 1 }
+    }));
+
+    await page.getByRole('button', { name: '出題設定を開く' }).click();
+    await page.getByLabel('問題ファイル').click();
+    await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+    await page.getByRole('button', { name: '出題スタート' }).click();
+
+    await page.getByRole('button', { name: '答え' }).click();
+    await expect(page.getByText('✅')).toBeHidden();
+
+    const checkButton = page.getByRole('button', { name: 'チェックつける/外す' });
+    await checkButton.click();
+    await expect(page.getByText('✅')).toBeVisible();
+    expect(api.requests('POST', '/quiz/check')[0].body).toEqual({ quiz_id: quizzes[0].id });
+
+    await checkButton.click();
+    await expect(page.getByText('✅')).toBeHidden();
+  });
+
+  test('チェック反転の登録に失敗すると、問題文の✅は変わらない', async ({ page, api }) => {
+    api.on('POST', '/quiz/check', { status: 500, json: {} });
+
+    await page.getByRole('button', { name: '出題設定を開く' }).click();
+    await page.getByLabel('問題ファイル').click();
+    await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+    await page.getByRole('button', { name: '出題スタート' }).click();
+
+    await page.getByRole('button', { name: '答え' }).click();
+    await page.getByRole('button', { name: 'チェックつける/外す' }).click();
+
+    await expect.poll(() => api.requests('POST', '/quiz/check').length).toBe(1);
+    await expect(page.getByText('✅')).toBeHidden();
+  });
+
+  test('四択問題でチェック反転しても、選択肢の並びは変わらない', async ({ page, api }) => {
+    api.on('GET', '/quiz/random', {
+      json: {
+        total: 1,
+        quizzes: [
+          {
+            ...quizzes[1],
+            format_id: 3,
+            quiz_dummy_choice: [
+              { dummy_choice_sentense: 'pending', is_corrected: false },
+              { dummy_choice_sentense: 'rejected', is_corrected: false },
+              { dummy_choice_sentense: 'settled', is_corrected: false }
+            ]
+          }
+        ]
+      }
+    });
+    api.on('POST', '/quiz/check', { status: 201, json: { checked: true } });
+
+    await page.getByRole('button', { name: '出題設定を開く' }).click();
+    await page.getByLabel('問題ファイル').click();
+    await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+    await page.getByRole('button', { name: '出題スタート' }).click();
+    await page.getByRole('button', { name: '答え' }).click();
+
+    // 答えの文には、選択肢に割り当てられた記号が含まれる
+    const answer = page.getByText(/^[A-D]: fulfilled/);
+    const answerBefore = await answer.textContent();
+
+    // 並び替えが偶然同じ結果になっても見逃さないよう、何度か反転する
+    for (let i = 1; i <= 6; i++) {
+      await page.getByRole('button', { name: 'チェックつける/外す' }).click();
+      await expect.poll(() => api.requests('POST', '/quiz/check').length).toBe(i);
+      await expect(page.getByText('✅')).toHaveCount(i % 2);
+      await expect(answer).toHaveText(answerBefore ?? '');
+    }
+  });
+
   test('問題ファイルを選ばないと出題スタートできない', async ({ page }) => {
     await page.getByRole('button', { name: '出題設定を開く' }).click();
 

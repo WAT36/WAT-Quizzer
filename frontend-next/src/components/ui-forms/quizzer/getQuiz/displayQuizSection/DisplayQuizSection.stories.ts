@@ -22,20 +22,27 @@ type Story = StoryObj<typeof meta>;
 export const Opened: Story = {
   args: {
     getQuizResponseData: initGetQuizResponseData,
-    imageUrl: ''
+    imageUrl: '',
+    onAnswer: async () => null,
+    onCheckReversed: () => {}
   }
 };
 
 export const Closed: Story = {
   args: {
     getQuizResponseData: initGetQuizResponseData,
-    imageUrl: ''
+    imageUrl: '',
+    onAnswer: async () => null,
+    onCheckReversed: () => {}
   }
 };
 
 export const Checked: Story = {
   args: {
     getQuizResponseData: initGetQuizResponseData,
-    imageUrl: ''
+    checked: true,
+    imageUrl: '',
+    onAnswer: async () => null,
+    onCheckReversed: () => {}
   }
 };

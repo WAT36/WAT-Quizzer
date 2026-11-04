@@ -54,6 +54,11 @@ export const useQuizSession = () => {
     [state.queue, state.currentIndex, state.status, setMessage]
   );
 
+  // チェックの登録に成功した問題のチェック状態を反転する
+  const reverseChecked = useCallback((quizId: number) => {
+    dispatch({ type: 'REVERSE_CHECKED', quizId });
+  }, []);
+
   // 全問終わる前に出題を終了し、それまでの解答結果で終了画面を表示する
   const finishSession = useCallback(() => {
     dispatch({ type: 'FINISH' });
@@ -64,9 +69,12 @@ export const useQuizSession = () => {
     dispatch({ type: 'RESET' });
   }, []);
 
+  const currentQuiz = state.queue[state.currentIndex] ?? initGetQuizResponseData;
+
   return {
     status: state.status,
-    currentQuiz: state.queue[state.currentIndex] ?? initGetQuizResponseData,
+    currentQuiz,
+    currentChecked: state.checkedByQuizId[currentQuiz.id] ?? currentQuiz.checked,
     currentIndex: state.currentIndex,
     totalCount: state.queue.length,
     correctCount: state.correctCount,
@@ -74,6 +82,7 @@ export const useQuizSession = () => {
     results: state.results,
     startSession,
     answer,
+    reverseChecked,
     finishSession,
     resetSession
   };
