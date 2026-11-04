@@ -41,7 +41,6 @@ export const InputQueryForEditForm = ({ setEditQuizRequestData }: InputQueryForE
   );
 
   // queryParam idが設定されていた場合、その問題IDの値を初期値設定する
-  // TODO できれば前画面から問題の値を持って来させるようにしたい
   const router = useRouter();
   useEffect(() => {
     const { file_num, quiz_num } = router.query;
