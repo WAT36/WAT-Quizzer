@@ -140,6 +140,20 @@ test.describe('quizzer / 問題出題', () => {
     }
   });
 
+  test('出題中の問題の編集アイコンから、その問題の編集画面に移る', async ({ page, api }) => {
+    api.on('GET', '/quiz', { json: quizzes[0] });
+
+    await page.getByRole('button', { name: '出題設定を開く' }).click();
+    await page.getByLabel('問題ファイル').click();
+    await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+    await page.getByRole('button', { name: '出題スタート' }).click();
+
+    await page.getByRole('button', { name: '問題1-1を編集' }).click();
+
+    await expect(page).toHaveURL(/\/quizzer\/editQuiz\/?\?file_num=1&quiz_num=1$/);
+    await expect(page.getByLabel('問題文')).toHaveValue(quizzes[0].quiz_sentense);
+  });
+
   test('問題ファイルを選ばないと出題スタートできない', async ({ page }) => {
     await page.getByRole('button', { name: '出題設定を開く' }).click();
 

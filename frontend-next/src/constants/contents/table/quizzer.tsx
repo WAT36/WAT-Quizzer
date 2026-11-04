@@ -1,7 +1,5 @@
-import { IconButton } from '@mui/material';
 import type { GridRenderCellParams } from '@mui/x-data-grid';
-import EditIcon from '@mui/icons-material/Edit';
-import { useRouter } from 'next/router';
+import { EditQuizIconButton } from '@/components/ui-parts/editQuizIconButton/EditQuizIconButton';
 
 export const columns = [
   {
@@ -17,23 +15,9 @@ export const columns = [
     sortable: false,
     width: 50,
     // TODO anyではないd型
-    renderCell: (params: GridRenderCellParams<any>) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const router = useRouter();
-      return (
-        <IconButton
-          aria-label={params.value}
-          onClick={() => {
-            void router.push({
-              pathname: '/quizzer/editQuiz',
-              query: { file_num: params.row.file_num, quiz_num: params.row.quiz_num }
-            });
-          }}
-        >
-          <EditIcon />
-        </IconButton>
-      );
-    }
+    renderCell: (params: GridRenderCellParams<any>) => (
+      <EditQuizIconButton fileNum={params.row.file_num} quizNum={params.row.quiz_num} />
+    )
   },
   {
     field: 'checked',

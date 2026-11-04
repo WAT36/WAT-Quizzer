@@ -5,7 +5,6 @@ import {
   CardContent,
   Collapse,
   Typography,
-  IconButton,
   Checkbox,
   FormControlLabel
 } from '@mui/material';
@@ -18,8 +17,7 @@ import { generateQuizSentense } from 'quizzer-lib';
 import { reverseCheckQuizAPI, getImageOfQuizAPI } from '@/utils/api-wrapper';
 import { Chip } from '@/components/ui-elements/chip/Chip';
 import { DisplaySentence } from '@/components/ui-elements/sentence/DisplaySentence';
-import EditIcon from '@mui/icons-material/Edit';
-import { useRouter } from 'next/router';
+import { EditQuizIconButton } from '@/components/ui-parts/editQuizIconButton/EditQuizIconButton';
 
 interface DisplayQuizSectionProps {
   getQuizResponseData: GetQuizApiResponseDto;
@@ -62,7 +60,6 @@ export const DisplayQuizSection = ({
       quiz_sentense: quizSentense
     };
   }, [getQuizResponseData, hideAccuracyRate]);
-  const router = useRouter();
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -110,19 +107,8 @@ export const DisplayQuizSection = ({
           <div className="flex items-center justify-between mb-2">
             <Typography variant="h5" component="h2" className="flex items-center justify-start h-full">
               問題
-              {/**TODO このアイコンをコンポーネント化する　検索テーブルの方でも同じの使ってるから */}
               {displayQuiz.file_num !== -1 && displayQuiz.quiz_num !== -1 && (
-                <IconButton
-                  aria-label={`${displayQuiz.file_num}-${displayQuiz.quiz_num}`}
-                  onClick={() => {
-                    void router.push({
-                      pathname: '/quizzer/editQuiz',
-                      query: { file_num: displayQuiz.file_num, quiz_num: displayQuiz.quiz_num }
-                    });
-                  }}
-                >
-                  <EditIcon />
-                </IconButton>
+                <EditQuizIconButton fileNum={displayQuiz.file_num} quizNum={displayQuiz.quiz_num} />
               )}
             </Typography>
             <div className="flex gap-4">

@@ -45,7 +45,7 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     await expect(page.getByText(`全${quizzes.length}件中 ${quizzes.length}件表示`)).toBeVisible();
 
     // 対象の問題の行にある編集ボタンから編集画面へ移る
-    await page.getByRole('row', { name: target.quiz_sentense }).getByRole('button').click();
+    await page.getByRole('row', { name: target.quiz_sentense }).getByRole('button', { name: '問題1-2を編集' }).click();
 
     await expect(page).toHaveURL(/\/quizzer\/editQuiz\/?\?file_num=1&quiz_num=2$/);
     expect(api.requests('GET', '/quiz')[0].query).toMatchObject({ file_num: '1', quiz_num: '2' });
@@ -108,7 +108,7 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
     await page.getByLabel('検索語句').fill('Promise');
     await page.getByRole('button', { name: '検索', exact: true }).click();
-    await page.getByRole('row', { name: target.quiz_sentense }).getByRole('button').click();
+    await page.getByRole('row', { name: target.quiz_sentense }).getByRole('button', { name: '問題1-2を編集' }).click();
     await expect(page.getByLabel('問題文')).toHaveValue(target.quiz_sentense);
 
     await page.goBack();
