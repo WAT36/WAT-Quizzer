@@ -216,7 +216,7 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
             label={'✅をつける'}
             variant="contained"
             color="primary"
-            disabled={checkedIdList.length === 0} // TODO 応用問題検索結果からチェック機能つける
+            disabled={checkedIdList.length === 0}
             onClick={async (e) => await checkedToSelectedQuiz()}
           ></Button>
         </FormControl>

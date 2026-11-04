@@ -84,7 +84,8 @@ test.describe('認証 / ログイン', () => {
     await page.getByLabel('新しいパスワード').fill('new-password123');
     await page.getByRole('button', { name: 'パスワード変更してログイン' }).click();
 
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page.getByText('継続は力なり')).toBeVisible();
+    await expect(page).not.toHaveURL(/\/login\/?$/);
     expect(api.requests('POST', '/auth/newpassword')[0].body).toEqual({
       username: 'wat',
       password: 'new-password123',

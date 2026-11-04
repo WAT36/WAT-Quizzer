@@ -17,8 +17,8 @@ test.describe('englishBot / 英単語テスト', () => {
 
     await page.getByRole('button', { name: 'Random Word' }).click();
 
-    expect(api.requests('GET', '/english/word/test')[0].query).toMatchObject({ format: 'random' });
     await expect(page.getByText('対象単語数：全120件')).toBeVisible();
+    expect(api.requests('GET', '/english/word/test')[0].query).toMatchObject({ format: 'random' });
     await expect(page.getByText('abandon')).toBeVisible();
 
     await answerButton.click();
@@ -74,6 +74,7 @@ test.describe('englishBot / 英単語テスト', () => {
     await page.getByRole('option', { name: sources[1].name }).click();
     await page.getByRole('button', { name: 'Random Word' }).click();
 
+    await expect.poll(() => api.requests('GET', '/english/word/test').length).toBe(1);
     expect(api.requests('GET', '/english/word/test')[0].query).toMatchObject({ source: String(sources[1].id) });
   });
 

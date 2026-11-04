@@ -18,11 +18,10 @@ test.describe('quizzer / 問題出題', () => {
     await page.getByLabel('出題数').fill('2');
     await page.getByRole('button', { name: '出題スタート' }).click();
 
-    // 指定した条件で問題を取得している
-    expect(api.requests('GET', '/quiz/random')[0].query).toMatchObject({ file_num: '1', count: '2' });
-
     // 1問目: 答えを表示して正解
     await expect(page.getByText('2問中1問目')).toBeVisible();
+    // 指定した条件で問題を取得している
+    expect(api.requests('GET', '/quiz/random')[0].query).toMatchObject({ file_num: '1', count: '2' });
     await expect(page.getByText(quizzes[0].quiz_sentense)).toBeVisible();
     await page.getByRole('button', { name: '答え' }).click();
     await expect(page.getByText(quizzes[0].answer, { exact: true })).toBeVisible();

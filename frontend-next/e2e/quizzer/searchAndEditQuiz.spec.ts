@@ -41,8 +41,8 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     await page.getByLabel('検索語句').fill('Promise');
     await page.getByRole('button', { name: '検索', exact: true }).click();
 
-    expect(api.requests('GET', '/quiz/search')[0].query).toMatchObject({ file_num: '1', query: 'Promise' });
     await expect(page.getByText(`全${quizzes.length}件中 ${quizzes.length}件表示`)).toBeVisible();
+    expect(api.requests('GET', '/quiz/search')[0].query).toMatchObject({ file_num: '1', query: 'Promise' });
 
     // 対象の問題の行にある編集ボタンから編集画面へ移る
     await page.getByRole('row', { name: target.quiz_sentense }).getByRole('button', { name: '問題1-2を編集' }).click();
@@ -103,6 +103,34 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     });
   });
 
+  test('検索結果の応用問題を選んで、一括で✅をつける/外すことができる', async ({ page, api }) => {
+    const appliedQuiz = { ...target, format_id: 2, quiz_format: { name: '応用問題' } };
+    api.on('GET', '/quiz/search', { json: { total: 2, quizzes: [quizzes[0], appliedQuiz] } });
+    api.on('PUT', '/quiz/check', { json: [] });
+    api.on('PUT', '/quiz/uncheck', { json: [] });
+
+    await page.getByLabel('問題ファイル').click();
+    await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+    await page.getByRole('button', { name: '検索', exact: true }).click();
+
+    const checkbox = page.getByRole('row', { name: appliedQuiz.quiz_sentense }).getByRole('checkbox').first();
+
+    // DataGridの選択は親のstateを通して反映されるので、check()ではなくclick()の後に反映を待つ
+    await checkbox.click();
+    await expect(checkbox).toBeChecked();
+    await page.getByRole('button', { name: '✅をつける' }).click();
+    await expect(page.getByText('1問に✅をつけました')).toBeVisible();
+    expect(api.requests('PUT', '/quiz/check')[0].body).toEqual({ quiz_id: String(appliedQuiz.id) });
+    // 登録が終わると選択が外れる
+    await expect(checkbox).not.toBeChecked();
+
+    await checkbox.click();
+    await expect(checkbox).toBeChecked();
+    await page.getByRole('button', { name: '✅を外す' }).click();
+    await expect.poll(() => api.requests('PUT', '/quiz/uncheck').length).toBe(1);
+    expect(api.requests('PUT', '/quiz/uncheck')[0].body).toEqual({ quiz_id: String(appliedQuiz.id) });
+  });
+
   test('編集画面から戻ると、前回の検索条件で自動的に再検索される', async ({ page, api }) => {
     await page.getByLabel('問題ファイル').click();
     await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
@@ -134,6 +162,7 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     await expect(page.getByRole('button', { name: 'OR', exact: true })).toHaveCount(0);
 
     await page.getByRole('button', { name: '検索', exact: true }).click();
+    await expect.poll(() => api.requests('GET', '/quiz/search').length).toBe(1);
     expect(api.requests('GET', '/quiz/search')[0].query).toMatchObject({
       file_num: '1',
       category_and: JSON.stringify(['JavaScript', '非同期処理'])
@@ -155,7 +184,8 @@ test.describe('quizzer / 問題検索 → 編集', () => {
   });
 
   test('旧形式（カテゴリ1つ）で保存された検索条件はANDのカテゴリとして復元される', async ({ page, api }) => {
-    await page.evaluate(() =>
+    // 開いている画面の初期化処理に上書きされないよう、読み込み前に保存しておく
+    await page.addInitScript(() =>
       sessionStorage.setItem(
         'searchQuizRequestData',
         JSON.stringify({ query: '', file_num: 1, format_id: {}, category: 'JavaScript' })
