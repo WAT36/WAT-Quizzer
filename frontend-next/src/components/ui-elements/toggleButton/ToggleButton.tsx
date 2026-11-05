@@ -1,15 +1,18 @@
 import React from 'react';
 import { ToggleButtonGroup, ToggleButton as MuiToggleButton } from '@mui/material';
 
-interface ToggleButtonProps {
-  alignment: string;
-  setAlignment: React.Dispatch<React.SetStateAction<string>>;
-  buttonValues: string[];
+interface ToggleButtonProps<T extends string> {
+  alignment: T;
+  setAlignment: (value: T) => void;
+  buttonValues: T[];
 }
 
-export const ToggleButton = ({ alignment, setAlignment, buttonValues }: ToggleButtonProps) => {
-  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
-    setAlignment(newAlignment);
+export const ToggleButton = <T extends string>({ alignment, setAlignment, buttonValues }: ToggleButtonProps<T>) => {
+  // 選択中のボタンを押すとnullが渡されるが、常にどれか1つを選択した状態にするため無視する
+  const handleChange = (event: React.MouseEvent<HTMLElement>, newAlignment: T | null) => {
+    if (newAlignment !== null) {
+      setAlignment(newAlignment);
+    }
   };
   return (
     <ToggleButtonGroup

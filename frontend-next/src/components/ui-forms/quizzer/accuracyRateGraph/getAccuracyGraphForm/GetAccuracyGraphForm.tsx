@@ -18,22 +18,6 @@ export const GetAccuracyGraphForm = ({ onDisplayClick }: GetAccuracyGraphFormPro
   const { graph, order, getCategoryRateData, setGraph, setOrder, setCategoryRateData } = useAccuracyGraphForm();
   const { quizFormatListoption } = useQuizFormatList();
 
-  const setGraphString: React.Dispatch<React.SetStateAction<string>> = (value) => {
-    if (typeof value === 'function') {
-      setGraph((prev) => (value as (prevState: string) => string)(prev) as any);
-    } else {
-      setGraph(value as any);
-    }
-  };
-
-  const setOrderString: React.Dispatch<React.SetStateAction<string>> = (value) => {
-    if (typeof value === 'function') {
-      setOrder((prev) => (value as (prevState: string) => string)(prev) as any);
-    } else {
-      setOrder(value as any);
-    }
-  };
-
   return (
     <Card attr={['through-card', 'padding']}>
       <FormGroup>
@@ -49,19 +33,11 @@ export const GetAccuracyGraphForm = ({ onDisplayClick }: GetAccuracyGraphFormPro
         </FormControl>
         <FormControl margin={'dense'} className={'!inline-block'}>
           {'グラフの種類：'}
-          <ToggleButton
-            alignment={graph as unknown as string}
-            setAlignment={setGraphString}
-            buttonValues={['Bar', 'Radar']}
-          ></ToggleButton>
+          <ToggleButton alignment={graph} setAlignment={setGraph} buttonValues={['Bar', 'Radar']}></ToggleButton>
         </FormControl>
         <FormControl margin={'dense'} className={'!inline-block'}>
           {'表示順　　　：'}
-          <ToggleButton
-            alignment={order as unknown as string}
-            setAlignment={setOrderString}
-            buttonValues={['Rate', 'Name']}
-          ></ToggleButton>
+          <ToggleButton alignment={order} setAlignment={setOrder} buttonValues={['Rate', 'Name']}></ToggleButton>
         </FormControl>
         <FormControl margin={'dense'} className={'!flex-row items-center'}>
           {'取得範囲　　：'}

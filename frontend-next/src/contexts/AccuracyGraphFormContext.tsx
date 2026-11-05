@@ -26,7 +26,6 @@ export const AccuracyGraphFormProvider = ({
     getCategoryRateData: GetCategoryRateAPIRequestDto;
   };
 }) => {
-  // TODO graph,orderは別々ではなくて一つの型にまとめたい
   const [graph, setGraph] = useState<GraphType>(defaultValue.graph ?? 'Bar');
   const [order, setOrder] = useState<OrderType>(defaultValue.order ?? 'Rate');
   const [getCategoryRateData, setCategoryRateData] = useState<GetCategoryRateAPIRequestDto>(

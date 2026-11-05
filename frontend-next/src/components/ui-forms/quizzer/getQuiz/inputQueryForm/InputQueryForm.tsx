@@ -57,16 +57,12 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
     setCategoryResetKey((prev) => prev + 1);
   };
 
-  const keywordTargetLabel =
-    KEYWORD_TARGET_LABELS[getQuizRequestData.keywordTarget ?? 'sentence_answer'];
+  const keywordTargetLabel = KEYWORD_TARGET_LABELS[getQuizRequestData.keywordTarget ?? 'sentence_answer'];
 
-  const setKeywordTargetAlignment: React.Dispatch<React.SetStateAction<string>> = (value) => {
-    const nextLabel = typeof value === 'function' ? (value as (prev: string) => string)(keywordTargetLabel) : value;
-    const nextTarget = KEYWORD_TARGET_BY_LABEL[nextLabel];
-    if (!nextTarget) return;
+  const setKeywordTargetAlignment = (label: string) => {
     setQuizRequestData({
       ...getQuizRequestData,
-      keywordTarget: nextTarget
+      keywordTarget: KEYWORD_TARGET_BY_LABEL[label]
     });
   };
 
