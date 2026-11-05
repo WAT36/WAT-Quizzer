@@ -92,7 +92,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
                     };
                   }),
                   defaultValue: '1',
-                  setQueryofQuizStater: (value: string) => {
+                  onChange: (value: string) => {
                     setAddQuizRequestData((prev: AddQuizAPIRequestDto) => ({
                       ...prev,
                       format_id: +value

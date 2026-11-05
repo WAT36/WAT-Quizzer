@@ -32,12 +32,11 @@ export default function TestWordPage({ isMock }: Props) {
     return (
       <Container>
         <Title label="WAT Quizzer - englishBot"></Title>
-        {/**TODO RadioGroup 中のsetQueryofQuizStaterの名前を変えたい */}
         <RadioGroup
           label="テスト："
           radioButtonProps={englishTestTargetRadioButton}
           defaultValue={ENGLISH_TEST_TARGET.WORD}
-          setQueryofQuizStater={(value: string) => {
+          onChange={(value: string) => {
             setTestType(value);
           }}
         />

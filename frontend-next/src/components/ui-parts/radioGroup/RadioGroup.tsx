@@ -8,17 +8,11 @@ export interface RadioGroupProps {
   label?: string;
   radioButtonProps: RadioButtonProps[];
   defaultValue: string;
-  setQueryofQuizStater?: (value: string) => void;
+  onChange?: (value: string) => void;
   disabled?: boolean;
 }
 
-export const RadioGroup = ({
-  label,
-  radioButtonProps,
-  defaultValue,
-  setQueryofQuizStater,
-  disabled
-}: RadioGroupProps) => {
+export const RadioGroup = ({ label, radioButtonProps, defaultValue, onChange, disabled }: RadioGroupProps) => {
   const [radioValue, setRadioValue] = useState<string>(defaultValue);
   // 同じnameのラジオボタンはページ全体で1グループになるため、グループごとに別のnameを付ける
   const name = useId();
@@ -28,8 +22,8 @@ export const RadioGroup = ({
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = (event.target as HTMLInputElement).value;
     setRadioValue(value);
-    if (setQueryofQuizStater) {
-      setQueryofQuizStater(value);
+    if (onChange) {
+      onChange(value);
     }
   };
 

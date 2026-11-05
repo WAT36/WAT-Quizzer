@@ -16,7 +16,7 @@ export const RadioGroupSection = ({ sectionTitle, radioGroupProps, disabled }: R
       <RadioGroup
         radioButtonProps={radioGroupProps.radioButtonProps}
         defaultValue={radioGroupProps.defaultValue}
-        setQueryofQuizStater={radioGroupProps.setQueryofQuizStater}
+        onChange={radioGroupProps.onChange}
         disabled={disabled}
       />
     </>

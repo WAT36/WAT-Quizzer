@@ -65,7 +65,7 @@ export const GetAccuracyGraphForm = ({ onDisplayClick }: GetAccuracyGraphFormPro
                 checked: !!(getCategoryRateData.format_id && getCategoryRateData.format_id[String(x.id)])
               };
             })}
-            setQueryofQuizStater={(checkBoxValue, checked) => {
+            onChange={(checkBoxValue, checked) => {
               const setData = {
                 ...getCategoryRateData,
                 format_id: {

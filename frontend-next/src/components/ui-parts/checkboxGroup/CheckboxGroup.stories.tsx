@@ -34,7 +34,7 @@ export const WithState: Story = {
     };
     return (
       <>
-        <CheckboxGroup {...args} setQueryofQuizStater={handleChange} />
+        <CheckboxGroup {...args} onChange={handleChange} />
         <div style={{ marginTop: 16 }}>
           <strong>現在の状態:</strong> {JSON.stringify(checkedState)}
         </div>

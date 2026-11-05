@@ -5,17 +5,17 @@ import React from 'react';
 
 export interface CheckboxGroupProps {
   checkboxProps: CheckboxProps[];
-  setQueryofQuizStater?: (value: string, checked: boolean) => void;
+  onChange?: (value: string, checked: boolean) => void;
   label?: string;
 }
 
-export const CheckboxGroup = ({ checkboxProps, setQueryofQuizStater, label }: CheckboxGroupProps) => {
+export const CheckboxGroup = ({ checkboxProps, onChange, label }: CheckboxGroupProps) => {
   // チェックボックスの選択変更時の処理
   const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = (event.target as HTMLInputElement).value;
     const checked = (event.target as HTMLInputElement).checked;
-    if (setQueryofQuizStater) {
-      setQueryofQuizStater(value, checked);
+    if (onChange) {
+      onChange(value, checked);
     }
   };
 

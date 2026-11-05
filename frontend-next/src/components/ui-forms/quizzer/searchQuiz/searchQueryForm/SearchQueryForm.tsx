@@ -255,7 +255,7 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
                     checked: !!(searchQuizRequestData.format_id && searchQuizRequestData.format_id[String(x.id)])
                   };
                 })}
-                setQueryofQuizStater={(checkBoxValue, checked) => {
+                onChange={(checkBoxValue, checked) => {
                   const setData = {
                     ...searchQuizRequestData,
                     format_id: {

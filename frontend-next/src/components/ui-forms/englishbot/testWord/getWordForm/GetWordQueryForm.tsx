@@ -149,7 +149,7 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
               label="単語種別："
               radioButtonProps={englishWordTypeRadioButton}
               defaultValue={'all'}
-              setQueryofQuizStater={(value: string) => {
+              onChange={(value: string) => {
                 setQueryOfTestData({
                   ...queryOfTestData,
                   word_type: value as 'all' | 'word' | 'phrase'
@@ -162,7 +162,7 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
               label="テスト形式："
               radioButtonProps={englishTestTypeRadioButton}
               defaultValue={String(WORD_TEST_TYPE.NAME)}
-              setQueryofQuizStater={(value: string) => {
+              onChange={(value: string) => {
                 setTestType(value);
               }}
             />
