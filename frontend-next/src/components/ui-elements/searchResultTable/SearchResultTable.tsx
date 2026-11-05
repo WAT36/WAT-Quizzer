@@ -10,13 +10,13 @@ import type {
 import { DataGrid } from '@mui/x-data-grid';
 import { Tooltip } from '@/components/ui-elements/tooltip/Tooltip';
 
-interface SearchResultTableProps {
-  searchResult: GridRowsProp;
-  columns: GridColDef<GridValidRowModel>[];
+interface SearchResultTableProps<R extends GridValidRowModel> {
+  searchResult: GridRowsProp<R>;
+  columns: GridColDef<R>[];
   hasCheck?: boolean;
   checkedIdList?: number[];
   setCheckedIdList?: React.Dispatch<React.SetStateAction<number[]>>;
-  getRowClassName?: (params: GridRowClassNameParams) => string;
+  getRowClassName?: (params: GridRowClassNameParams<R>) => string;
 }
 
 // 独自のrenderCellを持たない列に補完するデフォルトのセル描画
@@ -25,14 +25,14 @@ const renderCellWithTooltip = (params: GridRenderCellParams) => {
   return <Tooltip text={text == null ? '' : String(text)} />;
 };
 
-export const SearchResultTable = ({
+export const SearchResultTable = <R extends GridValidRowModel>({
   searchResult,
   columns,
   hasCheck,
   checkedIdList,
   setCheckedIdList,
   getRowClassName
-}: SearchResultTableProps) => {
+}: SearchResultTableProps<R>) => {
   // チェックした問題のIDをステートに登録
   const registerCheckedIdList = (selectionModel: GridRowSelectionModel) => {
     setCheckedIdList && setCheckedIdList(selectionModel as number[]);

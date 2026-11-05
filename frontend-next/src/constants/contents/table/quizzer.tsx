@@ -1,7 +1,16 @@
-import type { GridRenderCellParams } from '@mui/x-data-grid';
+import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import type { GetQuizApiResponseDto } from 'quizzer-lib';
 import { EditQuizIconButton } from '@/components/ui-parts/editQuizIconButton/EditQuizIconButton';
 
-export const columns = [
+// 問題検索結果テーブルの1行分のデータ（APIレスポンスに表示用の項目を加えたもの）
+export type QuizSearchRow = GetQuizApiResponseDto & {
+  category: string;
+  format_name: string;
+  accuracy_rate: number;
+  explanation: string;
+};
+
+export const columns: GridColDef<QuizSearchRow>[] = [
   {
     field: 'quiz_num',
     headerName: '番号',
@@ -14,8 +23,7 @@ export const columns = [
     headerName: '編集',
     sortable: false,
     width: 50,
-    // TODO anyではないd型
-    renderCell: (params: GridRenderCellParams<any>) => (
+    renderCell: (params: GridRenderCellParams<QuizSearchRow>) => (
       <EditQuizIconButton fileNum={params.row.file_num} quizNum={params.row.quiz_num} />
     )
   },
@@ -60,8 +68,8 @@ export const columns = [
     sortable: true,
     type: 'number',
     width: 100,
-    renderCell: (params: GridRenderCellParams<any>) => {
-      const accuracyRate = params.value as number;
+    renderCell: (params: GridRenderCellParams<QuizSearchRow, number>) => {
+      const accuracyRate = params.value;
       // 0~100の値を0~1に正規化
       const normalized = Math.max(0, Math.min(100, accuracyRate || 0)) / 100;
 

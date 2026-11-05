@@ -8,7 +8,7 @@ import { searchQuizAPI } from '@/utils/api-wrapper';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { Button } from '@/components/ui-elements/button/Button';
-import type { GridRowsProp } from '@mui/x-data-grid';
+import type { QuizSearchRow } from '@/constants/contents/table/quizzer';
 import { CheckboxGroup } from '@/components/ui-parts/checkboxGroup/CheckboxGroup';
 import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
 import { QuizFilePullDown } from '@/components/ui-elements/pullDown/quizFilePullDown/QuizFilePullDown';
@@ -33,7 +33,7 @@ const migrateSavedSearchQuizRequestData = (
   };
 };
 
-const toSearchResultRows = (quizzes: GetQuizApiResponseDto[]) =>
+const toSearchResultRows = (quizzes: GetQuizApiResponseDto[]): QuizSearchRow[] =>
   quizzes.map((x) => {
     return {
       ...x,
@@ -50,7 +50,7 @@ const toSearchResultRows = (quizzes: GetQuizApiResponseDto[]) =>
   });
 
 interface SearchQueryFormProps {
-  setSearchResult: React.Dispatch<React.SetStateAction<GridRowsProp>>;
+  setSearchResult: React.Dispatch<React.SetStateAction<QuizSearchRow[]>>;
   setTotalCount: React.Dispatch<React.SetStateAction<number | undefined>>;
 }
 
