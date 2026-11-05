@@ -43,7 +43,6 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
     ]);
   }, [isMock, setMessage]);
 
-  // TODO  単語登録入力のとこは別コンポーネントにして切り出す
   const contents = () => {
     return (
       <Container>
