@@ -11,11 +11,10 @@ import type {
   GetWordNumResponseDto,
   GetWordDetailAPIResponseDto,
   PullDownOptionDto,
-  PartofSpeechApiResponse,
-  SourceApiResponse
+  PartofSpeechApiResponse
 } from 'quizzer-lib';
 import { apiResponsePullDownAdapter, initWordDetailResponseData } from 'quizzer-lib';
-import { getPartOfSpeechListAPI, getSourceListAPI, toggleWordCheckAPI, getWordNumAPI } from '@/utils/api-wrapper';
+import { getPartOfSpeechListAPI, toggleWordCheckAPI, getWordNumAPI } from '@/utils/api-wrapper';
 import { isMockMode } from '@/utils/api-wrapper';
 import { englishDataMock } from 'quizzer-lib';
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
@@ -25,6 +24,7 @@ import { EtymologyStack } from '@/components/ui-forms/englishbot/detailWord/etym
 import { Button } from '@/components/ui-elements/button/Button';
 import React from 'react';
 import { useWordDetail } from '@/hooks/useWordDetail';
+import { useSourceList } from '@/hooks/useSourceList';
 
 type EachWordPageProps = {
   id: string;
@@ -66,7 +66,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
   // モック環境では初期値を設定、本番環境では空の初期値
   const { wordDetail, refetchWordDetail } = useWordDetail(id, mockData?.wordDetail || initWordDetailResponseData);
   const [posList, setPosList] = useState<PullDownOptionDto[]>(mockData?.posList || []);
-  const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionDto[]>(mockData?.sourceList || []);
+  const { sourceList } = useSourceList(isMock || isMockMode(), mockData?.sourceList);
 
   useEffect(() => {
     if (isMock || isMockMode()) {
@@ -75,16 +75,10 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
     }
 
     // 本番環境では従来通りAPIを呼び出し
-    void Promise.all([
-      (async () => {
-        const result = await getPartOfSpeechListAPI();
-        result.result && setPosList(apiResponsePullDownAdapter(result.result as PartofSpeechApiResponse[]));
-      })(),
-      (async () => {
-        const result = await getSourceListAPI();
-        result.result && setSourcelistoption(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
-      })()
-    ]);
+    void (async () => {
+      const result = await getPartOfSpeechListAPI();
+      result.result && setPosList(apiResponsePullDownAdapter(result.result as PartofSpeechApiResponse[]));
+    })();
     void refetchWordDetail();
   }, [id, isMock, refetchWordDetail]);
 
@@ -141,7 +135,7 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
         {/* TODO スタックは共通化できる？ */}
         <MeaningStack posList={posList} wordDetail={wordDetail} setMessage={setMessage} onUpdated={refetchWordDetail} />
         <SourceStack
-          sourceList={sourcelistoption}
+          sourceList={sourceList}
           wordDetail={wordDetail}
           setMessage={setMessage}
           onUpdated={refetchWordDetail}

@@ -1,27 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Container } from '@mui/material';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { AddExampleSection } from '@/components/ui-forms/englishbot/addExample/addExampleSection/AddExampleSection';
 import { AssociateExampleandWordSection } from '@/components/ui-forms/englishbot/addExample/searchRelatedWordSection/AssociateExampleandWordSection';
-import type { PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
-import { apiResponsePullDownAdapter } from 'quizzer-lib';
-import { getSourceListAPI } from '@/utils/api-wrapper';
+import { useSourceList } from '@/hooks/useSourceList';
 
 type Props = {
   isMock?: boolean;
 };
 
 export default function EnglishBotAddExamplePage({ isMock }: Props) {
-  const [sourceList, setSourceList] = useState<PullDownOptionDto[]>([]);
-
-  useEffect(() => {
-    if (isMock) return;
-    void (async () => {
-      const result = await getSourceListAPI();
-      result.result && setSourceList(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
-    })();
-  }, [isMock]);
+  const { sourceList } = useSourceList(isMock);
 
   const contents = () => {
     return (

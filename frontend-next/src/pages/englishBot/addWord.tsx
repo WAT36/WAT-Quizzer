@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, FormGroup } from '@mui/material';
-import type { AddWordAPIRequestDto, PartofSpeechApiResponse, PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
+import type { AddWordAPIRequestDto, PartofSpeechApiResponse, PullDownOptionDto } from 'quizzer-lib';
 import { apiResponsePullDownAdapter } from 'quizzer-lib';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
@@ -8,7 +8,8 @@ import { AddMeanForm } from '@/components/ui-forms/englishbot/addWord/addMeanFor
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
 import { InputAddWordForm } from '@/components/ui-forms/englishbot/addWord/inputAddWordForm/InputAddWordForm';
-import { getPartOfSpeechListAPI, getSourceListAPI } from '@/utils/api-wrapper';
+import { getPartOfSpeechListAPI } from '@/utils/api-wrapper';
+import { useSourceList } from '@/hooks/useSourceList';
 
 type Props = {
   isMock?: boolean;
@@ -17,7 +18,7 @@ type Props = {
 export default function EnglishBotAddWordPage({ isMock }: Props) {
   const setMessage = useSetRecoilState(messageState);
   const [posList, setPosList] = useState<PullDownOptionDto[]>([]);
-  const [sourceList, setSourceList] = useState<PullDownOptionDto[]>([]);
+  const { sourceList } = useSourceList(isMock);
 
   const [addWordState, setAddWordState] = useState<AddWordAPIRequestDto>({
     inputWord: {
@@ -31,17 +32,11 @@ export default function EnglishBotAddWordPage({ isMock }: Props) {
 
   useEffect(() => {
     if (isMock) return;
-    void Promise.all([
-      (async () => {
-        const result = await getPartOfSpeechListAPI();
-        result.result && setPosList(apiResponsePullDownAdapter(result.result as PartofSpeechApiResponse[]));
-      })(),
-      (async () => {
-        const result = await getSourceListAPI();
-        result.result && setSourceList(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
-      })()
-    ]);
-  }, [isMock, setMessage]);
+    void (async () => {
+      const result = await getPartOfSpeechListAPI();
+      result.result && setPosList(apiResponsePullDownAdapter(result.result as PartofSpeechApiResponse[]));
+    })();
+  }, [isMock]);
 
   const contents = () => {
     return (
