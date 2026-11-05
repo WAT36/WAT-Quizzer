@@ -13,7 +13,6 @@ export const searchedDetailColumns = [
     headerName: '単語',
     sortable: true,
     width: 300,
-    // TODO  undefinedで良いのか
     renderCell: (params: GridRenderCellParams) => (
       <Link
         tabIndex={params.id as number}
