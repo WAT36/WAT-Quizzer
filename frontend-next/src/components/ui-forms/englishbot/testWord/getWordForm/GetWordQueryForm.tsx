@@ -145,8 +145,8 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
             )}
           </FormControl>
           <FormControl>
-            単語種別：
             <RadioGroup
+              label="単語種別："
               radioButtonProps={englishWordTypeRadioButton}
               defaultValue={'all'}
               setQueryofQuizStater={(value: string) => {
@@ -158,8 +158,8 @@ export const GetWordQueryForm = ({ sourcelistoption, setDisplayTestData, setTota
             />
           </FormControl>
           <FormControl>
-            テスト形式：
             <RadioGroup
+              label="テスト形式："
               radioButtonProps={englishTestTypeRadioButton}
               defaultValue={String(WORD_TEST_TYPE.NAME)}
               setQueryofQuizStater={(value: string) => {

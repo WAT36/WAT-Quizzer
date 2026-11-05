@@ -2,12 +2,11 @@ import { Layout } from '@/components/templates/layout/Layout';
 import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Title } from '@/components/ui-elements/title/Title';
-import { messageState } from '@/atoms/Message';
-import { useSetRecoilState } from 'recoil';
 import type { PullDownOptionDto, SourceApiResponse } from 'quizzer-lib';
 import { apiResponsePullDownAdapter } from 'quizzer-lib';
 import { getSourceListAPI } from '@/utils/api-wrapper';
 import { RadioGroup } from '@/components/ui-parts/radioGroup/RadioGroup';
+import { ENGLISH_TEST_TARGET, englishTestTargetRadioButton } from '@/constants/contents/radioButton';
 import { WordTestSection } from '@/components/ui-forms/englishbot/testWord/WordTestSection/WordTestSection';
 import { ExampleTestSection } from '@/components/ui-forms/englishbot/testWord/ExampleTestSection/ExampleTestSection';
 import React from 'react';
@@ -17,46 +16,36 @@ type Props = {
 };
 
 export default function TestWordPage({ isMock }: Props) {
-  const setMessage = useSetRecoilState(messageState);
   const [sourcelistoption, setSourcelistoption] = useState<PullDownOptionDto[]>([]);
-  const [testType, setTestType] = useState<string>('0');
+  const [testType, setTestType] = useState<string>(ENGLISH_TEST_TARGET.WORD);
 
   // 出典リスト取得
   useEffect(() => {
     if (isMock) return;
-    void Promise.all([
-      (async () => {
-        const result = await getSourceListAPI();
-        result.result && setSourcelistoption(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
-      })()
-    ]);
-  }, [isMock, setMessage]);
+    void (async () => {
+      const result = await getSourceListAPI();
+      result.result && setSourcelistoption(apiResponsePullDownAdapter(result.result as SourceApiResponse[]));
+    })();
+  }, [isMock]);
 
   const contents = () => {
     return (
       <Container>
         <Title label="WAT Quizzer - englishBot"></Title>
-        <>
-          {/**TODO RadioGroup ラベルの要素入れたい　あと中のqueryOfQuiz も名前変えたい */}
-          テスト：
-          <RadioGroup
-            radioButtonProps={[
-              {
-                value: '0',
-                label: 'Word'
-              },
-              {
-                value: '1',
-                label: 'Example'
-              }
-            ]}
-            defaultValue={'0'}
-            setQueryofQuizStater={(value: string) => {
-              setTestType(value);
-            }}
-          />
-        </>
-        {testType === '0' ? <WordTestSection sourcelistoption={sourcelistoption} /> : <ExampleTestSection sourcelistoption={sourcelistoption} />}
+        {/**TODO RadioGroup 中のsetQueryofQuizStaterの名前を変えたい */}
+        <RadioGroup
+          label="テスト："
+          radioButtonProps={englishTestTargetRadioButton}
+          defaultValue={ENGLISH_TEST_TARGET.WORD}
+          setQueryofQuizStater={(value: string) => {
+            setTestType(value);
+          }}
+        />
+        {testType === ENGLISH_TEST_TARGET.WORD ? (
+          <WordTestSection sourcelistoption={sourcelistoption} />
+        ) : (
+          <ExampleTestSection sourcelistoption={sourcelistoption} />
+        )}
       </Container>
     );
   };

@@ -1,5 +1,22 @@
 import { WORD_TEST_TYPE } from 'quizzer-lib';
 
+// 英単語テスト画面で出題する対象（単語 / 例文）
+export const ENGLISH_TEST_TARGET = {
+  WORD: '0',
+  EXAMPLE: '1'
+} as const;
+
+export const englishTestTargetRadioButton = [
+  {
+    value: ENGLISH_TEST_TARGET.WORD,
+    label: 'Word'
+  },
+  {
+    value: ENGLISH_TEST_TARGET.EXAMPLE,
+    label: 'Example'
+  }
+];
+
 export const englishTestTypeRadioButton = [
   {
     value: String(WORD_TEST_TYPE.NAME),

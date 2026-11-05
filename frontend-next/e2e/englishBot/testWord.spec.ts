@@ -11,6 +11,23 @@ test.describe('englishBot / 英単語テスト', () => {
     await page.goto('/englishBot/testWord/');
   });
 
+  test('ラジオボタンのグループがラベルで識別できる', async ({ page }) => {
+    for (const name of ['テスト：', '単語種別：', 'テスト形式：']) {
+      await expect(page.getByRole('radiogroup', { name })).toBeVisible();
+    }
+  });
+
+  test('テストの対象を単語と例文で切り替えられる', async ({ page }) => {
+    const randomWordButton = page.getByRole('button', { name: 'Random Word' });
+    await expect(randomWordButton).toBeVisible();
+
+    await page.getByRole('radio', { name: 'Example', exact: true }).check();
+    await expect(randomWordButton).toBeHidden();
+
+    await page.getByRole('radio', { name: 'Word', exact: true }).check();
+    await expect(randomWordButton).toBeVisible();
+  });
+
   test('単語を出題し、答えを確認して正解を登録できる', async ({ page, api }) => {
     const answerButton = page.getByRole('button', { name: '答え' });
     await expect(answerButton).toBeHidden();
