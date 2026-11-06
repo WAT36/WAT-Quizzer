@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
-  AccuracyRateByCategorySqlResultDto,
   FUTURE_DAY,
+  GetAccuracyRateByCategoryAPIResponseDto,
   PAST_DAY,
   prisma,
 } from 'quizzer-lib';
@@ -296,8 +296,6 @@ export class CategoryService {
     format_id?: { [key: string]: boolean },
   ) {
     try {
-      const result = {};
-
       const enabledFormatIds = format_id
         ? Object.entries(format_id)
             .filter(([, enabled]) => !!enabled)
@@ -357,11 +355,16 @@ export class CategoryService {
       //Prismaではリレーションをまたいだ groupBy はできないため、データを取得後JSで集計する
       const categoryResultMap = new Map<
         string,
-        { file_num: number; total: number; correct: number }
+        { file_num: number; category: string; total: number; correct: number }
       >();
       for (const category of allCategories) {
         const key = `${String(file_num)}+${category.category}`;
-        categoryResultMap.set(key, { file_num, total: 0, correct: 0 });
+        categoryResultMap.set(key, {
+          file_num,
+          category: category.category,
+          total: 0,
+          correct: 0,
+        });
       }
       for (const log of categorylogs) {
         const file_num = log.quiz.file_num;
@@ -372,7 +375,12 @@ export class CategoryService {
         for (const category of categories) {
           const key = `${file_num}+${category}`;
           if (!categoryResultMap.has(key)) {
-            categoryResultMap.set(key, { file_num, total: 0, correct: 0 });
+            categoryResultMap.set(key, {
+              file_num,
+              category,
+              total: 0,
+              correct: 0,
+            });
           }
           const entry = categoryResultMap.get(key)!;
           entry.total += 1;
@@ -383,20 +391,14 @@ export class CategoryService {
       }
 
       // map から出力形式に変換
-      const categoryResult: AccuracyRateByCategorySqlResultDto[] = [];
-      for (const [
-        key,
-        { file_num, total, correct },
-      ] of categoryResultMap.entries()) {
-        const [, category] = key.split('+');
-        categoryResult.push({
+      const categoryResult = [...categoryResultMap.values()].map(
+        ({ file_num, category, total, correct }) => ({
           file_num,
           category,
           count: total,
           accuracy_rate: total > 0 ? 100 * (correct / total) : 0,
-        });
-      }
-      result['result'] = categoryResult;
+        }),
+      );
 
       // チェック済・全問題の正解率取得
       const checkedLogs = await prisma.answer_log.findMany({
@@ -441,25 +443,30 @@ export class CategoryService {
         }
       }
 
-      result['checked_result'] = [
-        {
-          checked: true,
-          count: checkedOnlyTotal,
-          sum_clear: checkedOnlyCorrect,
-          sum_fail: checkedOnlyTotal - checkedOnlyCorrect,
-          accuracy_rate:
-            100 *
-            (checkedOnlyTotal > 0 ? checkedOnlyCorrect / checkedOnlyTotal : 0),
-        },
-      ];
-      result['all_result'] = [
-        {
-          count: total,
-          sum_clear: correct,
-          sum_fail: total - correct,
-          accuracy_rate: 100 * (total > 0 ? correct / total : 0),
-        },
-      ];
+      const result: GetAccuracyRateByCategoryAPIResponseDto = {
+        result: categoryResult,
+        checked_result: [
+          {
+            checked: true,
+            count: checkedOnlyTotal,
+            sum_clear: checkedOnlyCorrect,
+            sum_fail: checkedOnlyTotal - checkedOnlyCorrect,
+            accuracy_rate:
+              100 *
+              (checkedOnlyTotal > 0
+                ? checkedOnlyCorrect / checkedOnlyTotal
+                : 0),
+          },
+        ],
+        all_result: [
+          {
+            count: total,
+            sum_clear: correct,
+            sum_fail: total - correct,
+            accuracy_rate: 100 * (total > 0 ? correct / total : 0),
+          },
+        ],
+      };
 
       return result;
     } catch (error: unknown) {

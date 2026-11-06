@@ -85,6 +85,31 @@ describe('CategoryService', () => {
     });
   });
 
+  // カテゴリ名に+が含まれていても、名前が切れずに集計される
+  it('getAccuracyRateByCategory - カテゴリ名に+を含む', async () => {
+    (prisma.answer_log.findMany as jest.Mock).mockResolvedValue([
+      {
+        is_corrected: true,
+        quiz: {
+          file_num: 1,
+          checked: false,
+          category_quiz: [{ deleted_at: null, category: { name: 'C++' } }],
+        },
+      },
+    ]);
+    (prisma.category_view.findMany as jest.Mock).mockResolvedValue([
+      { category: 'C++' },
+      { category: 'a+b' },
+    ]);
+
+    const response = await categoryService.getAccuracyRateByCategory(1);
+
+    expect(response?.result).toEqual([
+      { file_num: 1, category: 'C++', count: 1, accuracy_rate: 100 },
+      { file_num: 1, category: 'a+b', count: 0, accuracy_rate: 0 },
+    ]);
+  });
+
   // カテゴリ正解率取得 異常系
   it('getAccuracyRateByCategory - NG', async () => {
     (prisma.category_view.findMany as jest.Mock).mockRejectedValue(

@@ -787,7 +787,7 @@ export const mockGetAccuracyRateByCategoryAPI = async (params: any): Promise<Api
   const checked_result = [
     {
       checked: true,
-      count: BigInt(getRandomIntWithRange(5, 50)),
+      count: getRandomIntWithRange(5, 50),
       sum_clear: getRandomIntWithRange(0, 30),
       sum_fail: getRandomIntWithRange(0, 20),
       accuracy_rate: getRandomIntWithRange(0, 100)
@@ -797,7 +797,7 @@ export const mockGetAccuracyRateByCategoryAPI = async (params: any): Promise<Api
   // 全問題の正解率データ
   const all_result = [
     {
-      count: BigInt(getRandomIntWithRange(50, 200)),
+      count: getRandomIntWithRange(50, 200),
       sum_clear: getRandomIntWithRange(20, 100),
       sum_fail: getRandomIntWithRange(10, 80),
       accuracy_rate: getRandomIntWithRange(0, 100)
