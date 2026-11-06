@@ -1,5 +1,5 @@
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { get } from '../../..'
+import { get, onSuccess } from '../../..'
 import type { SearchExampleAPIRequestDto, SearchExampleAPIResponseDto } from '.'
 
 // 例文検索
@@ -22,39 +22,29 @@ export const searchExampleAPI = async ({
   }
   const result = await get(
     '/english/example',
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const result: SearchExampleAPIResponseDto[] =
-          data.body as SearchExampleAPIResponseDto[]
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: SearchExampleAPIResponseDto[] =
+        data.body as SearchExampleAPIResponseDto[]
 
-        if (result.length === 0) {
-          return {
-            isSuccess: false,
-            message: {
-              message: 'エラー:条件に合うデータはありません',
-              messageColor: 'error',
-              isDisplay: true
-            }
-          }
-        }
+      if (result.length === 0) {
         return {
+          isSuccess: false,
           message: {
-            message: 'Success!!取得しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
-          result
-        }
-      } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
+            message: 'エラー:条件に合うデータはありません',
             messageColor: 'error',
             isDisplay: true
           }
         }
       }
-    },
+      return {
+        message: {
+          message: 'Success!!取得しました',
+          messageColor: 'success.light',
+          isDisplay: true
+        },
+        result
+      }
+    }),
     { ...searchExampleData }
   )
   return result

@@ -1,6 +1,6 @@
 import type { EditQuizAPIRequestDto, EditQuizApiResponseDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post } from '../..'
+import { post, onSuccess } from '../..'
 import {
   containsAny,
   errorMessage,
@@ -38,27 +38,23 @@ export const editQuizAPI = async ({
     {
       ...editQuizRequestData
     },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        const result: EditQuizApiResponseDto =
-          data.body as EditQuizApiResponseDto
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: EditQuizApiResponseDto =
+        data.body as EditQuizApiResponseDto
 
-        //入力データをクリア
-        const inputQuizField = document
-          .getElementsByTagName('textarea')
-          .item(0) as HTMLTextAreaElement
-        if (inputQuizField) {
-          inputQuizField.value = ''
-        }
-
-        return {
-          message: successMessage(MESSAGES.SUCCESS.MSG00010),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+      //入力データをクリア
+      const inputQuizField = document
+        .getElementsByTagName('textarea')
+        .item(0) as HTMLTextAreaElement
+      if (inputQuizField) {
+        inputQuizField.value = ''
       }
-    }
+
+      return {
+        message: successMessage(MESSAGES.SUCCESS.MSG00010),
+        result
+      }
+    })
   )
   return result
 }

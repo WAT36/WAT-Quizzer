@@ -1,6 +1,6 @@
 import type { AddSayingAPIRequestDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post } from '../..'
+import { post, onSuccess } from '../..'
 import type { AddQuizApiResponseDto } from '../../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
@@ -22,20 +22,16 @@ export const addSayingAPI = async ({
     {
       ...addSayingAPIRequest
     },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
-        return {
-          message: successMessage(
-            MESSAGES.SUCCESS.MSG00016,
-            addSayingAPIRequest.saying
-          ),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
+      return {
+        message: successMessage(
+          MESSAGES.SUCCESS.MSG00016,
+          addSayingAPIRequest.saying
+        ),
+        result
       }
-    }
+    })
   )
   return result
 }

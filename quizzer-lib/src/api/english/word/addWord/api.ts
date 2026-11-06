@@ -1,5 +1,5 @@
-import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { post } from '../../..'
+import type { ApiResult } from '../../..'
+import { post, onSuccess } from '../../..'
 import type { AddWordAPIRequestDto } from './dto'
 
 interface AddWordAPIProps {
@@ -52,25 +52,15 @@ export const addWordAPI = async ({
   const result = await post(
     '/english/word',
     addWordData,
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        return {
-          message: {
-            message: `単語「${addWordData.inputWord.wordName}」を登録しました`,
-            messageColor: 'success.light',
-            isDisplay: true
-          }
-        }
-      } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
+    onSuccess(() => {
+      return {
+        message: {
+          message: `単語「${addWordData.inputWord.wordName}」を登録しました`,
+          messageColor: 'success.light',
+          isDisplay: true
         }
       }
-    }
+    })
   ).catch((err: Error) => {
     return {
       isSuccess: false,

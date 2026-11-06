@@ -1,6 +1,6 @@
-import { defaultMessage, errorMessage, MESSAGES } from '../../../../..'
+import { defaultMessage, MESSAGES } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { get } from '../../..'
+import { get, onSuccess } from '../../..'
 import type { GetQuizFormatApiResponseDto } from './dto'
 
 // quizzer各画面用 問題形式リストをapi通信して取ってくる
@@ -10,20 +10,16 @@ export const getQuizFormatListAPI = async (): Promise<ApiResult> => {
   if (!savedFormatList) {
     const result = get(
       '/quiz/format',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
-          const result: GetQuizFormatApiResponseDto[] =
-            data.body as GetQuizFormatApiResponseDto[]
-          // session storageに保存
-          sessionStorage.setItem(storageKey, JSON.stringify(result))
-          return {
-            message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
-            result
-          }
-        } else {
-          return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+      onSuccess((data: ProcessingApiReponse) => {
+        const result: GetQuizFormatApiResponseDto[] =
+          data.body as GetQuizFormatApiResponseDto[]
+        // session storageに保存
+        sessionStorage.setItem(storageKey, JSON.stringify(result))
+        return {
+          message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
+          result
         }
-      },
+      }),
       {}
     )
     return result

@@ -1,6 +1,6 @@
 import type { ToggleCheckAPIRequestDto } from '.'
-import type { ApiResult, ProcessingApiReponse } from '../../../..'
-import { post } from '../../../..'
+import type { ApiResult } from '../../../..'
+import { post, onSuccess } from '../../../..'
 
 interface ToggleCheckAPIButtonProps {
   toggleCheckData: ToggleCheckAPIRequestDto
@@ -12,25 +12,15 @@ export const toggleWordCheckAPI = async ({
   const result = await post(
     '/english/word/check/toggle',
     toggleCheckData,
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        return {
-          message: {
-            message: 'Success!!編集に成功しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          }
-        }
-      } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
+    onSuccess(() => {
+      return {
+        message: {
+          message: 'Success!!編集に成功しました',
+          messageColor: 'success.light',
+          isDisplay: true
         }
       }
-    }
+    })
   ).catch(() => {
     return {
       isSuccess: false,

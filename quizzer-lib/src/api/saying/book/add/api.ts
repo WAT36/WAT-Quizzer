@@ -1,7 +1,7 @@
 import type { AddQuizApiResponseDto } from '../../../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { post } from '../../..'
+import { post, onSuccess } from '../../..'
 import type { AddBookAPIRequestDto } from './dto'
 
 interface AddBookButtonProps {
@@ -20,20 +20,16 @@ export const addBookAPI = async ({
     {
       ...addBookAPIRequest
     },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
-        return {
-          message: successMessage(
-            MESSAGES.SUCCESS.MSG00017,
-            addBookAPIRequest.book_name
-          ),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
+      return {
+        message: successMessage(
+          MESSAGES.SUCCESS.MSG00017,
+          addBookAPIRequest.book_name
+        ),
+        result
       }
-    }
+    })
   )
   return result
 }

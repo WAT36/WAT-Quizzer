@@ -1,6 +1,6 @@
 import type { AddQuizAPIRequestDto, AddQuizApiResponseDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post } from '../..'
+import { post, onSuccess } from '../..'
 import {
   containsAny,
   errorMessage,
@@ -37,28 +37,24 @@ export const addQuizAPI = async ({
   const result = await post(
     '/quiz',
     { ...addQuizRequestData },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
-        result.log = `Added!! [${result.file_num}-${result.quiz_num}]:${result.quiz_sentense},${result.answer}`
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
+      result.log = `Added!! [${result.file_num}-${result.quiz_num}]:${result.quiz_sentense},${result.answer}`
 
-        //入力データをクリア
-        // TODO ステート操作したら画面も消えるようになんないかな
-        const inputQuizField = document
-          .getElementsByTagName('textarea')
-          .item(0) as HTMLTextAreaElement
-        if (inputQuizField) {
-          inputQuizField.value = ''
-        }
-
-        return {
-          message: successMessage(MESSAGES.SUCCESS.MSG00002),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+      //入力データをクリア
+      // TODO ステート操作したら画面も消えるようになんないかな
+      const inputQuizField = document
+        .getElementsByTagName('textarea')
+        .item(0) as HTMLTextAreaElement
+      if (inputQuizField) {
+        inputQuizField.value = ''
       }
-    }
+
+      return {
+        message: successMessage(MESSAGES.SUCCESS.MSG00002),
+        result
+      }
+    })
   )
   return result
 }

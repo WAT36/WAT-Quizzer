@@ -1,10 +1,6 @@
-import {
-  errorMessage,
-  MESSAGES,
-  successMessage
-} from '../../../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { get, put } from '../..'
+import { get, put, onSuccess } from '../..'
 import type {
   GetTodoCheckStatusAPIRequestDto,
   GetTodoCheckStatusApiResponseDto,
@@ -33,18 +29,14 @@ export const getTodoCheckStatusAPI = async ({
 
   const result = await get(
     `/todo/check-status/${getTodoCheckStatusAPIRequest.date}`,
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const result: GetTodoCheckStatusApiResponseDto =
-          data.body as GetTodoCheckStatusApiResponseDto
-        return {
-          message: successMessage('Todoチェック状態を取得しました'),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: GetTodoCheckStatusApiResponseDto =
+        data.body as GetTodoCheckStatusApiResponseDto
+      return {
+        message: successMessage('Todoチェック状態を取得しました'),
+        result
       }
-    }
+    })
   )
   return result
 }

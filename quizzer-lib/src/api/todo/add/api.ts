@@ -1,11 +1,7 @@
 import type { AddTodoAPIRequestDto, AddTodoApiResponseDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post } from '../..'
-import {
-  errorMessage,
-  MESSAGES,
-  successMessage
-} from '../../../..'
+import { post, onSuccess } from '../..'
+import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
 interface AddTodoAPIProps {
   addTodoAPIRequest: AddTodoAPIRequestDto
@@ -23,17 +19,13 @@ export const addTodoAPI = async ({
     {
       ...addTodoAPIRequest
     },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        const result: AddTodoApiResponseDto = data.body as AddTodoApiResponseDto
-        return {
-          message: successMessage(MESSAGES.SUCCESS.MSG00025,result.todo),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: AddTodoApiResponseDto = data.body as AddTodoApiResponseDto
+      return {
+        message: successMessage(MESSAGES.SUCCESS.MSG00025,result.todo),
+        result
       }
-    }
+    })
   )
   return result
 }

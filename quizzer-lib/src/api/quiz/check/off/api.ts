@@ -1,7 +1,7 @@
 import type { CheckQuizAPIRequestDto, QuizApiResponseDto } from '../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { put } from '../../..'
+import { put, onSuccess } from '../../..'
 
 interface CheckOffQuizButtonProps {
   checkQuizRequestData: CheckQuizAPIRequestDto
@@ -19,17 +19,13 @@ export const checkOffQuizAPI = async ({
     {
       ...checkQuizRequestData
     },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        const result = data.body as QuizApiResponseDto[]
-        return {
-          message: successMessage(MESSAGES.SUCCESS.MSG00005),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result = data.body as QuizApiResponseDto[]
+      return {
+        message: successMessage(MESSAGES.SUCCESS.MSG00005),
+        result
       }
-    }
+    })
   )
   return result
 }

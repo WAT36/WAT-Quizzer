@@ -1,6 +1,6 @@
 import type { SubmitAssociationExampleAPIRequestDto } from '.'
-import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { post } from '../../..'
+import type { ApiResult } from '../../..'
+import { post, onSuccess } from '../../..'
 
 // TODO 名前なんか違う気するので変えたい
 // 例文と単語を紐付けしたり外したりだから・・何がいい？
@@ -43,25 +43,15 @@ export const submitAssociationExampleAPI = async ({
         checkedId,
         isAssociation
       },
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200 || data.status === 201) {
-          return {
-            message: {
-              message: `更新しました`,
-              messageColor: 'success.light',
-              isDisplay: true
-            }
-          }
-        } else {
-          return {
-            message: {
-              message: 'エラー:外部APIとの連携に失敗しました',
-              messageColor: 'error',
-              isDisplay: true
-            }
+      onSuccess(() => {
+        return {
+          message: {
+            message: `更新しました`,
+            messageColor: 'success.light',
+            isDisplay: true
           }
         }
-      }
+      })
     ).catch(() => {
       return {
         message: {

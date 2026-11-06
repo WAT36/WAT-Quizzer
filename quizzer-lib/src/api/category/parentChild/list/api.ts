@@ -1,5 +1,5 @@
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { get } from '../../..'
+import { get, onSuccess } from '../../..'
 import type {
   CategoryParentChildAPIResponseDto,
   GetCategoryParentChildListAPIRequestDto
@@ -14,28 +14,18 @@ export const getCategoryParentChildListAPI = async ({
 }: GetCategoryParentChildListAPIProps): Promise<ApiResult> => {
   const result = await get(
     '/category/parent-child',
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const result: CategoryParentChildAPIResponseDto[] =
-          data.body as CategoryParentChildAPIResponseDto[]
-        return {
-          message: {
-            message: '　',
-            messageColor: 'common.black',
-            isDisplay: false
-          },
-          result
-        }
-      } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: CategoryParentChildAPIResponseDto[] =
+        data.body as CategoryParentChildAPIResponseDto[]
+      return {
+        message: {
+          message: '　',
+          messageColor: 'common.black',
+          isDisplay: false
+        },
+        result
       }
-    },
+    }),
     { file_num: getCategoryParentChildListData.file_num }
   )
   return result

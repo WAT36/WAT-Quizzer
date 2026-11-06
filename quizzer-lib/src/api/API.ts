@@ -1,4 +1,5 @@
 import type { ApiResult, ApiResultBody, ProcessingApiReponse } from './'
+import { errorMessage, MESSAGES } from '../..'
 import { authFetch } from './auth/token'
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || ''
@@ -38,6 +39,14 @@ const send = async (
       } as ApiResult
     })
 }
+
+// 成功(200,201)の時だけfuncで変換し、それ以外は共通のエラーメッセージを返す
+export const onSuccess =
+  (func: ResponseProcessor): ResponseProcessor =>
+  (data) =>
+    data.status === 200 || data.status === 201
+      ? func(data)
+      : { message: errorMessage(MESSAGES.ERROR.MSG00004) }
 
 const jsonRequest = (method: string, jsondata: object): RequestInit => ({
   method,

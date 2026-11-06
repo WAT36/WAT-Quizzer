@@ -1,7 +1,7 @@
 import type { AddQuizApiResponseDto } from '../../../../..'
-import { errorMessage, MESSAGES, successMessage } from '../../../../..'
+import { MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { post } from '../../..'
+import { post, onSuccess } from '../../..'
 import type { AddQuizFileApiRequest } from './dto'
 
 interface AddQuizFileAPIProps {
@@ -16,20 +16,16 @@ export const addQuizFileAPI = async ({
     {
       ...addQuizFileApiRequest
     },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
-        return {
-          message: successMessage(
-            MESSAGES.SUCCESS.MSG00012,
-            String(addQuizFileApiRequest.file_nickname)
-          ),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
+      return {
+        message: successMessage(
+          MESSAGES.SUCCESS.MSG00012,
+          String(addQuizFileApiRequest.file_nickname)
+        ),
+        result
       }
-    }
+    })
   )
   return result
 }

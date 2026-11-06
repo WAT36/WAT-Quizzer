@@ -1,6 +1,6 @@
-import { errorMessage, MESSAGES, successMessage } from '../../../../../..'
+import { MESSAGES, successMessage } from '../../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../../..'
-import { patch } from '../../../..'
+import { patch, onSuccess } from '../../../..'
 import type {
   DeleteAnswerLogOfFileApiRequestDto,
   DeleteAnswerLogOfFileApiResponseDto
@@ -18,22 +18,16 @@ export const deleteAnswerLogOfQuizFileAPI = async ({
     {
       ...deleteLogOfFileRequest
     },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        const result = data.body as DeleteAnswerLogOfFileApiResponseDto
-        return {
-          message: successMessage(
-            MESSAGES.SUCCESS.MSG00003,
-            String(deleteLogOfFileRequest.file_id)
-          ),
-          result
-        }
-      } else {
-        return {
-          message: errorMessage(MESSAGES.ERROR.MSG00004)
-        }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result = data.body as DeleteAnswerLogOfFileApiResponseDto
+      return {
+        message: successMessage(
+          MESSAGES.SUCCESS.MSG00003,
+          String(deleteLogOfFileRequest.file_id)
+        ),
+        result
       }
-    }
+    })
   )
   return result
 }

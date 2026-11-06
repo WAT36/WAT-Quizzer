@@ -1,5 +1,5 @@
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { get } from '../../..'
+import { get, onSuccess } from '../../..'
 import type { GetWordDetailAPIResponseDto } from '.'
 
 interface GetWordDetailAPIProps {
@@ -11,28 +11,18 @@ export const getWordDetailAPI = async ({
 }: GetWordDetailAPIProps): Promise<ApiResult> => {
   const result = await get(
     '/english/word/' + id,
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200) {
-        const result: GetWordDetailAPIResponseDto =
-          data.body as GetWordDetailAPIResponseDto
-        return {
-          message: {
-            message: 'Success!!取得しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          },
-          result
-        }
-      } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
-        }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: GetWordDetailAPIResponseDto =
+        data.body as GetWordDetailAPIResponseDto
+      return {
+        message: {
+          message: 'Success!!取得しました',
+          messageColor: 'success.light',
+          isDisplay: true
+        },
+        result
       }
-    },
+    }),
     {}
   )
   return result

@@ -1,7 +1,7 @@
 import type { GetQuizFileApiResponseDto } from '.'
-import { defaultMessage, errorMessage, MESSAGES } from '../../../../..'
+import { defaultMessage, MESSAGES } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { get } from '../../..'
+import { get, onSuccess } from '../../..'
 
 // quizzer各画面用 問題ファイルリストをapi通信して取ってくる
 export const getQuizFileListAPI = async (): Promise<ApiResult> => {
@@ -10,20 +10,16 @@ export const getQuizFileListAPI = async (): Promise<ApiResult> => {
   if (!savedFileList) {
     const result = get(
       '/quiz/file',
-      (data: ProcessingApiReponse) => {
-        if (data.status === 200) {
-          const result: GetQuizFileApiResponseDto[] =
-            data.body as GetQuizFileApiResponseDto[]
-          // session storageに保存
-          sessionStorage.setItem(storageKey, JSON.stringify(result))
-          return {
-            message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
-            result
-          }
-        } else {
-          return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+      onSuccess((data: ProcessingApiReponse) => {
+        const result: GetQuizFileApiResponseDto[] =
+          data.body as GetQuizFileApiResponseDto[]
+        // session storageに保存
+        sessionStorage.setItem(storageKey, JSON.stringify(result))
+        return {
+          message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
+          result
         }
-      },
+      }),
       {}
     )
     return result

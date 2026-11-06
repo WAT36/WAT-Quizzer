@@ -1,5 +1,5 @@
-import type { ApiResult, ProcessingApiReponse } from '../../../..'
-import { patch } from '../../../..'
+import type { ApiResult } from '../../../..'
+import { patch, onSuccess } from '../../../..'
 import type { EditWordMeanAPIRequestDto } from '.'
 
 interface EditEnglishWordMeanButtonProps {
@@ -23,25 +23,15 @@ export const editEnglishWordMeanAPI = async ({
   const result = await patch(
     '/english/word/' + String(editMeanData.wordId),
     editMeanData,
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        return {
-          message: {
-            message: 'Success!!編集に成功しました',
-            messageColor: 'success.light',
-            isDisplay: true
-          }
-        }
-      } else {
-        return {
-          message: {
-            message: 'エラー:外部APIとの連携に失敗しました',
-            messageColor: 'error',
-            isDisplay: true
-          }
+    onSuccess(() => {
+      return {
+        message: {
+          message: 'Success!!編集に成功しました',
+          messageColor: 'success.light',
+          isDisplay: true
         }
       }
-    }
+    })
   ).catch(() => {
     return {
       isSuccess: false,

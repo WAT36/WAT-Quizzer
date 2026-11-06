@@ -1,5 +1,5 @@
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { get } from '../..'
+import { get, onSuccess } from '../..'
 import type { GetSayingRequest, GetSayingResponse } from '.'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
@@ -28,16 +28,12 @@ export const getSayingAPI = async ({
     getSayingRequestData.id && !isNaN(getSayingRequestData.id)
       ? `/saying/${getSayingRequestData.id}`
       : '/saying'
-  const result = await get(path, (data: ProcessingApiReponse) => {
-    if (data.status === 200) {
-      const result: GetSayingResponse = data.body as GetSayingResponse
-      return {
-        message: successMessage(MESSAGES.SUCCESS.MSG00019),
-        result
-      }
-    } else {
-      return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+  const result = await get(path, onSuccess((data: ProcessingApiReponse) => {
+    const result: GetSayingResponse = data.body as GetSayingResponse
+    return {
+      message: successMessage(MESSAGES.SUCCESS.MSG00019),
+      result
     }
-  })
+                                 }))
   return result
 }

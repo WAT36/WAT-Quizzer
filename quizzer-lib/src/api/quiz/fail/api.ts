@@ -1,6 +1,6 @@
 import type { GetQuizApiResponseDto } from '../get'
-import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post } from '../..'
+import type { ApiResult } from '../..'
+import { post, onSuccess } from '../..'
 import type { FailQuizAPIRequestDto } from './dto'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
@@ -27,18 +27,14 @@ export const failQuizAPI = async ({
     {
       quiz_id: getQuizResponseData.id
     } as FailQuizAPIRequestDto,
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        return {
-          message: successMessage(
-            MESSAGES.SUCCESS.MSG00011,
-            String(getQuizResponseData.quiz_num)
-          )
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+    onSuccess(() => {
+      return {
+        message: successMessage(
+          MESSAGES.SUCCESS.MSG00011,
+          String(getQuizResponseData.quiz_num)
+        )
       }
-    }
+    })
   )
   return result
 }

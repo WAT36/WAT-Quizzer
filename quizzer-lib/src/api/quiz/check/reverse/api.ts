@@ -1,7 +1,7 @@
 import type { GetQuizApiResponseDto } from '../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { post } from '../../..'
+import { post, onSuccess } from '../../..'
 
 interface ReverseCheckQuizButtonProps {
   // TODO GetQuizApiResponseDto?? CheckQuizAPIRequestDto使え
@@ -27,22 +27,18 @@ export const reverseCheckQuizAPI = async ({
     {
       quiz_id: getQuizResponseData.id
     },
-    (data: ProcessingApiReponse) => {
-      if (data.status === 200 || data.status === 201) {
-        const result: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto
-        return {
-          message: successMessage(
-            result.checked
-              ? MESSAGES.SUCCESS.MSG00006
-              : MESSAGES.SUCCESS.MSG00007,
-            String(getQuizResponseData.quiz_num)
-          ),
-          result
-        }
-      } else {
-        return { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+    onSuccess((data: ProcessingApiReponse) => {
+      const result: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto
+      return {
+        message: successMessage(
+          result.checked
+            ? MESSAGES.SUCCESS.MSG00006
+            : MESSAGES.SUCCESS.MSG00007,
+          String(getQuizResponseData.quiz_num)
+        ),
+        result
       }
-    }
+    })
   )
   return result
 }
