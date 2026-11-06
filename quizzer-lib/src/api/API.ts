@@ -1,4 +1,10 @@
-import type { ApiResult, ApiResultBody, ProcessingApiReponse } from './'
+import type {
+  ApiResult,
+  ApiResultBody,
+  ErrorResponse,
+  ProcessingApiReponse
+} from './'
+import type { Message } from '../..'
 import { errorMessage, MESSAGES } from '../..'
 import { authFetch } from './auth/token'
 
@@ -40,13 +46,26 @@ const send = async (
     })
 }
 
-// 成功(200,201)の時だけfuncで変換し、それ以外は共通のエラーメッセージを返す
+// バックエンドのエラー理由をそのまま画面に出してよいステータス
+// 401は再ログインで処理し、5xxの内部エラー文は利用者に見せない
+const DISPLAYABLE_ERROR_STATUSES = [400, 404, 409]
+
+const toErrorMessage = ({ status, body }: ProcessingApiReponse): Message => {
+  const reason = (body as Partial<ErrorResponse> | null)?.message
+  return DISPLAYABLE_ERROR_STATUSES.includes(status) &&
+    typeof reason === 'string' &&
+    reason
+    ? errorMessage(reason)
+    : errorMessage(MESSAGES.ERROR.MSG00004)
+}
+
+// 成功(200,201)の時だけfuncで変換し、それ以外はエラーメッセージを返す
 export const onSuccess =
   (func: ResponseProcessor): ResponseProcessor =>
   (data) =>
     data.status === 200 || data.status === 201
       ? func(data)
-      : { message: errorMessage(MESSAGES.ERROR.MSG00004) }
+      : { message: toErrorMessage(data) }
 
 const jsonRequest = (method: string, jsondata: object): RequestInit => ({
   method,

@@ -36,6 +36,19 @@ test.describe('englishBot / 単語詳細', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'zebra' })).toBeVisible();
   });
 
+  test('API のエラー理由は 4xx なら表示し、5xx なら内部の文言を出さない', async ({ page, api }) => {
+    const toggle = page.getByRole('button', { name: 'チェック反転' });
+
+    api.on('POST', '/english/word/check/toggle', { status: 400, json: { message: '単語が見つかりません' } });
+    await toggle.click();
+    await expect(page.getByText('単語が見つかりません')).toBeVisible();
+
+    api.on('POST', '/english/word/check/toggle', { status: 500, json: { message: 'prisma internal error' } });
+    await toggle.click();
+    await expect(page.getByText('エラー:外部APIとの連携に失敗しました')).toBeVisible();
+    await expect(page.getByText('prisma internal error')).toBeHidden();
+  });
+
   test('単語の意味・出典・類義語・対義語が表示される', async ({ page }) => {
     await expect(page.getByRole('heading', { level: 1, name: 'abandon' })).toBeVisible();
 
