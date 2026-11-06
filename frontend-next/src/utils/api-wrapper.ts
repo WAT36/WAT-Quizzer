@@ -9,8 +9,7 @@ export const isMockMode = (): boolean => {
 // API関数のラッパー関数群
 export const getQuizAPI = async (params: any): Promise<ApiResult> => {
   if (isMockMode()) {
-    // ※モック時ではカテゴリ、正解率による出題は実装していない。 (TODO 直す？)
-    console.log('getQuizAPI'); // TODO これ消すとlocalhost時のIntegrateでブラウザが壊れる？
+    // ※モック時ではカテゴリ、正解率による出題は実装していない
     return mockAPI.mockGetQuizAPI(params);
   }
 
