@@ -24,7 +24,6 @@ const signinRequest = async (
     credentials: 'include'
   })
     .then(async (response) => {
-      // TODO 型定義
       const result = (await response.json()) as SignInResult
       if (response.status !== 200) {
         return {
