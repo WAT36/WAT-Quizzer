@@ -7,6 +7,7 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import { makeRecordsToDistribution } from '../service/route53'
+import { makeDetailWordRewriteAssociation } from '../service/cloudfront'
 
 dotenv.config()
 
@@ -44,7 +45,13 @@ export class UsEast1Stack extends cdk.Stack {
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          functionAssociations: [
+            makeDetailWordRewriteAssociation(
+              this,
+              `${props.env}DetailWordRewriteFunction`
+            )
+          ]
         },
         domainNames: [process.env.FRONT_DOMAIN_NAME || ''],
         certificate: props.frontCertificate

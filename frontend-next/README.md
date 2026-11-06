@@ -1,6 +1,6 @@
 # frontend-next
 
-WAT-Quizzer のフロントエンド。[Next.js](https://nextjs.org/)（Pages Router）製で、`next.config.js` で `output: 'export'` を指定した静的サイトとしてビルドされる（`infra` の `FrontendStack` から配信される想定）。
+WAT-Quizzer のフロントエンド。[Next.js](https://nextjs.org/)（Pages Router）製で、`next.config.js` で `output: 'export'` を指定した静的サイトとしてビルドされる（`infra` の `FrontendStack` の S3 バケットに置き、`UsEast1Stack` の CloudFront から配信する）。
 
 ## 画面構成 (`src/pages/`)
 
@@ -14,7 +14,9 @@ WAT-Quizzer のフロントエンド。[Next.js](https://nextjs.org/)（Pages Ro
 | `/storybook` | Storybook への導線ページ |
 | `/404` | 404 ページ |
 
-`src/components/`（`ui-elements` / `ui-forms` / `ui-parts` / `templates` / `unused`）、`src/hooks/`、`src/contexts/`、`src/atoms/`（Recoil）、`src/constants/`（プルダウン・ラジオボタンの選択肢などの定数）、`src/utils/` に実装が分かれる。API 呼び出しやモックデータ、型は `../quizzer-lib`（backend-nest / batch と共有のパッケージ）を利用する。
+単語詳細 (`detailWord/[id]`) はビルド時に単語ごとのページを作らず、全単語共通の HTML（`out/englishBot/detailWord/[id]/index.html`）を 1 つだけ出力し、`id` は画面側で URL から読む。配信時は CloudFront Function（`infra/lib/service/cloudfront-function/detail-word-rewrite.js`）が `/englishBot/detailWord/<id>/` をこの HTML に読み替える。`/index.html` 付きの URL では `id` を読めないため、Function が `/englishBot/detailWord/<id>/` へ 301 で転送する。
+
+`src/components/`（`ui-elements` / `ui-forms` / `ui-parts` / `templates`）、`src/hooks/`、`src/contexts/`、`src/atoms/`（Recoil）、`src/constants/`（プルダウン・ラジオボタンの選択肢などの定数）、`src/utils/` に実装が分かれる。API 呼び出しやモックデータ、型は `../quizzer-lib`（backend-nest / batch と共有のパッケージ）を利用する。
 
 ## 主要ライブラリ
 
@@ -48,7 +50,7 @@ pnpm run dev
 
 ```bash
 pnpm run build        # 静的エクスポート (out/)。export も同じ内容
-pnpm run serve        # ビルド後 out/ を配信
+pnpm run serve        # ビルド後 out/ を配信（serve.json で単語詳細の URL を読み替える）
 pnpm run export:mock  # モックモード（NEXT_PUBLIC_MOCK_MODE=true）で静的エクスポート
 ```
 
@@ -83,7 +85,7 @@ pnpm run format # Prettier で src/ 配下を整形
   ```
   - ブラウザはインストール済みの Google Chrome を使う（`playwright install` は不要）
   - `e2e/support/fixtures.ts` の `test` を使うと、ログイン済みの状態で始まり、`api.on()` で API の応答を登録できる(パスは文字列の完全一致か正規表現)。登録していない API が呼ばれるとテストは失敗する
-  - `e2e:build`(`e2e/support/build.mjs`)は、英単語詳細ページをビルド時に生成するため、ビルド中だけ `/english/word/num` に答えるスタブサーバーをポート3000で立てる。ポート3000を使っているサーバーがあると失敗するので止めてから実行する。また `playwright test` もポート3000で既に動いているサーバーをそのまま使う（`playwright.config.ts` の `reuseExistingServer`）ため、`pnpm run dev` を動かしたままだと、ビルドしたものではなく開発サーバーに対してテストしてしまう
+  - `e2e:build`(`e2e/support/build.mjs`)は、E2E用の環境変数で `next build` を実行する。`serve.json` は本番の CloudFront Function と同じく、英単語詳細ページのURLを共通のHTMLへ読み替える。`playwright test` はポート3000で既に動いているサーバーをそのまま使う（`playwright.config.ts` の `reuseExistingServer`）ため、`pnpm run dev` を動かしたままだと、ビルドしたものではなく開発サーバーに対してテストしてしまう
   - 応答データは `e2e/support/data.ts` にまとめている
   - カバレッジは Chrome の V8 カバレッジを monocart-reporter で集計する（設定は `e2e/support/coverage-options.ts`）。計測時だけソースマップを出力して元の TS/TSX に対応づける。`src/` 配下の全ファイル（Storybook 用を除く）が対象で、テストで開かれない画面も 0% として数える
   - GitHub Actions では develop への push 時に `develop.yml` から `.github/workflows/frontend-e2e.yml` が呼ばれ、カバレッジ付きで実行される。カバレッジの要約はジョブの Summary に表示され、詳細は成果物 `e2e-coverage-report` からダウンロードできる。**E2E が失敗した場合、フロントエンドのデプロイ(本番・モック環境とも)は行われない**(フロントエンドに関係する変更が無い push では E2E 自体をスキップする)
@@ -96,6 +98,6 @@ pnpm run format # Prettier で src/ 配下を整形
 主に以下を `frontend-next/.env` で管理する。
 
 - `NEXT_PUBLIC_API_SERVER` — 接続先の `backend-nest` API のベース URL
-- `NEXT_PUBLIC_URL_END` — フロント自身の URL 関連設定
+- `NEXT_PUBLIC_URL_END` — サイト内リンクの末尾に付ける文字列（本番・モック環境は `/index.html`、e2e のビルドと `export:mock` は `/`）。単語詳細へのリンクには使わない
 - `NEXT_PUBLIC_STORYBOOK_URL` — `/storybook` ページから遷移する Storybook の URL
 - `NEXT_PUBLIC_MOCK_MODE` — `true` のときモックモード（通常は `export:mock` や Storybook 側で設定）

@@ -1,5 +1,6 @@
 import { CircularProgress, Container, Typography } from '@mui/material';
 import { useEffect, useState, useMemo } from 'react';
+import { useRouter } from 'next/router';
 import { Layout } from '@/components/templates/layout/Layout';
 import { Title } from '@/components/ui-elements/title/Title';
 import { MeaningStack } from '@/components/ui-forms/englishbot/detailWord/meaningStack/MeaningStack';
@@ -7,14 +8,9 @@ import { SourceStack } from '@/components/ui-forms/englishbot/detailWord/sourceS
 import { SubSourceStack } from '@/components/ui-forms/englishbot/detailWord/subSourceStack/SubSourceStack';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
-import type {
-  GetWordNumResponseDto,
-  GetWordDetailAPIResponseDto,
-  PullDownOptionDto,
-  PartofSpeechApiResponse
-} from 'quizzer-lib';
+import type { GetWordDetailAPIResponseDto, PullDownOptionDto, PartofSpeechApiResponse } from 'quizzer-lib';
 import { apiResponsePullDownAdapter, initWordDetailResponseData } from 'quizzer-lib';
-import { getPartOfSpeechListAPI, toggleWordCheckAPI, getWordNumAPI } from '@/utils/api-wrapper';
+import { getPartOfSpeechListAPI, toggleWordCheckAPI } from '@/utils/api-wrapper';
 import { isMockMode } from '@/utils/api-wrapper';
 import { englishDataMock } from 'quizzer-lib';
 import { SynonymStack } from '@/components/ui-forms/englishbot/detailWord/synonymStack/SynonymStack';
@@ -26,12 +22,14 @@ import React from 'react';
 import { useWordDetail } from '@/hooks/useWordDetail';
 import { useSourceList } from '@/hooks/useSourceList';
 
-type EachWordPageProps = {
+type EachWordContentsProps = {
   id: string;
   isMock?: boolean;
 };
-// TODO dynamic routingだとファイル数膨大・単語追加のたびにデプロイ必要になるので不向き、Next.jsで何か別の使える機能ないか
-export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps) {
+
+type EachWordPageProps = Partial<EachWordContentsProps>;
+
+const EachWordContents = ({ id, isMock }: EachWordContentsProps) => {
   const setMessage = useSetRecoilState(messageState);
 
   // モック環境用のデータをuseMemoで計算
@@ -132,7 +130,6 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
           </>
         )}
 
-        {/* TODO スタックは共通化できる？ */}
         <MeaningStack posList={posList} wordDetail={wordDetail} setMessage={setMessage} onUpdated={refetchWordDetail} />
         <SourceStack
           sourceList={sourceList}
@@ -150,77 +147,16 @@ export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps
   };
 
   return <Layout mode="englishBot" contents={contents()} title={'各単語詳細'} />;
-}
-
-// getStaticPathsの返り値、各文書のファイルパス(dynamic routing([id])のためstring)
-type Params = {
-  params: {
-    id: string;
-  };
 };
 
-export async function getStaticProps({ params }: Params) {
-  return {
-    props: {
-      id: params.id,
-      isMock: process.env.NEXT_PUBLIC_MOCK_MODE === 'true'
-    }
-  };
-}
+// ページは全単語で共通の1ファイルなので、idはURLから読む。URLはブラウザで開くまで分からないため、最初の描画ではidが未確定になる
+export default function EnglishBotEachWordPage({ id, isMock }: EachWordPageProps) {
+  const router = useRouter();
+  const wordId = id ?? router.query.id;
 
-// 一番最初に実行される関数
-export async function getStaticPaths() {
-  // モック環境かどうかを判定
-  const isMockMode = process.env.NEXT_PUBLIC_MOCK_MODE === 'true';
-
-  if (isMockMode) {
-    // モック環境では固定の単語数を使用（サンプルデータの単語数に基づく）
-    const mockWordCount = 5; // sample-english-data.jsonの単語数
-
-    return {
-      paths: new Array(mockWordCount)
-        .fill(0)
-        .map((_, i) => i)
-        .map((d) => {
-          return {
-            params: {
-              id: String(d + 1)
-            }
-          };
-        }),
-      fallback: false
-    };
+  if (typeof wordId !== 'string') {
+    return <Layout mode="englishBot" contents={<CircularProgress aria-label="読み込み中" />} title={'各単語詳細'} />;
   }
 
-  // 本番環境では従来通りAPIから取得。失敗時は静的生成をスキップ。
-  let words: GetWordNumResponseDto | undefined;
-  // TODO words/num APIが効かない時の再実行・暫定措置で繰り返し処理を設けたが、もっといい方法あるはずなので探して欲しい
-  for (let i = 0; i < 5; i++) {
-    try {
-      const res = await getWordNumAPI({});
-      words = res.result as GetWordNumResponseDto | undefined;
-      console.log(`words[${i + 1}]:`, JSON.stringify(words));
-      if (words) break;
-    } catch (error) {
-      console.warn('Failed to fetch words/num', error);
-    }
-  }
-
-  if (!words || !words._max || typeof words._max.id !== 'number') {
-    console.warn('words/num response is invalid. Skipping static paths generation.');
-    return { paths: [], fallback: false };
-  }
-  return {
-    paths: new Array(words!._max.id + 30)
-      .fill(0)
-      .map((_, i) => i)
-      .map((d) => {
-        return {
-          params: {
-            id: String(d + 1)
-          }
-        };
-      }),
-    fallback: false
-  };
+  return <EachWordContents key={wordId} id={wordId} isMock={isMock} />;
 }

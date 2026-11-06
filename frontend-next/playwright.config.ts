@@ -38,7 +38,7 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'serve ./out -l 3000',
+    command: 'serve ./out -l 3000 -c ../serve.json',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 30_000

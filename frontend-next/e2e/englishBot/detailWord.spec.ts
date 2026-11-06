@@ -2,7 +2,6 @@ import type { GetWordDetailAPIResponseDto } from 'quizzer-lib';
 import { test, expect } from '../support/fixtures';
 import { mockEnglishMasterData } from '../support/data';
 
-// 詳細ページはビルド時に作られるため、idはe2e/support/build.mjsで作るページの範囲(1〜40)にしておく
 const wordDetail: GetWordDetailAPIResponseDto = {
   id: 7,
   name: 'abandon',
@@ -27,6 +26,14 @@ test.describe('englishBot / 単語詳細', () => {
     api.on('GET', `/english/word/${wordDetail.id}`, { json: wordDetail });
 
     await page.goto(`/englishBot/detailWord/${wordDetail.id}/`);
+  });
+
+  test('末尾のスラッシュがないURLでも、どのidの単語でも開ける', async ({ page, api }) => {
+    api.on('GET', '/english/word/99999', { json: { ...wordDetail, id: 99999, name: 'zebra' } });
+
+    await page.goto('/englishBot/detailWord/99999');
+
+    await expect(page.getByRole('heading', { level: 1, name: 'zebra' })).toBeVisible();
   });
 
   test('単語の意味・出典・類義語・対義語が表示される', async ({ page }) => {

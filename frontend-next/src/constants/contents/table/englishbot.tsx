@@ -14,10 +14,8 @@ export const searchedDetailColumns = [
     sortable: true,
     width: 300,
     renderCell: (params: GridRenderCellParams) => (
-      <Link
-        tabIndex={params.id as number}
-        href={'/englishBot/detailWord/' + params.id + process.env.NEXT_PUBLIC_URL_END}
-      >
+      // 詳細ページは/index.html付きのURLだとidを読めないため、NEXT_PUBLIC_URL_ENDは使わない
+      <Link tabIndex={params.id as number} href={'/englishBot/detailWord/' + params.id + '/'}>
         {String(params.value)}
       </Link>
     )

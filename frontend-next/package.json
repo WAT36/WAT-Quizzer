@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "export": "next build",
-    "serve": "next build && serve ./out",
+    "serve": "next build && serve ./out -c ../serve.json",
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write 'src/**/*.(ts|tsx)'",

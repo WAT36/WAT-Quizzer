@@ -9,11 +9,12 @@ WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com
   - `CertificateStack`（`lib/stack/usEast1/certificate-stack.ts`）— ACM 証明書（us-east-1）
   - `BackendStack`（`lib/stack/backend-stack.ts`）— `backend-nest` 用インフラ
   - `FrontendStack`（`lib/stack/frontend-stack.ts`）— `frontend-next` の静的サイト配信用インフラ（S3 バケット等。`BackendStack` の `todoCheckStatusTable` を参照）と、Cognito（ユーザープール・アプリクライアント・ID プール）。アプリクライアントのトークン有効期限は accessToken / idToken 1時間、refreshToken 6時間
-  - `UsEast1Stack`（`lib/stack/us-east1-stack.ts`）— us-east-1 リージョン依存のリソース（CloudFront 用証明書と連携）
+  - `UsEast1Stack`（`lib/stack/us-east1-stack.ts`）— フロントエンド配信用の CloudFront ディストリビューション（`FrontendStack` の S3 バケットをオリジンとし、404 は `/404.html` を返す）と、その DNS レコード
   - `MockStack`（`lib/stack/mock-stack.ts`）— モック環境用スタック。単体でデプロイする場合は `pnpm exec cdk deploy MockStack`
 
 ## 補助リソース (`lib/service/`)
 
+- `cloudfront.ts`、`cloudfront-function/detail-word-rewrite.js` — 英単語詳細ページのURLを、全単語で共通のHTML（`/englishBot/detailWord/[id]/index.html`）へ読み替える CloudFront Function。`UsEast1Stack` と `MockStack` の配信で使う
 - `route53.ts`, `iam.ts` — Route53 / IAM まわりの共通処理
 - `lambda-edge/cognito-at-edge/` — CloudFront (Lambda@Edge) 上で Cognito 認証を行う Lambda 関数（現在はどのスタックからも参照されていない）
 
@@ -25,7 +26,7 @@ WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com
 - `SamQuizzerApiFunction` — `backend-nest` を動かす Lambda（リポジトリルートの `Dockerfile` からビルドするコンテナイメージ。`/{proxy+}` の全メソッドを受ける。メモリは 512MB）
 - `WordDerivativesFunction` — 下記 `lambda/word-derivatives/` の Lambda
 
-develop ブランチへの push で `.github/workflows/develop.yml` の `deploy-backend` ジョブが `sam build` / `sam deploy` を実行する（バックエンドに関係する変更があるときのみ。パラメータは同ワークフローの `--parameter-overrides` を参照）。CDK の `BackendStack` / `FrontendStack` は `deploy-frontend` ジョブでデプロイする。
+develop ブランチへの push で `.github/workflows/develop.yml` の `deploy-backend` ジョブが `sam build` / `sam deploy` を実行する（バックエンドに関係する変更があるときのみ。パラメータは同ワークフローの `--parameter-overrides` を参照）。CDK の `BackendStack` / `FrontendStack` は `deploy-frontend` ジョブでデプロイする。`UsEast1Stack` / `MockStack` はワークフローからはデプロイされないため、変更時は `infra/` で `pnpm exec cdk deploy <スタック名> --context env=<env>` を手動で実行する。
 
 ## Lambda (`lambda/`)
 
@@ -37,7 +38,7 @@ develop ブランチへの push で `.github/workflows/develop.yml` の `deploy-
 
 * `pnpm run build` — TypeScript をコンパイル
 * `pnpm run watch` — 変更を監視してコンパイル
-* `pnpm run test` — jest による unit test
+* `pnpm run test` — jest による unit test（`test/`。CloudFront Function の URL 読み替えなど）
 * `pnpm exec cdk deploy --context env=<env>` — 対象環境へデプロイ（`env` コンテキストで環境を切り替える。`bin/infra.ts` が `app.node.tryGetContext('env')` を参照）
 * `pnpm exec cdk diff --context env=<env>` — デプロイ済みスタックとの差分確認
 * `pnpm exec cdk synth --context env=<env>` — CloudFormation テンプレートを出力

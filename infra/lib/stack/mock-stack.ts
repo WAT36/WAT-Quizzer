@@ -7,6 +7,7 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as acm from 'aws-cdk-lib/aws-certificatemanager'
 import * as route53 from 'aws-cdk-lib/aws-route53'
 import { makeRecordsToDistribution } from '../service/route53'
+import { makeDetailWordRewriteAssociation } from '../service/cloudfront'
 
 dotenv.config()
 
@@ -49,7 +50,13 @@ export class MockStack extends cdk.Stack {
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-          cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD_OPTIONS
+          cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD_OPTIONS,
+          functionAssociations: [
+            makeDetailWordRewriteAssociation(
+              this,
+              'MockDetailWordRewriteFunction'
+            )
+          ]
         },
         domainNames: [process.env.MOCK_FRONT_DOMAIN_NAME || ''],
         certificate: props.mockCertificate,

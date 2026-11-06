@@ -78,6 +78,7 @@ develop への push で `develop.yml` が dev 環境にデプロイする。最�
 | `quizzer-lib/`・`.github/`・ルートの `package.json` / `pnpm-lock.yaml` / `pnpm-workspace.yaml` / `tsconfig.json` | ○ | ○ |
 
 - lint は常に実行し、エラーがあればどちらもデプロイしない。バックエンドとフロントエンドのデプロイは並列に動く
+- CDK のうち `deploy-frontend` がデプロイするのは `BackendStack` / `FrontendStack` のみ。`UsEast1Stack`（CloudFront）/ `MockStack` は手動でデプロイする（[`infra/README.md`](infra/README.md) を参照）
 - Actions の画面から手動実行（`workflow_dispatch`）すると、変更の有無にかかわらず全てデプロイする
 - 同時に複数の run が走らないよう、前の run が終わるまで次の run は待機する
 - pnpm のセットアップ・依存インストール・quizzer-lib のビルドは共通アクション `.github/actions/setup` にまとめている

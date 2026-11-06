@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "englishBot/detailWord/:id", "destination": "/englishBot/detailWord/[id]/index.html" }]
+}
