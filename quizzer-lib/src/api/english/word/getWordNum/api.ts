@@ -31,7 +31,6 @@ export const getWordNumAPI =
         }
       },
       {},
-      undefined,
       false // 認証不要(ビルドでlocalStorage入るのを防ぐため)
     )
     return result

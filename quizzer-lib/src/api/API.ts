@@ -3,16 +3,54 @@ import { authFetch } from './auth/token'
 
 export const baseURL: string = process.env.NEXT_PUBLIC_API_SERVER || ''
 
+type ResponseProcessor = (data: ProcessingApiReponse) => ApiResultBody
+
 // 認証が必要なAPIはauthFetch（トークン付与・期限切れ時の再取得/再ログイン）を通す
 const request = (url: string, init: RequestInit, needAuth?: boolean) =>
   needAuth !== false ? authFetch(url, init) : fetch(url, init)
 
-// TODO メソッドごとに分けてるけどまとめられないか？
+// リクエストを送り、レスポンスをApiResultに変換する。全メソッド共通の処理
+const send = async (
+  path: string,
+  init: RequestInit,
+  func: ResponseProcessor,
+  needAuth?: boolean
+): Promise<ApiResult> => {
+  return await request(baseURL + path, init, needAuth)
+    .then((response) =>
+      response.json().then((data) => ({
+        status: response.status,
+        body: data
+      }))
+    )
+    .then((data) => ({
+      isSuccess: data.status >= 200 && data.status < 300,
+      ...func(data)
+    }))
+    .catch((error) => {
+      return {
+        isSuccess: false,
+        message: {
+          message: String(error.message),
+          messageColor: 'error',
+          isDisplay: true
+        }
+      } as ApiResult
+    })
+}
+
+const jsonRequest = (method: string, jsondata: object): RequestInit => ({
+  method,
+  body: JSON.stringify(jsondata),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
 export const get = async (
   path: string,
-  func: (data: ProcessingApiReponse) => ApiResultBody,
+  func: ResponseProcessor,
   queryParam?: { [key: string]: string | number | boolean },
-  bodyData?: object,
   needAuth?: boolean
 ): Promise<ApiResult> => {
   const query = queryParam
@@ -30,229 +68,40 @@ export const get = async (
       )}`
     : ''
 
-  const result = await request(
-    baseURL + path + query,
-    {
-      method: 'GET',
-      body: bodyData ? JSON.stringify(bodyData) : null
-    },
-    needAuth
-  )
-    .then((response) =>
-      response.json().then((data) => ({
-        status: response.status,
-        body: data
-      }))
-    )
-    .then((data) => ({
-      isSuccess: data.status >= 200 && data.status < 300,
-      ...func(data)
-    }))
-    .catch((error) => {
-      return {
-        isSuccess: false,
-        message: {
-          message: String(error.message),
-          messageColor: 'error',
-          isDisplay: true
-        }
-      } as ApiResult
-    })
-  return result
-}
-
-export const getApiAndGetValue = async (
-  path: string,
-  queryParam?: { [key: string]: string }
-) => {
-  const query = queryParam ? `?${new URLSearchParams(queryParam)}` : ''
-
-  return await authFetch(baseURL + path + query, {
-    method: 'GET'
-  })
-    .catch((error) => {
-      console.error('API Error1.')
-      throw Error(error)
-    })
-    .then((response) => response.json())
+  return await send(path + query, { method: 'GET' }, func, needAuth)
 }
 
 export const post = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => ApiResultBody,
-  needAuth?: boolean
-): Promise<ApiResult> => {
-  return await request(
-    baseURL + path,
-    {
-      method: 'POST',
-      body: JSON.stringify(jsondata),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    },
-    needAuth
-  )
-    .then((response) =>
-      response.json().then((data) => ({
-        status: response.status,
-        body: data
-      }))
-    )
-    .then((data) => ({
-      isSuccess: data.status >= 200 && data.status < 300,
-      ...func(data)
-    }))
-    .catch((error) => {
-      return {
-        isSuccess: false,
-        message: {
-          message: String(error.message),
-          messageColor: 'error',
-          isDisplay: true
-        }
-      } as ApiResult
-    })
-}
+  func: ResponseProcessor
+): Promise<ApiResult> => await send(path, jsonRequest('POST', jsondata), func)
 
 export const put = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => ApiResultBody
-): Promise<ApiResult> => {
-  return await authFetch(baseURL + path, {
-    method: 'PUT',
-    body: JSON.stringify(jsondata),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) =>
-      response.json().then((data) => ({
-        status: response.status,
-        body: data
-      }))
-    )
-    .then((data) => ({
-      isSuccess: data.status >= 200 && data.status < 300,
-      ...func(data)
-    }))
-    .catch((error) => {
-      return {
-        isSuccess: false,
-        message: {
-          message: String(error.message),
-          messageColor: 'error',
-          isDisplay: true
-        }
-      } as ApiResult
-    })
-}
+  func: ResponseProcessor
+): Promise<ApiResult> => await send(path, jsonRequest('PUT', jsondata), func)
 
 export const del = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => ApiResultBody
-): Promise<ApiResult> => {
-  return await authFetch(baseURL + path, {
-    method: 'DELETE',
-    body: JSON.stringify(jsondata),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) =>
-      response.json().then((data) => ({
-        status: response.status,
-        body: data
-      }))
-    )
-    .then((data) => ({
-      isSuccess: data.status >= 200 && data.status < 300,
-      ...func(data)
-    }))
-    .catch((error) => {
-      return {
-        isSuccess: false,
-        message: {
-          message: String(error.message),
-          messageColor: 'error',
-          isDisplay: true
-        }
-      } as ApiResult
-    })
-}
+  func: ResponseProcessor
+): Promise<ApiResult> => await send(path, jsonRequest('DELETE', jsondata), func)
 
 export const patch = async (
   path: string,
   jsondata: object,
-  func: (data: ProcessingApiReponse) => ApiResultBody
-): Promise<ApiResult> => {
-  return await authFetch(baseURL + path, {
-    method: 'PATCH',
-    body: JSON.stringify(jsondata),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) =>
-      response.json().then((data) => ({
-        status: response.status,
-        body: data
-      }))
-    )
-    .then((data) => ({
-      isSuccess: data.status >= 200 && data.status < 300,
-      ...func(data)
-    }))
-    .catch((error) => {
-      return {
-        isSuccess: false,
-        message: {
-          message: String(error.message),
-          messageColor: 'error',
-          isDisplay: true
-        }
-      } as ApiResult
-    })
-}
+  func: ResponseProcessor
+): Promise<ApiResult> => await send(path, jsonRequest('PATCH', jsondata), func)
 
 // ファイルを送りたい時
 export const fileUploadAPI = async (
   path: string,
   file: File,
-  func: (data: ProcessingApiReponse) => ApiResultBody,
-  needAuth?: boolean
+  func: ResponseProcessor
 ): Promise<ApiResult> => {
   const formData = new FormData()
   formData.append('file', file)
-  return await request(
-    baseURL + path,
-    {
-      method: 'POST',
-      body: formData
-    },
-    needAuth
-  )
-    .then((response) =>
-      response.json().then((data) => ({
-        status: response.status,
-        body: data
-      }))
-    )
-    .then((data) => ({
-      isSuccess: data.status >= 200 && data.status < 300,
-      ...func(data)
-    }))
-    .catch((error) => {
-      return {
-        isSuccess: false,
-        message: {
-          message: String(error.message),
-          messageColor: 'error',
-          isDisplay: true
-        }
-      } as ApiResult
-    })
+  return await send(path, { method: 'POST', body: formData }, func)
 }
