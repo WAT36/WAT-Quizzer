@@ -22,7 +22,7 @@ import {
 
 // モック用のAPI関数群
 export const mockGetQuizAPI = async (params: any): Promise<ApiResult> => {
-  // 問題を返す（通常取得以外はランダム） TODO チェック済とか問題種別とかカテゴリに対応する？
+  // 問題を返す（通常取得以外はランダム）。チェック済・問題種別・カテゴリでの絞り込みはしない
   const quizList = quizMockData.filter((quiz) => quiz.file_num === params.getQuizRequestData.file_num);
   const count = params.getQuizRequestData.count;
 
