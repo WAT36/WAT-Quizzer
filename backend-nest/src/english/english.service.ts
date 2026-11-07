@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   AddExampleAPIRequestDto,
   SourceStatisticsApiResponse,
-  SubmitAssociationExampleAPIRequestDto,
+  ChangeExampleAssociationAPIRequestDto,
   SubmitExampleTestDataAPIRequestDto,
   prisma,
 } from 'quizzer-lib';
@@ -220,7 +220,7 @@ export class EnglishService {
 
   // 例文紐付け更新
   async changeAssociationOfExampleService(
-    req: SubmitAssociationExampleAPIRequestDto,
+    req: ChangeExampleAssociationAPIRequestDto,
   ) {
     const { wordName, checkedId, isAssociation } = req;
 

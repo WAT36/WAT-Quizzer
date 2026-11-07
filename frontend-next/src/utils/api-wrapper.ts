@@ -469,13 +469,13 @@ export const submitExampleTestDataAPI = async (params: any): Promise<ApiResult> 
   return originalSubmitExampleTestDataAPI(params);
 };
 
-export const submitAssociationExampleAPI = async (params: any): Promise<ApiResult> => {
+export const changeExampleAssociationAPI = async (params: any): Promise<ApiResult> => {
   if (isMockMode()) {
-    return mockAPI.mockSubmitAssociationExampleAPI(params);
+    return mockAPI.mockChangeExampleAssociationAPI(params);
   }
 
-  const { submitAssociationExampleAPI: originalSubmitAssociationExampleAPI } = await import('quizzer-lib');
-  return originalSubmitAssociationExampleAPI(params);
+  const { changeExampleAssociationAPI: originalChangeExampleAssociationAPI } = await import('quizzer-lib');
+  return originalChangeExampleAssociationAPI(params);
 };
 
 export const addSynonymAPI = async (params: any): Promise<ApiResult> => {

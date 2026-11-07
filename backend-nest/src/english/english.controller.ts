@@ -11,7 +11,7 @@ import { EnglishService } from './english.service';
 import {
   AddExampleAPIRequestDto,
   RegisterWordsToSourceDto,
-  SubmitAssociationExampleAPIRequestDto,
+  ChangeExampleAssociationAPIRequestDto,
   SubmitExampleTestDataAPIRequestDto,
 } from 'quizzer-lib';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
@@ -53,7 +53,7 @@ export class EnglishController {
   @ApiOperation({ summary: '例文の紐付けを変更する' })
   @Post('/example/association')
   async changeAssociationOfExample(
-    @Body() req: SubmitAssociationExampleAPIRequestDto,
+    @Body() req: ChangeExampleAssociationAPIRequestDto,
   ) {
     return await this.englishService.changeAssociationOfExampleService(req);
   }

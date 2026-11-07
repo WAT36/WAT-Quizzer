@@ -1,18 +1,17 @@
-import type { SubmitAssociationExampleAPIRequestDto } from '.'
+import type { ChangeExampleAssociationAPIRequestDto } from '.'
 import type { ApiResult } from '../../..'
 import { post, onSuccess } from '../../..'
 
-// TODO 名前なんか違う気するので変えたい
-// 例文と単語を紐付けしたり外したりだから・・何がいい？
-interface SubmitAssociationExampleButtonProps {
-  submitAssociationExampleData: SubmitAssociationExampleAPIRequestDto
+// 単語と例文の紐付けを変更する(isAssociation:true->紐付け false->解除)
+interface ChangeExampleAssociationAPIProps {
+  changeExampleAssociationData: ChangeExampleAssociationAPIRequestDto
 }
 
-export const submitAssociationExampleAPI = async ({
-  submitAssociationExampleData
-}: SubmitAssociationExampleButtonProps): Promise<ApiResult> => {
+export const changeExampleAssociationAPI = async ({
+  changeExampleAssociationData
+}: ChangeExampleAssociationAPIProps): Promise<ApiResult> => {
   const { wordName, checkedIdList, isAssociation } =
-    submitAssociationExampleData
+    changeExampleAssociationData
   if (!wordName) {
     return {
       isSuccess: false,

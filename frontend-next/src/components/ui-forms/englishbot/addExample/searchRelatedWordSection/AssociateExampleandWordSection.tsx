@@ -7,7 +7,7 @@ import { meanColumns } from '../../../../../constants/contents/table/englishbot'
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
 import type { AssociateExampleandWordData } from 'quizzer-lib';
-import { searchExampleAPI, submitAssociationExampleAPI } from '@/utils/api-wrapper';
+import { searchExampleAPI, changeExampleAssociationAPI } from '@/utils/api-wrapper';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
 
@@ -158,8 +158,8 @@ export const AssociateExampleandWordSection = ({}: AssociateExampleandWordSectio
                 messageColor: '#d3d3d3',
                 isDisplay: true
               });
-            const result = await submitAssociationExampleAPI({
-              submitAssociationExampleData: {
+            const result = await changeExampleAssociationAPI({
+              changeExampleAssociationData: {
                 wordName: associateExampleandWord.wordName || '',
                 checkedIdList: associateExampleandWord.checkedIdList || [],
                 isAssociation: true
@@ -184,8 +184,8 @@ export const AssociateExampleandWordSection = ({}: AssociateExampleandWordSectio
                 messageColor: '#d3d3d3',
                 isDisplay: true
               });
-            const result = await submitAssociationExampleAPI({
-              submitAssociationExampleData: {
+            const result = await changeExampleAssociationAPI({
+              changeExampleAssociationData: {
                 wordName: associateExampleandWord.wordName || '',
                 checkedIdList: associateExampleandWord.checkedIdList || [],
                 isAssociation: false

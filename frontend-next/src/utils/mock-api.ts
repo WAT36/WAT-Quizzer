@@ -1095,10 +1095,10 @@ export const mockSearchExampleAPI = async (params: any): Promise<ApiResult> => {
   };
 };
 
-export const mockSubmitAssociationExampleAPI = async (params: any): Promise<ApiResult> => {
-  const { submitAssociationExampleData } = params;
+export const mockChangeExampleAssociationAPI = async (params: any): Promise<ApiResult> => {
+  const { changeExampleAssociationData } = params;
 
-  if (!submitAssociationExampleData.wordName || submitAssociationExampleData.wordName === '') {
+  if (!changeExampleAssociationData.wordName || changeExampleAssociationData.wordName === '') {
     return {
       isSuccess: false,
       message: {
@@ -1109,7 +1109,7 @@ export const mockSubmitAssociationExampleAPI = async (params: any): Promise<ApiR
     };
   }
 
-  if (!submitAssociationExampleData.checkedIdList || submitAssociationExampleData.checkedIdList.length === 0) {
+  if (!changeExampleAssociationData.checkedIdList || changeExampleAssociationData.checkedIdList.length === 0) {
     return {
       isSuccess: false,
       message: {
