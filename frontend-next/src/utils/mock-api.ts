@@ -1109,7 +1109,7 @@ export const mockChangeExampleAssociationAPI = async (params: any): Promise<ApiR
     };
   }
 
-  if (!changeExampleAssociationData.checkedIdList || changeExampleAssociationData.checkedIdList.length === 0) {
+  if (!changeExampleAssociationData.exampleIdList || changeExampleAssociationData.exampleIdList.length === 0) {
     return {
       isSuccess: false,
       message: {
@@ -1123,7 +1123,7 @@ export const mockChangeExampleAssociationAPI = async (params: any): Promise<ApiR
   return {
     isSuccess: true,
     message: {
-      message: '処理が終了しました',
+      message: changeExampleAssociationData.isAssociation ? '例文を紐付けました' : '例文の紐付けを解除しました',
       messageColor: 'success.light',
       isDisplay: true
     }

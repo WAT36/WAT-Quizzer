@@ -161,7 +161,7 @@ export const AssociateExampleandWordSection = ({}: AssociateExampleandWordSectio
             const result = await changeExampleAssociationAPI({
               changeExampleAssociationData: {
                 wordName: associateExampleandWord.wordName || '',
-                checkedIdList: associateExampleandWord.checkedIdList || [],
+                exampleIdList: associateExampleandWord.checkedIdList || [],
                 isAssociation: true
               }
             });
@@ -187,7 +187,7 @@ export const AssociateExampleandWordSection = ({}: AssociateExampleandWordSectio
             const result = await changeExampleAssociationAPI({
               changeExampleAssociationData: {
                 wordName: associateExampleandWord.wordName || '',
-                checkedIdList: associateExampleandWord.checkedIdList || [],
+                exampleIdList: associateExampleandWord.checkedIdList || [],
                 isAssociation: false
               }
             });

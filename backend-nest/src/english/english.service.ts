@@ -218,11 +218,18 @@ export class EnglishService {
     }
   }
 
-  // 例文紐付け更新
+  // 例文紐付け更新(複数の例文をまとめて紐付け・解除する)
   async changeAssociationOfExampleService(
     req: ChangeExampleAssociationAPIRequestDto,
   ) {
-    const { wordName, checkedId, isAssociation } = req;
+    const { wordName, exampleIdList, isAssociation } = req;
+
+    if (!Array.isArray(exampleIdList) || exampleIdList.length === 0) {
+      throw new HttpException(
+        'エラー:紐付けを変更する例文が選択されていません',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     // 入力単語存在チェック
     const wordData = await prisma.word.findUnique({
@@ -242,35 +249,41 @@ export class EnglishService {
     }
 
     try {
-      // isAssociation:true->紐付け false->解除
-      const data = isAssociation
-        ? await prisma.word_example.upsert({
-            create: {
-              example_sentense_id: checkedId,
-              word_id: wordData.id,
-            },
-            update: {
-              deleted_at: null,
-            },
-            where: {
-              example_sentense_id_word_id: {
-                example_sentense_id: checkedId,
+      if (isAssociation) {
+        // 紐付け 1件でも失敗したら全件ロールバックする
+        const data = await prisma.$transaction(
+          exampleIdList.map((exampleId) =>
+            prisma.word_example.upsert({
+              create: {
+                example_sentense_id: exampleId,
                 word_id: wordData.id,
               },
-            },
-          })
-        : await prisma.word_example.update({
-            where: {
-              example_sentense_id_word_id: {
-                example_sentense_id: checkedId,
-                word_id: wordData.id,
+              update: {
+                deleted_at: null,
               },
-            },
-            data: {
-              deleted_at: new Date(),
-            },
-          });
-      return data;
+              where: {
+                example_sentense_id_word_id: {
+                  example_sentense_id: exampleId,
+                  word_id: wordData.id,
+                },
+              },
+            }),
+          ),
+        );
+        return { count: data.length };
+      }
+      // 解除 1文で更新するので一部だけ反映されることはない
+      // 紐付いていない例文が含まれていても対象外になるだけでエラーにしない
+      return await prisma.word_example.updateMany({
+        where: {
+          word_id: wordData.id,
+          example_sentense_id: { in: exampleIdList },
+          deleted_at: null,
+        },
+        data: {
+          deleted_at: new Date(),
+        },
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(

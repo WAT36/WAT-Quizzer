@@ -10,7 +10,7 @@ interface ChangeExampleAssociationAPIProps {
 export const changeExampleAssociationAPI = async ({
   changeExampleAssociationData
 }: ChangeExampleAssociationAPIProps): Promise<ApiResult> => {
-  const { wordName, checkedIdList, isAssociation } =
+  const { wordName, exampleIdList, isAssociation } =
     changeExampleAssociationData
   if (!wordName) {
     return {
@@ -22,7 +22,7 @@ export const changeExampleAssociationAPI = async ({
       }
     }
   }
-  if (!checkedIdList) {
+  if (!exampleIdList || exampleIdList.length === 0) {
     return {
       isSuccess: false,
       message: {
@@ -33,40 +33,21 @@ export const changeExampleAssociationAPI = async ({
     }
   }
 
-  // TODO 配列でのデータをAPIでどう送るのが良いか？途中で失敗した時のロールバック方法とかも考えたい
-  for (const checkedId of checkedIdList) {
-    await post(
-      '/english/example/association',
-      {
-        wordName,
-        checkedId,
-        isAssociation
-      },
-      onSuccess(() => {
-        return {
-          message: {
-            message: `更新しました`,
-            messageColor: 'success.light',
-            isDisplay: true
-          }
-        }
-      })
-    ).catch(() => {
+  // 選択した例文はまとめて1回で送り、バックエンドで一括更新する
+  const result = await post(
+    '/english/example/association',
+    { wordName, exampleIdList, isAssociation },
+    onSuccess(() => {
       return {
         message: {
-          message: 'エラー:外部APIとの連携に失敗しました',
-          messageColor: 'error',
+          message: isAssociation
+            ? '例文を紐付けました'
+            : '例文の紐付けを解除しました',
+          messageColor: 'success.light',
           isDisplay: true
         }
       }
     })
-  }
-  return {
-    isSuccess: true,
-    message: {
-      message: '処理が終了しました',
-      messageColor: 'success.light',
-      isDisplay: true
-    }
-  }
+  )
+  return result
 }

@@ -1,7 +1,6 @@
-//
+// 例文紐付け変更APIリクエスト型
 export interface ChangeExampleAssociationAPIRequestDto {
   wordName: string
-  checkedId?: number
-  checkedIdList?: number[]
+  exampleIdList: number[]
   isAssociation: boolean
 }
