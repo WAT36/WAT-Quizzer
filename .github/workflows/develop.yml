@@ -156,6 +156,13 @@ jobs:
           cut -d= -f2 .env  | xargs -I arg echo ::add-mask::arg
           cat .env >> "$GITHUB_ENV"
 
+      # sam buildがWordDerivativesFunction(Runtime: python3.12)のビルドで同じバージョンのPythonを要求するため、
+      # ランナー既定のPythonに頼らず明示的に入れる
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       # SAM設定
       - name: Setup aws-sam
         uses: aws-actions/setup-sam@v2
