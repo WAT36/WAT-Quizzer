@@ -3,10 +3,10 @@ import { defaultMessage, errorMessage, MESSAGES } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { get } from '../../..'
 
-interface GetSourceStatisticsDataButtonProps {}
+interface GetSourceStatisticsDataAPIProps {}
 
 export const getSourceStatisticsDataAPI =
-  async ({}: GetSourceStatisticsDataButtonProps): Promise<ApiResult> => {
+  async ({}: GetSourceStatisticsDataAPIProps): Promise<ApiResult> => {
     const result = get(
       '/english/source/statistics',
       (data: ProcessingApiReponse) => {

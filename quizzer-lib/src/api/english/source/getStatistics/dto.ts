@@ -1,7 +1,6 @@
 import type { ApiResponse } from '../../..'
 
 // source/statisticsからの取得結果
-// TODO これ類 prismaの型(index.d.gs)から取ってこれるんでない？
 export interface SourceStatisticsApiResponse extends ApiResponse {
   id: number
   name: string
@@ -9,5 +8,5 @@ export interface SourceStatisticsApiResponse extends ApiResponse {
   fail_count: number
   count: number
   not_answered: number
-  accuracy_rate: number // TODO
+  accuracy_rate: number // 正答率(%) 0〜100、未解答のみなら0
 }
