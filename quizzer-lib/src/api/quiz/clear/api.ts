@@ -4,13 +4,13 @@ import { post, onSuccess } from '../..'
 import type { ClearQuizAPIRequestDto } from './dto'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
-interface ClearQuizButtonProps {
+interface ClearQuizAPIProps {
   getQuizResponseData: GetQuizApiResponseDto
 }
 
 export const clearQuizAPI = async ({
   getQuizResponseData
-}: ClearQuizButtonProps): Promise<ApiResult> => {
+}: ClearQuizAPIProps): Promise<ApiResult> => {
   if (getQuizResponseData.file_num === -1) {
     return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   } else if (getQuizResponseData.quiz_num === -1) {
