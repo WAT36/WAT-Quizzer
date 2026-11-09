@@ -10,7 +10,10 @@ interface CheckOnQuizButtonProps {
 export const checkOnQuizAPI = async ({
   checkQuizRequestData
 }: CheckOnQuizButtonProps): Promise<ApiResult> => {
-  if (!checkQuizRequestData.quiz_id || checkQuizRequestData.quiz_id === '') {
+  if (
+    !checkQuizRequestData.quiz_ids ||
+    checkQuizRequestData.quiz_ids.length === 0
+  ) {
     return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00007) }
   }
 

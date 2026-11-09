@@ -702,7 +702,7 @@ export const mockDeleteCategoryOfQuizAPI = async (params: any): Promise<ApiResul
 export const mockCheckOnQuizAPI = async (params: any): Promise<ApiResult> => {
   const { checkQuizRequestData } = params;
 
-  if (!checkQuizRequestData.quiz_id || checkQuizRequestData.quiz_id === '') {
+  if (!checkQuizRequestData.quiz_ids || checkQuizRequestData.quiz_ids.length === 0) {
     return {
       isSuccess: false,
       message: errorMessage(MESSAGES.ERROR.MSG00007)
@@ -719,7 +719,7 @@ export const mockCheckOnQuizAPI = async (params: any): Promise<ApiResult> => {
 export const mockCheckOffQuizAPI = async (params: any): Promise<ApiResult> => {
   const { checkQuizRequestData } = params;
 
-  if (!checkQuizRequestData.quiz_id || checkQuizRequestData.quiz_id === '') {
+  if (!checkQuizRequestData.quiz_ids || checkQuizRequestData.quiz_ids.length === 0) {
     return {
       isSuccess: false,
       message: errorMessage(MESSAGES.ERROR.MSG00007)

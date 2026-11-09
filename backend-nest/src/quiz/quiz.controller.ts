@@ -21,6 +21,7 @@ import {
   DeleteQuizAPIRequestDto,
   IntegrateToQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
+  ReverseCheckQuizAPIRequestDto,
   DeleteAnswerLogOfFileApiRequestDto,
   AddCategoryToQuizAPIRequestDto,
   DeleteCategoryOfQuizAPIRequestDto,
@@ -223,7 +224,7 @@ export class QuizController {
     description: 'クイズのチェック状態を反転します。',
   })
   @Post('/check')
-  async reverseCheck(@Body() req: CheckQuizAPIRequestDto) {
+  async reverseCheck(@Body() req: ReverseCheckQuizAPIRequestDto) {
     return await this.quizService.reverseCheck(req);
   }
 

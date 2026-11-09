@@ -904,7 +904,7 @@ describe('QuizService', () => {
   it('check - OK', async () => {
     // テストデータ
     const req = {
-      quiz_id: '1,2',
+      quiz_ids: [1, 2],
     };
     (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
       callback(prisma),
@@ -923,7 +923,7 @@ describe('QuizService', () => {
   it('check - NG1', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_ids: [1],
     };
     (prisma.$transaction as jest.Mock).mockRejectedValue(
       new Error('error test by jest.'),
@@ -937,7 +937,7 @@ describe('QuizService', () => {
   it('uncheck - OK', async () => {
     // テストデータ
     const req = {
-      quiz_id: '1,2',
+      quiz_ids: [1, 2],
     };
     (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
       callback(prisma),
@@ -956,7 +956,7 @@ describe('QuizService', () => {
   it('uncheck - NG1', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_ids: [1],
     };
     (prisma.$transaction as jest.Mock).mockRejectedValue(
       new Error('error test by jest.'),
@@ -966,11 +966,23 @@ describe('QuizService', () => {
     });
   });
 
+  // 問題にチェック追加 異常系2 問題IDが不正なら更新せず400
+  it.each([[[]], [['1']], [[1.5]], ['1,2']])(
+    'check - NG2 quiz_ids=%j',
+    async (quiz_ids) => {
+      (prisma.$transaction as jest.Mock).mockClear();
+      await expect(
+        quizService.check({ quiz_ids } as unknown as { quiz_ids: number[] }),
+      ).rejects.toMatchObject({ status: 400 });
+      expect(prisma.$transaction).not.toHaveBeenCalled();
+    },
+  );
+
   // 問題のチェック反転 正常系1
   it('reverseCheck - OK', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_id: 1,
     };
     const testResult = {
       result: 'OK!',
@@ -984,7 +996,7 @@ describe('QuizService', () => {
   it('reverseCheck - NG1', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_id: 1,
     };
     (prisma.quiz.findUnique as jest.Mock).mockRejectedValue(
       new Error('error test by jest.'),
@@ -992,6 +1004,15 @@ describe('QuizService', () => {
     await expect(quizService.reverseCheck(req)).rejects.toMatchObject({
       message: 'error test by jest.',
     });
+  });
+
+  // 問題のチェック反転 異常系2 問題IDが数値でなければ400
+  it('reverseCheck - NG2', async () => {
+    await expect(
+      quizService.reverseCheck({ quiz_id: '1' } as unknown as {
+        quiz_id: number;
+      }),
+    ).rejects.toMatchObject({ status: 400 });
   });
 
   // 回答ログ削除 正常系1

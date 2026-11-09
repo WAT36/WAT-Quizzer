@@ -1,4 +1,7 @@
-import type { GetQuizApiResponseDto } from '../..'
+import type {
+  GetQuizApiResponseDto,
+  ReverseCheckQuizAPIRequestDto
+} from '../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { post, onSuccess } from '../../..'
@@ -22,11 +25,12 @@ export const reverseCheckQuizAPI = async ({
     return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00008) }
   }
 
+  const requestData: ReverseCheckQuizAPIRequestDto = {
+    quiz_id: getQuizResponseData.id
+  }
   const result = await post(
     '/quiz/check',
-    {
-      quiz_id: getQuizResponseData.id
-    },
+    requestData,
     onSuccess((data: ProcessingApiReponse) => {
       const result: GetQuizApiResponseDto = data.body as GetQuizApiResponseDto
       return {

@@ -120,7 +120,7 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     await expect(checkbox).toBeChecked();
     await page.getByRole('button', { name: '✅をつける' }).click();
     await expect(page.getByText('1問に✅をつけました')).toBeVisible();
-    expect(api.requests('PUT', '/quiz/check')[0].body).toEqual({ quiz_id: String(appliedQuiz.id) });
+    expect(api.requests('PUT', '/quiz/check')[0].body).toEqual({ quiz_ids: [appliedQuiz.id] });
     // 登録が終わると選択が外れる
     await expect(checkbox).not.toBeChecked();
 
@@ -128,7 +128,7 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     await expect(checkbox).toBeChecked();
     await page.getByRole('button', { name: '✅を外す' }).click();
     await expect.poll(() => api.requests('PUT', '/quiz/uncheck').length).toBe(1);
-    expect(api.requests('PUT', '/quiz/uncheck')[0].body).toEqual({ quiz_id: String(appliedQuiz.id) });
+    expect(api.requests('PUT', '/quiz/uncheck')[0].body).toEqual({ quiz_ids: [appliedQuiz.id] });
   });
 
   test('編集画面から戻ると、前回の検索条件で自動的に再検索される', async ({ page, api }) => {

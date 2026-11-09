@@ -6,6 +6,7 @@ import {
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
   CheckQuizAPIRequestDto,
+  ReverseCheckQuizAPIRequestDto,
   DeleteAnswerLogOfFileApiRequestDto,
   getRandomElementFromArray,
   getRandomElementsFromArray,
@@ -1393,75 +1394,40 @@ export class QuizService {
 
   // 問題にチェック追加
   async check(req: CheckQuizAPIRequestDto) {
-    try {
-      const { quiz_id } = req;
-      const quiz_ids = quiz_id.split(',').map((x) => {
-        if (isNaN(+x)) {
-          throw new HttpException(
-            `問題番号が不正です(${x})`,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        return +x;
-      });
-      // トランザクション
-      const updatedQuizzes = await prisma.$transaction(async (prisma) => {
-        // 更新
-        const updatedQuizzes = [];
-        for (const quiz_id of quiz_ids) {
-          updatedQuizzes.push(
-            await prisma.quiz.update({
-              data: {
-                checked: true,
-              },
-              where: {
-                id: quiz_id,
-              },
-            }),
-          );
-        }
-        return updatedQuizzes;
-      });
-      // 更新後の問題を返す
-      return updatedQuizzes;
-    } catch (error) {
-      throw error;
-    }
+    return await this.updateChecked(req.quiz_ids, true);
   }
 
   // 問題にチェック外す
   async uncheck(req: CheckQuizAPIRequestDto) {
+    return await this.updateChecked(req.quiz_ids, false);
+  }
+
+  // 指定した問題のチェック状態をまとめて更新する
+  // 存在しない問題が含まれていたら全件ロールバックする
+  private async updateChecked(quiz_ids: unknown, checked: boolean) {
+    if (
+      !Array.isArray(quiz_ids) ||
+      quiz_ids.length === 0 ||
+      !quiz_ids.every((x) => Number.isInteger(x))
+    ) {
+      throw new HttpException(
+        `問題番号が不正です(${JSON.stringify(quiz_ids)})`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     try {
-      const { quiz_id } = req;
-      const quiz_ids = quiz_id.split(',').map((x) => {
-        if (isNaN(+x)) {
-          throw new HttpException(
-            `問題番号が不正です(${x})`,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        return +x;
-      });
-      // トランザクション
-      const updatedQuizzes = await prisma.$transaction(async (prisma) => {
-        // 更新
+      return await prisma.$transaction(async (prisma) => {
         const updatedQuizzes = [];
-        for (const quiz_id of quiz_ids) {
+        for (const quiz_id of quiz_ids as number[]) {
           updatedQuizzes.push(
             await prisma.quiz.update({
-              data: {
-                checked: false,
-              },
-              where: {
-                id: quiz_id,
-              },
+              data: { checked },
+              where: { id: quiz_id },
             }),
           );
         }
         return updatedQuizzes;
       });
-      // 更新後の問題を返す
-      return updatedQuizzes;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new HttpException(
@@ -1473,22 +1439,22 @@ export class QuizService {
   }
 
   // 問題のチェック反転
-  async reverseCheck(req: CheckQuizAPIRequestDto) {
+  async reverseCheck(req: ReverseCheckQuizAPIRequestDto) {
+    const { quiz_id } = req;
+    if (!Number.isInteger(quiz_id)) {
+      throw new HttpException(
+        `問題番号が不正です(${quiz_id})`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     try {
-      const { quiz_id } = req;
-      if (isNaN(+quiz_id)) {
-        throw new HttpException(
-          `問題番号が不正です(${quiz_id})`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
       const checked = (
         await prisma.quiz.findUnique({
           select: {
             checked: true,
           },
           where: {
-            id: +quiz_id,
+            id: quiz_id,
           },
         })
       ).checked;
@@ -1497,7 +1463,7 @@ export class QuizService {
           checked: !checked,
         },
         where: {
-          id: +quiz_id,
+          id: quiz_id,
         },
       });
     } catch (error: unknown) {
