@@ -131,6 +131,38 @@ test.describe('quizzer / 問題検索 → 編集', () => {
     expect(api.requests('PUT', '/quiz/uncheck')[0].body).toEqual({ quiz_ids: [appliedQuiz.id] });
   });
 
+  test('検索結果の問題を選んで、一括でカテゴリを登録/削除できる', async ({ page, api }) => {
+    api.on('POST', '/quiz/category', { status: 201, json: [] });
+    api.on('PUT', '/quiz/category', { json: [] });
+
+    await page.getByLabel('問題ファイル').click();
+    await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+    await page.getByRole('button', { name: '検索', exact: true }).click();
+
+    const checkbox = page.getByRole('row', { name: target.quiz_sentense }).getByRole('checkbox').first();
+    await checkbox.click();
+    await expect(checkbox).toBeChecked();
+    await page.getByLabel('変更後のカテゴリ').fill('非同期処理');
+    await page.getByRole('button', { name: '一括カテゴリ登録' }).click();
+
+    await expect(page.getByText('1問にカテゴリを登録しました')).toBeVisible();
+    // 親カテゴリ(JavaScript)も一緒に登録され、問題IDは数値の配列で送られる
+    const added = api.requests('POST', '/quiz/category').map((x) => x.body);
+    expect(added).toHaveLength(2);
+    expect(added).toContainEqual({ quiz_ids: [target.id], category: '非同期処理' });
+    expect(added).toContainEqual({ quiz_ids: [target.id], category: 'JavaScript' });
+
+    await checkbox.click();
+    await expect(checkbox).toBeChecked();
+    await page.getByLabel('変更後のカテゴリ').fill('非同期処理');
+    await page.getByRole('button', { name: '一括カテゴリ削除' }).click();
+
+    await expect(page.getByText('1問からカテゴリを削除しました')).toBeVisible();
+    expect(api.requests('PUT', '/quiz/category').map((x) => x.body)).toEqual([
+      { quiz_ids: [target.id], category: '非同期処理' }
+    ]);
+  });
+
   test('編集画面から戻ると、前回の検索条件で自動的に再検索される', async ({ page, api }) => {
     await page.getByLabel('問題ファイル').click();
     await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();

@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 import {
   prisma,
@@ -844,7 +845,7 @@ describe('QuizService', () => {
   it('addCategoryToQuiz - OK', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_ids: [0],
       category: 'カテゴリ1',
     };
     // テストデータ 正常時の返り値（カテゴリ追加後の問題）
@@ -859,7 +860,7 @@ describe('QuizService', () => {
   it('addCategoryToQuiz - NG1', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_ids: [0],
       category: 'カテゴリ1',
     };
     (prisma.$transaction as jest.Mock).mockRejectedValue(
@@ -874,7 +875,7 @@ describe('QuizService', () => {
   it('removeCategoryFromQuiz - OK', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_ids: [0],
       category: 'カテゴリ1',
     };
     // テストデータ 正常時の返り値（カテゴリ削除後の問題）
@@ -887,7 +888,7 @@ describe('QuizService', () => {
   it('removeCategoryFromQuiz - NG1', async () => {
     // テストデータ
     const req = {
-      quiz_id: '0',
+      quiz_ids: [0],
       category: 'カテゴリ1',
     };
     (prisma.$transaction as jest.Mock).mockRejectedValue(
@@ -898,6 +899,35 @@ describe('QuizService', () => {
         message: 'error test by jest.',
       },
     );
+  });
+
+  // 問題にカテゴリ追加・削除 異常系2 問題IDが不正なら更新せず400
+  it.each([[[]], [['1']], [[1.5]], ['1,2']])(
+    'addCategoryToQuiz / removeCategoryFromQuiz - NG2 quiz_ids=%j',
+    async (quiz_ids) => {
+      (prisma.$transaction as jest.Mock).mockClear();
+      const req = { quiz_ids, category: 'カテゴリ1' } as unknown as {
+        quiz_ids: number[];
+        category: string;
+      };
+      await expect(quizService.addCategoryToQuiz(req)).rejects.toMatchObject({
+        status: 400,
+      });
+      await expect(
+        quizService.removeCategoryFromQuiz(req),
+      ).rejects.toMatchObject({ status: 400 });
+      expect(prisma.$transaction).not.toHaveBeenCalled();
+    },
+  );
+
+  // 問題にカテゴリ追加 異常系3 存在しない問題は500にせず404のまま返す
+  it('addCategoryToQuiz - NG3', async () => {
+    (prisma.$transaction as jest.Mock).mockRejectedValueOnce(
+      new HttpException('問題が見つかりません(99)', HttpStatus.NOT_FOUND),
+    );
+    await expect(
+      quizService.addCategoryToQuiz({ quiz_ids: [99], category: 'カテゴリ1' }),
+    ).rejects.toMatchObject({ status: 404 });
   });
 
   // 問題にチェック追加 正常系1

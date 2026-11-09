@@ -1,5 +1,5 @@
 // クイズからカテゴリ削除APIリクエスト型
 export interface DeleteCategoryOfQuizAPIRequestDto {
-  quiz_id: string // 数値をカンマ区切りで表記、文字列の形で送る
+  quiz_ids: number[] // 問題のID(quiz.id)
   category: string
 }

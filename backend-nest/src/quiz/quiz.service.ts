@@ -39,6 +39,20 @@ const trimSpaces = (str: string): string =>
   str ? str.replace(/^[ \u3000]+|[ \u3000]+$/g, '') : str;
 
 // 問題を有効なカテゴリ付きで返す際のinclude条件
+// 問題IDの配列(空でない整数の配列)であることを確認し、違えば400にする
+function assertQuizIds(quiz_ids: unknown): asserts quiz_ids is number[] {
+  if (
+    !Array.isArray(quiz_ids) ||
+    quiz_ids.length === 0 ||
+    !quiz_ids.every((x) => Number.isInteger(x))
+  ) {
+    throw new HttpException(
+      `問題番号が不正です(${JSON.stringify(quiz_ids)})`,
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+}
+
 const includeActiveCategories = {
   category_quiz: {
     where: {
@@ -1221,17 +1235,9 @@ export class QuizService {
 
   // 問題にカテゴリ追加
   async addCategoryToQuiz(req: AddCategoryToQuizAPIRequestDto) {
+    const { quiz_ids, category } = req;
+    assertQuizIds(quiz_ids);
     try {
-      const { quiz_id, category } = req;
-      const quiz_ids = quiz_id.split(',').map((x) => {
-        if (isNaN(+x)) {
-          throw new HttpException(
-            `問題番号が不正です(${x})`,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        return +x;
-      });
       const categories = category.split(',');
       // トランザクション
       const updatedQuizzes = await prisma.$transaction(async (prisma) => {
@@ -1295,6 +1301,10 @@ export class QuizService {
       });
       return updatedQuizzes;
     } catch (error: unknown) {
+      // 問題が見つからない(404)はそのまま返す
+      if (error instanceof HttpException) {
+        throw error;
+      }
       if (error instanceof Error) {
         throw new HttpException(
           error.message,
@@ -1306,17 +1316,9 @@ export class QuizService {
 
   // 問題からカテゴリ削除
   async removeCategoryFromQuiz(body: DeleteCategoryOfQuizAPIRequestDto) {
+    const { quiz_ids, category } = body;
+    assertQuizIds(quiz_ids);
     try {
-      const { quiz_id, category } = body;
-      const quiz_ids = quiz_id.split(',').map((x) => {
-        if (isNaN(+x)) {
-          throw new HttpException(
-            `問題番号が不正です(${x})`,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-        return +x;
-      });
       const categories = category.split(',');
       // トランザクション
       const updatedQuizzes = await prisma.$transaction(async (prisma) => {
@@ -1405,20 +1407,11 @@ export class QuizService {
   // 指定した問題のチェック状態をまとめて更新する
   // 存在しない問題が含まれていたら全件ロールバックする
   private async updateChecked(quiz_ids: unknown, checked: boolean) {
-    if (
-      !Array.isArray(quiz_ids) ||
-      quiz_ids.length === 0 ||
-      !quiz_ids.every((x) => Number.isInteger(x))
-    ) {
-      throw new HttpException(
-        `問題番号が不正です(${JSON.stringify(quiz_ids)})`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    assertQuizIds(quiz_ids);
     try {
       return await prisma.$transaction(async (prisma) => {
         const updatedQuizzes = [];
-        for (const quiz_id of quiz_ids as number[]) {
+        for (const quiz_id of quiz_ids) {
           updatedQuizzes.push(
             await prisma.quiz.update({
               data: { checked },

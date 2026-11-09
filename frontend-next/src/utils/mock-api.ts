@@ -668,7 +668,7 @@ export const mockGetAnswerLogStatisticsDataAPI = async (params: any): Promise<Ap
 export const mockAddCategoryToQuizAPI = async (params: any): Promise<ApiResult> => {
   const { addCategoryToQuizRequestData } = params;
 
-  if (!addCategoryToQuizRequestData.quiz_id || addCategoryToQuizRequestData.quiz_id === '') {
+  if (!addCategoryToQuizRequestData.quiz_ids || addCategoryToQuizRequestData.quiz_ids.length === 0) {
     return {
       isSuccess: false,
       message: errorMessage(MESSAGES.ERROR.MSG00001)
@@ -685,7 +685,7 @@ export const mockAddCategoryToQuizAPI = async (params: any): Promise<ApiResult> 
 export const mockDeleteCategoryOfQuizAPI = async (params: any): Promise<ApiResult> => {
   const { deleteCategoryOfQuizRequestData } = params;
 
-  if (!deleteCategoryOfQuizRequestData.quiz_id || deleteCategoryOfQuizRequestData.quiz_id === '') {
+  if (!deleteCategoryOfQuizRequestData.quiz_ids || deleteCategoryOfQuizRequestData.quiz_ids.length === 0) {
     return {
       isSuccess: false,
       message: errorMessage(MESSAGES.ERROR.MSG00001)

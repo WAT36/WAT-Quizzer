@@ -12,8 +12,8 @@ export const addCategoryToQuizAPI = async ({
   addCategoryToQuizRequestData
 }: AddCategoryToQuizAPIProps): Promise<ApiResult> => {
   if (
-    !addCategoryToQuizRequestData.quiz_id ||
-    addCategoryToQuizRequestData.quiz_id === ''
+    !addCategoryToQuizRequestData.quiz_ids ||
+    addCategoryToQuizRequestData.quiz_ids.length === 0
   ) {
     return {
       isSuccess: false,

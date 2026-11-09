@@ -12,8 +12,8 @@ export const deleteCategoryOfQuizAPI = async ({
   deleteCategoryOfQuizRequestData
 }: DeleteCategoryOfQuizAPIProps): Promise<ApiResult> => {
   if (
-    !deleteCategoryOfQuizRequestData.quiz_id ||
-    deleteCategoryOfQuizRequestData.quiz_id === ''
+    !deleteCategoryOfQuizRequestData.quiz_ids ||
+    deleteCategoryOfQuizRequestData.quiz_ids.length === 0
   ) {
     return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
