@@ -1,6 +1,5 @@
 import type { FourChoiceData } from '.'
 
-// TODO これはlibとかに回したい
 // 英単語テスト四択APIの返り値から問題文を生成する
 export const generateFourChoiceSentense = (res: FourChoiceData) => {
   if (!res.correct || !res.dummy) {
