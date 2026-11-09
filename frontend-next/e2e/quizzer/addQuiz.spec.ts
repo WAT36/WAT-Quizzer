@@ -81,6 +81,10 @@ test.describe('quizzer / 問題追加', () => {
     await expect(page.getByLabel('ダミー選択肢1：')).toHaveValue('');
     await expect(page.getByLabel('ダミー選択肢2：')).toHaveValue('');
     await expect(page.getByLabel('ダミー選択肢3：')).toHaveValue('');
+    await expect(page.getByLabel('問題文')).toHaveValue('');
+    await expect(page.getByLabel('答え')).toHaveValue('');
+    // 多答設定のチェックも外れる
+    await expect(page.getByLabel('(多答設定、この選択肢も正解にする)').nth(2)).not.toBeChecked();
   });
 
   test('答えにカンマが含まれている場合は登録しない', async ({ page, api }) => {

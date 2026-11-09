@@ -215,6 +215,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
                         <Checkbox
                           value="only-checked"
                           label="(多答設定、この選択肢も正解にする)"
+                          checked={choice.isCorrect}
                           onChange={(e) => {
                             setAddQuizRequestData((prev: AddQuizAPIRequestDto) => ({
                               ...prev,
