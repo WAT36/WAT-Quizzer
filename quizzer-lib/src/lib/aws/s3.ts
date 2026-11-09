@@ -19,6 +19,8 @@ export const getS3Client = () => {
   })
 }
 
+// 問題用の画像をS3にアップロードし、保存したファイル名を返す
+// バケット名を外部に出さないよう、URLではなくファイル名を返す
 export const uploadQuizImageToS3 = async (
   file: Express.Multer.File
 ): Promise<string> => {
@@ -43,7 +45,7 @@ export const uploadQuizImageToS3 = async (
   console.log('upload img buffer byteLength:' + file.buffer.byteLength)
   const s3Client = getS3Client()
   await s3Client.send(new PutObjectCommand(uploadParams))
-  return `https://${bucketName}.s3.amazonaws.com/${uploadParams.Key}`
+  return file.originalname
 }
 
 export const getQuizImageFromS3 = async (fileName: string): Promise<Buffer> => {

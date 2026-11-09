@@ -18,6 +18,8 @@ export interface ApiRequest {
 export interface MockResponse {
   status?: number;
   json?: unknown;
+  // JSONでない本文を返したい場合(文字列を返すAPIなど)に指定する。指定時はjsonより優先
+  text?: string;
 }
 
 type Handler = MockResponse | ((request: ApiRequest) => MockResponse);
@@ -70,6 +72,10 @@ export class ApiMock {
       return;
     }
     const response = typeof matched.handler === 'function' ? matched.handler(apiRequest) : matched.handler;
+    if (response.text !== undefined) {
+      await route.fulfill({ status: response.status ?? 200, contentType: 'text/html', body: response.text });
+      return;
+    }
     await route.fulfill({ status: response.status ?? 200, json: response.json ?? {} });
   }
 }

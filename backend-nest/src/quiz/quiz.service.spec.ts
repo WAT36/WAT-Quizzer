@@ -6,6 +6,7 @@ import {
   getRandomElementsFromArray,
   xor,
   getPrismaFromPastDayRange,
+  uploadQuizImageToS3,
 } from 'quizzer-lib';
 
 jest.mock('quizzer-lib', () => {
@@ -68,6 +69,7 @@ jest.mock('quizzer-lib', () => {
     getPrismaFromPastDayRange: jest.fn(),
     getTodayStart: jest.fn(),
     xor: jest.fn(),
+    uploadQuizImageToS3: jest.fn(),
     MESSAGES: jest.requireActual('quizzer-lib').MESSAGES,
     containsAny: jest.requireActual('quizzer-lib').containsAny,
     SEARCH_LIMITS: {
@@ -1168,5 +1170,33 @@ describe('QuizService', () => {
       },
     });
     expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  // 画像アップロード 正常系 ファイル名をJSONで返せるようオブジェクトで返す
+  it('uploadQuizImage - OK', async () => {
+    (uploadQuizImageToS3 as jest.Mock).mockResolvedValueOnce('a.png');
+    const file = { originalname: 'a.png' } as Express.Multer.File;
+    expect(await quizService.uploadQuizImage(file)).toEqual({
+      fileName: 'a.png',
+    });
+  });
+
+  // 画像アップロード 異常系 ファイル未指定は400
+  it('uploadQuizImage - NG no file', async () => {
+    await expect(
+      quizService.uploadQuizImage(undefined as unknown as Express.Multer.File),
+    ).rejects.toMatchObject({ status: 400 });
+  });
+
+  // 画像アップロード 異常系 S3への送信失敗は理由付きの500
+  it('uploadQuizImage - NG s3 error', async () => {
+    (uploadQuizImageToS3 as jest.Mock).mockRejectedValueOnce(
+      new Error('Access Denied'),
+    );
+    const file = { originalname: 'a.png' } as Express.Multer.File;
+    await expect(quizService.uploadQuizImage(file)).rejects.toMatchObject({
+      status: 500,
+      message: '画像のアップロードに失敗しました(a.png): Access Denied',
+    });
   });
 });

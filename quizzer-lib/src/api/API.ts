@@ -16,6 +16,16 @@ type ResponseProcessor = (data: ProcessingApiReponse) => ApiResultBody
 const request = (url: string, init: RequestInit, needAuth?: boolean) =>
   needAuth !== false ? authFetch(url, init) : fetch(url, init)
 
+// レスポンス本文をJSONとして読む。JSONでない本文（文字列を返すAPIや、API Gatewayが返すHTMLのエラーページ等）は
+// パースエラーで通信失敗扱いにせず文字列のまま返し、成否はHTTPステータスで判定させる
+const parseBody = (text: string): ProcessingApiReponse['body'] => {
+  try {
+    return JSON.parse(text)
+  } catch {
+    return text
+  }
+}
+
 // リクエストを送り、レスポンスをApiResultに変換する。全メソッド共通の処理
 const send = async (
   path: string,
@@ -25,9 +35,9 @@ const send = async (
 ): Promise<ApiResult> => {
   return await request(baseURL + path, init, needAuth)
     .then((response) =>
-      response.json().then((data) => ({
+      response.text().then((text) => ({
         status: response.status,
-        body: data
+        body: parseBody(text)
       }))
     )
     .then((data) => ({

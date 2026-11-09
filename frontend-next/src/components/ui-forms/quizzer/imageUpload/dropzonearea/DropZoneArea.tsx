@@ -39,11 +39,18 @@ export const DropZoneArea = ({}: DropZoneAreaProps) => {
     Promise.all(files.map((file) => uploadImage(file)))
       .then((results) => {
         setIsUploading(false);
-        const failedCount = results.filter((result) => !result.isSuccess).length;
+        // 失敗したファイルごとに、ファイル名とAPIが返したエラー理由をまとめる
+        const failures = results
+          .map((result, index) => ({ result, file: files[index] }))
+          .filter(({ result }) => !result.isSuccess)
+          .map(({ result, file }) => `${file.name}: ${result.message?.message ?? '不明なエラー'}`);
+        if (failures.length > 0) {
+          console.error('画像アップロード失敗', failures);
+        }
         setMessage(
-          failedCount > 0
+          failures.length > 0
             ? {
-                message: `エラー：${files.length}件中${failedCount}件のアップロードに失敗しました`,
+                message: `エラー：${files.length}件中${failures.length}件のアップロードに失敗しました（${failures.join(' / ')}）`,
                 messageColor: 'error',
                 isDisplay: true
               }

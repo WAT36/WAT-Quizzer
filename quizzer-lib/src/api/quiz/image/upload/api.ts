@@ -1,7 +1,10 @@
 import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { fileUploadAPI, onSuccess } from '../../..'
 import { MESSAGES, successMessage } from '../../../../..'
-import type { UploadImageOfQuizAPIRequestDto } from './dto'
+import type {
+  UploadImageOfQuizAPIRequestDto,
+  UploadImageOfQuizAPIResponseDto
+} from './dto'
 
 interface UploadImageOfQuizButtonProps {
   uploadQuizRequestData: UploadImageOfQuizAPIRequestDto
@@ -14,7 +17,7 @@ export const uploadImageOfQuizAPI = async ({
     '/quiz/image/upload',
     uploadQuizRequestData.file,
     onSuccess((data: ProcessingApiReponse) => {
-      const result = data.body
+      const result = data.body as UploadImageOfQuizAPIResponseDto
       return {
         message: successMessage(MESSAGES.SUCCESS.MSG00002),
         result

@@ -20,6 +20,7 @@ import {
   GetAnswerLogStatisticsAPIRequestDto,
   getStartDateForStatistics,
   uploadQuizImageToS3,
+  UploadImageOfQuizAPIResponseDto,
   getQuizImageFromS3,
   MESSAGES,
   AnswerLogStatisticsApiResponse,
@@ -1782,8 +1783,28 @@ export class QuizService {
   }
 
   // 問題用の画像をS3にアップロードする
-  async uploadQuizImage(file: Express.Multer.File): Promise<string> {
-    return uploadQuizImageToS3(file);
+  async uploadQuizImage(
+    file: Express.Multer.File,
+  ): Promise<UploadImageOfQuizAPIResponseDto> {
+    if (!file) {
+      throw new HttpException(
+        'アップロードするファイルが指定されていません',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    try {
+      // 文字列のまま返すとJSONでないレスポンスになりフロントで扱えないため、オブジェクトで返す
+      const fileName = await uploadQuizImageToS3(file);
+      return { fileName };
+    } catch (error: unknown) {
+      console.error(error);
+      throw new HttpException(
+        `画像のアップロードに失敗しました(${file.originalname}): ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   // 問題用の画像をS3からダウンロードする
