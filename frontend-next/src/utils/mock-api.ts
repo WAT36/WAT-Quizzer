@@ -683,9 +683,9 @@ export const mockAddCategoryToQuizAPI = async (params: any): Promise<ApiResult> 
 };
 
 export const mockDeleteCategoryOfQuizAPI = async (params: any): Promise<ApiResult> => {
-  const { deleteCategoryToQuizRequestData } = params;
+  const { deleteCategoryOfQuizRequestData } = params;
 
-  if (!deleteCategoryToQuizRequestData.quiz_id || deleteCategoryToQuizRequestData.quiz_id === '') {
+  if (!deleteCategoryOfQuizRequestData.quiz_id || deleteCategoryOfQuizRequestData.quiz_id === '') {
     return {
       isSuccess: false,
       message: errorMessage(MESSAGES.ERROR.MSG00001)

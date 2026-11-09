@@ -101,7 +101,7 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
     for (let i = 0; i < chunks.length; i++) {
       setMessage({ message: `通信中... (${i + 1}/${chunks.length})`, messageColor: '#d3d3d3', isDisplay: true });
       const result = await deleteCategoryOfQuizAPI({
-        deleteCategoryToQuizRequestData: {
+        deleteCategoryOfQuizRequestData: {
           quiz_id: chunks[i].map(String).join(','),
           category: changedCategory
         }

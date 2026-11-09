@@ -10,6 +10,7 @@ import {
   getRandomElementFromArray,
   getRandomElementsFromArray,
   AddCategoryToQuizAPIRequestDto,
+  DeleteCategoryOfQuizAPIRequestDto,
   IntegrateToQuizAPIRequestDto,
   GetQuizAPIRequestDto,
   GetQuizMethod,
@@ -1303,7 +1304,7 @@ export class QuizService {
   }
 
   // 問題からカテゴリ削除
-  async removeCategoryFromQuiz(body: AddCategoryToQuizAPIRequestDto) {
+  async removeCategoryFromQuiz(body: DeleteCategoryOfQuizAPIRequestDto) {
     try {
       const { quiz_id, category } = body;
       const quiz_ids = quiz_id.split(',').map((x) => {

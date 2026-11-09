@@ -1,20 +1,19 @@
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
 import { put } from '../../..'
-import type { AddCategoryToQuizAPIRequestDto } from '../add/dto'
+import type { DeleteCategoryOfQuizAPIRequestDto } from './dto'
 import type { QuizWithCategoryApiResponseDto } from '../..'
 
 interface DeleteCategoryOfQuizAPIProps {
-  // TODO プロパティ同じだからAddCategoryToQuizAPIRequestDto流用してるが、、deleteで使うのは変なので名前変えたい
-  deleteCategoryToQuizRequestData: AddCategoryToQuizAPIRequestDto
+  deleteCategoryOfQuizRequestData: DeleteCategoryOfQuizAPIRequestDto
 }
 
 export const deleteCategoryOfQuizAPI = async ({
-  deleteCategoryToQuizRequestData
+  deleteCategoryOfQuizRequestData
 }: DeleteCategoryOfQuizAPIProps): Promise<ApiResult> => {
   if (
-    !deleteCategoryToQuizRequestData.quiz_id ||
-    deleteCategoryToQuizRequestData.quiz_id === ''
+    !deleteCategoryOfQuizRequestData.quiz_id ||
+    deleteCategoryOfQuizRequestData.quiz_id === ''
   ) {
     return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
@@ -22,7 +21,7 @@ export const deleteCategoryOfQuizAPI = async ({
   const result = await put(
     '/quiz/category',
     {
-      ...deleteCategoryToQuizRequestData
+      ...deleteCategoryOfQuizRequestData
     },
     (data: ProcessingApiReponse) => {
       if (String(data.status)[0] === '2' || String(data.status)[0] === '3') {

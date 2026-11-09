@@ -23,6 +23,7 @@ import {
   CheckQuizAPIRequestDto,
   DeleteAnswerLogOfFileApiRequestDto,
   AddCategoryToQuizAPIRequestDto,
+  DeleteCategoryOfQuizAPIRequestDto,
   GetQuizAPIRequestDto,
   SearchQuizAPIRequestDto,
   GetAnswerLogStatisticsAPIRequestDto,
@@ -193,7 +194,9 @@ export class QuizController {
     description: 'クイズからカテゴリを削除します。',
   })
   @Put('/category')
-  async removeCategoryFromQuiz(@Body() body: AddCategoryToQuizAPIRequestDto) {
+  async removeCategoryFromQuiz(
+    @Body() body: DeleteCategoryOfQuizAPIRequestDto,
+  ) {
     return await this.quizService.removeCategoryFromQuiz(body);
   }
 
