@@ -875,9 +875,9 @@ export const mockDeleteAnswerLogOfQuizFileAPI = async (params: any): Promise<Api
 };
 
 export const mockDownloadQuizCsvAPI = async (params: any): Promise<ApiResult> => {
-  const { downloadQuizCsvApiRequest } = params;
+  const { downloadQuizCsvRequestData } = params;
 
-  if (!downloadQuizCsvApiRequest.file_num || downloadQuizCsvApiRequest.file_num === -1) {
+  if (!downloadQuizCsvRequestData.file_num || downloadQuizCsvRequestData.file_num === -1) {
     return {
       isSuccess: false,
       message: errorMessage(MESSAGES.ERROR.MSG00001)

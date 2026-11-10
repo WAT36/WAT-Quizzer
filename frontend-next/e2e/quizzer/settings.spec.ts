@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { test, expect } from '../support/fixtures';
 import { mockQuizzerMasterData } from '../support/data';
 
@@ -38,5 +39,31 @@ test.describe('quizzer / 設定', () => {
     await expect(page.locator('.MuiCardHeader-subheader').getByText('親子関係追加')).toBeVisible();
     await expect(page.locator('.MuiCardHeader-subheader').getByText('登録済み親子関係')).toBeVisible();
     await expect(page.getByLabel('親カテゴリ')).toBeVisible();
+  });
+
+  test('ファイルを選んでCSVをダウンロードでき、中身はAPIのレスポンスと同じになる', async ({ page, api }) => {
+    const csv = '"file_num","quiz_num","quiz_sentense"\n1,1,"Promiseとは？"';
+    api.on('GET', '/quiz/file/csv', { text: csv });
+
+    // 問題ファイルのプルダウンは、ファイル削除・解答データ削除・CSVダウンロード・カテゴリ親子関係の順に並ぶ
+    await page.getByRole('combobox').nth(2).click();
+    await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'CSVダウンロード' }).click();
+    const download = await downloadPromise;
+
+    expect(download.suggestedFilename()).toBe('export.csv');
+    const path = await download.path();
+    expect(readFileSync(path, 'utf-8')).toBe(csv);
+    await expect(page.getByText('CSVダウンロードに成功しました')).toBeVisible();
+    expect(api.requests('GET', '/quiz/file/csv')[0].query).toEqual({ file_num: '1' });
+  });
+
+  test('ファイルを選ばずにCSVダウンロードを押すと、エラーを表示してAPIは呼ばない', async ({ page, api }) => {
+    await page.getByRole('button', { name: 'CSVダウンロード' }).click();
+
+    await expect(page.getByText('エラー:問題ファイルを選択して下さい')).toBeVisible();
+    expect(api.requests('GET', '/quiz/file/csv')).toHaveLength(0);
   });
 });

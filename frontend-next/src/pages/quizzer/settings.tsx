@@ -19,7 +19,7 @@ export default function QuizzerSettingPage() {
       <Container>
         <FileConfigSection setMessage={setMessage} filelistoption={filelistoption} />
         <LogConfigSection filelistoption={filelistoption} setMessage={setMessage} />
-        <DownloadQuizCsvSection filelistoption={filelistoption} />
+        <DownloadQuizCsvSection filelistoption={filelistoption} setMessage={setMessage} />
         <CategoryParentChildConfigSection filelistoption={filelistoption} setMessage={setMessage} />
         <CategoryCleanupSection setMessage={setMessage} />
       </Container>

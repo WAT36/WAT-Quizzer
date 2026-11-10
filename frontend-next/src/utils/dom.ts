@@ -7,3 +7,13 @@ export const clearInputValuesByIds = (ids: string[]): void => {
     }
   });
 };
+
+// 文字列をファイルとして保存させる（ダウンロード用の<a>を一時的に作ってクリックする）
+export const downloadTextFile = (text: string, filename: string, type = 'text/csv'): void => {
+  const url = window.URL.createObjectURL(new Blob([text], { type }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  window.URL.revokeObjectURL(url);
+};

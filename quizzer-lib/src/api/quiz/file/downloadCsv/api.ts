@@ -1,18 +1,19 @@
-import type { DownloadQuizCsvApiRequest } from '.'
+import type { DownloadQuizCsvAPIRequestDto, DownloadQuizCsvResult } from '.'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
-import type { ApiResult } from '../../..'
-import { authFetch } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get, onSuccess } from '../../..'
 
 interface DownloadQuizCsvAPIProps {
-  downloadQuizCsvApiRequest: DownloadQuizCsvApiRequest
+  downloadQuizCsvRequestData: DownloadQuizCsvAPIRequestDto
 }
 
+// 問題ファイルのCSVを取得する（ファイルの保存は画面側で行う）
 export const downloadQuizCsvAPI = async ({
-  downloadQuizCsvApiRequest
+  downloadQuizCsvRequestData
 }: DownloadQuizCsvAPIProps): Promise<ApiResult> => {
   if (
-    !downloadQuizCsvApiRequest.file_num ||
-    downloadQuizCsvApiRequest.file_num === -1
+    !downloadQuizCsvRequestData.file_num ||
+    downloadQuizCsvRequestData.file_num === -1
   ) {
     return {
       isSuccess: false,
@@ -20,28 +21,22 @@ export const downloadQuizCsvAPI = async ({
     }
   }
 
-  // TODO 共通APIを使うように変更したい
-  const result = await authFetch(
-    (process.env.NEXT_PUBLIC_API_SERVER || '') +
-      `/quiz/file/csv?file_num=${downloadQuizCsvApiRequest.file_num}`,
-    {
-      method: 'GET'
-    }
+  return await get(
+    '/quiz/file/csv',
+    onSuccess((data: ProcessingApiReponse) => {
+      // CSVはJSONとして読めないので、共通処理で文字列のまま渡される
+      if (typeof data.body !== 'string') {
+        return {
+          isSuccess: false,
+          message: errorMessage(MESSAGES.ERROR.MSG00004)
+        }
+      }
+      const result: DownloadQuizCsvResult = { csv: data.body }
+      return {
+        message: successMessage(MESSAGES.SUCCESS.MSG00022),
+        result
+      }
+    }),
+    { file_num: downloadQuizCsvRequestData.file_num }
   )
-  if (!result.ok) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00004) }
-  }
-  const blob = await result.blob()
-
-  const url = window.URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'export.csv'
-  a.click()
-  window.URL.revokeObjectURL(url)
-  return {
-    isSuccess: true,
-    message: successMessage(MESSAGES.SUCCESS.MSG00022),
-    result: {}
-  }
 }

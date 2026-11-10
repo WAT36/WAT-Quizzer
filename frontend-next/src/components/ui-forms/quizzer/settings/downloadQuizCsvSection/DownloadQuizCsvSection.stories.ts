@@ -30,18 +30,21 @@ const sampleFileListOption: PullDownOptionDto[] = [
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Main: Story = {
   args: {
-    filelistoption: sampleFileListOption
+    filelistoption: sampleFileListOption,
+    setMessage: () => {}
   }
 };
 
 export const EmptyFileList: Story = {
   args: {
-    filelistoption: []
+    filelistoption: [],
+    setMessage: () => {}
   }
 };
 
 export const SingleFile: Story = {
   args: {
-    filelistoption: [{ value: '1', label: '単一ファイル' }]
+    filelistoption: [{ value: '1', label: '単一ファイル' }],
+    setMessage: () => {}
   }
 };
