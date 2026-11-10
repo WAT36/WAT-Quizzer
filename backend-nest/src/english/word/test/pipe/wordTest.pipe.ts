@@ -1,9 +1,19 @@
-import { PipeTransform, Injectable } from '@nestjs/common';
+import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 import {
   GetEnglishWordTestDataAPIRequestDto,
   GetEnglishWordTestDataAPIRequestReceivedDto,
   parseStrToBool,
 } from 'quizzer-lib';
+
+const TEST_FORMATS: GetEnglishWordTestDataAPIRequestDto['format'][] = [
+  'random',
+  'lru',
+  'review',
+];
+const isTestFormat = (
+  format: string,
+): format is GetEnglishWordTestDataAPIRequestDto['format'] =>
+  (TEST_FORMATS as string[]).includes(format);
 
 @Injectable()
 export class WordTestPipe implements PipeTransform<
@@ -13,7 +23,13 @@ export class WordTestPipe implements PipeTransform<
   transform(
     wordTestRequestDTO: GetEnglishWordTestDataAPIRequestReceivedDto,
   ): GetEnglishWordTestDataAPIRequestDto {
-    return Object.entries(wordTestRequestDTO).reduce(
+    const { format } = wordTestRequestDTO;
+    if (!isTestFormat(format)) {
+      throw new BadRequestException(`format が不正です(${format})`);
+    }
+    return Object.entries(
+      wordTestRequestDTO,
+    ).reduce<GetEnglishWordTestDataAPIRequestDto>(
       (acc, cur) => {
         const key = cur[0];
         switch (key) {
@@ -36,7 +52,7 @@ export class WordTestPipe implements PipeTransform<
             }
         }
       },
-      { format: wordTestRequestDTO.format },
+      { format },
     );
   }
 }

@@ -1,3 +1,5 @@
+import type { QueryReceivedDto } from '../..'
+
 export interface SearchQuizAPIRequestDto {
   query: string
   file_num: number
@@ -15,21 +17,7 @@ export interface SearchQuizAPIRequestDto {
   result_to?: number
 }
 
-//API側で受け取った時のDTO（Pipeで上に変換する）
-export interface SearchQuizAPIRequestReceivedDto {
-  query: string
-  file_num: string
-  format_id?: string
-  min_rate?: string
-  max_rate?: string
-  // カテゴリ条件はJSON文字列化した配列で受け取る
-  category_and?: string
-  category_not?: string
-  checked?: string
-  searchInOnlySentense?: string
-  searchInOnlyAnswer?: string
-  searchInExplanation?: string
-  onlyDirectCategory?: string
-  result_from?: string
-  result_to?: string
-}
+// API側で受け取った時のDTO（Pipeで上に変換する）
+// カテゴリ条件(category_and,category_not)はJSON文字列化した配列で受け取る
+export type SearchQuizAPIRequestReceivedDto =
+  QueryReceivedDto<SearchQuizAPIRequestDto>

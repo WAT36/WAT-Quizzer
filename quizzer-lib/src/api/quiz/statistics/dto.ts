@@ -1,4 +1,4 @@
-import type { ApiResponse } from '../..'
+import type { ApiResponse, QueryReceivedDto } from '../..'
 
 export type DateUnit = 'day' | 'week' | 'month'
 
@@ -7,11 +7,9 @@ export interface GetAnswerLogStatisticsAPIRequestDto {
   date_unit?: DateUnit
 }
 
-//API側で受け取った時のDTO（Pipeで上に変換する）
-export interface GetAnswerLogStatisticsAPIRequestReceivedDto {
-  file_num: string
-  date_unit: DateUnit
-}
+// API側で受け取った時のDTO（Pipeで上に変換する）
+export type GetAnswerLogStatisticsAPIRequestReceivedDto =
+  QueryReceivedDto<GetAnswerLogStatisticsAPIRequestDto>
 
 // quiz/statisticsからの取得結果
 export interface AnswerLogStatisticsApiResponse extends ApiResponse {

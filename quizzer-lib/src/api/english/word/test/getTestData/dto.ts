@@ -1,3 +1,5 @@
+import type { QueryReceivedDto } from '../../../..'
+
 // 英単語テストデータ取得APIリクエスト型
 export interface GetEnglishWordTestDataAPIRequestDto {
   format: 'random' | 'lru' | 'review'
@@ -12,19 +14,9 @@ export interface GetEnglishWordTestDataAPIRequestDto {
   word_type?: 'all' | 'word' | 'phrase'
 }
 
-//API側で受け取った時のDTO（Pipeで上に変換する）
-export interface GetEnglishWordTestDataAPIRequestReceivedDto {
-  format: 'random' | 'lru' | 'review'
-  source?: string
-  checked?: string
-  startDate?: string
-  endDate?: string
-  min_rate?: string
-  max_rate?: string
-  result_from?: string
-  result_to?: string
-  word_type?: string
-}
+// API側で受け取った時のDTO（Pipeで上に変換する）
+export type GetEnglishWordTestDataAPIRequestReceivedDto =
+  QueryReceivedDto<GetEnglishWordTestDataAPIRequestDto>
 
 // 英単語テストデータ取得APIレスポンス型
 export interface GetEnglishWordTestDataAPIResponseDto extends FourChoiceData {

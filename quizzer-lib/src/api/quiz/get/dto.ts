@@ -1,4 +1,4 @@
-import type { ApiResponse } from '../..'
+import type { ApiResponse, QueryReceivedDto } from '../..'
 
 // キーワード検索の対象（問題文・解答 or 解説のどちらか一方）
 export type KeywordSearchTarget = 'sentence_answer' | 'explanation'
@@ -26,19 +26,9 @@ export interface GetQuizAPIRequestDto {
   count?: number // 指定した場合、method指定時に条件に合う問題を最大count件まとめて取得する
 }
 
-//API側で受け取った時のDTO（Pipeで上に変換する）
-export interface GetQuizAPIRequestReceivedDto {
-  file_num: string
-  quiz_num?: string
-  format_id?: string
-  min_rate?: string
-  max_rate?: string
-  category?: string
-  checked?: string //booleanにしたい
-  keyword?: string
-  keywordTarget?: string
-  count?: string
-}
+// API側で受け取った時のDTO（Pipeで上に変換する）
+export type GetQuizAPIRequestReceivedDto =
+  QueryReceivedDto<GetQuizAPIRequestDto>
 
 // 問題取得APIのレスポンス（基礎応用込み）、フォーマット込み
 export interface GetQuizApiResponseDto extends ApiResponse {

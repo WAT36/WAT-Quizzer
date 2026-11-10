@@ -12,7 +12,9 @@ export class GetAnswerLogStatisticsPipe implements PipeTransform<
   transform(
     getAnswerLogStatisticsDTO: GetAnswerLogStatisticsAPIRequestReceivedDto,
   ): GetAnswerLogStatisticsAPIRequestDto {
-    return Object.entries(getAnswerLogStatisticsDTO).reduce(
+    return Object.entries(
+      getAnswerLogStatisticsDTO,
+    ).reduce<GetAnswerLogStatisticsAPIRequestDto>(
       (acc, cur) => {
         const key = cur[0];
         switch (key) {

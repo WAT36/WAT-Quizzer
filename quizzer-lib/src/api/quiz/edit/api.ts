@@ -42,14 +42,6 @@ export const editQuizAPI = async ({
       const result: EditQuizApiResponseDto =
         data.body as EditQuizApiResponseDto
 
-      //入力データをクリア
-      const inputQuizField = document
-        .getElementsByTagName('textarea')
-        .item(0) as HTMLTextAreaElement
-      if (inputQuizField) {
-        inputQuizField.value = ''
-      }
-
       return {
         message: successMessage(MESSAGES.SUCCESS.MSG00010),
         result

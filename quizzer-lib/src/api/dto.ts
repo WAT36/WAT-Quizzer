@@ -26,3 +26,6 @@ export interface ApiResult {
 
 // 各APIの変換関数(API.tsのfunc)が返す型。isSuccessは共通処理で付与するため省略可（返した場合はそちらを優先）
 export type ApiResultBody = Omit<ApiResult, 'isSuccess'> & { isSuccess?: boolean }
+
+// GETのクエリは全項目が文字列で届くので、リクエスト型の各項目を文字列にした型（Pipeで元の型に変換する）
+export type QueryReceivedDto<T> = { [K in keyof T]: string }
