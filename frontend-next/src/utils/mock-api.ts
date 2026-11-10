@@ -546,7 +546,9 @@ export const mockGetQuizFileStatisticsDataAPI = async (params: any): Promise<Api
       clear: clearCount,
       fail: failCount,
       not_answered: 100 - clearCount - failCount,
-      process_rate: (clearCount / 100) * 100
+      accuracy_rate: clearCount + failCount !== 0 ? (100 * clearCount) / (clearCount + failCount) : 0,
+      // 進捗率は一度でも解答した問題の割合
+      process_rate: clearCount + failCount
     }
   };
 };

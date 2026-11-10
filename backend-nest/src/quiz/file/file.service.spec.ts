@@ -9,6 +9,10 @@ jest.mock('quizzer-lib', () => {
       findMany: jest.fn(),
       create: jest.fn(),
     },
+    quiz_file_view: {
+      findUnique: jest.fn(),
+      aggregate: jest.fn(),
+    },
   };
   return { prisma: mockPrisma };
 });
@@ -109,5 +113,70 @@ describe('QuizFileService', () => {
     await expect(quizFileService.deleteFile(req)).rejects.toMatchObject({
       message: 'error test by jest.',
     });
+  });
+
+  // ファイル統計取得 正常系 進捗率は解答したことのある問題の割合
+  it('getFileStatisticsData - OK', async () => {
+    (prisma.quiz_file_view.findUnique as jest.Mock).mockResolvedValueOnce({
+      file_num: 7,
+      file_name: 'test',
+      file_nickname: 'テスト',
+      count: BigInt(1022),
+      clear: 6262,
+      fail: 4482,
+      not_answered: 0,
+      accuracy_rate: 58.3,
+    });
+    expect(
+      await quizFileService.getFileStatisticsData({ file_num: 7 }),
+    ).toEqual({
+      file_num: 7,
+      file_name: 'test',
+      file_nickname: 'テスト',
+      count: 1022,
+      clear: 6262,
+      fail: 4482,
+      not_answered: 0,
+      accuracy_rate: 58.3,
+      process_rate: 100,
+    });
+  });
+
+  // ファイル統計取得 正常系 全ファイル合計
+  it('getFileStatisticsData - 全総合', async () => {
+    (prisma.quiz_file_view.aggregate as jest.Mock).mockResolvedValueOnce({
+      _sum: { count: BigInt(200), clear: 30, fail: 10, not_answered: 150 },
+    });
+    expect(
+      await quizFileService.getFileStatisticsData({ file_num: -1 }),
+    ).toMatchObject({
+      file_num: -1,
+      count: 200,
+      accuracy_rate: 75,
+      process_rate: 25,
+    });
+  });
+
+  // ファイル統計取得 正常系 問題が0件なら進捗率0
+  it('getFileStatisticsData - 問題0件', async () => {
+    (prisma.quiz_file_view.findUnique as jest.Mock).mockResolvedValueOnce({
+      file_num: 1,
+      count: BigInt(0),
+      clear: 0,
+      fail: 0,
+      not_answered: 0,
+      accuracy_rate: 0,
+    });
+    expect(
+      await quizFileService.getFileStatisticsData({ file_num: 1 }),
+    ).toMatchObject({ process_rate: 0 });
+  });
+
+  // ファイル統計取得 異常系 存在しないファイルは404
+  it('getFileStatisticsData - NG', async () => {
+    (prisma.quiz_file_view.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    await expect(
+      quizFileService.getFileStatisticsData({ file_num: 999 }),
+    ).rejects.toMatchObject({ status: 404 });
   });
 });

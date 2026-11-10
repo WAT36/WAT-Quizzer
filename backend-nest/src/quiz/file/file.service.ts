@@ -9,6 +9,11 @@ import {
 import { Parser } from 'json2csv';
 import { QUIZ_CSV_HEADER } from '../../constants';
 
+// 進捗率(%): 一度でも解答した問題の割合
+// (DBのビューのprocess_rateは解答回数を問題数で割っていて100%を超えるため使わない)
+const calcProcessRate = (count: number, not_answered: number): number =>
+  count !== 0 ? (100 * (count - not_answered)) / count : 0;
+
 export interface QueryType {
   query: string;
   value: (string | number)[];
@@ -51,20 +56,27 @@ export class QuizFileService {
           fail: true,
           not_answered: true,
           accuracy_rate: true,
-          process_rate: true,
         },
         where: {
           file_num,
         },
       });
+      if (!result) {
+        throw new HttpException(
+          `問題ファイルが見つかりません(${file_num})`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      const count = Number(result.count);
+      const not_answered = Number(result.not_answered);
       return {
         ...result,
-        count: Number(result.count),
+        count,
         clear: Number(result.clear),
         fail: Number(result.fail),
-        not_answered: Number(result.not_answered),
+        not_answered,
         accuracy_rate: Number(result.accuracy_rate),
-        process_rate: Number(result.process_rate),
+        process_rate: calcProcessRate(count, not_answered),
       };
     } else {
       const result = (
@@ -78,25 +90,20 @@ export class QuizFileService {
         })
       )._sum;
 
+      const count = Number(result.count);
+      const clear = Number(result.clear);
+      const fail = Number(result.fail);
+      const not_answered = Number(result.not_answered);
       return {
         file_num: -1,
         file_name: 'all',
         file_nickname: '全総合',
-        count: Number(result.count),
-        clear: Number(result.clear),
-        fail: Number(result.fail),
-        not_answered: Number(result.not_answered),
-        accuracy_rate:
-          Number(result.clear) + Number(result.fail) !== 0
-            ? (100 * Number(result.clear)) /
-              (Number(result.clear) + Number(result.fail))
-            : 0,
-
-        process_rate:
-          Number(result.count) !== 0
-            ? (100 * (Number(result.clear) + Number(result.fail))) /
-              Number(result.count)
-            : 0,
+        count,
+        clear,
+        fail,
+        not_answered,
+        accuracy_rate: clear + fail !== 0 ? (100 * clear) / (clear + fail) : 0,
+        process_rate: calcProcessRate(count, not_answered),
       };
     }
   }
