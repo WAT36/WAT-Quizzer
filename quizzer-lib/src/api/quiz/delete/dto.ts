@@ -1,6 +1,5 @@
-import type { GetQuizAPIRequestDto } from '../get'
-// TODO file_num,quiz_num,formatだけを定義した汎用的な型が欲しい
-export type DeleteQuizAPIRequestDto = Pick<
-  GetQuizAPIRequestDto,
-  'file_num' | 'quiz_num' | 'format_id'
->
+// 問題削除APIリクエスト型（ファイル番号と問題番号で問題を指定する）
+export interface DeleteQuizAPIRequestDto {
+  file_num: number
+  quiz_num: number
+}

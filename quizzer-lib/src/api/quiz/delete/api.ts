@@ -1,6 +1,5 @@
-import type { AddQuizApiResponseDto } from '../../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
-import type { ApiResult, ProcessingApiReponse } from '../..'
+import type { ApiResult, ProcessingApiReponse, QuizApiResponseDto } from '../..'
 import { del } from '../..'
 import type { DeleteQuizAPIRequestDto } from './dto'
 
@@ -26,7 +25,7 @@ export const deleteQuiz = async ({
     },
     (data: ProcessingApiReponse) => {
       if (data.status === 200) {
-        const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
+        const result = data.body as QuizApiResponseDto
         return {
           message: successMessage(
             MESSAGES.SUCCESS.MSG00009,

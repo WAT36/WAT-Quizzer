@@ -733,7 +733,6 @@ describe('QuizService', () => {
   it('delete - OK', async () => {
     // テストデータ
     const req = {
-      format: 'basic',
       file_num: 0,
       quiz_num: 0,
     };
@@ -751,7 +750,6 @@ describe('QuizService', () => {
   it('delete - NG1', async () => {
     // テストデータ
     const req = {
-      format: 'basic',
       file_num: 0,
       quiz_num: 0,
     };

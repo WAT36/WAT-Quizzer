@@ -989,7 +989,7 @@ export class QuizService {
   // 問題削除
   async delete(req: DeleteQuizAPIRequestDto) {
     try {
-      const { format_id, file_num, quiz_num } = req;
+      const { file_num, quiz_num } = req;
       return await prisma.quiz.update({
         data: {
           deleted_at: new Date(),
@@ -999,7 +999,6 @@ export class QuizService {
             file_num,
             quiz_num,
           },
-          format_id,
         },
       });
     } catch (error: unknown) {
