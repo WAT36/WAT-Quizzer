@@ -5,7 +5,6 @@ import {
   getRandomElementFromArray,
   getRandomElementsFromArray,
   xor,
-  getPrismaFromPastDayRange,
   uploadQuizImageToS3,
 } from 'quizzer-lib';
 
@@ -66,7 +65,6 @@ jest.mock('quizzer-lib', () => {
     prisma: mockPrisma,
     getRandomElementFromArray: jest.fn(),
     getRandomElementsFromArray: jest.fn(),
-    getPrismaFromPastDayRange: jest.fn(),
     getTodayStart: jest.fn(),
     xor: jest.fn(),
     uploadQuizImageToS3: jest.fn(),
@@ -249,11 +247,6 @@ describe('QuizService', () => {
         .fn()
         .mockResolvedValueOnce({ last_failed_answer_log: new Date() }),
     };
-    // getPrismaFromPastDayRangeのモック
-    (getPrismaFromPastDayRange as jest.Mock).mockResolvedValueOnce({
-      from: new Date(),
-      to: new Date(),
-    });
     // getRandomElementFromArrayのモック
     (getRandomElementFromArray as jest.Mock).mockReturnValueOnce(
       getQuizResultTest[0],

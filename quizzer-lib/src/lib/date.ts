@@ -1,132 +1,49 @@
+import type { DateUnit } from '../api/quiz/statistics/dto'
+
+// 日付の区切りは実行環境のタイムゾーンで計算する（バックエンドのLambdaはUTCなので日本時間の9時区切り）
+
 // prisma用　大過去・大未来日
 export const PAST_DAY = new Date('1980-01-01')
 export const FUTURE_DAY = new Date('9999-12-31')
 
-// prisma用 実行時の日の0時0分のDate型データを取得
-export const getTodayStart = () => {
+// 今日からn日前の0時0分（nが負ならn日後）
+const startOfDaysAgo = (n: number): Date => {
   const nowDate = new Date()
   return new Date(
     nowDate.getFullYear(),
     nowDate.getMonth(),
-    nowDate.getDate(),
-    0,
-    0,
-    0
+    nowDate.getDate() - n
   )
 }
 
-// prisma用　昨日内のデータを取りたい時の条件
-export const getPrismaYesterdayRange = () => {
-  const nowDate = new Date()
-  const yesterday = new Date(
-    nowDate.getFullYear(),
-    nowDate.getMonth(),
-    nowDate.getDate() - 1,
-    0,
-    0,
-    0
-  )
-  const today = new Date(
-    nowDate.getFullYear(),
-    nowDate.getMonth(),
-    nowDate.getDate(),
-    0,
-    0,
-    0
-  )
-  return {
-    gte: yesterday,
-    lt: today
-  }
-}
-
-// prisma用　指定した過去日〜昨日のデータを取りたい時の条件
-export const getPrismaFromPastDayRange = (fromDate: Date) => {
-  const pastday = new Date(
-    fromDate.getFullYear(),
-    fromDate.getMonth(),
-    fromDate.getDate() - 1,
-    0,
-    0,
-    0
-  )
-  const nowDate = new Date()
-  const today = new Date(
-    nowDate.getFullYear(),
-    nowDate.getMonth(),
-    nowDate.getDate(),
-    0,
-    0,
-    0
-  )
-  return {
-    gte: pastday,
-    lt: today
-  }
-}
-
-// prisma用　今日から数えてn日前内のデータを取りたい時の条件
-export const getPrismaPastDayRange = (n: number) => {
-  const nowDate = new Date()
-  const pastDay = new Date(
-    nowDate.getFullYear(),
-    nowDate.getMonth(),
-    nowDate.getDate() - n,
-    0,
-    0,
-    0
-  )
-  const pastDayTommorow = new Date(
-    nowDate.getFullYear(),
-    nowDate.getMonth(),
-    nowDate.getDate() - n + 1,
-    0,
-    0,
-    0
-  )
-  return {
-    gte: pastDay,
-    lt: pastDayTommorow
-  }
-}
-
-// Date型 n日前の日付形式を(文字列形式で)取得
-export const getPastDate = (n: number) => {
-  const nowDate = new Date()
-  const pastDay = new Date(
-    nowDate.getFullYear(),
-    nowDate.getMonth(),
-    nowDate.getDate() - n,
-    0,
-    0,
-    0
-  )
-  return pastDay
-    .toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    })
-    .replaceAll('/', '-')
-}
-
-// 今日の日付をYYYY-MM-DD形式で取得
-export const getTodayKey = (): string => {
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-  const day = String(today.getDate()).padStart(2, '0')
+// 日付をYYYY-MM-DD形式の文字列にする
+const toDateKey = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
 }
 
-import type { DateUnit } from '../api/quiz/statistics/dto'
+// prisma用 実行時の日の0時0分のDate型データを取得
+export const getTodayStart = (): Date => startOfDaysAgo(0)
 
-// TODO エラーメッセージを定義する
+// prisma用　今日から数えてn日前内のデータを取りたい時の条件
+export const getPrismaPastDayRange = (n: number) => ({
+  gte: startOfDaysAgo(n),
+  lt: startOfDaysAgo(n - 1)
+})
+
+// n日前の日付をYYYY-MM-DD形式で取得
+export const getPastDate = (n: number): string => toDateKey(startOfDaysAgo(n))
+
+// 今日の日付をYYYY-MM-DD形式で取得
+export const getTodayKey = (): string => toDateKey(new Date())
+
 // (回答数統計データ取得APIで利用)始値を計算して取得する
 export const getStartDateForStatistics = (
   inputDate: Date,
   date_unit: DateUnit
-) => {
+): Date => {
   switch (date_unit) {
     case 'day': {
       // 入力した日付の00:00:00のデータを返す
@@ -158,7 +75,10 @@ export const getStartDateForStatistics = (
       startOfMonth.setHours(0, 0, 0, 0)
       return startOfMonth
     }
-    default:
-      throw new Error('日付形式が不正です')
+    default: {
+      // DateUnitに単位を追加してcaseを書き忘れた場合はコンパイルエラーにする
+      const unknownUnit: never = date_unit
+      return unknownUnit
+    }
   }
 }
