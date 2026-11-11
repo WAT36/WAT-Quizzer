@@ -1,7 +1,8 @@
 import type { ApiResponse } from '../..'
 
-export interface GetSayingRequest {
-  id?: number
+// ID指定で格言を取得するAPIのリクエスト型
+export interface GetSayingByIdRequest {
+  id: number
 }
 
 export interface GetSayingResponse extends ApiResponse {

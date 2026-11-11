@@ -181,13 +181,22 @@ export const uploadImageOfQuizAPI = async (params: any): Promise<ApiResult> => {
   return originalUploadImageOfQuizAPI(params);
 };
 
-export const getSayingAPI = async (params: any): Promise<ApiResult> => {
+export const getRandomSayingAPI = async (): Promise<ApiResult> => {
   if (isMockMode()) {
-    return mockAPI.mockGetSayingAPI(params);
+    return mockAPI.mockGetRandomSayingAPI();
   }
 
-  const { getSayingAPI: originalGetSayingAPI } = await import('quizzer-lib');
-  return originalGetSayingAPI(params);
+  const { getRandomSayingAPI: originalGetRandomSayingAPI } = await import('quizzer-lib');
+  return originalGetRandomSayingAPI();
+};
+
+export const getSayingByIdAPI = async (params: any): Promise<ApiResult> => {
+  if (isMockMode()) {
+    return mockAPI.mockGetSayingByIdAPI(params);
+  }
+
+  const { getSayingByIdAPI: originalGetSayingByIdAPI } = await import('quizzer-lib');
+  return originalGetSayingByIdAPI(params);
 };
 
 export const addSayingAPI = async (params: any): Promise<ApiResult> => {

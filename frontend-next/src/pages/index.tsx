@@ -3,7 +3,7 @@ import { Container } from '@mui/material';
 import { useEffect, useState } from 'react';
 import type { GetSayingResponse } from 'quizzer-lib';
 import { initSayingResponseData } from 'quizzer-lib';
-import { getSayingAPI } from '@/utils/api-wrapper';
+import { getRandomSayingAPI } from '@/utils/api-wrapper';
 import { Title } from '@/components/ui-elements/title/Title';
 import { TopButtonGroup } from '@/components/ui-forms/top/topButtonGroup/TopButtonGroup';
 import { SayingCard } from '@/components/ui-forms/top/sayingCard/SayingCard';
@@ -21,7 +21,7 @@ export default function Top({}: Props) {
   useEffect(() => {
     void Promise.all([
       (async () => {
-        const result = await getSayingAPI({ getSayingRequestData: {} });
+        const result = await getRandomSayingAPI();
         result.result && setSaying(result.result as GetSayingResponse);
       })()
     ]);

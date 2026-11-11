@@ -40,7 +40,9 @@ export class SayingController {
     required: false,
     description: '本ID（オプション）',
   })
-  async getSaying(@Query('book_id') book_id?: number) {
+  async getSaying(
+    @Query('book_id', new ParseIntPipe({ optional: true })) book_id?: number,
+  ) {
     return await this.sayingService.getRandomSaying(book_id);
   }
 

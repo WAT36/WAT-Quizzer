@@ -371,7 +371,7 @@ export const mockUploadImageOfQuizAPI = async (params: any): Promise<ApiResult> 
   };
 };
 
-export const mockGetSayingAPI = async (params: any): Promise<ApiResult> => {
+export const mockGetRandomSayingAPI = async (): Promise<ApiResult> => {
   // ランダムな格言を返す
   const randomSaying = sayingMockData[Math.floor(Math.random() * sayingMockData.length)];
 
@@ -383,6 +383,26 @@ export const mockGetSayingAPI = async (params: any): Promise<ApiResult> => {
       isDisplay: true
     },
     result: randomSaying
+  };
+};
+
+export const mockGetSayingByIdAPI = async (params: any): Promise<ApiResult> => {
+  const { id } = params.getSayingByIdRequestData;
+  if (!Number.isInteger(id) || id <= 0) {
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00014, String(id)) };
+  }
+  const saying = sayingMockData.find((x) => x.id === id);
+  if (!saying) {
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00003) };
+  }
+  return {
+    isSuccess: true,
+    message: {
+      message: '格言を取得しました',
+      messageColor: 'success.light',
+      isDisplay: true
+    },
+    result: saying
   };
 };
 

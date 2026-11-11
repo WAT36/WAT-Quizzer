@@ -6,13 +6,13 @@ import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
-import type { EditSayingAPIRequestDto, GetSayingRequest, GetSayingResponse } from 'quizzer-lib';
-import { editSayingAPI, getSayingAPI } from '@/utils/api-wrapper';
+import type { EditSayingAPIRequestDto, GetSayingByIdRequest, GetSayingResponse } from 'quizzer-lib';
+import { editSayingAPI, getSayingByIdAPI } from '@/utils/api-wrapper';
 
 interface EditSayingFormProps {}
 
 export const EditSayingForm = ({}: EditSayingFormProps) => {
-  const [getSayingRequestData, setSayingRequestData] = useState<GetSayingRequest>({ id: -1 });
+  const [getSayingRequestData, setSayingRequestData] = useState<GetSayingByIdRequest>({ id: -1 });
   const [editSayingRequestData, setEditSayingRequestData] = useState<EditSayingAPIRequestDto>({ id: -1, saying: '' });
   const setMessage = useSetRecoilState(messageState);
   return (
@@ -40,7 +40,7 @@ export const EditSayingForm = ({}: EditSayingFormProps) => {
                 messageColor: '#d3d3d3',
                 isDisplay: true
               });
-              const result = await getSayingAPI({ getSayingRequestData });
+              const result = await getSayingByIdAPI({ getSayingByIdRequestData: getSayingRequestData });
               setMessage(result.message);
               if (result.result) {
                 const getResult = result.result as GetSayingResponse;

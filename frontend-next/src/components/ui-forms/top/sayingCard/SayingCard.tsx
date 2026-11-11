@@ -2,7 +2,7 @@ import React from 'react';
 import { CardContent, Typography } from '@mui/material';
 import { Card } from '@/components/ui-elements/card/Card';
 import type { GetSayingResponse } from 'quizzer-lib';
-import { getSayingAPI } from '@/utils/api-wrapper';
+import { getRandomSayingAPI } from '@/utils/api-wrapper';
 import { Button } from '@/components/ui-elements/button/Button';
 import { DisplaySentence } from '@/components/ui-elements/sentence/DisplaySentence';
 
@@ -24,7 +24,7 @@ export const SayingCard = ({ sayingResponse, setSaying }: SayingCardProps) => {
               size={'small'}
               attr={'after-inline'}
               onClick={async (e) => {
-                const result = await getSayingAPI({ getSayingRequestData: {} });
+                const result = await getRandomSayingAPI();
                 result.result && setSaying(result.result as GetSayingResponse);
               }}
             />
