@@ -302,7 +302,7 @@ export class QuizController {
       };
     } catch (err) {
       console.error(err);
-      throw new NotFoundException('File not found');
+      throw new NotFoundException(`画像が見つかりません(${fileName})`);
     }
   }
 

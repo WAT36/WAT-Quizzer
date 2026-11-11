@@ -1,4 +1,6 @@
+import type { Page } from '@playwright/test';
 import { test, expect } from '../support/fixtures';
+import type { ApiMock } from '../support/api-mock';
 import { mockQuizzerMasterData, quizzes } from '../support/data';
 
 test.describe('quizzer / 問題出題', () => {
@@ -157,5 +159,45 @@ test.describe('quizzer / 問題出題', () => {
     await page.getByRole('button', { name: '出題設定を開く' }).click();
 
     await expect(page.getByRole('button', { name: '出題スタート' })).toBeDisabled();
+  });
+
+  test.describe('画像の自動表示', () => {
+    // ファイル名にURLで特別な意味を持つ文字(&,#,スペース)を含める
+    const imgFile = 'a&b #1.png';
+    // 「画像を自動表示」は出題後に表示されるので、1問目でONにして、画像付きの2問目に進む
+    const goToQuizWithImage = async (page: Page, api: ApiMock) => {
+      api.on('GET', '/quiz/random', {
+        json: { total: 2, quizzes: [quizzes[0], { ...quizzes[1], img_file: imgFile }] }
+      });
+      await page.getByRole('button', { name: '出題設定を開く' }).click();
+      await page.getByLabel('問題ファイル').click();
+      await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+      await page.getByRole('button', { name: '出題スタート' }).click();
+      await page.getByLabel('画像を自動表示').check();
+      await page.getByRole('button', { name: '答え' }).click();
+      await page.getByRole('button', { name: '正解!!' }).click();
+      await expect(page.getByText(quizzes[1].quiz_sentense)).toBeVisible();
+    };
+
+    test('問題に画像があると取得して表示し、ファイル名はそのまま送られる', async ({ page, api }) => {
+      api.on('GET', '/quiz/image', { json: { base64: 'iVBORw0KGgo=', mimeType: 'image/png' } });
+
+      await goToQuizWithImage(page, api);
+
+      await expect(page.getByAltText('取得した画像')).toHaveAttribute('src', 'data:image/png;base64,iVBORw0KGgo=');
+      expect(api.requests('GET', '/quiz/image')[0].query).toEqual({ fileName: imgFile });
+    });
+
+    test('画像が見つからない場合は、エラー理由を表示して画像は出さない', async ({ page, api }) => {
+      api.on('GET', '/quiz/image', {
+        status: 404,
+        json: { statusCode: 404, message: `画像が見つかりません(${imgFile})` }
+      });
+
+      await goToQuizWithImage(page, api);
+
+      await expect(page.getByText(`画像が見つかりません(${imgFile})`)).toBeVisible();
+      await expect(page.getByAltText('取得した画像')).toHaveCount(0);
+    });
   });
 });

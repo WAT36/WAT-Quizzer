@@ -1,41 +1,35 @@
-import type { ApiResult } from '../../..'
-import { authFetch } from '../../..'
+import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { get, onSuccess } from '../../..'
 import type {
+  GetImageOfQuizAPIRawResponseDto,
   GetImageOfQuizAPIRequestDto,
   GetImageOfQuizAPIResponseDto
 } from '.'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 
-interface GetImageOfQuizButtonProps {
+interface GetImageOfQuizAPIProps {
   getImageOfQuizRequestData: GetImageOfQuizAPIRequestDto
 }
 
 export const getImageOfQuizAPI = async ({
   getImageOfQuizRequestData
-}: GetImageOfQuizButtonProps): Promise<ApiResult> => {
+}: GetImageOfQuizAPIProps): Promise<ApiResult> => {
   if (!getImageOfQuizRequestData.fileName) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
+    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00020) }
   }
 
-  // TODO ここだけは共通APIを使えてないので共通APIを使うようにしたい
-  const result = await authFetch(
-    (process.env.NEXT_PUBLIC_API_SERVER || '') +
-      `/quiz/image?fileName=${getImageOfQuizRequestData.fileName}`,
-    {
-      method: 'GET'
-    }
+  return await get(
+    '/quiz/image',
+    onSuccess((data: ProcessingApiReponse) => {
+      const { base64, mimeType } = data.body as GetImageOfQuizAPIRawResponseDto
+      const result: GetImageOfQuizAPIResponseDto = {
+        imageUrl: `data:${mimeType};base64,${base64}`
+      }
+      return {
+        message: successMessage(MESSAGES.SUCCESS.MSG00021),
+        result
+      }
+    }),
+    { fileName: getImageOfQuizRequestData.fileName }
   )
-  if (!result.ok) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00017) }
-  }
-  const { base64, mimeType } = await result.json()
-  const imageUrl = `data:${mimeType};base64,${base64}`
-
-  return {
-    isSuccess: true,
-    message: successMessage(MESSAGES.SUCCESS.MSG00021),
-    result: {
-      imageUrl
-    } as GetImageOfQuizAPIResponseDto
-  }
 }
