@@ -24,6 +24,10 @@ const toDateKey = (date: Date): string => {
   return `${year}-${month}-${day}`
 }
 
+// 日付(Dateか日付として読める文字列)をYYYY-MM-DD形式の文字列にする
+export const getDateForSqlString = (date: Date | string): string =>
+  toDateKey(new Date(date))
+
 // prisma用 実行時の日の0時0分のDate型データを取得
 export const getTodayStart = (): Date => startOfDaysAgo(0)
 

@@ -19,6 +19,16 @@ export const getRandomElementsFromArray = <T>(arr: T[], n: number) => {
   return extractArr
 }
 
+// 配列をランダムに並び替えた新しい配列を返す（Fisher–Yates、どの並びも同じ確率になる）
+export const shuffleArray = <T>(arr: T[]): T[] => {
+  const result = [...arr]
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[result[i], result[j]] = [result[j], result[i]]
+  }
+  return result
+}
+
 // リストからランダムに1個要素を取り出す
 export const getRandomElementFromArray = <T>(arr: T[]) => {
   if (arr.length === 0) {

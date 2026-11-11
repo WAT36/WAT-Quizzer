@@ -1,4 +1,5 @@
 import type { GetQuizApiResponseDto } from '../..'
+import { shuffleArray } from './array'
 
 // ある文字列に 複数の指定された文字のうち 1 つでも含まれているかどうか を判定
 export const containsAny = (target: string, chars: string[]): boolean => {
@@ -20,15 +21,9 @@ export const formatString = (str: string, ...value: string[]) => {
   return result
 }
 
-export const parseStrToBool = (val?: string) => {
-  if (!val) {
-    return false
-  } else if (val.toLowerCase() === 'false' || val.toLowerCase() === 'undefined' || val === '' || val === '0') {
-    return false
-  }
-
-  return true
-}
+// クエリなどの文字列を真偽値にする（空・'false'・'undefined'・'0'はfalse）
+export const parseStrToBool = (val?: string): boolean =>
+  !!val && !['false', 'undefined', '0'].includes(val.toLowerCase())
 
 export const getRandomStr = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyz'
@@ -39,105 +34,85 @@ export const getRandomStr = () => {
   return rand_str
 }
 
-export const getDateForSqlString = (date: Date | string) => {
-  const d = new Date(date)
-  const yyyy = d.getFullYear()
-  const mm = ('00' + (d.getMonth() + 1)).slice(-2)
-  const dd = ('00' + d.getDate()).slice(-2)
+// 問題画面に表示する問題文・答え・解説
+export interface GeneratedQuizSentense {
+  quiz_sentense: string
+  // 四択の時だけ、選択肢の記号を使った答えと解説を返す
+  answer?: string
+  quiz_explanation?: {
+    explanation: string
+  }
+}
 
-  return `${yyyy}-${mm}-${dd}`
+const CHOICE_LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+// APIの問題文などに含まれる文字列の"\n"を改行にする
+const toNewLine = (str: string) => str.replaceAll('\\n', '\n')
+
+// [ファイル番号-問題番号]問題文(正解率XX.XX%)(解答数N回)
+const quizHeader = (res: GetQuizApiResponseDto): string => {
+  const stats = res.quiz_statistics_view
+  const statsText = stats
+    ? `(正解率${Number(stats.accuracy_rate).toFixed(2)}%)(解答数${
+        Number(stats.clear_count ?? 0) + Number(stats.fail_count ?? 0)
+      }回)`
+    : ''
+  const sentense = toNewLine(res.quiz_sentense)
+  return `[${res.file_num}-${res.quiz_num}]${sentense}${statsText}`
 }
 
 // 問題取得系APIの返り値から問題文を生成する
 export const generateQuizSentense = (
   res: GetQuizApiResponseDto
-): Partial<
-  Pick<GetQuizApiResponseDto, 'quiz_sentense' | 'answer' | 'quiz_explanation'>
-> => {
-  // 四択の場合
-  if (res.format_id === 3) {
-    const choices: string[] = []
-    choices.push(res.answer)
-    if (res.quiz_dummy_choice) {
-      for (let i = 0; i < res.quiz_dummy_choice.length; i++) {
-        choices.push(res.quiz_dummy_choice[i].dummy_choice_sentense || '')
-      }
-    }
-    // 選択肢の配列をランダムに並び替える
-    // TODO 多肢多答対応で書き換えたがもっと効率化できそうな気する　リファクタしてみて
-    const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    const choiceName = alphabets.substring(0, choices.length).split('')
-    choiceName.sort(() => 0.5 - Math.random())
-    // 答えの文作成
-    const answer =
-      res.quiz_dummy_choice &&
-      res.quiz_dummy_choice.filter((value) => value.is_corrected).length
-        ? `${choiceName[0]}${res.quiz_dummy_choice
-            .map((value, index) => {
-              return value.is_corrected ? ',' + choiceName[index + 1] : ''
-            })
-            .join('')}`
-        : `${choiceName[0]}: ${res.answer.replaceAll('\\n', '\n')}`
+): GeneratedQuizSentense => {
+  const hasQuiz = res.file_num !== -1 && res.quiz_num !== -1
+  if (res.format_id !== 3) {
+    return { quiz_sentense: hasQuiz ? quizHeader(res) : '' }
+  }
 
-    return {
-      quiz_sentense:
-        res.file_num !== -1 && res.quiz_num !== -1
-          ? `[${res.file_num}-${res.quiz_num}]${res.quiz_sentense.replaceAll(
-              '\\n',
-              '\n'
-            )}${
-              res.quiz_statistics_view?.accuracy_rate
-                ? '(正解率' +
-                  Number(res.quiz_statistics_view.accuracy_rate).toFixed(2) +
-                  '%)(解答数' +
-                  (Number(res.quiz_statistics_view.clear_count ?? 0) + Number(res.quiz_statistics_view.fail_count ?? 0)) +
-                  '回)'
-                : ''
-            }
-        ` +
-            alphabets
-              .substring(0, choices.length)
-              .split('')
-              .map((value) => {
-                return `${value}: ${choices[
-                  choiceName.indexOf(value)
-                ].replaceAll('\\n', '\n')}
-          `
-              })
-              .join('')
-          : '',
-      answer,
-      quiz_explanation: {
-        explanation: res.quiz_explanation
-          ? res.quiz_explanation.explanation
-              .replaceAll('{c}', choiceName[0])
-              .replaceAll('{d1}', choiceName[1])
-              .replaceAll('{d2}', choiceName[2])
-              .replaceAll('{d3}', choiceName[3])
-          : ''
-      }
-    }
-  } else {
-    return {
-      quiz_sentense:
-        res.file_num !== -1 && res.quiz_num !== -1
-          ? `[${res.file_num}-${res.quiz_num}]${res.quiz_sentense.replaceAll(
-              '\\n',
-              '\n'
-            )}${
-              res.quiz_statistics_view
-                ? '(正解率' +
-                  Number(
-                    res.quiz_statistics_view
-                      ? res.quiz_statistics_view.accuracy_rate
-                      : NaN
-                  ).toFixed(2) +
-                  '%)(解答数' +
-                  (Number(res.quiz_statistics_view.clear_count ?? 0) + Number(res.quiz_statistics_view.fail_count ?? 0)) +
-                  '回)'
-                : ''
-            }`
-          : ''
-    }
+  // 四択: 正解(index 0)とダミー選択肢(index 1〜)をランダムに並べ、並んだ順にA,B,C,,を振る
+  const dummies = res.quiz_dummy_choice ?? []
+  const choices = [
+    { index: 0, sentense: res.answer, isCorrect: true },
+    ...dummies.map((x, i) => ({
+      index: i + 1,
+      sentense: x.dummy_choice_sentense || '',
+      isCorrect: x.is_corrected
+    }))
+  ]
+  const shuffled = shuffleArray(choices)
+  // labels[index] = 元の選択肢(0:正解, 1〜:ダミー)に振られた記号
+  const labels: string[] = []
+  shuffled.forEach((choice, position) => {
+    labels[choice.index] = CHOICE_LABELS[position]
+  })
+
+  // 多答(正解になるダミーがある)なら記号だけを並べ、そうでなければ記号と正解の文
+  const isMultipleAnswer = dummies.some((x) => x.is_corrected)
+  const answer = isMultipleAnswer
+    ? choices
+        .filter((choice) => choice.isCorrect)
+        .map((choice) => labels[choice.index])
+        .join(',')
+    : `${labels[0]}: ${toNewLine(res.answer)}`
+
+  // 解説の{c}は正解、{d1},{d2},,はダミー選択肢の記号に置き換える
+  const explanation = dummies.reduce(
+    (text, _x, i) => text.replaceAll(`{d${i + 1}}`, labels[i + 1]),
+    (res.quiz_explanation?.explanation ?? '').replaceAll('{c}', labels[0])
+  )
+
+  return {
+    quiz_sentense: hasQuiz
+      ? `${quizHeader(res)}\n` +
+        shuffled
+          .map(
+            (choice, position) =>
+              `${CHOICE_LABELS[position]}: ${toNewLine(choice.sentense)}\n`
+          )
+          .join('')
+      : '',
+    answer,
+    quiz_explanation: { explanation }
   }
 }
