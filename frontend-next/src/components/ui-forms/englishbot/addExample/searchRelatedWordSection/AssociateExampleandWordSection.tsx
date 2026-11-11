@@ -6,10 +6,15 @@ import { DataGrid } from '@mui/x-data-grid';
 import { meanColumns } from '../../../../../constants/contents/table/englishbot';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { Button } from '@/components/ui-elements/button/Button';
-import type { AssociateExampleandWordData } from 'quizzer-lib';
 import { searchExampleAPI, changeExampleAssociationAPI } from '@/utils/api-wrapper';
 import { messageState } from '@/atoms/Message';
 import { useSetRecoilState } from 'recoil';
+
+// 紐付ける単語名と、検索結果でチェックした例文のID
+type AssociateExampleandWordData = {
+  wordName?: string;
+  checkedIdList?: number[];
+};
 
 interface AssociateExampleandWordSectionProps {}
 

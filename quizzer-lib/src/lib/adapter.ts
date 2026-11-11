@@ -1,10 +1,24 @@
 import type { EditQuizAPIRequestDto } from '../api/quiz/edit/dto'
 import type {
-  PullDownOptionDto,
   GetQuizFileApiResponseDto,
   GetCategoryAPIResponseDto,
   GetQuizApiResponseDto
 } from '../..'
+
+// プルダウン選択肢用
+export interface PullDownOptionDto {
+  value: string
+  label: string
+}
+
+// idとnameを持つ一覧(品詞・出典など)をプルダウンの選択肢に変える
+export const apiResponsePullDownAdapter = (
+  response: { id: number; name: string }[]
+): PullDownOptionDto[] =>
+  response.map((x) => ({
+    value: String(x.id),
+    label: x.name
+  }))
 
 // 問題ファイルリスト取得API -> フロント用 問題ファイルプルダウン用DTO に変える
 export const quizFileListAPIResponseToPullDownAdapter = (
