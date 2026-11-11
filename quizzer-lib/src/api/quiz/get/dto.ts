@@ -20,7 +20,7 @@ export interface GetQuizAPIRequestDto {
   min_rate?: number
   max_rate?: number
   category?: string
-  checked?: boolean //booleanにしたい
+  checked?: boolean
   keyword?: string
   keywordTarget?: KeywordSearchTarget
   count?: number // 指定した場合、method指定時に条件に合う問題を最大count件まとめて取得する
@@ -30,7 +30,8 @@ export interface GetQuizAPIRequestDto {
 export type GetQuizAPIRequestReceivedDto =
   QueryReceivedDto<GetQuizAPIRequestDto>
 
-// 問題取得APIのレスポンス（基礎応用込み）、フォーマット込み
+// 問題取得APIのレスポンス
+// DBの値をバックエンドで変換して返す（カテゴリ名の配列化・統計値の数値化など）ため、Prismaの型ではなくAPIの形で定義する
 export interface GetQuizApiResponseDto extends ApiResponse {
   count?: number
   format_id?: number
@@ -42,21 +43,17 @@ export interface GetQuizApiResponseDto extends ApiResponse {
   answer: string
   img_file?: string
   checked?: boolean
-  quiz_format?: {
-    name: string
-  }
   quiz_statistics_view?: {
     clear_count?: number
     fail_count?: number
     accuracy_rate: number
   }
+  // 削除済みを除いた、問題に紐付くカテゴリ名
   quiz_category?: {
-    // TODO 一個ずつ型定義ではなく　index.d.tsから型取ってきてそれを使うようにしたい　でないとDB定義変えるたびにここも変える必要ありで面倒
     category: string
-    deleted_at?: string
   }[]
   quiz_dummy_choice?: {
-    dummy_choice_sentense: string // TODO テーブルごとの型なので本当は望ましくない getQuiz専用のAPI返り値型を作るべき
+    dummy_choice_sentense: string
     is_corrected: boolean
   }[]
   quiz_basis_linkage?: {
@@ -70,7 +67,4 @@ export interface GetQuizApiResponseDto extends ApiResponse {
   quiz_explanation?: {
     explanation: string
   }
-  quiz_basis_advanced_linkage?: {
-    basis_quiz_id: number
-  }[]
 }

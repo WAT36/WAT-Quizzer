@@ -2,6 +2,7 @@ import type {
   GetCategoryAPIResponseDto,
   GetEnglishWordTestDataAPIResponseDto,
   GetQuizApiResponseDto,
+  SearchQuizResultDto,
   GetQuizFileApiResponseDto,
   GetQuizFormatApiResponseDto,
   PartofSpeechApiResponse,
@@ -55,6 +56,19 @@ export const quizzes: GetQuizApiResponseDto[] = [
   }
 ];
 
+// 問題検索APIが返す形（問題形式名と正答率だけを持つ）
+export const searchResults: SearchQuizResultDto[] = quizzes.map((quiz) => ({
+  id: quiz.id,
+  file_num: quiz.file_num,
+  quiz_num: quiz.quiz_num,
+  quiz_sentense: quiz.quiz_sentense,
+  answer: quiz.answer,
+  checked: quiz.checked,
+  quiz_format: { name: quizFormats.find((format) => format.id === quiz.format_id)?.name ?? '' },
+  quiz_statistics_view: { accuracy_rate: quiz.quiz_statistics_view?.accuracy_rate ?? 0 },
+  quiz_category: quiz.quiz_category ?? []
+}));
+
 // quizzerの各画面が開いたときに読み込む、問題ファイル・問題形式・カテゴリの一覧を差し替える
 export const mockQuizzerMasterData = (api: ApiMock) => {
   api.on('GET', '/quiz/file', { json: quizFiles });
@@ -65,12 +79,30 @@ export const mockQuizzerMasterData = (api: ApiMock) => {
 // ---- englishBot ----
 
 export const sources: SourceApiResponse[] = [
-  { id: 1, name: 'TOEIC', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined },
-  { id: 2, name: '英検準1級', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined }
+  {
+    id: 1,
+    name: 'TOEIC',
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
+    deleted_at: undefined
+  },
+  {
+    id: 2,
+    name: '英検準1級',
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
+    deleted_at: undefined
+  }
 ];
 
 export const partsOfSpeech: PartofSpeechApiResponse[] = [
-  { id: 1, name: '動詞', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined },
+  {
+    id: 1,
+    name: '動詞',
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
+    deleted_at: undefined
+  },
   { id: 2, name: '名詞', created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z', deleted_at: undefined }
 ];
 

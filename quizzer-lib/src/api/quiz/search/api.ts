@@ -1,20 +1,19 @@
-import type { GetQuizApiResponseDto } from '../../../..'
 import {
   errorMessage,
   MESSAGES,
   successMessage
 } from '../../../..'
-import type { SearchQuizAPIRequestDto } from './dto'
+import type { SearchQuizAPIRequestDto, SearchQuizResultDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
 import { get } from '../..'
 
-interface SearchQuizButtonProps {
+interface SearchQuizAPIProps {
   searchQuizRequestData: SearchQuizAPIRequestDto
 }
 
 export const searchQuizAPI = async ({
   searchQuizRequestData
-}: SearchQuizButtonProps): Promise<ApiResult> => {
+}: SearchQuizAPIProps): Promise<ApiResult> => {
   if (searchQuizRequestData.file_num === -1) {
     return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
   }
@@ -47,7 +46,10 @@ export const searchQuizAPI = async ({
         (String(data.status)[0] === '2' || String(data.status)[0] === '3') &&
         data.body
       ) {
-        const body = data.body as { total: number; quizzes: GetQuizApiResponseDto[] }
+        const body = data.body as {
+          total: number
+          quizzes: SearchQuizResultDto[]
+        }
         const quizzes = body.quizzes
         return {
           message: successMessage(

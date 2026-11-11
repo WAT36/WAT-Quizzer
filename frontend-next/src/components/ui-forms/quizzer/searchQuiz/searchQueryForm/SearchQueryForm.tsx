@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FormControl, FormGroup, TextField as MuiTextField } from '@mui/material';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { RangeSliderSection } from '@/components/ui-parts/card-contents/rangeSliderSection/RangeSliderSection';
-import type { GetQuizApiResponseDto, PullDownOptionDto, SearchQuizAPIRequestDto } from 'quizzer-lib';
+import type { PullDownOptionDto, SearchQuizAPIRequestDto, SearchQuizResultDto } from 'quizzer-lib';
 import { initSearchQuizRequestData, SEARCH_LIMITS } from 'quizzer-lib';
 import { searchQuizAPI } from '@/utils/api-wrapper';
 import { useSetRecoilState } from 'recoil';
@@ -33,18 +33,13 @@ const migrateSavedSearchQuizRequestData = (
   };
 };
 
-const toSearchResultRows = (quizzes: GetQuizApiResponseDto[]): QuizSearchRow[] =>
+const toSearchResultRows = (quizzes: SearchQuizResultDto[]): QuizSearchRow[] =>
   quizzes.map((x) => {
     return {
       ...x,
-      category: x.quiz_category
-        ? x.quiz_category
-            .filter((x) => !x.deleted_at)
-            .map((x) => x.category)
-            .join(',')
-        : '',
-      format_name: x.quiz_format ? x.quiz_format.name.replace('問題', '') : '',
-      accuracy_rate: x.quiz_statistics_view ? +x.quiz_statistics_view.accuracy_rate : NaN,
+      category: x.quiz_category.map((c) => c.category).join(','),
+      format_name: x.quiz_format.name.replace('問題', ''),
+      accuracy_rate: x.quiz_statistics_view.accuracy_rate,
       explanation: x.quiz_explanation?.explanation ?? ''
     };
   });
@@ -73,7 +68,7 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
       setMessage(result.message);
       setTotalCount(result.total);
       if (result.result) {
-        setSearchResult(toSearchResultRows(result.result as GetQuizApiResponseDto[]));
+        setSearchResult(toSearchResultRows(result.result as SearchQuizResultDto[]));
       }
     },
     [setMessage, setSearchResult, setTotalCount]

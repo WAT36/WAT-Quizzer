@@ -1,5 +1,5 @@
 import { test, expect } from '../support/fixtures';
-import { mockQuizzerMasterData, quizzes } from '../support/data';
+import { mockQuizzerMasterData, quizzes, searchResults } from '../support/data';
 import type { CategoryParentChildAPIResponseDto } from 'quizzer-lib';
 
 // 「非同期処理」の親カテゴリが「JavaScript」という親子関係
@@ -18,7 +18,7 @@ test.describe('quizzer / 問題検索 → 編集', () => {
 
   test.beforeEach(async ({ page, api }) => {
     mockQuizzerMasterData(api);
-    api.on('GET', '/quiz/search', { json: { total: quizzes.length, quizzes } });
+    api.on('GET', '/quiz/search', { json: { total: searchResults.length, quizzes: searchResults } });
     // 編集画面で問題番号を指定して1問取得する
     api.on('GET', '/quiz', { json: target });
     api.on('GET', '/category/parent-child', { json: categoryParentChildList });
@@ -104,8 +104,8 @@ test.describe('quizzer / 問題検索 → 編集', () => {
   });
 
   test('検索結果の応用問題を選んで、一括で✅をつける/外すことができる', async ({ page, api }) => {
-    const appliedQuiz = { ...target, format_id: 2, quiz_format: { name: '応用問題' } };
-    api.on('GET', '/quiz/search', { json: { total: 2, quizzes: [quizzes[0], appliedQuiz] } });
+    const appliedQuiz = { ...searchResults[1], quiz_format: { name: '応用問題' } };
+    api.on('GET', '/quiz/search', { json: { total: 2, quizzes: [searchResults[0], appliedQuiz] } });
     api.on('PUT', '/quiz/check', { json: [] });
     api.on('PUT', '/quiz/uncheck', { json: [] });
 

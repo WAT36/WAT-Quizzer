@@ -1,4 +1,4 @@
-import type { QueryReceivedDto } from '../..'
+import type { ApiResponse, QueryReceivedDto } from '../..'
 
 export interface SearchQuizAPIRequestDto {
   query: string
@@ -21,3 +21,27 @@ export interface SearchQuizAPIRequestDto {
 // カテゴリ条件(category_and,category_not)はJSON文字列化した配列で受け取る
 export type SearchQuizAPIRequestReceivedDto =
   QueryReceivedDto<SearchQuizAPIRequestDto>
+
+// 問題検索APIのレスポンスの1件分
+export interface SearchQuizResultDto extends ApiResponse {
+  id: number
+  file_num: number
+  quiz_num: number
+  quiz_sentense: string
+  answer: string
+  img_file?: string
+  checked?: boolean
+  quiz_format: {
+    name: string
+  }
+  quiz_statistics_view: {
+    accuracy_rate: number
+  }
+  // 削除済みを除いた、問題に紐付くカテゴリ名
+  quiz_category: {
+    category: string
+  }[]
+  quiz_explanation?: {
+    explanation: string
+  }
+}

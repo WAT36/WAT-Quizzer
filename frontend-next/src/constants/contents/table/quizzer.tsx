@@ -1,9 +1,9 @@
 import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import type { GetQuizApiResponseDto } from 'quizzer-lib';
+import type { SearchQuizResultDto } from 'quizzer-lib';
 import { EditQuizIconButton } from '@/components/ui-parts/editQuizIconButton/EditQuizIconButton';
 
 // 問題検索結果テーブルの1行分のデータ（APIレスポンスに表示用の項目を加えたもの）
-export type QuizSearchRow = GetQuizApiResponseDto & {
+export type QuizSearchRow = SearchQuizResultDto & {
   category: string;
   format_name: string;
   accuracy_rate: number;

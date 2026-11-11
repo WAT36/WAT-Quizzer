@@ -1,13 +1,13 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-import type { GetQuizApiResponseDto } from 'quizzer-lib';
+import type { SearchQuizResultDto } from 'quizzer-lib';
 import { Button } from '@/components/ui-elements/button/Button';
 import { Modal } from '@/components/ui-elements/modal/Modal';
 
 interface DuplicateAnswerModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  duplicateQuizzes: GetQuizApiResponseDto[];
+  duplicateQuizzes: SearchQuizResultDto[];
   answer: string;
   onConfirm: () => void;
 }

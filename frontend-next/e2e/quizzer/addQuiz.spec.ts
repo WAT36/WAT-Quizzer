@@ -1,5 +1,5 @@
 import { test, expect } from '../support/fixtures';
-import { mockQuizzerMasterData, quizzes } from '../support/data';
+import { mockQuizzerMasterData, quizzes, searchResults } from '../support/data';
 
 test.describe('quizzer / 問題追加', () => {
   test.beforeEach(async ({ page, api }) => {
@@ -42,7 +42,7 @@ test.describe('quizzer / 問題追加', () => {
   });
 
   test('同じ答えの問題がある場合は確認が表示され、それでも登録できる', async ({ page, api }) => {
-    api.on('GET', '/quiz/search', { json: { total: 1, quizzes: [quizzes[0]] } });
+    api.on('GET', '/quiz/search', { json: { total: 1, quizzes: [searchResults[0]] } });
 
     await page.getByLabel('問題文').fill('定数を宣言するキーワードは？');
     await page.getByLabel('答え').fill(quizzes[0].answer);

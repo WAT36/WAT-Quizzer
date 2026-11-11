@@ -3,7 +3,8 @@ import type {
   WordSummaryApiResponse,
   CategoryParentChildAPIResponseDto,
   CategoryQuizCountDto,
-  RecommendedCategoryDto
+  RecommendedCategoryDto,
+  SearchQuizResultDto
 } from 'quizzer-lib';
 import {
   errorMessage,
@@ -87,7 +88,23 @@ export const mockSearchQuizAPI = async (params: any): Promise<ApiResult> => {
       messageColor: 'success.light',
       isDisplay: true
     },
-    result: searchResults,
+    // 検索APIと同じ形（問題形式名・正答率・カテゴリ名付き）にする
+    result: searchResults.map(
+      (quiz): SearchQuizResultDto => ({
+        id: quiz.id,
+        file_num: quiz.file_num,
+        quiz_num: quiz.quiz_num,
+        quiz_sentense: quiz.quiz_sentense,
+        answer: quiz.answer,
+        img_file: quiz.img_file ?? undefined,
+        checked: quiz.checked,
+        quiz_format: { name: quizFormatMockData.find((format) => format.id === quiz.format_id)?.name ?? '' },
+        quiz_statistics_view: { accuracy_rate: 0 },
+        quiz_category: quizCategoryMockData
+          .filter((category) => category.quiz_id === quiz.id && !category.deleted_at)
+          .map((category) => ({ category: category.category }))
+      })
+    ),
     total: searchResults.length
   };
 };

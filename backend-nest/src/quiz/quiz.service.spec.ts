@@ -121,9 +121,9 @@ describe('QuizService', () => {
       ...getQuizResultTest[0],
       count: 1,
       quiz_statistics_view: {
-        clear_count: '1',
-        fail_count: '1',
-        accuracy_rate: '50',
+        clear_count: 1,
+        fail_count: 1,
+        accuracy_rate: 50,
       },
     });
   });
@@ -153,9 +153,9 @@ describe('QuizService', () => {
       ...getQuizResultTest[0],
       count: 1,
       quiz_statistics_view: {
-        clear_count: '1',
-        fail_count: '1',
-        accuracy_rate: '50',
+        clear_count: 1,
+        fail_count: 1,
+        accuracy_rate: 50,
       },
     });
   });
@@ -171,9 +171,9 @@ describe('QuizService', () => {
       ...getQuizResultTest[0],
       count: 1,
       quiz_statistics_view: {
-        clear_count: '1',
-        fail_count: '1',
-        accuracy_rate: '50',
+        clear_count: 1,
+        fail_count: 1,
+        accuracy_rate: 50,
       },
     });
   });
@@ -189,9 +189,9 @@ describe('QuizService', () => {
       ...getQuizResultTest[0],
       count: 1,
       quiz_statistics_view: {
-        clear_count: '1',
-        fail_count: '1',
-        accuracy_rate: '50',
+        clear_count: 1,
+        fail_count: 1,
+        accuracy_rate: 50,
       },
     });
   });
@@ -207,9 +207,9 @@ describe('QuizService', () => {
       ...getQuizResultTest[0],
       count: 1,
       quiz_statistics_view: {
-        clear_count: '1',
-        fail_count: '1',
-        accuracy_rate: '50',
+        clear_count: 1,
+        fail_count: 1,
+        accuracy_rate: 50,
       },
     });
   });
@@ -228,9 +228,9 @@ describe('QuizService', () => {
       ...getQuizResultTest[0],
       count: 1,
       quiz_statistics_view: {
-        clear_count: '1',
-        fail_count: '1',
-        accuracy_rate: '50',
+        clear_count: 1,
+        fail_count: 1,
+        accuracy_rate: 50,
       },
     });
     expect(prisma.quiz.findMany).toHaveBeenLastCalledWith(
@@ -271,9 +271,9 @@ describe('QuizService', () => {
       ...getQuizResultTest[0],
       count: 1,
       quiz_statistics_view: {
-        clear_count: '1',
-        fail_count: '1',
-        accuracy_rate: '50',
+        clear_count: 1,
+        fail_count: 1,
+        accuracy_rate: 50,
       },
     });
   });
@@ -303,9 +303,9 @@ describe('QuizService', () => {
       quizzes: getQuizResultTestBatch.map((quiz) => ({
         ...quiz,
         quiz_statistics_view: {
-          clear_count: '1',
-          fail_count: '1',
-          accuracy_rate: '50',
+          clear_count: 1,
+          fail_count: 1,
+          accuracy_rate: 50,
         },
       })),
     });
@@ -327,9 +327,9 @@ describe('QuizService', () => {
       quizzes: getQuizResultTestBatch.map((quiz) => ({
         ...quiz,
         quiz_statistics_view: {
-          clear_count: '1',
-          fail_count: '1',
-          accuracy_rate: '50',
+          clear_count: 1,
+          fail_count: 1,
+          accuracy_rate: 50,
         },
       })),
     });
@@ -602,7 +602,7 @@ describe('QuizService', () => {
         quiz_category: [{ category: 'カテゴリ' }],
         quiz_format: { name: '四択' },
         quiz_statistics_view: {
-          accuracy_rate: '80',
+          accuracy_rate: 80,
         },
         img_file: '画像.png',
         checked: true,

@@ -357,9 +357,9 @@ export class QuizService {
         }),
         ...(result.quiz_statistics_view && {
           quiz_statistics_view: {
-            clear_count: result.quiz_statistics_view.clear_count.toString(),
-            fail_count: result.quiz_statistics_view.fail_count.toString(),
-            accuracy_rate: result.quiz_statistics_view.accuracy_rate.toString(),
+            clear_count: Number(result.quiz_statistics_view.clear_count),
+            fail_count: Number(result.quiz_statistics_view.fail_count),
+            accuracy_rate: Number(result.quiz_statistics_view.accuracy_rate),
           },
         }),
       });
@@ -971,7 +971,7 @@ export class QuizService {
               category: cq.category.name,
             })),
           quiz_statistics_view: {
-            accuracy_rate: x.quiz_statistics_view.accuracy_rate.toString(),
+            accuracy_rate: Number(x.quiz_statistics_view.accuracy_rate),
           },
         };
       });

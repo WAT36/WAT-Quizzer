@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { SelectChangeEvent } from '@mui/material';
 import { Card, CardContent, FormGroup, IconButton, Input, Stack, Typography } from '@mui/material';
-import type { AddQuizAPIRequestDto, AddQuizApiResponseDto, GetQuizApiResponseDto } from 'quizzer-lib';
+import type { AddQuizAPIRequestDto, AddQuizApiResponseDto, SearchQuizResultDto } from 'quizzer-lib';
 import { initAddQuizRequestData } from 'quizzer-lib';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
@@ -23,7 +23,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
   const [addQuizRequestData, setAddQuizRequestData] = useState<AddQuizAPIRequestDto>(initAddQuizRequestData);
   const setMessage = useSetRecoilState(messageState);
   const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
-  const [duplicateQuizzes, setDuplicateQuizzes] = useState<GetQuizApiResponseDto[]>([]);
+  const [duplicateQuizzes, setDuplicateQuizzes] = useState<SearchQuizResultDto[]>([]);
 
   const executeAddQuiz = async () => {
     setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
@@ -49,7 +49,7 @@ export const AddQuizForm = ({ setAddLog }: AddQuizFormProps) => {
         }
       });
       setMessage({ message: '', messageColor: '', isDisplay: false });
-      const hits = (searchResult.result as GetQuizApiResponseDto[] | undefined) ?? [];
+      const hits = (searchResult.result as SearchQuizResultDto[] | undefined) ?? [];
       if (hits.length > 0) {
         setDuplicateQuizzes(hits);
         setDuplicateModalOpen(true);
