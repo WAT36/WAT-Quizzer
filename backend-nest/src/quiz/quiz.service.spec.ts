@@ -126,6 +126,22 @@ describe('QuizService', () => {
     });
   });
 
+  // 問題取得 format_idで形式を絞り込む（番号指定・条件指定とも）
+  it('getQuiz - format_id', async () => {
+    (prisma.quiz.findMany as jest.Mock).mockClear();
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValue(getQuizResultTest);
+    (prisma.quiz.count as jest.Mock).mockResolvedValue(1);
+    await quizService.getQuiz({ file_num: 1, quiz_num: 1, format_id: [1, 3] });
+    await quizService.getQuiz({ file_num: 1, format_id: [2] }, 'worstRate');
+    await quizService.getQuiz({ file_num: 1, quiz_num: 1 });
+    const wheres = (prisma.quiz.findMany as jest.Mock).mock.calls.map(
+      (call) => call[0].where,
+    );
+    expect(wheres[0].format_id).toEqual({ in: [1, 3] });
+    expect(wheres[1].format_id).toEqual({ in: [2] });
+    expect(wheres[2].format_id).toBeUndefined();
+  });
+
   // 問題取得 異常系
   it('getQuiz - NG', async () => {
     (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce([]);
@@ -609,7 +625,7 @@ describe('QuizService', () => {
       quizService.search({
         min_rate: 0,
         max_rate: 100,
-        format_id: { '1': true },
+        format_id: [1],
         category_and: ['カテゴリ'],
         checked: true,
         query: 'クエリ',
@@ -631,7 +647,7 @@ describe('QuizService', () => {
       quizService.search({
         min_rate: 0,
         max_rate: 100,
-        format_id: { '1': true },
+        format_id: [1],
         category_and: ['カテゴリ'],
         checked: true,
         query: 'クエリ',
@@ -659,6 +675,13 @@ describe('QuizService', () => {
       await quizService.search({ query: '', file_num: 1, ...req });
       return (prisma.quiz.findMany as jest.Mock).mock.calls[0][0].where;
     };
+
+    it('format_idを指定すると形式で絞り込み、未指定なら絞り込まない', async () => {
+      expect((await searchWhere({ format_id: [1, 3] })).format_id).toEqual({
+        in: [1, 3],
+      });
+      expect((await searchWhere({})).format_id).toBeUndefined();
+    });
 
     it('カテゴリ未指定ならカテゴリ条件を付けない', async () => {
       const where = await searchWhere({});

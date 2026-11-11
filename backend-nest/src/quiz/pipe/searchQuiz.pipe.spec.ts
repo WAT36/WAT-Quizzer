@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { SearchQuizPipe } from './searchQuiz.pipe';
 
 jest.mock('quizzer-lib', () => ({
@@ -6,6 +7,21 @@ jest.mock('quizzer-lib', () => ({
 
 describe('SearchQuizPipe', () => {
   const pipe = new SearchQuizPipe();
+
+  it('format_idをIDの配列に変換する（空なら絞り込まない）', () => {
+    expect(
+      pipe.transform({ query: '', file_num: '1', format_id: '2,1' }),
+    ).toEqual({ query: '', file_num: 1, format_id: [2, 1] });
+    expect(pipe.transform({ query: '', file_num: '1', format_id: '' })).toEqual(
+      { query: '', file_num: 1 },
+    );
+  });
+
+  it('format_idに数値でない値があれば400', () => {
+    expect(() =>
+      pipe.transform({ query: '', file_num: '1', format_id: 'abc' }),
+    ).toThrow(BadRequestException);
+  });
 
   it('JSON文字列のカテゴリ配列を配列に変換する', () => {
     expect(

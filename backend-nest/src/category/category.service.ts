@@ -6,6 +6,7 @@ import {
   prisma,
 } from 'quizzer-lib';
 import { Prisma } from '@prisma/client';
+import { formatIdCondition } from '../common/formatId';
 
 @Injectable()
 export class CategoryService {
@@ -293,31 +294,15 @@ export class CategoryService {
     file_num: number,
     startDate?: Date,
     endDate?: Date,
-    format_id?: { [key: string]: boolean },
+    format_id?: number[],
   ) {
     try {
-      const enabledFormatIds = format_id
-        ? Object.entries(format_id)
-            .filter(([, enabled]) => !!enabled)
-            .map(([key]) => parseInt(key, 10))
-            .filter((id) => !isNaN(id))
-        : [];
-
-      const quizFormatFilter =
-        enabledFormatIds.length > 0
-          ? {
-              format_id: {
-                in: enabledFormatIds,
-              },
-            }
-          : undefined;
-
       // カテゴリビューから指定ファイルのカテゴリ毎の正解率取得
       const categorylogs = await prisma.answer_log.findMany({
         where: {
           quiz: {
             file_num,
-            ...(quizFormatFilter ?? {}),
+            ...formatIdCondition(format_id),
           },
           created_at: {
             gte: startDate || PAST_DAY,
@@ -405,7 +390,7 @@ export class CategoryService {
         where: {
           quiz: {
             file_num,
-            ...(quizFormatFilter ?? {}),
+            ...formatIdCondition(format_id),
           },
           created_at: {
             gte: startDate || PAST_DAY,

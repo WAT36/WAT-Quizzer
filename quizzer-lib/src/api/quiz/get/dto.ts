@@ -26,9 +26,17 @@ export interface GetQuizAPIRequestDto {
   count?: number // 指定した場合、method指定時に条件に合う問題を最大count件まとめて取得する
 }
 
-// API側で受け取った時のDTO（Pipeで上に変換する）
+// API側で受け取った時のDTO（Pipeで下のParsedDtoに変換する）
 export type GetQuizAPIRequestReceivedDto =
   QueryReceivedDto<GetQuizAPIRequestDto>
+
+// API側でPipe変換した後のDTO（format_idはチェックされた形式IDの配列）
+export type GetQuizAPIRequestParsedDto = Omit<
+  GetQuizAPIRequestDto,
+  'format_id'
+> & {
+  format_id?: number[]
+}
 
 // 問題取得APIのレスポンス
 // DBの値をバックエンドで変換して返す（カテゴリ名の配列化・統計値の数値化など）ため、Prismaの型ではなくAPIの形で定義する

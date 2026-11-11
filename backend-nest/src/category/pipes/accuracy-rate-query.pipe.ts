@@ -1,10 +1,11 @@
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
+import { parseFormatIds } from '../../common/formatId';
 
 export interface AccuracyRateQueryDto {
   file_num: number;
   startDate?: Date;
   endDate?: Date;
-  format_id?: { [key: string]: boolean };
+  format_id?: number[];
 }
 
 @Injectable()
@@ -51,50 +52,13 @@ export class AccuracyRateQueryPipe implements PipeTransform {
     }
 
     // format_idの検証と変換（オプショナル）
-    let formatIdObj: AccuracyRateQueryDto['format_id'];
-    if (format_id) {
-      if (typeof format_id === 'string') {
-        const ids = format_id
-          .split(',')
-          .map((id: string) => id.trim())
-          .filter((id: string) => id !== '');
-        const invalidId = ids.find((id: string) => isNaN(parseInt(id, 10)));
-        if (invalidId) {
-          throw new BadRequestException(
-            `format_id must contain valid numbers (invalid: ${invalidId})`,
-          );
-        }
-        if (ids.length > 0) {
-          formatIdObj = ids.reduce((acc, cur) => ({ ...acc, [cur]: true }), {});
-        }
-      } else if (typeof format_id === 'object') {
-        const entries = Object.entries(format_id).filter(
-          ([, enabled]) => !!enabled,
-        );
-        const invalidId = entries.find(([key]) => isNaN(parseInt(key, 10)));
-        if (invalidId) {
-          throw new BadRequestException(
-            `format_id must contain valid numbers (invalid: ${invalidId[0]})`,
-          );
-        }
-        if (entries.length > 0) {
-          formatIdObj = entries.reduce(
-            (acc, [key]) => ({ ...acc, [key]: true }),
-            {},
-          );
-        }
-      } else {
-        throw new BadRequestException(
-          'format_id must be provided as a comma separated string',
-        );
-      }
-    }
+    const formatIds = parseFormatIds(format_id);
 
     return {
       file_num: fileNum,
       startDate: startDateObj,
       endDate: endDateObj,
-      format_id: formatIdObj,
+      format_id: formatIds,
     };
   }
 }

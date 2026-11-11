@@ -1,9 +1,10 @@
 import { PipeTransform, Injectable } from '@nestjs/common';
 import {
   parseStrToBool,
-  SearchQuizAPIRequestDto,
+  SearchQuizAPIRequestParsedDto,
   SearchQuizAPIRequestReceivedDto,
 } from 'quizzer-lib';
+import { parseFormatIds } from '../../common/formatId';
 
 // JSON文字列化されたカテゴリ名配列をパースする（不正な値は無視し、トリム・空文字除去・重複除去する）
 const parseCategoryList = (value: string): string[] => {
@@ -26,11 +27,11 @@ const parseCategoryList = (value: string): string[] => {
 @Injectable()
 export class SearchQuizPipe implements PipeTransform<
   SearchQuizAPIRequestReceivedDto,
-  SearchQuizAPIRequestDto
+  SearchQuizAPIRequestParsedDto
 > {
   transform(
     searchQuizDTO: SearchQuizAPIRequestReceivedDto,
-  ): SearchQuizAPIRequestDto {
+  ): SearchQuizAPIRequestParsedDto {
     return Object.entries(searchQuizDTO).reduce(
       (acc, cur) => {
         const key = cur[0];
@@ -51,20 +52,10 @@ export class SearchQuizPipe implements PipeTransform<
           case 'searchInExplanation':
           case 'onlyDirectCategory':
             return { ...acc, [key]: parseStrToBool(cur[1]) };
-          case 'format_id':
-            return cur[1] && cur[1] !== ''
-              ? {
-                  ...acc,
-                  [key]: cur[1]
-                    .split(',')
-                    .filter((x) => x !== '')
-                    .reduce((accummulate, currentValue) => {
-                      return { ...accummulate, [currentValue]: true };
-                    }, {}),
-                }
-              : {
-                  ...acc,
-                };
+          case 'format_id': {
+            const formatIds = parseFormatIds(cur[1]);
+            return formatIds ? { ...acc, [key]: formatIds } : { ...acc };
+          }
           case 'category_and':
           case 'category_not': {
             const categories = parseCategoryList(cur[1]);
