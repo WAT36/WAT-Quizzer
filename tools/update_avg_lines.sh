@@ -10,9 +10,9 @@ cd "$(dirname "$0")/.." || exit 1
 
 echo "全ファイル平均行数計算 開始"
 
-# 無視するディレクトリ
-# TODO .gitignoreから読みたい
-IGNORE_DIRS=("node_modules/" "dist/" "/." "public/" ".log" "d.ts" "/out/" "/storybook-static" "/database-old" "/file" "/yaml" "cdk.out" ".json" ".md" "test" "spec.ts" "e2e" ".stories.tsx")
+# 集計から除くファイル（パスにこの文字列を含むもの）
+# .gitignore で除外されるファイルは git ls-files の時点で除かれるので、ここには書かない
+IGNORE_DIRS=("/." "public/" ".json" ".md" "./backend-nest/test/" ".test." "spec.ts" "e2e" ".stories.tsx")
 
 # 全ファイルの行数をカウントする関数
 count_lines() {
@@ -20,9 +20,12 @@ count_lines() {
     wc -l <"$file" | tr -d ' ' # 行数を取得
 }
 
-# 指定したディレクトリ以下のすべてのファイルを取得（無視リスト適用）
+# 集計対象のファイルを取得する
+# git管理下のファイルと、未追跡だが.gitignoreで除外されていないファイルを対象に、無視リストを適用する
 get_all_files() {
-    find . -type f | while read -r file; do
+    git -c core.quotePath=false ls-files --cached --others --exclude-standard | sed 's|^|./|' | while read -r file; do
+        # 削除済みでまだコミットしていないファイルは数えない
+        [[ -f "$file" ]] || continue
         # 無視リストに含まれる値がパスにあればスキップ
         for ignore in "${IGNORE_DIRS[@]}"; do
             if [[ "$file" == *"$ignore"* ]]; then
