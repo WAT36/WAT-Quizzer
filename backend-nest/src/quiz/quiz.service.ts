@@ -36,39 +36,17 @@ import {
   validateQuizCsv,
 } from './csv/quizCsv.validator';
 
-// 文頭と末尾の半角・全角スペースを削除
-const trimSpaces = (str: string): string =>
-  str ? str.replace(/^[ \u3000]+|[ \u3000]+$/g, '') : str;
-
-// 問題を有効なカテゴリ付きで返す際のinclude条件
-// 問題IDの配列(空でない整数の配列)であることを確認し、違えば400にする
-function assertQuizIds(quiz_ids: unknown): asserts quiz_ids is number[] {
-  if (
-    !Array.isArray(quiz_ids) ||
-    quiz_ids.length === 0 ||
-    !quiz_ids.every((x) => Number.isInteger(x))
-  ) {
-    throw new HttpException(
-      `問題番号が不正です(${JSON.stringify(quiz_ids)})`,
-      HttpStatus.BAD_REQUEST,
-    );
-  }
-}
-
-const includeActiveCategories = {
-  category_quiz: {
-    where: {
-      deleted_at: null,
-    },
-    select: {
-      category: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  },
-} satisfies Prisma.quizInclude;
+import {
+  activeCategoryNames,
+  includeActiveCategories,
+  linkCategories,
+  upsertCategory,
+} from './quizCategory';
+import {
+  assertQuizIds,
+  parseMatchedBasicQuizIds,
+  trimSpaces,
+} from './quizRequest';
 
 export interface QueryType {
   query: string;
@@ -331,15 +309,9 @@ export class QuizService {
       ...result,
       category_quiz: undefined,
       ...(result.category_quiz && {
-        quiz_category: result.category_quiz
-          .filter((x) => {
-            return !x.deleted_at;
-          })
-          .map((x) => {
-            return {
-              category: x.category.name,
-            };
-          }),
+        quiz_category: activeCategoryNames(result.category_quiz).map(
+          (category) => ({ category }),
+        ),
       }),
       ...(result.quiz_statistics_view && {
         quiz_statistics_view: {
@@ -364,24 +336,17 @@ export class QuizService {
 
   // 正解登録
   async cleared(req: ClearQuizAPIRequestDto) {
-    const { quiz_id } = req;
-    return prisma.answer_log.create({
-      data: {
-        quiz_id,
-        is_corrected: true,
-      },
-    });
+    return this.createAnswerLog(req.quiz_id, true);
   }
 
   // 不正解登録
   async failed(req: FailQuizAPIRequestDto) {
-    const { quiz_id } = req;
-    return prisma.answer_log.create({
-      data: {
-        quiz_id,
-        is_corrected: false,
-      },
-    });
+    return this.createAnswerLog(req.quiz_id, false);
+  }
+
+  // 解答ログを登録
+  private async createAnswerLog(quiz_id: number, is_corrected: boolean) {
+    return prisma.answer_log.create({ data: { quiz_id, is_corrected } });
   }
 
   // 問題を１問追加
@@ -406,20 +371,9 @@ export class QuizService {
     }
 
     // 関連する基礎問題番号リストのバリデーション・取得
-    const matched_basic_quiz_id_list: number[] = [];
-    if (matched_basic_quiz_id) {
-      const id_list = matched_basic_quiz_id.split(',');
-      for (let i = 0; i < id_list.length; i++) {
-        if (isNaN(+id_list[i])) {
-          throw new HttpException(
-            `入力した関連基礎問題番号でエラーが発生しました；("${id_list[i]}"は数値ではありません)`,
-            HttpStatus.BAD_REQUEST,
-          );
-        } else {
-          matched_basic_quiz_id_list.push(+id_list[i]);
-        }
-      }
-    }
+    const matched_basic_quiz_id_list = parseMatchedBasicQuizIds(
+      matched_basic_quiz_id,
+    );
 
     // 四択問題の場合　ダミー選択肢全部ない場合エラー
     if (
@@ -497,11 +451,7 @@ export class QuizService {
 
       // カテゴリ名からカテゴリをupsertしてquizに紐付ける関数
       const upsertAndLinkCategory = async (name: string) => {
-        const cat = await prisma.category.upsert({
-          where: { name_file_num: { name, file_num } },
-          update: { deleted_at: null },
-          create: { name, file_num },
-        });
+        const cat = await upsertCategory(prisma, name, file_num);
         if (!registeredCategoryIds.has(cat.id)) {
           registeredCategoryIds.add(cat.id);
           await prisma.category_quiz.create({
@@ -563,21 +513,9 @@ export class QuizService {
     } = req;
 
     //編集画面で入力した関連基礎問題番号取得・バリデーション
-    const matched_basic_quiz_id_list: number[] = [];
-    let id_list: string[] = [];
-    if (matched_basic_quiz_id) {
-      id_list = matched_basic_quiz_id.split(',');
-      for (let i = 0; i < id_list.length; i++) {
-        if (isNaN(+id_list[i])) {
-          throw new HttpException(
-            `入力した関連基礎問題番号でエラーが発生しました；("${id_list[i]}"は数値ではありません)`,
-            HttpStatus.BAD_REQUEST,
-          );
-        } else {
-          matched_basic_quiz_id_list.push(+id_list[i]);
-        }
-      }
-    }
+    const matched_basic_quiz_id_list = parseMatchedBasicQuizIds(
+      matched_basic_quiz_id,
+    );
 
     // クエリ用意
     const updatedQuiz = await prisma.$transaction(async (prisma) => {
@@ -686,39 +624,7 @@ export class QuizService {
           deleted_at: new Date(),
         },
       });
-      const categories = category.split(',');
-      for (const c of categories) {
-        const cat = await prisma.category.upsert({
-          where: {
-            name_file_num: {
-              name: c,
-              file_num,
-            },
-          },
-          update: {
-            deleted_at: null,
-          },
-          create: {
-            name: c,
-            file_num,
-          },
-        });
-        await prisma.category_quiz.upsert({
-          where: {
-            quiz_id_category_id: {
-              quiz_id,
-              category_id: cat.id,
-            },
-          },
-          update: {
-            deleted_at: null,
-          },
-          create: {
-            quiz_id,
-            category_id: cat.id,
-          },
-        });
-      }
+      await linkCategories(prisma, quiz_id, file_num, category.split(','));
       // ログ削除
       await prisma.answer_log.updateMany({
         data: {
@@ -893,11 +799,9 @@ export class QuizService {
       return {
         ...x,
         category_quiz: undefined,
-        quiz_category: x.category_quiz
-          .filter((cq) => !cq.deleted_at)
-          .map((cq) => ({
-            category: cq.category.name,
-          })),
+        quiz_category: activeCategoryNames(x.category_quiz).map((category) => ({
+          category,
+        })),
         quiz_statistics_view: {
           accuracy_rate: Number(x.quiz_statistics_view.accuracy_rate),
         },
@@ -934,75 +838,22 @@ export class QuizService {
       );
     }
 
-    // 統合前の問題取得
-    const pre_data = await prisma.quiz.findUnique({
-      select: {
-        id: true,
-        file_num: true,
-        quiz_num: true,
-        format_id: true,
-        quiz_sentense: true,
-        answer: true,
-        category_quiz: {
-          select: {
-            deleted_at: true,
-            category: {
-              select: {
-                name: true,
-              },
-            },
+    // 統合元・統合先の問題取得（統合に必要な項目のみ）
+    const findQuiz = (id: number) =>
+      prisma.quiz.findUnique({
+        select: {
+          file_num: true,
+          format_id: true,
+          category_quiz: {
+            select: { deleted_at: true, category: { select: { name: true } } },
           },
         },
-        img_file: true,
-        checked: true,
-        quiz_statistics_view: {
-          select: {
-            clear_count: true,
-            fail_count: true,
-            accuracy_rate: true,
-          },
-        },
-      },
-      where: {
-        id: fromQuizId,
-        deleted_at: null,
-      },
-    });
-
-    // 統合後の問題取得
-    const post_data = await prisma.quiz.findUnique({
-      select: {
-        id: true,
-        file_num: true,
-        quiz_num: true,
-        format_id: true,
-        quiz_sentense: true,
-        answer: true,
-        category_quiz: {
-          select: {
-            deleted_at: true,
-            category: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-        img_file: true,
-        checked: true,
-        quiz_statistics_view: {
-          select: {
-            clear_count: true,
-            fail_count: true,
-            accuracy_rate: true,
-          },
-        },
-      },
-      where: {
-        id: toQuizId,
-        deleted_at: null,
-      },
-    });
+        where: { id, deleted_at: null },
+      });
+    const [pre_data, post_data] = await Promise.all([
+      findQuiz(fromQuizId),
+      findQuiz(toQuizId),
+    ]);
 
     // 統合元・統合先の問題が存在しない場合はエラー
     if (!pre_data || !post_data) {
@@ -1021,86 +872,22 @@ export class QuizService {
     }
 
     // 統合データ作成
-    const pre_category = new Set(
-      pre_data.category_quiz
-        ? pre_data.category_quiz
-            .filter((x) => {
-              return !x.deleted_at;
-            })
-            .map((x) => {
-              return x.category.name;
-            })
-        : [],
-    );
-    const post_category = new Set(
-      post_data.category_quiz
-        ? post_data.category_quiz
-            .filter((x) => {
-              return !x.deleted_at;
-            })
-            .map((x) => {
-              return x.category.name;
-            })
-        : [],
-    );
     const new_category = Array.from(
-      new Set([...pre_category, ...post_category]),
+      new Set([
+        ...activeCategoryNames(pre_data.category_quiz),
+        ...activeCategoryNames(post_data.category_quiz),
+      ]),
     );
 
     // トランザクション
     const integratedQuiz = await prisma.$transaction(async (prisma) => {
       // 問題統合(カテゴリのみ)
-      //// 元問題のカテゴリ削除
+      //// 統合元・統合先のカテゴリを一度削除し、統合後のカテゴリを統合先に紐付ける
       await prisma.category_quiz.updateMany({
-        where: {
-          quiz_id: fromQuizId,
-        },
-        data: {
-          deleted_at: new Date(),
-        },
+        where: { quiz_id: { in: [fromQuizId, toQuizId] } },
+        data: { deleted_at: new Date() },
       });
-      await prisma.category_quiz.updateMany({
-        where: {
-          quiz_id: toQuizId,
-        },
-        data: {
-          deleted_at: new Date(),
-        },
-      });
-      //// 統合後問題にカテゴリ更新
-      const file_num = post_data.file_num;
-      for (const c of new_category) {
-        const cat = await prisma.category.upsert({
-          where: {
-            name_file_num: {
-              name: c,
-              file_num,
-            },
-          },
-          update: {
-            deleted_at: null,
-          },
-          create: {
-            name: c,
-            file_num,
-          },
-        });
-        await prisma.category_quiz.upsert({
-          where: {
-            quiz_id_category_id: {
-              quiz_id: toQuizId,
-              category_id: cat.id,
-            },
-          },
-          update: {
-            deleted_at: null,
-          },
-          create: {
-            quiz_id: toQuizId,
-            category_id: cat.id,
-          },
-        });
-      }
+      await linkCategories(prisma, toQuizId, post_data.file_num, new_category);
 
       // 統合元データは削除、それまでの解答ログデータも削除
       await prisma.quiz.update({
@@ -1152,38 +939,7 @@ export class QuizService {
           );
         }
         // 更新
-        for (const c of categories) {
-          const cat = await prisma.category.upsert({
-            where: {
-              name_file_num: {
-                name: c,
-                file_num: quiz.file_num,
-              },
-            },
-            update: {
-              deleted_at: null,
-            },
-            create: {
-              name: c,
-              file_num: quiz.file_num,
-            },
-          });
-          await prisma.category_quiz.upsert({
-            where: {
-              quiz_id_category_id: {
-                quiz_id,
-                category_id: cat.id,
-              },
-            },
-            update: {
-              deleted_at: null,
-            },
-            create: {
-              quiz_id,
-              category_id: cat.id,
-            },
-          });
-        }
+        await linkCategories(prisma, quiz_id, quiz.file_num, categories);
       }
 
       // カテゴリ追加後の問題を返す
@@ -1361,51 +1117,26 @@ export class QuizService {
     let startDate = getStartDateForStatistics(nowDate, date_unit);
     let endDate = tomorrowDate;
     const result: AnswerLogStatisticsApiResponse[] = [];
+    // ファイル指定時のみファイル番号で絞り込む
+    const fileNumCondition =
+      file_num && file_num !== -1
+        ? Prisma.sql`and q.file_num = ${file_num}`
+        : Prisma.empty;
     for (let i = 0; i < 10; i++) {
-      const answerLogStat =
-        file_num && file_num !== -1
-          ? await prisma.$queryRaw<
-              { file_num: number; count: number; clear: number }[]
-            >`
-      select
-      	q.file_num ,
-      	COUNT(*) as count,
-      	SUM(CASE WHEN al.is_corrected  THEN 1 ELSE 0 END) as clear
-      from
-      answer_log al 
-      inner join
-      quiz q 
-      on
-      al.quiz_id = q.id  
-      where 
-      q.file_num = ${file_num} 
-      and
-      al.created_at >= ${startDate} 
-      and
-      al.created_at < ${endDate}
-      group by
-      q.file_num 
-    `
-          : await prisma.$queryRaw<
-              { file_num: number; count: number; clear: number }[]
-            >`
-  select
-    q.file_num ,
-    COUNT(*) as count,
-    SUM(CASE WHEN al.is_corrected  THEN 1 ELSE 0 END) as clear
-  from
-  answer_log al 
-  inner join
-  quiz q 
-  on
-  al.quiz_id = q.id  
-  where 
-  al.created_at >= ${startDate} 
-  and
-  al.created_at < ${endDate}
-  group by
-  q.file_num 
-`;
+      const answerLogStat = await prisma.$queryRaw<
+        { file_num: number; count: number; clear: number }[]
+      >`
+        select
+          q.file_num,
+          COUNT(*) as count,
+          SUM(CASE WHEN al.is_corrected THEN 1 ELSE 0 END) as clear
+        from answer_log al
+        inner join quiz q on al.quiz_id = q.id
+        where al.created_at >= ${startDate}
+          and al.created_at < ${endDate}
+          ${fileNumCondition}
+        group by q.file_num
+      `;
 
       result.push({
         date: startDate

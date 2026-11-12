@@ -446,6 +446,28 @@ describe('QuizService', () => {
     });
   });
 
+  // add/edit 関連基礎問題番号に数値でないものがあれば400
+  it.each(['add', 'edit'] as const)(
+    '%s - NG 関連基礎問題番号が数値でない',
+    async (method) => {
+      const req = {
+        quiz_id: 1,
+        file_num: 1,
+        quiz_num: 1,
+        question: '問題',
+        answer: '答え',
+        category: 'カテゴリ',
+        format_id: 2,
+        matched_basic_quiz_id: '1,x',
+      };
+      await expect(quizService[method](req)).rejects.toMatchObject({
+        status: 400,
+        message:
+          '入力した関連基礎問題番号でエラーが発生しました；("x"は数値ではありません)',
+      });
+    },
+  );
+
   // 問題編集 正常系1
   it('edit - OK', async () => {
     // テストデータ
@@ -792,10 +814,67 @@ describe('QuizService', () => {
       category_quiz: [{ category: { name: 'カテゴリ1' } }],
     };
     (prisma.quiz.findUnique as jest.Mock).mockResolvedValue({
+      file_num: 1,
       format_id: 1,
+      category_quiz: [],
     });
     (prisma.$transaction as jest.Mock).mockResolvedValue(testResult);
     expect(await quizService.integrate(req)).toEqual(testResult);
+  });
+
+  // 問題統合 正常系2 統合元・統合先の有効なカテゴリをまとめて統合先に紐付ける
+  it('integrate - OK2 categories', async () => {
+    (prisma.quiz.findUnique as jest.Mock)
+      .mockResolvedValueOnce({
+        file_num: 1,
+        format_id: 1,
+        category_quiz: [
+          { deleted_at: null, category: { name: 'A' } },
+          { deleted_at: new Date(), category: { name: '削除済み' } },
+        ],
+      })
+      .mockResolvedValueOnce({
+        file_num: 1,
+        format_id: 1,
+        category_quiz: [
+          { deleted_at: null, category: { name: 'A' } },
+          { deleted_at: null, category: { name: 'B' } },
+        ],
+      });
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((fn) =>
+      fn(prisma),
+    );
+    (prisma.quiz.update as jest.Mock).mockReset();
+    (prisma.answer_log.updateMany as jest.Mock).mockReset();
+    (prisma.category_quiz.updateMany as jest.Mock).mockClear();
+    (prisma.category.upsert as jest.Mock)
+      .mockClear()
+      .mockResolvedValueOnce({ id: 10 })
+      .mockResolvedValueOnce({ id: 11 });
+    (prisma.category_quiz.upsert as jest.Mock).mockClear();
+
+    await quizService.integrate({ fromQuizId: 0, toQuizId: 1 });
+
+    expect(prisma.category_quiz.updateMany).toHaveBeenCalledWith({
+      where: { quiz_id: { in: [0, 1] } },
+      data: { deleted_at: expect.any(Date) },
+    });
+    expect(
+      (prisma.category.upsert as jest.Mock).mock.calls.map(
+        ([arg]) => arg.create,
+      ),
+    ).toEqual([
+      { name: 'A', file_num: 1 },
+      { name: 'B', file_num: 1 },
+    ]);
+    expect(
+      (prisma.category_quiz.upsert as jest.Mock).mock.calls.map(
+        ([arg]) => arg.create,
+      ),
+    ).toEqual([
+      { quiz_id: 1, category_id: 10 },
+      { quiz_id: 1, category_id: 11 },
+    ]);
   });
 
   // 問題統合 異常系1
