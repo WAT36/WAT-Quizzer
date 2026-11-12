@@ -18,11 +18,7 @@ import {
   SearchQuizAPIRequestParsedDto,
   prisma,
   MESSAGES,
-  getTodayStart,
-  SEARCH_LIMITS,
 } from 'quizzer-lib';
-import { Prisma } from '@prisma/client';
-import { formatIdCondition } from '../common/formatId';
 import {
   activeCategoryNames,
   includeActiveCategories,
@@ -34,215 +30,25 @@ import {
   parseMatchedBasicQuizIds,
   trimSpaces,
 } from './quizRequest';
+import {
+  getQuizOrderBy,
+  getQuizSelect,
+  getQuizWhere,
+  searchQuizRange,
+  searchQuizSelect,
+  searchQuizWhere,
+} from './quizQuery';
 
 @Injectable()
 export class QuizService {
   // 問題取得
   async getQuiz(req: GetQuizAPIRequestParsedDto, method?: GetQuizMethod) {
-    const {
-      file_num,
-      quiz_num,
-      min_rate,
-      max_rate,
-      category,
-      checked,
-      format_id,
-      keyword,
-      keywordTarget,
-      count,
-    } = req;
+    const { count } = req;
     // countはmethod指定時（条件検索）のみ有効。件数指定がなければ従来通り1件取得
     const isBatchRequest = !!method && !!count && count > 0;
-    // カテゴリは複数選択でカンマ区切りされてるので分割する
-    const categories = category && category.split(',').map((s) => s.trim());
-    // キーワード検索条件（対象：問題文+解答 or 解説）
-    const keywordCondition = keyword
-      ? keywordTarget === 'explanation'
-        ? {
-            quiz_explanation: {
-              explanation: {
-                contains: keyword,
-              },
-            },
-          }
-        : {
-            OR: [
-              {
-                quiz_sentense: {
-                  contains: keyword,
-                },
-              },
-              {
-                answer: {
-                  contains: keyword,
-                },
-              },
-            ],
-          }
-      : undefined;
-    // 取得条件
-    const where =
-      // methodがある時は条件指定
-      method
-        ? {
-            file_num,
-            ...formatIdCondition(format_id),
-            deleted_at: null,
-            quiz_statistics_view: {
-              accuracy_rate: {
-                gte: min_rate || 0,
-                lte: max_rate || 100,
-              },
-              ...(method === 'review' && {
-                last_failed_answer_log: {
-                  lt: getTodayStart(),
-                },
-                last_answer_log: {
-                  lt: getTodayStart(),
-                },
-              }),
-              ...(method === 'todayNotAnswered' && {
-                OR: [
-                  {
-                    last_answer_log: {
-                      lt: getTodayStart(),
-                    },
-                  },
-                  {
-                    last_answer_log: null,
-                  },
-                ],
-              }),
-            },
-            ...(categories && {
-              OR: categories.map((category) => ({
-                category_quiz: {
-                  some: {
-                    category: {
-                      name: category,
-                    },
-                    deleted_at: null,
-                  },
-                },
-              })),
-            }),
-            ...(checked
-              ? {
-                  checked: true,
-                }
-              : {}),
-            ...keywordCondition,
-          }
-        : {
-            file_num,
-            quiz_num,
-            ...formatIdCondition(format_id),
-            deleted_at: null,
-            ...keywordCondition,
-          };
-    const orderBy =
-      method === 'worstRate'
-        ? [
-            {
-              quiz_statistics_view: {
-                accuracy_rate: 'asc' as const,
-              },
-            },
-            {
-              quiz_statistics_view: {
-                fail_count: 'desc' as const,
-              },
-            },
-            {
-              id: 'asc' as const,
-            },
-          ]
-        : method === 'leastClear'
-          ? [
-              {
-                quiz_statistics_view: {
-                  answer_count: 'asc' as const,
-                },
-              },
-              {
-                quiz_statistics_view: {
-                  fail_count: 'desc' as const,
-                },
-              },
-            ]
-          : method === 'LRU'
-            ? {
-                quiz_statistics_view: {
-                  last_answer_log: {
-                    sort: 'asc' as const,
-                    nulls: 'first' as const,
-                  },
-                },
-              }
-            : method === 'review'
-              ? {
-                  quiz_statistics_view: {
-                    last_failed_answer_log: 'desc' as const,
-                  },
-                }
-              : method === 'recentlyUpdated'
-                ? [{ updated_at: 'desc' as const }, { id: 'desc' as const }]
-                : {};
+    const where = getQuizWhere(req, method);
     // ランダム系メソッド（条件に合う全件から抽選する）
     const isRandomMethod = method === 'random' || method === 'todayNotAnswered';
-    const selectFields = {
-      id: true,
-      file_num: true,
-      quiz_num: true,
-      format_id: true,
-      quiz_sentense: true,
-      answer: true,
-      img_file: true,
-      checked: true,
-      category_quiz: {
-        select: {
-          deleted_at: true,
-          category: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-      quiz_statistics_view: {
-        select: {
-          clear_count: true,
-          fail_count: true,
-          accuracy_rate: true,
-        },
-      },
-      quiz_explanation: {
-        select: {
-          explanation: true,
-        },
-      },
-      quiz_dummy_choice: {
-        select: {
-          dummy_choice_sentense: true,
-          is_corrected: true,
-        },
-        orderBy: {
-          id: 'asc' as const,
-        },
-      },
-      quiz_basis_linkage: {
-        select: {
-          basis_quiz_id: true,
-          advanced_quiz_id: true,
-        },
-      },
-      quiz_advanced_linkage: {
-        select: {
-          basis_quiz_id: true,
-          advanced_quiz_id: true,
-        },
-      },
-    };
     // データ取得
     // ランダム系は全件の詳細を取得するとLambdaのメモリ・実行時間の上限を超えるため、
     // 条件に合う問題のIDだけ全件取得 → 抽選 → 抽選した問題の詳細だけ取得する
@@ -259,7 +65,7 @@ export class QuizService {
       const picked =
         pickedIds.length > 0
           ? await prisma.quiz.findMany({
-              select: selectFields,
+              select: getQuizSelect,
               where: { id: { in: pickedIds } },
             })
           : [];
@@ -273,9 +79,9 @@ export class QuizService {
       ? await fetchRandomQuizzes()
       : await Promise.all([
           prisma.quiz.findMany({
-            select: selectFields,
+            select: getQuizSelect,
             where,
-            orderBy,
+            orderBy: getQuizOrderBy(method),
             ...(method ? { take: isBatchRequest ? count : 1 } : {}),
           }),
           method ? prisma.quiz.count({ where }) : Promise.resolve(null),
@@ -624,172 +430,48 @@ export class QuizService {
 
   // 問題検索
   async search(req: SearchQuizAPIRequestParsedDto) {
-    const {
-      query,
-      file_num,
-      format_id,
-      min_rate,
-      max_rate,
-      category_and,
-      category_not,
-      checked,
-      searchInOnlySentense,
-      searchInOnlyAnswer,
-      searchInExplanation,
-      onlyDirectCategory,
-      result_from,
-      result_to,
-    } = req;
-
-    const skip = result_from ? result_from - 1 : 0;
-    const rangeCount =
-      result_from !== undefined && result_to !== undefined
-        ? result_to - result_from + 1
-        : SEARCH_LIMITS.MAX_QUIZ_SEARCH_RESULTS;
-    const take = Math.min(rangeCount, SEARCH_LIMITS.MAX_QUIZ_SEARCH_RESULTS);
-
-    // カテゴリ条件（AND:すべて含む / NOT:含まない）
-    const categoryQuizWhere = (
-      names: string[],
-    ): Prisma.category_quizWhereInput => ({
-      category: { name: { in: names }, file_num, deleted_at: null },
-      deleted_at: null,
-    });
-    const categoryConditions: Prisma.quizWhereInput[] = [
-      ...(category_and ?? []).map((name) => ({
-        category_quiz: { some: categoryQuizWhere([name]) },
-      })),
-      ...(category_not && category_not.length > 0
-        ? [{ category_quiz: { none: categoryQuizWhere(category_not) } }]
-        : []),
-    ];
-
+    const { file_num, category_and, onlyDirectCategory } = req;
     // onlyDirectCategory: AND指定カテゴリの子カテゴリ（ANDで選択済みのものを除く）を一切持たない問題のみに絞り込む
-    if (onlyDirectCategory && category_and && category_and.length > 0) {
-      const childRelations = await prisma.category_parent_child.findMany({
-        where: {
-          parent_category: {
-            name: { in: category_and },
-            file_num,
-            deleted_at: null,
-          },
-          deleted_at: null,
-        },
-        include: { child_category: { select: { name: true } } },
-      });
-      const selectedCategories = new Set(category_and);
-      const childCategoryNames = Array.from(
-        new Set(childRelations.map((r) => r.child_category.name)),
-      ).filter((name) => !selectedCategories.has(name));
-      if (childCategoryNames.length > 0) {
-        categoryConditions.push({
-          category_quiz: { none: categoryQuizWhere(childCategoryNames) },
-        });
-      }
-    }
-
-    const whereClause = {
-      ...formatIdCondition(format_id),
-      file_num,
-      deleted_at: null,
-      quiz_statistics_view: {
-        accuracy_rate: {
-          gte: min_rate || 0,
-          lte: max_rate || 100,
-        },
-      },
-      ...(categoryConditions.length > 0 && { AND: categoryConditions }),
-      ...(checked
-        ? {
-            checked: true,
-          }
-        : {}),
-      ...(query &&
-        query !== '' &&
-        (() => {
-          const noneChecked =
-            !searchInOnlySentense &&
-            !searchInOnlyAnswer &&
-            !searchInExplanation;
-          const conditions = [
-            ...(noneChecked || searchInOnlySentense
-              ? [{ quiz_sentense: { contains: query } }]
-              : []),
-            ...(noneChecked || searchInOnlyAnswer
-              ? [{ answer: { contains: query } }]
-              : []),
-            ...(noneChecked || searchInExplanation
-              ? [
-                  {
-                    quiz_explanation: {
-                      explanation: { contains: query },
-                    },
-                  },
-                ]
-              : []),
-          ];
-          return conditions.length === 1 ? conditions[0] : { OR: conditions };
-        })()),
-    };
-
+    const excludedChildCategories =
+      onlyDirectCategory && category_and && category_and.length > 0
+        ? await this.findChildCategoryNames(file_num, category_and)
+        : [];
+    const where = searchQuizWhere(req, excludedChildCategories);
     const [result, total] = await Promise.all([
       prisma.quiz.findMany({
-        select: {
-          id: true,
-          file_num: true,
-          quiz_num: true,
-          quiz_sentense: true,
-          answer: true,
-          category_quiz: {
-            select: {
-              deleted_at: true,
-              category: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
-          quiz_format: {
-            select: {
-              name: true,
-            },
-          },
-          quiz_statistics_view: {
-            select: {
-              accuracy_rate: true,
-            },
-          },
-          img_file: true,
-          checked: true,
-          quiz_explanation: {
-            select: {
-              explanation: true,
-            },
-          },
-        },
-        where: whereClause,
-        orderBy: {
-          quiz_num: 'asc',
-        },
-        skip,
-        take,
+        select: searchQuizSelect,
+        where,
+        orderBy: { quiz_num: 'asc' },
+        ...searchQuizRange(req),
       }),
-      prisma.quiz.count({ where: whereClause }),
+      prisma.quiz.count({ where }),
     ]);
-    const quizzes = result.map((x) => {
-      return {
-        ...x,
-        category_quiz: undefined,
-        quiz_category: activeCategoryNames(x.category_quiz).map((category) => ({
-          category,
-        })),
-        quiz_statistics_view: {
-          accuracy_rate: Number(x.quiz_statistics_view.accuracy_rate),
-        },
-      };
-    });
+    const quizzes = result.map((x) => ({
+      ...x,
+      category_quiz: undefined,
+      quiz_category: activeCategoryNames(x.category_quiz).map((category) => ({
+        category,
+      })),
+      quiz_statistics_view: {
+        accuracy_rate: Number(x.quiz_statistics_view.accuracy_rate),
+      },
+    }));
     return { total, quizzes };
+  }
+
+  // 指定カテゴリの子カテゴリ名（指定カテゴリ自身は除く）
+  private async findChildCategoryNames(file_num: number, names: string[]) {
+    const childRelations = await prisma.category_parent_child.findMany({
+      where: {
+        parent_category: { name: { in: names }, file_num, deleted_at: null },
+        deleted_at: null,
+      },
+      include: { child_category: { select: { name: true } } },
+    });
+    const selected = new Set(names);
+    return Array.from(
+      new Set(childRelations.map((r) => r.child_category.name)),
+    ).filter((name) => !selected.has(name));
   }
 
   // 問題削除
