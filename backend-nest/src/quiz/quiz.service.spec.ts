@@ -441,6 +441,7 @@ describe('QuizService', () => {
       format_id: 2,
     };
     await expect(quizService.add(req)).rejects.toMatchObject({
+      status: 400,
       message: 'ファイル番号または問題文または答えが入力されていません。',
     });
   });
