@@ -45,6 +45,62 @@ describe('quizQuery', () => {
     });
   });
 
+  describe('getQuizWhere - カテゴリとキーワードの同時指定', () => {
+    const categoryCondition = {
+      OR: [
+        {
+          category_quiz: {
+            some: { category: { name: 'A' }, deleted_at: null },
+          },
+        },
+        {
+          category_quiz: {
+            some: { category: { name: 'B' }, deleted_at: null },
+          },
+        },
+      ],
+    };
+
+    it('問題文+解答のキーワードを指定しても、カテゴリの絞り込みが残る', () => {
+      const where = getQuizWhere(
+        { file_num: 1, category: 'A,B', keyword: 'k' },
+        'random',
+      );
+      expect(where.AND).toEqual([
+        categoryCondition,
+        {
+          OR: [
+            { quiz_sentense: { contains: 'k' } },
+            { answer: { contains: 'k' } },
+          ],
+        },
+      ]);
+      expect(where.OR).toBeUndefined();
+    });
+
+    it('解説のキーワードとカテゴリを同時に指定できる', () => {
+      const where = getQuizWhere(
+        {
+          file_num: 1,
+          category: 'A,B',
+          keyword: 'k',
+          keywordTarget: 'explanation',
+        },
+        'random',
+      );
+      expect(where.AND).toEqual([
+        categoryCondition,
+        { quiz_explanation: { explanation: { contains: 'k' } } },
+      ]);
+    });
+
+    it('カテゴリ・キーワードともに指定がなければ絞り込まない', () => {
+      const where = getQuizWhere({ file_num: 1 }, 'random');
+      expect(where.AND).toBeUndefined();
+      expect(where.OR).toBeUndefined();
+    });
+  });
+
   describe('searchQuizRange', () => {
     it('result_from〜result_to件目を取得し、上限件数を超えない', () => {
       expect(searchQuizRange({ result_from: 3, result_to: 10 })).toEqual({

@@ -137,8 +137,20 @@ export const getQuizWhere = (
       ...keywordCondition(keyword, keywordTarget),
     };
   }
-  // カテゴリは複数選択でカンマ区切りされてるので分割する
+  // カテゴリは複数選択でカンマ区切りされてるので分割する（いずれかのカテゴリを持つ問題）
   const categories = category && category.split(',').map((s) => s.trim());
+  const categoryCondition: Prisma.quizWhereInput | undefined = categories
+    ? {
+        OR: categories.map((name) => ({
+          category_quiz: { some: { category: { name }, deleted_at: null } },
+        })),
+      }
+    : undefined;
+  // カテゴリとキーワードはどちらもORを使うため、ANDで並べて両方で絞り込む
+  const andConditions = [
+    categoryCondition,
+    keywordCondition(keyword, keywordTarget),
+  ].filter((c) => c !== undefined);
   return {
     file_num,
     ...formatIdCondition(format_id),
@@ -147,14 +159,8 @@ export const getQuizWhere = (
       accuracy_rate: { gte: min_rate || 0, lte: max_rate || 100 },
       ...answerLogCondition(method),
     },
-    ...(categories && {
-      OR: categories.map((name) => ({
-        category_quiz: { some: { category: { name }, deleted_at: null } },
-      })),
-    }),
     ...(checked && { checked: true }),
-    // TODO: キーワード(問題文+解答)のORがカテゴリのORを上書きしてしまう
-    ...keywordCondition(keyword, keywordTarget),
+    ...(andConditions.length > 0 && { AND: andConditions }),
   };
 };
 
