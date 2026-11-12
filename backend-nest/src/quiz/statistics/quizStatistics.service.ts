@@ -30,19 +30,20 @@ export class QuizStatisticsService {
         ? Prisma.sql`and q.file_num = ${file_num}`
         : Prisma.empty;
     for (let i = 0; i < 10; i++) {
+      // 全ファイル指定時もまとめて集計するため、ファイルごとにgroup byしない（常に1行返る）
       const answerLogStat = await prisma.$queryRaw<
-        { file_num: number; count: number; clear: number }[]
+        { count: number; clear: number }[]
       >`
         select
-          q.file_num,
           COUNT(*) as count,
           SUM(CASE WHEN al.is_corrected THEN 1 ELSE 0 END) as clear
         from answer_log al
         inner join quiz q on al.quiz_id = q.id
-        where al.created_at >= ${startDate}
+        where al.deleted_at is null
+          and q.deleted_at is null
+          and al.created_at >= ${startDate}
           and al.created_at < ${endDate}
           ${fileNumCondition}
-        group by q.file_num
       `;
 
       result.push({
