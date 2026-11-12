@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Patch,
   Post,
   Put,
@@ -13,6 +12,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
+import { QuizCsvService } from './csv/quizCsv.service';
+import { QuizImageService } from './image/quizImage.service';
+import { QuizStatisticsService } from './statistics/quizStatistics.service';
 import {
   ClearQuizAPIRequestDto,
   FailQuizAPIRequestDto,
@@ -32,8 +34,7 @@ import {
 import { GetQuizPipe } from './pipe/getQuiz.pipe';
 import { SearchQuizPipe } from './pipe/searchQuiz.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { quizImageUploadOptions } from './quizImageUpload.options';
-import { getQuizImageMimeType } from './quizImageMimeType';
+import { quizImageUploadOptions } from './image/quizImageUpload.options';
 import { Express } from 'express';
 import { GetAnswerLogStatisticsPipe } from './pipe/getAnswerLogStatistics.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
@@ -43,7 +44,12 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @UseGuards(CognitoAuthGuard)
 @Controller('quiz')
 export class QuizController {
-  constructor(private readonly quizService: QuizService) {}
+  constructor(
+    private readonly quizService: QuizService,
+    private readonly quizCsvService: QuizCsvService,
+    private readonly quizImageService: QuizImageService,
+    private readonly quizStatisticsService: QuizStatisticsService,
+  ) {}
 
   @ApiOperation({
     summary: 'クイズ取得',
@@ -258,7 +264,7 @@ export class QuizController {
   async getAnswerLogStatistics(
     @Query(GetAnswerLogStatisticsPipe) req: GetAnswerLogStatisticsAPIRequestDto,
   ) {
-    return await this.quizService.getAnswerLogStatistics(req);
+    return await this.quizStatisticsService.getAnswerLogStatistics(req);
   }
 
   @ApiOperation({
@@ -268,7 +274,7 @@ export class QuizController {
   @Post('/upload/fourchoice')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFourChoiceFile(@UploadedFile() file: Express.Multer.File) {
-    return await this.quizService.uploadFourChoiceFile(file);
+    return await this.quizCsvService.uploadFourChoiceFile(file);
   }
 
   @ApiOperation({
@@ -278,7 +284,7 @@ export class QuizController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return await this.quizService.uploadFile(file);
+    return await this.quizCsvService.uploadFile(file);
   }
 
   @ApiOperation({
@@ -288,7 +294,7 @@ export class QuizController {
   @Post('/image/upload')
   @UseInterceptors(FileInterceptor('file', quizImageUploadOptions))
   async uploadQuizImage(@UploadedFile() file: Express.Multer.File) {
-    return await this.quizService.uploadQuizImage(file);
+    return await this.quizImageService.uploadQuizImage(file);
   }
 
   @ApiOperation({
@@ -297,17 +303,7 @@ export class QuizController {
   })
   @Get('/image')
   async downloadQuizImage(@Query('fileName') fileName: string) {
-    try {
-      const buffer = await this.quizService.downloadQuizImage(fileName);
-      const base64 = buffer.toString('base64');
-      return {
-        base64,
-        mimeType: getQuizImageMimeType(fileName),
-      };
-    } catch (err) {
-      console.error(err);
-      throw new NotFoundException(`画像が見つかりません(${fileName})`);
-    }
+    return await this.quizImageService.downloadQuizImage(fileName);
   }
 
   @ApiOperation({
@@ -316,7 +312,9 @@ export class QuizController {
   })
   @Get('/statistics/histgram')
   async getAccuracyRateHistgramData(@Query('file_num') file_num: string) {
-    return await this.quizService.getAccuracyRateHistgramData(+file_num);
+    return await this.quizStatisticsService.getAccuracyRateHistgramData(
+      +file_num,
+    );
   }
 
   @ApiOperation({
@@ -326,6 +324,6 @@ export class QuizController {
   })
   @Get('/recommend-categories')
   async getRecommendedCategories(@Query('file_num') file_num: string) {
-    return await this.quizService.getRecommendedCategories(+file_num);
+    return await this.quizStatisticsService.getRecommendedCategories(+file_num);
   }
 }
