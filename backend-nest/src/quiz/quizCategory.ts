@@ -37,6 +37,49 @@ export const linkCategories = async (
   }
 };
 
+// 新しく登録した問題に、カテゴリとその祖先カテゴリ（親・親の親…）をすべて紐付ける
+// カテゴリ・祖先カテゴリが削除済みなら復活させる。同じカテゴリは1回だけ紐付ける
+// ※紐付けを新規作成するので、カテゴリが未紐付けの問題(新規登録した問題)に使うこと
+export const linkNewQuizCategoriesWithAncestors = async (
+  tx: Prisma.TransactionClient,
+  quiz_id: number,
+  file_num: number,
+  names: string[],
+) => {
+  const linkedCategoryIds = new Set<number>();
+  const link = async (category_id: number) => {
+    linkedCategoryIds.add(category_id);
+    await tx.category_quiz.create({ data: { quiz_id, category_id } });
+  };
+
+  // 指定されたカテゴリを登録・紐付けし、祖先を辿るキューに入れる
+  const queue: number[] = [];
+  for (const name of names) {
+    const { id } = await upsertCategory(tx, name, file_num);
+    if (!linkedCategoryIds.has(id)) {
+      await link(id);
+    }
+    queue.push(id);
+  }
+
+  // 幅優先探索で祖先カテゴリをすべて紐付ける
+  while (queue.length > 0) {
+    const parentRelations = await tx.category_parent_child.findMany({
+      where: { child_category_id: queue.shift(), deleted_at: null },
+      include: { parent_category: true },
+    });
+    for (const { parent_category } of parentRelations) {
+      if (linkedCategoryIds.has(parent_category.id)) continue;
+      await tx.category.update({
+        where: { id: parent_category.id },
+        data: { deleted_at: null },
+      });
+      await link(parent_category.id);
+      queue.push(parent_category.id);
+    }
+  }
+};
+
 // 問題に紐付いたカテゴリのうち、削除されていないもののカテゴリ名
 export const activeCategoryNames = (
   category_quiz: { deleted_at: Date | null; category: { name: string } }[],

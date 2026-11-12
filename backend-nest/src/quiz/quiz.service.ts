@@ -23,7 +23,7 @@ import {
   activeCategoryNames,
   includeActiveCategories,
   linkCategories,
-  upsertCategory,
+  linkNewQuizCategoriesWithAncestors,
 } from './quizCategory';
 import {
   assertQuizIds,
@@ -231,54 +231,14 @@ export class QuizService {
       },
     });
 
-    // カテゴリをcategoryマスター + category_quizに登録
-    // 登録済みカテゴリIDを追跡して重複を防ぐ
+    // カテゴリとその祖先カテゴリを問題に紐付ける
     if (category) {
-      const categories = category.split(',');
-      const registeredCategoryIds = new Set<number>();
-
-      // カテゴリ名からカテゴリをupsertしてquizに紐付ける関数
-      const upsertAndLinkCategory = async (name: string) => {
-        const cat = await upsertCategory(prisma, name, file_num);
-        if (!registeredCategoryIds.has(cat.id)) {
-          registeredCategoryIds.add(cat.id);
-          await prisma.category_quiz.create({
-            data: { quiz_id: createdQuiz.id, category_id: cat.id },
-          });
-        }
-        return cat.id;
-      };
-
-      // 入力カテゴリを登録し、その後キューで親カテゴリを再帰的に辿る
-      const queue: number[] = [];
-      for (const c of categories) {
-        const catId = await upsertAndLinkCategory(c);
-        queue.push(catId);
-      }
-
-      // BFSで祖先カテゴリをすべて登録
-      while (queue.length > 0) {
-        const childId = queue.shift();
-        const parentRelations = await prisma.category_parent_child.findMany({
-          where: { child_category_id: childId, deleted_at: null },
-          include: { parent_category: true },
-        });
-        for (const rel of parentRelations) {
-          const parentCat = rel.parent_category;
-          if (!registeredCategoryIds.has(parentCat.id)) {
-            // 親カテゴリをupsert（削除済みなら復元）してquizに紐付ける
-            await prisma.category.update({
-              where: { id: parentCat.id },
-              data: { deleted_at: null },
-            });
-            registeredCategoryIds.add(parentCat.id);
-            await prisma.category_quiz.create({
-              data: { quiz_id: createdQuiz.id, category_id: parentCat.id },
-            });
-            queue.push(parentCat.id);
-          }
-        }
-      }
+      await linkNewQuizCategoriesWithAncestors(
+        prisma,
+        createdQuiz.id,
+        file_num,
+        category.split(','),
+      );
     }
 
     return createdQuiz;
@@ -627,54 +587,27 @@ export class QuizService {
     const categories = category.split(',');
     // トランザクション
     const updatedQuizzes = await prisma.$transaction(async (prisma) => {
-      // 更新
-      for (const quiz_id of quiz_ids) {
-        // quiz_idからfile_numを取得
-        const quiz = await prisma.quiz.findUnique({
-          select: { file_num: true },
-          where: { id: quiz_id },
+      // 問題と同じファイルの指定カテゴリへの紐付けを削除する（存在しない問題・カテゴリは無視）
+      const quizzes = await prisma.quiz.findMany({
+        select: { id: true, file_num: true },
+        where: { id: { in: quiz_ids } },
+      });
+      const fileNums = [...new Set(quizzes.map((q) => q.file_num))];
+      if (fileNums.length > 0) {
+        await prisma.category_quiz.updateMany({
+          data: { deleted_at: new Date() },
+          where: {
+            deleted_at: null,
+            OR: fileNums.map((file_num) => ({
+              quiz_id: {
+                in: quizzes
+                  .filter((q) => q.file_num === file_num)
+                  .map((q) => q.id),
+              },
+              category: { file_num, name: { in: categories } },
+            })),
+          },
         });
-        if (!quiz) {
-          continue;
-        }
-
-        for (const c of categories) {
-          // categoryマスターからIDを取得
-          const cat = await prisma.category.findUnique({
-            where: {
-              name_file_num: {
-                name: c,
-                file_num: quiz.file_num,
-              },
-            },
-          });
-          if (!cat) {
-            continue;
-          }
-
-          // category_quizをsoft-delete
-          const existing = await prisma.category_quiz.findUnique({
-            where: {
-              quiz_id_category_id: {
-                quiz_id,
-                category_id: cat.id,
-              },
-            },
-          });
-          if (existing && !existing.deleted_at) {
-            await prisma.category_quiz.update({
-              data: {
-                deleted_at: new Date(),
-              },
-              where: {
-                quiz_id_category_id: {
-                  quiz_id,
-                  category_id: cat.id,
-                },
-              },
-            });
-          }
-        }
       }
 
       // カテゴリ削除後の問題を返す（存在しない問題は含まない）

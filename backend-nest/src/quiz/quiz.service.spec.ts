@@ -978,6 +978,58 @@ describe('QuizService', () => {
     expect(await quizService.removeCategoryFromQuiz(req)).toEqual(testResult);
   });
 
+  // 問題からカテゴリ削除 正常系2 問題と同じファイルのカテゴリへの紐付けをまとめて削除する
+  it('removeCategoryFromQuiz - OK2 updateMany', async () => {
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((fn) =>
+      fn(prisma),
+    );
+    (prisma.quiz.findMany as jest.Mock)
+      .mockReset()
+      .mockResolvedValueOnce([
+        { id: 1, file_num: 1 },
+        { id: 2, file_num: 2 },
+        { id: 3, file_num: 1 },
+      ])
+      .mockResolvedValueOnce([]);
+    (prisma.category_quiz.updateMany as jest.Mock).mockReset();
+    await quizService.removeCategoryFromQuiz({
+      quiz_ids: [1, 2, 3, 4],
+      category: 'A,B',
+    });
+    expect(prisma.category_quiz.updateMany).toHaveBeenCalledWith({
+      data: { deleted_at: expect.any(Date) },
+      where: {
+        deleted_at: null,
+        OR: [
+          {
+            quiz_id: { in: [1, 3] },
+            category: { file_num: 1, name: { in: ['A', 'B'] } },
+          },
+          {
+            quiz_id: { in: [2] },
+            category: { file_num: 2, name: { in: ['A', 'B'] } },
+          },
+        ],
+      },
+    });
+  });
+
+  // 問題からカテゴリ削除 正常系3 問題が1件も存在しなければ更新しない
+  it('removeCategoryFromQuiz - OK3 no quiz', async () => {
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((fn) =>
+      fn(prisma),
+    );
+    (prisma.quiz.findMany as jest.Mock).mockReset().mockResolvedValue([]);
+    (prisma.category_quiz.updateMany as jest.Mock).mockReset();
+    expect(
+      await quizService.removeCategoryFromQuiz({
+        quiz_ids: [9],
+        category: 'A',
+      }),
+    ).toEqual([]);
+    expect(prisma.category_quiz.updateMany).not.toHaveBeenCalled();
+  });
+
   // 問題からカテゴリ削除 異常系1
   it('removeCategoryFromQuiz - NG1', async () => {
     // テストデータ
