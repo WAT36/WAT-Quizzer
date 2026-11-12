@@ -635,10 +635,27 @@ export class QuizService {
   }
 
   // 指定した問題のチェック状態をまとめて更新する
-  // 存在しない問題が含まれていたら全件ロールバックする
+  // 存在しない問題が含まれていたら、どれも更新せずに404にする
   private async updateChecked(quiz_ids: unknown, checked: boolean) {
     assertQuizIds(quiz_ids);
     return await prisma.$transaction(async (prisma) => {
+      const existingIds = new Set(
+        (
+          await prisma.quiz.findMany({
+            select: { id: true },
+            where: { id: { in: quiz_ids } },
+          })
+        ).map(({ id }) => id),
+      );
+      const missingIds = [
+        ...new Set(quiz_ids.filter((id) => !existingIds.has(id))),
+      ];
+      if (missingIds.length > 0) {
+        throw new HttpException(
+          `問題が見つかりません(${missingIds.join(',')})`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
       const updatedQuizzes = [];
       for (const quiz_id of quiz_ids) {
         updatedQuizzes.push(
@@ -661,23 +678,19 @@ export class QuizService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const checked = (
-      await prisma.quiz.findUnique({
-        select: {
-          checked: true,
-        },
-        where: {
-          id: quiz_id,
-        },
-      })
-    ).checked;
+    const quiz = await prisma.quiz.findUnique({
+      select: { checked: true },
+      where: { id: quiz_id },
+    });
+    if (!quiz) {
+      throw new HttpException(
+        `問題が見つかりません(${quiz_id})`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
     return await prisma.quiz.update({
-      data: {
-        checked: !checked,
-      },
-      where: {
-        id: quiz_id,
-      },
+      data: { checked: !quiz.checked },
+      where: { id: quiz_id },
     });
   }
 

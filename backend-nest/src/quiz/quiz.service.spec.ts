@@ -1085,6 +1085,10 @@ describe('QuizService', () => {
     (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
       callback(prisma),
     );
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce([
+      { id: 1 },
+      { id: 2 },
+    ]);
     (prisma.quiz.update as jest.Mock)
       .mockResolvedValueOnce({ id: 1, checked: true })
       .mockResolvedValueOnce({ id: 2, checked: true });
@@ -1109,6 +1113,25 @@ describe('QuizService', () => {
     });
   });
 
+  // 問題にチェック追加・外す 異常系3 存在しない問題があれば更新せず404
+  it.each(['check', 'uncheck'] as const)(
+    '%s - NG3 not found',
+    async (method) => {
+      (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+        callback(prisma),
+      );
+      (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce([{ id: 2 }]);
+      (prisma.quiz.update as jest.Mock).mockClear();
+      await expect(
+        quizService[method]({ quiz_ids: [1, 2, 3, 1] }),
+      ).rejects.toMatchObject({
+        status: 404,
+        message: '問題が見つかりません(1,3)',
+      });
+      expect(prisma.quiz.update).not.toHaveBeenCalled();
+    },
+  );
+
   // 問題にチェック外す 正常系1
   it('uncheck - OK', async () => {
     // テストデータ
@@ -1118,6 +1141,10 @@ describe('QuizService', () => {
     (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
       callback(prisma),
     );
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce([
+      { id: 1 },
+      { id: 2 },
+    ]);
     (prisma.quiz.update as jest.Mock)
       .mockResolvedValueOnce({ id: 1, checked: false })
       .mockResolvedValueOnce({ id: 2, checked: false });
@@ -1189,6 +1216,19 @@ describe('QuizService', () => {
         quiz_id: number;
       }),
     ).rejects.toMatchObject({ status: 400 });
+  });
+
+  // 問題のチェック反転 異常系3 問題が存在しなければ更新せず404
+  it('reverseCheck - NG3 not found', async () => {
+    (prisma.quiz.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    (prisma.quiz.update as jest.Mock).mockClear();
+    await expect(
+      quizService.reverseCheck({ quiz_id: 999 }),
+    ).rejects.toMatchObject({
+      status: 404,
+      message: '問題が見つかりません(999)',
+    });
+    expect(prisma.quiz.update).not.toHaveBeenCalled();
   });
 
   // 回答ログ削除 正常系1
