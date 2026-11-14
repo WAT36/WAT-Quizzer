@@ -1,3 +1,4 @@
 export * from './dto'
 export * from './api'
 export * from './mock'
+export * from './schema'

@@ -12,19 +12,33 @@ import {
 import { EnglishWordService } from './word.service';
 import {
   EditWordSourceAPIRequestDto,
+  editWordSourceAPIRequestSchema,
   EditWordMeanAPIRequestDto,
+  editWordMeanAPIRequestSchema,
   EditWordSubSourceAPIRequestDto,
+  editWordSubSourceAPIRequestSchema,
   DeleteWordSubSourceAPIRequestDto,
+  deleteWordSubSourceAPIRequestSchema,
   DeleteWordSourceAPIRequestDto,
+  deleteWordSourceAPIRequestSchema,
   DeleteMeanAPIRequestDto,
+  deleteMeanAPIRequestSchema,
   AddSynonymAPIRequestDto,
+  addSynonymAPIRequestSchema,
   AddAntonymAPIRequestDto,
+  addAntonymAPIRequestSchema,
   AddDerivativeAPIRequestDto,
+  addDerivativeAPIRequestSchema,
   LinkWordEtymologyAPIRequestDto,
+  linkWordEtymologyAPIRequestSchema,
   AddEtymologyAPIRequestDto,
+  addEtymologyAPIRequestSchema,
   ToggleCheckAPIRequestDto,
+  toggleCheckAPIRequestSchema,
   AddWordAPIRequestDto,
+  addWordAPIRequestSchema,
   SubmitEnglishWordTestDataAPIRequestDto,
+  submitEnglishWordTestDataAPIRequestSchema,
   SearchWordAPIRequestDto,
   GetEnglishWordTestDataAPIRequestDto,
 } from 'quizzer-lib';
@@ -32,6 +46,7 @@ import { EnglishWordTestService } from './test/test.service';
 import { WordTestPipe } from './test/pipe/wordTest.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ZodValidationPipe } from '../../common/zodValidation.pipe';
 
 @ApiTags('英単語')
 @Controller('english/word')
@@ -50,7 +65,10 @@ export class EnglishWordController {
   @ApiOperation({ summary: '英単語を追加' })
   @UseGuards(CognitoAuthGuard)
   @Post()
-  async addWord(@Body() req: AddWordAPIRequestDto) {
+  async addWord(
+    @Body(new ZodValidationPipe(addWordAPIRequestSchema))
+    req: AddWordAPIRequestDto,
+  ) {
     return await this.englishWordService.addWordAndMeanService(req);
   }
 
@@ -94,14 +112,20 @@ export class EnglishWordController {
   @ApiOperation({ summary: '英単語テストをクリアとして記録' })
   @UseGuards(CognitoAuthGuard)
   @Post('test/clear')
-  async wordTestCleared(@Body() req: SubmitEnglishWordTestDataAPIRequestDto) {
+  async wordTestCleared(
+    @Body(new ZodValidationPipe(submitEnglishWordTestDataAPIRequestSchema))
+    req: SubmitEnglishWordTestDataAPIRequestDto,
+  ) {
     return await this.englishWordService.wordTestClearedService(req);
   }
 
   @ApiOperation({ summary: '英単語テストを失敗として記録' })
   @UseGuards(CognitoAuthGuard)
   @Post('test/fail')
-  async wordTestFailed(@Body() req: SubmitEnglishWordTestDataAPIRequestDto) {
+  async wordTestFailed(
+    @Body(new ZodValidationPipe(submitEnglishWordTestDataAPIRequestSchema))
+    req: SubmitEnglishWordTestDataAPIRequestDto,
+  ) {
     return await this.englishWordService.wordTestFailedService(req);
   }
 
@@ -115,21 +139,30 @@ export class EnglishWordController {
   @ApiOperation({ summary: '英単語の出典情報を編集' })
   @UseGuards(CognitoAuthGuard)
   @Post('source')
-  async editSourceOfWordById(@Body() req: EditWordSourceAPIRequestDto) {
+  async editSourceOfWordById(
+    @Body(new ZodValidationPipe(editWordSourceAPIRequestSchema))
+    req: EditWordSourceAPIRequestDto,
+  ) {
     return await this.englishWordService.upsertSourceOfWordById(req);
   }
 
   @ApiOperation({ summary: '英単語の出典情報を削除' })
   @UseGuards(CognitoAuthGuard)
   @Delete('source')
-  async deleteSourceOfWordById(@Body() req: DeleteWordSourceAPIRequestDto) {
+  async deleteSourceOfWordById(
+    @Body(new ZodValidationPipe(deleteWordSourceAPIRequestSchema))
+    req: DeleteWordSourceAPIRequestDto,
+  ) {
     return await this.englishWordService.deleteSourceOfWordById(req);
   }
 
   @ApiOperation({ summary: '英単語のサブ出典情報を追加・編集' })
   @UseGuards(CognitoAuthGuard)
   @Post('subsource')
-  async addSubSourceOfWordById(@Body() req: EditWordSubSourceAPIRequestDto) {
+  async addSubSourceOfWordById(
+    @Body(new ZodValidationPipe(editWordSubSourceAPIRequestSchema))
+    req: EditWordSubSourceAPIRequestDto,
+  ) {
     return await this.englishWordService.upsertSubSourceOfWordById(req);
   }
 
@@ -137,7 +170,8 @@ export class EnglishWordController {
   @UseGuards(CognitoAuthGuard)
   @Delete('subsource')
   async deleteSubSourceOfWordById(
-    @Body() req: DeleteWordSubSourceAPIRequestDto,
+    @Body(new ZodValidationPipe(deleteWordSubSourceAPIRequestSchema))
+    req: DeleteWordSubSourceAPIRequestDto,
   ) {
     return await this.englishWordService.deleteSubSourceOfWordById(req);
   }
@@ -145,7 +179,10 @@ export class EnglishWordController {
   @ApiOperation({ summary: '英単語の意味を削除' })
   @UseGuards(CognitoAuthGuard)
   @Delete('mean')
-  async deleteWordMeanById(@Body() req: DeleteMeanAPIRequestDto) {
+  async deleteWordMeanById(
+    @Body(new ZodValidationPipe(deleteMeanAPIRequestSchema))
+    req: DeleteMeanAPIRequestDto,
+  ) {
     return await this.englishWordService.deleteMeandById(req);
   }
 
@@ -159,42 +196,60 @@ export class EnglishWordController {
   @ApiOperation({ summary: '英単語の類義語を追加' })
   @UseGuards(CognitoAuthGuard)
   @Post('synonym')
-  async addSynonym(@Body() req: AddSynonymAPIRequestDto) {
+  async addSynonym(
+    @Body(new ZodValidationPipe(addSynonymAPIRequestSchema))
+    req: AddSynonymAPIRequestDto,
+  ) {
     return await this.englishWordService.addSynonymService(req);
   }
 
   @ApiOperation({ summary: '英単語の対義語を追加' })
   @UseGuards(CognitoAuthGuard)
   @Post('antonym')
-  async addAntonym(@Body() req: AddAntonymAPIRequestDto) {
+  async addAntonym(
+    @Body(new ZodValidationPipe(addAntonymAPIRequestSchema))
+    req: AddAntonymAPIRequestDto,
+  ) {
     return await this.englishWordService.addAntonymService(req);
   }
 
   @ApiOperation({ summary: '英単語の派生語を追加' })
   @UseGuards(CognitoAuthGuard)
   @Post('derivative')
-  async addDerivative(@Body() req: AddDerivativeAPIRequestDto) {
+  async addDerivative(
+    @Body(new ZodValidationPipe(addDerivativeAPIRequestSchema))
+    req: AddDerivativeAPIRequestDto,
+  ) {
     return await this.englishWordService.addDerivativeService(req);
   }
 
   @ApiOperation({ summary: '英単語の語源を追加' })
   @UseGuards(CognitoAuthGuard)
   @Post('etymology')
-  async addEtymology(@Body() req: AddEtymologyAPIRequestDto) {
+  async addEtymology(
+    @Body(new ZodValidationPipe(addEtymologyAPIRequestSchema))
+    req: AddEtymologyAPIRequestDto,
+  ) {
     return await this.englishWordService.addEtymologyService(req);
   }
 
   @ApiOperation({ summary: '英単語と語源を紐付け' })
   @UseGuards(CognitoAuthGuard)
   @Post('etymology/link')
-  async linkWordEtymology(@Body() req: LinkWordEtymologyAPIRequestDto) {
+  async linkWordEtymology(
+    @Body(new ZodValidationPipe(linkWordEtymologyAPIRequestSchema))
+    req: LinkWordEtymologyAPIRequestDto,
+  ) {
     return await this.englishWordService.linkWordEtymologyService(req);
   }
 
   @ApiOperation({ summary: '英単語のチェック状態を切り替え' })
   @UseGuards(CognitoAuthGuard)
   @Post('check/toggle')
-  async toggleCheck(@Body() req: ToggleCheckAPIRequestDto) {
+  async toggleCheck(
+    @Body(new ZodValidationPipe(toggleCheckAPIRequestSchema))
+    req: ToggleCheckAPIRequestDto,
+  ) {
     return await this.englishWordService.toggleCheckService(req);
   }
 
@@ -223,7 +278,10 @@ export class EnglishWordController {
   @ApiOperation({ summary: '英単語の意味を編集' })
   @UseGuards(CognitoAuthGuard)
   @Patch(':id')
-  async editWordMean(@Body() req: EditWordMeanAPIRequestDto) {
+  async editWordMean(
+    @Body(new ZodValidationPipe(editWordMeanAPIRequestSchema))
+    req: EditWordMeanAPIRequestDto,
+  ) {
     return await this.englishWordService.editWordMeanService(req);
   }
 }
