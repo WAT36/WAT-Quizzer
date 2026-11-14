@@ -10,12 +10,17 @@ import {
 import { EnglishService } from './english.service';
 import {
   AddExampleAPIRequestDto,
+  addExampleAPIRequestSchema,
   RegisterWordsToSourceDto,
+  registerWordsToSourceSchema,
   ChangeExampleAssociationAPIRequestDto,
+  changeExampleAssociationAPIRequestSchema,
   SubmitExampleTestDataAPIRequestDto,
+  submitExampleTestDataAPIRequestSchema,
 } from 'quizzer-lib';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ZodValidationPipe } from '../common/zodValidation.pipe';
 
 @ApiTags('english')
 @UseGuards(CognitoAuthGuard)
@@ -37,7 +42,10 @@ export class EnglishController {
 
   @ApiOperation({ summary: '例文を追加する' })
   @Post('/example')
-  async addExample(@Body() req: AddExampleAPIRequestDto) {
+  async addExample(
+    @Body(new ZodValidationPipe(addExampleAPIRequestSchema))
+    req: AddExampleAPIRequestDto,
+  ) {
     return await this.englishService.addExampleService(req);
   }
 
@@ -53,7 +61,8 @@ export class EnglishController {
   @ApiOperation({ summary: '例文の紐付けを変更する' })
   @Post('/example/association')
   async changeAssociationOfExample(
-    @Body() req: ChangeExampleAssociationAPIRequestDto,
+    @Body(new ZodValidationPipe(changeExampleAssociationAPIRequestSchema))
+    req: ChangeExampleAssociationAPIRequestDto,
   ) {
     return await this.englishService.changeAssociationOfExampleService(req);
   }
@@ -68,13 +77,19 @@ export class EnglishController {
 
   @ApiOperation({ summary: '例文テストを正解として記録' })
   @Post('/example/test/clear')
-  async exampleTestCleared(@Body() req: SubmitExampleTestDataAPIRequestDto) {
+  async exampleTestCleared(
+    @Body(new ZodValidationPipe(submitExampleTestDataAPIRequestSchema))
+    req: SubmitExampleTestDataAPIRequestDto,
+  ) {
     return await this.englishService.exampleTestClearedService(req);
   }
 
   @ApiOperation({ summary: '例文テストを不正解として記録' })
   @Post('/example/test/fail')
-  async exampleTestFailed(@Body() req: SubmitExampleTestDataAPIRequestDto) {
+  async exampleTestFailed(
+    @Body(new ZodValidationPipe(submitExampleTestDataAPIRequestSchema))
+    req: SubmitExampleTestDataAPIRequestDto,
+  ) {
     return await this.englishService.exampleTestFailedService(req);
   }
 
@@ -88,10 +103,11 @@ export class EnglishController {
   @ApiOperation({ summary: '出典に単語を登録する（バッチ用）' })
   @Post('source/words')
   async registerWordsToSource(
-    @Body() registerWordsToSourceDto: RegisterWordsToSourceDto,
+    @Body(new ZodValidationPipe(registerWordsToSourceSchema))
+    registerWordsToSourceDto: RegisterWordsToSourceDto,
   ) {
     return await this.englishService.registerWordsToSource(
-      +registerWordsToSourceDto.sourceId,
+      registerWordsToSourceDto.sourceId,
       registerWordsToSourceDto.words,
     );
   }
