@@ -17,17 +17,27 @@ import { QuizImageService } from './image/quizImage.service';
 import { QuizStatisticsService } from './statistics/quizStatistics.service';
 import {
   ClearQuizAPIRequestDto,
+  clearQuizAPIRequestSchema,
   FailQuizAPIRequestDto,
+  failQuizAPIRequestSchema,
   AddQuizAPIRequestDto,
   addQuizAPIRequestSchema,
   EditQuizAPIRequestDto,
+  editQuizAPIRequestSchema,
   DeleteQuizAPIRequestDto,
+  deleteQuizAPIRequestSchema,
   IntegrateToQuizAPIRequestDto,
+  integrateToQuizAPIRequestSchema,
   CheckQuizAPIRequestDto,
+  checkQuizAPIRequestSchema,
   ReverseCheckQuizAPIRequestDto,
+  reverseCheckQuizAPIRequestSchema,
   DeleteAnswerLogOfFileApiRequestDto,
+  deleteAnswerLogOfFileApiRequestSchema,
   AddCategoryToQuizAPIRequestDto,
+  addCategoryToQuizAPIRequestSchema,
   DeleteCategoryOfQuizAPIRequestDto,
+  deleteCategoryOfQuizAPIRequestSchema,
   GetQuizAPIRequestParsedDto,
   SearchQuizAPIRequestParsedDto,
   GetAnswerLogStatisticsAPIRequestDto,
@@ -135,7 +145,10 @@ export class QuizController {
     description: 'クイズを正解したことを記録します。',
   })
   @Post('/clear')
-  async cleared(@Body() req: ClearQuizAPIRequestDto) {
+  async cleared(
+    @Body(new ZodValidationPipe(clearQuizAPIRequestSchema))
+    req: ClearQuizAPIRequestDto,
+  ) {
     return await this.quizService.cleared(req);
   }
 
@@ -144,7 +157,10 @@ export class QuizController {
     description: 'クイズを不正解としたことを記録します。',
   })
   @Post('/fail')
-  async failed(@Body() req: FailQuizAPIRequestDto) {
+  async failed(
+    @Body(new ZodValidationPipe(failQuizAPIRequestSchema))
+    req: FailQuizAPIRequestDto,
+  ) {
     return await this.quizService.failed(req);
   }
 
@@ -165,7 +181,10 @@ export class QuizController {
     description: '既存のクイズを編集します。',
   })
   @Post('/edit')
-  async edit(@Body() req: EditQuizAPIRequestDto) {
+  async edit(
+    @Body(new ZodValidationPipe(editQuizAPIRequestSchema))
+    req: EditQuizAPIRequestDto,
+  ) {
     return await this.quizService.edit(req);
   }
 
@@ -183,7 +202,10 @@ export class QuizController {
     description: '指定したクイズを削除します。',
   })
   @Delete()
-  async delete(@Body() req: DeleteQuizAPIRequestDto) {
+  async delete(
+    @Body(new ZodValidationPipe(deleteQuizAPIRequestSchema))
+    req: DeleteQuizAPIRequestDto,
+  ) {
     return await this.quizService.delete(req);
   }
 
@@ -192,7 +214,10 @@ export class QuizController {
     description: '複数のクイズを統合します。',
   })
   @Post('/integrate')
-  async integrate(@Body() req: IntegrateToQuizAPIRequestDto) {
+  async integrate(
+    @Body(new ZodValidationPipe(integrateToQuizAPIRequestSchema))
+    req: IntegrateToQuizAPIRequestDto,
+  ) {
     return await this.quizService.integrate(req);
   }
 
@@ -201,7 +226,10 @@ export class QuizController {
     description: 'クイズにカテゴリを追加します。',
   })
   @Post('/category')
-  async addCategoryToQuiz(@Body() body: AddCategoryToQuizAPIRequestDto) {
+  async addCategoryToQuiz(
+    @Body(new ZodValidationPipe(addCategoryToQuizAPIRequestSchema))
+    body: AddCategoryToQuizAPIRequestDto,
+  ) {
     return await this.quizService.addCategoryToQuiz(body);
   }
 
@@ -211,7 +239,8 @@ export class QuizController {
   })
   @Put('/category')
   async removeCategoryFromQuiz(
-    @Body() body: DeleteCategoryOfQuizAPIRequestDto,
+    @Body(new ZodValidationPipe(deleteCategoryOfQuizAPIRequestSchema))
+    body: DeleteCategoryOfQuizAPIRequestDto,
   ) {
     return await this.quizService.removeCategoryFromQuiz(body);
   }
@@ -221,7 +250,10 @@ export class QuizController {
     description: 'クイズをチェック済みにします。',
   })
   @Put('/check')
-  async check(@Body() req: CheckQuizAPIRequestDto) {
+  async check(
+    @Body(new ZodValidationPipe(checkQuizAPIRequestSchema))
+    req: CheckQuizAPIRequestDto,
+  ) {
     return await this.quizService.check(req);
   }
 
@@ -230,7 +262,10 @@ export class QuizController {
     description: 'クイズを未チェック状態にします。',
   })
   @Put('/uncheck')
-  async uncheck(@Body() req: CheckQuizAPIRequestDto) {
+  async uncheck(
+    @Body(new ZodValidationPipe(checkQuizAPIRequestSchema))
+    req: CheckQuizAPIRequestDto,
+  ) {
     return await this.quizService.uncheck(req);
   }
 
@@ -239,7 +274,10 @@ export class QuizController {
     description: 'クイズのチェック状態を反転します。',
   })
   @Post('/check')
-  async reverseCheck(@Body() req: ReverseCheckQuizAPIRequestDto) {
+  async reverseCheck(
+    @Body(new ZodValidationPipe(reverseCheckQuizAPIRequestSchema))
+    req: ReverseCheckQuizAPIRequestDto,
+  ) {
     return await this.quizService.reverseCheck(req);
   }
 
@@ -248,7 +286,10 @@ export class QuizController {
     description: '指定したファイルに紐づく解答履歴を削除します。',
   })
   @Patch('/answer_log/file')
-  async deleteAnswerLogByFile(@Body() req: DeleteAnswerLogOfFileApiRequestDto) {
+  async deleteAnswerLogByFile(
+    @Body(new ZodValidationPipe(deleteAnswerLogOfFileApiRequestSchema))
+    req: DeleteAnswerLogOfFileApiRequestDto,
+  ) {
     return await this.quizService.deleteAnswerLogByFile(req);
   }
 
