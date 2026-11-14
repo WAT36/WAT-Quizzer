@@ -19,6 +19,7 @@ import {
   ClearQuizAPIRequestDto,
   FailQuizAPIRequestDto,
   AddQuizAPIRequestDto,
+  addQuizAPIRequestSchema,
   EditQuizAPIRequestDto,
   DeleteQuizAPIRequestDto,
   IntegrateToQuizAPIRequestDto,
@@ -39,6 +40,7 @@ import { Express } from 'express';
 import { GetAnswerLogStatisticsPipe } from './pipe/getAnswerLogStatistics.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ZodValidationPipe } from '../common/zodValidation.pipe';
 
 @ApiTags('クイズ')
 @UseGuards(CognitoAuthGuard)
@@ -151,7 +153,10 @@ export class QuizController {
     description: '新しいクイズを追加します。',
   })
   @Post('')
-  async add(@Body() req: AddQuizAPIRequestDto) {
+  async add(
+    @Body(new ZodValidationPipe(addQuizAPIRequestSchema))
+    req: AddQuizAPIRequestDto,
+  ) {
     return await this.quizService.add(req);
   }
 
