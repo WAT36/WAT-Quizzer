@@ -1,4 +1,4 @@
-export interface AddQuizFileApiRequest {
-  file_name: string
-  file_nickname: string
-}
+import type { z } from 'zod'
+import type { addQuizFileApiRequestSchema } from './schema'
+
+export type AddQuizFileApiRequest = z.infer<typeof addQuizFileApiRequestSchema>

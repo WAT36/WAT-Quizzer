@@ -12,12 +12,15 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { QuizFileService } from './file.service';
 import {
   AddQuizFileApiRequest,
+  addQuizFileApiRequestSchema,
   DeleteQuizFileApiRequest,
+  deleteQuizFileApiRequestSchema,
   GetQuizFileStatisticsAPIRequestDto,
 } from 'quizzer-lib';
 import { GetQuizFileStatisticsPipe } from './pipe/getQuizFileStatistics.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { Response } from 'express';
+import { ZodValidationPipe } from '../../common/zodValidation.pipe';
 
 @UseGuards(CognitoAuthGuard)
 @ApiTags('クイズファイル')
@@ -50,7 +53,10 @@ export class QuizFileController {
     summary: 'クイズファイル追加',
     description: '新しいクイズファイルを追加します。',
   })
-  async addFile(@Body() req: AddQuizFileApiRequest) {
+  async addFile(
+    @Body(new ZodValidationPipe(addQuizFileApiRequestSchema))
+    req: AddQuizFileApiRequest,
+  ) {
     return await this.quizFileService.addFile(req);
   }
 
@@ -59,7 +65,10 @@ export class QuizFileController {
     summary: 'クイズファイル削除',
     description: '指定したクイズファイルを削除します。',
   })
-  async deleteFile(@Body() req: DeleteQuizFileApiRequest) {
+  async deleteFile(
+    @Body(new ZodValidationPipe(deleteQuizFileApiRequestSchema))
+    req: DeleteQuizFileApiRequest,
+  ) {
     return await this.quizFileService.deleteFile(req);
   }
 
