@@ -11,54 +11,36 @@ import {
 export class EnglishService {
   // 品詞取得
   async getPartsofSpeechService() {
-    try {
-      const data = await prisma.partsofspeech.findMany({
-        where: {
-          deleted_at: null,
-        },
-        select: {
-          id: true,
-          name: true,
-        },
-        orderBy: {
-          id: 'asc',
-        },
-      });
-      return data;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+    const data = await prisma.partsofspeech.findMany({
+      where: {
+        deleted_at: null,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    return data;
   }
 
   // 出典取得
   async getSourceService() {
-    try {
-      const data = await prisma.source.findMany({
-        where: {
-          deleted_at: null,
-        },
-        select: {
-          id: true,
-          name: true,
-        },
-        orderBy: {
-          id: 'asc',
-        },
-      });
-      return data;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+    const data = await prisma.source.findMany({
+      where: {
+        deleted_at: null,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    return data;
   }
 
   // 例文追加
@@ -113,70 +95,77 @@ export class EnglishService {
       }
     }
 
-    try {
-      //トランザクション実行
-      await prisma.$transaction(async (prisma) => {
-        //例文追加
-        const createdExampleData = await prisma.example.create({
+    //トランザクション実行
+    await prisma.$transaction(async (prisma) => {
+      //例文追加
+      const createdExampleData = await prisma.example.create({
+        data: {
+          en_example_sentense: exampleEn,
+          ja_example_sentense: exampleJa,
+          example_explanation: {
+            create: [
+              {
+                explanation,
+              },
+            ],
+          },
+        },
+      });
+
+      //  word_exampleにデータ追加(単語入力ある場合のみ)
+      if (wordData) {
+        await prisma.word_example.create({
           data: {
-            en_example_sentense: exampleEn,
-            ja_example_sentense: exampleJa,
-            example_explanation: {
-              create: [
-                {
-                  explanation,
-                },
-              ],
-            },
+            example_sentense_id: createdExampleData.id,
+            word_id: wordData.id,
           },
         });
-
-        //  word_exampleにデータ追加(単語入力ある場合のみ)
-        if (wordData) {
-          await prisma.word_example.create({
-            data: {
-              example_sentense_id: createdExampleData.id,
-              word_id: wordData.id,
-            },
-          });
-        }
-
-        // example_sourceにデータ追加(出典入力ある場合のみ)
-        if (resolvedSourceId !== undefined && resolvedSourceId !== -1) {
-          await prisma.example_source.create({
-            data: {
-              example_id: createdExampleData.id,
-              source_id: resolvedSourceId,
-            },
-          });
-        }
-      });
-      return {
-        result: 'Added!',
-      };
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
       }
-    }
+
+      // example_sourceにデータ追加(出典入力ある場合のみ)
+      if (resolvedSourceId !== undefined && resolvedSourceId !== -1) {
+        await prisma.example_source.create({
+          data: {
+            example_id: createdExampleData.id,
+            source_id: resolvedSourceId,
+          },
+        });
+      }
+    });
+    return {
+      result: 'Added!',
+    };
   }
 
   // 例文検索
   async searchExampleService(query: string, isLinked: boolean) {
-    try {
-      const data = isLinked
+    const data = isLinked
+      ? await prisma.example.findMany({
+          where: {
+            word_example: {
+              every: {
+                word: {
+                  name: query,
+                },
+                deleted_at: null,
+              },
+            },
+            deleted_at: null,
+          },
+          select: {
+            id: true,
+            en_example_sentense: true,
+            ja_example_sentense: true,
+          },
+          orderBy: {
+            id: 'asc',
+          },
+        })
+      : isLinked === false
         ? await prisma.example.findMany({
             where: {
-              word_example: {
-                every: {
-                  word: {
-                    name: query,
-                  },
-                  deleted_at: null,
-                },
+              en_example_sentense: {
+                contains: query,
               },
               deleted_at: null,
             },
@@ -189,33 +178,8 @@ export class EnglishService {
               id: 'asc',
             },
           })
-        : isLinked === false
-          ? await prisma.example.findMany({
-              where: {
-                en_example_sentense: {
-                  contains: query,
-                },
-                deleted_at: null,
-              },
-              select: {
-                id: true,
-                en_example_sentense: true,
-                ja_example_sentense: true,
-              },
-              orderBy: {
-                id: 'asc',
-              },
-            })
-          : undefined;
-      return data;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+        : undefined;
+    return data;
   }
 
   // 例文紐付け更新(複数の例文をまとめて紐付け・解除する)
@@ -248,210 +212,161 @@ export class EnglishService {
       );
     }
 
-    try {
-      if (isAssociation) {
-        // 紐付け 1件でも失敗したら全件ロールバックする
-        const data = await prisma.$transaction(
-          exampleIdList.map((exampleId) =>
-            prisma.word_example.upsert({
-              create: {
+    if (isAssociation) {
+      // 紐付け 1件でも失敗したら全件ロールバックする
+      const data = await prisma.$transaction(
+        exampleIdList.map((exampleId) =>
+          prisma.word_example.upsert({
+            create: {
+              example_sentense_id: exampleId,
+              word_id: wordData.id,
+            },
+            update: {
+              deleted_at: null,
+            },
+            where: {
+              example_sentense_id_word_id: {
                 example_sentense_id: exampleId,
                 word_id: wordData.id,
               },
-              update: {
-                deleted_at: null,
-              },
-              where: {
-                example_sentense_id_word_id: {
-                  example_sentense_id: exampleId,
-                  word_id: wordData.id,
-                },
-              },
-            }),
-          ),
-        );
-        return { count: data.length };
-      }
-      // 解除 1文で更新するので一部だけ反映されることはない
-      // 紐付いていない例文が含まれていても対象外になるだけでエラーにしない
-      return await prisma.word_example.updateMany({
-        where: {
-          word_id: wordData.id,
-          example_sentense_id: { in: exampleIdList },
-          deleted_at: null,
-        },
-        data: {
-          deleted_at: new Date(),
-        },
-      });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+            },
+          }),
+        ),
+      );
+      return { count: data.length };
     }
+    // 解除 1文で更新するので一部だけ反映されることはない
+    // 紐付いていない例文が含まれていても対象外になるだけでエラーにしない
+    return await prisma.word_example.updateMany({
+      where: {
+        word_id: wordData.id,
+        example_sentense_id: { in: exampleIdList },
+        deleted_at: null,
+      },
+      data: {
+        deleted_at: new Date(),
+      },
+    });
   }
 
   // 例文テスト取得
   async getExampleTestService(sourceId?: number) {
-    try {
-      const where = {
-        deleted_at: null,
-        ...(sourceId !== undefined && {
-          example_source: {
-            some: {
-              source_id: sourceId,
-            },
-          },
-        }),
-      };
-
-      const total = await prisma.example.count({ where });
-
-      if (total === 0) {
-        throw new HttpException(
-          '条件に合致するデータはありません',
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      const skip = Math.floor(Math.random() * total);
-
-      const example = await prisma.example.findFirst({
-        where,
-        skip,
-        select: {
-          id: true,
-          en_example_sentense: true,
-          ja_example_sentense: true,
-          example_explanation: {
-            select: { explanation: true },
+    const where = {
+      deleted_at: null,
+      ...(sourceId !== undefined && {
+        example_source: {
+          some: {
+            source_id: sourceId,
           },
         },
-      });
+      }),
+    };
 
-      return { total, example };
-    } catch (error: unknown) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+    const total = await prisma.example.count({ where });
+
+    if (total === 0) {
+      throw new HttpException(
+        '条件に合致するデータはありません',
+        HttpStatus.NOT_FOUND,
+      );
     }
+
+    const skip = Math.floor(Math.random() * total);
+
+    const example = await prisma.example.findFirst({
+      where,
+      skip,
+      select: {
+        id: true,
+        en_example_sentense: true,
+        ja_example_sentense: true,
+        example_explanation: {
+          select: { explanation: true },
+        },
+      },
+    });
+
+    return { total, example };
   }
 
   // 例文テスト正解登録
   async exampleTestClearedService(req: SubmitExampleTestDataAPIRequestDto) {
-    try {
-      const { exampleId, testType } = req;
-      return await prisma.englishbot_example_answer_log.create({
-        data: {
-          example_id: exampleId,
-          result: true,
-          test_type: testType,
-        },
-      });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+    const { exampleId, testType } = req;
+    return await prisma.englishbot_example_answer_log.create({
+      data: {
+        example_id: exampleId,
+        result: true,
+        test_type: testType,
+      },
+    });
   }
 
   // 例文テスト不正解登録
   async exampleTestFailedService(req: SubmitExampleTestDataAPIRequestDto) {
-    try {
-      const { exampleId, testType } = req;
-      return await prisma.englishbot_example_answer_log.create({
-        data: {
-          example_id: exampleId,
-          result: false,
-          test_type: testType,
-        },
-      });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+    const { exampleId, testType } = req;
+    return await prisma.englishbot_example_answer_log.create({
+      data: {
+        example_id: exampleId,
+        result: false,
+        test_type: testType,
+      },
+    });
   }
 
   // 出典に単語リスト一挙登録（バッチ用）
   async registerWordsToSource(sourceId: number, words: string[]) {
-    try {
-      const unregisteredWord = [];
-      const alreadyRegisteredWord = [];
-      const registerWord = [];
-      //トランザクション実行
-      await prisma.$transaction(async (prisma) => {
-        for (const wordName of words) {
-          // 入力単語が実在するかチェック
-          const wordData = await prisma.word.findFirst({
-            where: {
-              name: wordName,
-            },
-          });
+    const unregisteredWord = [];
+    const alreadyRegisteredWord = [];
+    const registerWord = [];
+    //トランザクション実行
+    await prisma.$transaction(async (prisma) => {
+      for (const wordName of words) {
+        // 入力単語が実在するかチェック
+        const wordData = await prisma.word.findFirst({
+          where: {
+            name: wordName,
+          },
+        });
 
-          // ない場合はスルー
-          if (!wordData) {
-            unregisteredWord.push(wordName);
-            continue;
-          }
+        // ない場合はスルー
+        if (!wordData) {
+          unregisteredWord.push(wordName);
+          continue;
+        }
 
-          // 出典・単語の組み合わせが既に登録されているかチェック
-          const wordSourceData = await prisma.word_source.findUnique({
-            where: {
-              word_id_source_id: {
-                word_id: wordData.id,
-                source_id: sourceId,
-              },
-            },
-          });
-
-          // 既にある場合はスルー
-          if (wordSourceData) {
-            alreadyRegisteredWord.push(wordName);
-            continue;
-          }
-
-          // 登録
-          await prisma.word_source.create({
-            data: {
-              word_id: +wordData.id,
+        // 出典・単語の組み合わせが既に登録されているかチェック
+        const wordSourceData = await prisma.word_source.findUnique({
+          where: {
+            word_id_source_id: {
+              word_id: wordData.id,
               source_id: sourceId,
             },
-          });
+          },
+        });
 
-          registerWord.push(wordName);
+        // 既にある場合はスルー
+        if (wordSourceData) {
+          alreadyRegisteredWord.push(wordName);
+          continue;
         }
-      });
-      return {
-        result: `${registerWord.length} Registered!`,
-        registerWord,
-        unregisteredWord,
-        alreadyRegisteredWord,
-      };
-    } catch (error: unknown) {
-      console.log(error);
-      if (error instanceof Error) {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
+
+        // 登録
+        await prisma.word_source.create({
+          data: {
+            word_id: +wordData.id,
+            source_id: sourceId,
+          },
+        });
+
+        registerWord.push(wordName);
       }
-    }
+    });
+    return {
+      result: `${registerWord.length} Registered!`,
+      registerWord,
+      unregisteredWord,
+      alreadyRegisteredWord,
+    };
   }
 
   // 出典統計ビューデータ取得

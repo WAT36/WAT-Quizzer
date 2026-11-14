@@ -196,7 +196,7 @@ describe('EnglishService', () => {
       ).rejects.toMatchObject({ status: 400 });
     });
 
-    // 例文紐付け 異常系 トランザクションが失敗したら500
+    // 例文紐付け 異常系 トランザクションが失敗したらそのエラーを返す（500への変換は例外フィルタが行う）
     it('changeAssociationOfExampleService - NG', async () => {
       (prisma.word.findUnique as jest.Mock).mockResolvedValueOnce({ id: 10 });
       (prisma.$transaction as jest.Mock).mockRejectedValueOnce(
@@ -208,7 +208,7 @@ describe('EnglishService', () => {
           exampleIdList: [1],
           isAssociation: true,
         }),
-      ).rejects.toMatchObject({ status: 500, message: 'error test by jest.' });
+      ).rejects.toThrow('error test by jest.');
     });
   });
 });
