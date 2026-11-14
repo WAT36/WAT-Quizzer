@@ -1,3 +1,9 @@
+import type { z } from 'zod'
+import type {
+  addCategoryParentChildAPIRequestSchema,
+  deleteCategoryParentChildAPIRequestSchema
+} from './schema'
+
 export interface GetCategoryParentChildListAPIRequestDto {
   file_num: number
 }
@@ -10,12 +16,10 @@ export interface CategoryParentChildAPIResponseDto {
   child_category_name: string
 }
 
-export interface AddCategoryParentChildAPIRequestDto {
-  file_num: number
-  parent_category: string
-  child_category: string
-}
+export type AddCategoryParentChildAPIRequestDto = z.infer<
+  typeof addCategoryParentChildAPIRequestSchema
+>
 
-export interface DeleteCategoryParentChildAPIRequestDto {
-  id: number
-}
+export type DeleteCategoryParentChildAPIRequestDto = z.infer<
+  typeof deleteCategoryParentChildAPIRequestSchema
+>

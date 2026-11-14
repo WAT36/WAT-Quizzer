@@ -1,5 +1,4 @@
-export interface EditSayingAPIRequestDto {
-  id: number
-  saying: string
-  explanation?: string
-}
+import type { z } from 'zod'
+import type { editSayingAPIRequestSchema } from './schema'
+
+export type EditSayingAPIRequestDto = z.infer<typeof editSayingAPIRequestSchema>

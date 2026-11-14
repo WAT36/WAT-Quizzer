@@ -11,11 +11,17 @@ import {
   Request,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { AddTodoDto } from './dto/add-todo.dto';
-import { AddTodoDiaryDto } from './dto/add-todo-diary.dto';
-import { SaveTodoCheckStatusDto } from './dto/save-todo-check-status.dto';
+import {
+  AddTodoAPIRequestDto,
+  addTodoAPIRequestSchema,
+  AddTodoDiaryAPIRequestDto,
+  addTodoDiaryAPIRequestSchema,
+  SaveTodoCheckStatusAPIRequestDto,
+  saveTodoCheckStatusAPIRequestSchema,
+} from 'quizzer-lib';
+import { ZodValidationPipe } from '../common/zodValidation.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
-import { ApiOperation, ApiTags, ApiBody, ApiParam } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Todo（Todo関連API）')
 @UseGuards(CognitoAuthGuard)
@@ -25,8 +31,10 @@ export class TodoController {
 
   @Post()
   @ApiOperation({ summary: 'Todoを新規追加します。' })
-  @ApiBody({ type: AddTodoDto })
-  async addTodo(@Body() req: AddTodoDto) {
+  async addTodo(
+    @Body(new ZodValidationPipe(addTodoAPIRequestSchema))
+    req: AddTodoAPIRequestDto,
+  ) {
     return await this.todoService.addTodoService(req.todo);
   }
 
@@ -64,8 +72,10 @@ export class TodoController {
   @ApiOperation({
     summary: 'Todo日記を追加します（日付とcompleted=trueを登録）。',
   })
-  @ApiBody({ type: AddTodoDiaryDto })
-  async addTodoDiary(@Body() req: AddTodoDiaryDto) {
+  async addTodoDiary(
+    @Body(new ZodValidationPipe(addTodoDiaryAPIRequestSchema))
+    req: AddTodoDiaryAPIRequestDto,
+  ) {
     return await this.todoService.addTodoDiaryService(req.date);
   }
 
@@ -86,10 +96,10 @@ export class TodoController {
   @ApiOperation({
     summary: '指定日のTodoチェック状態を保存します。',
   })
-  @ApiBody({ type: SaveTodoCheckStatusDto })
   async saveTodoCheckStatus(
     @Request() req: any,
-    @Body() body: SaveTodoCheckStatusDto,
+    @Body(new ZodValidationPipe(saveTodoCheckStatusAPIRequestSchema))
+    body: SaveTodoCheckStatusAPIRequestDto,
   ) {
     const userId = req.user?.sub;
     if (!userId) {

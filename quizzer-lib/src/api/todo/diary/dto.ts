@@ -1,8 +1,10 @@
+import type { z } from 'zod'
 import type { ApiResponse } from '../..'
+import type { addTodoDiaryAPIRequestSchema } from './schema'
 
-export interface AddTodoDiaryAPIRequestDto {
-  date: string
-}
+export type AddTodoDiaryAPIRequestDto = z.infer<
+  typeof addTodoDiaryAPIRequestSchema
+>
 
 export interface AddTodoDiaryApiResponseDto extends ApiResponse {
   id: number

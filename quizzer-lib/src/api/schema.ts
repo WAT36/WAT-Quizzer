@@ -18,3 +18,23 @@ export const sourceSelectSchema = z.union([
   z.literal(PULLDOWN_NONE),
   z.literal(PULLDOWN_OTHER)
 ])
+
+// 年月日が実在する日付か（2024-13-01や2024-02-30を弾く）
+const isExistingDate = (value: string): boolean => {
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(year, month - 1, day)
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  )
+}
+
+// 日付（YYYY-MM-DD形式の実在する日付）
+export const dateStringSchema = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, {
+    message: '日付はYYYY-MM-DD形式で入力してください',
+    abort: true
+  })
+  .refine(isExistingDate, '有効な日付を入力してください')

@@ -16,6 +16,13 @@ import {
   AccuracyRateQueryPipe,
   AccuracyRateQueryDto,
 } from './pipes/accuracy-rate-query.pipe';
+import {
+  AddCategoryParentChildAPIRequestDto,
+  addCategoryParentChildAPIRequestSchema,
+  DeleteCategoryParentChildAPIRequestDto,
+  deleteCategoryParentChildAPIRequestSchema,
+} from 'quizzer-lib';
+import { ZodValidationPipe } from '../common/zodValidation.pipe';
 
 @ApiTags('カテゴリ')
 @UseGuards(CognitoAuthGuard)
@@ -146,12 +153,8 @@ export class CategoryController {
   })
   @Post('parent-child')
   async addCategoryParentChild(
-    @Body()
-    body: {
-      file_num: number;
-      parent_category: string;
-      child_category: string;
-    },
+    @Body(new ZodValidationPipe(addCategoryParentChildAPIRequestSchema))
+    body: AddCategoryParentChildAPIRequestDto,
   ) {
     return await this.categoryService.addCategoryParentChild(
       body.file_num,
@@ -165,7 +168,10 @@ export class CategoryController {
     description: '指定されたIDのカテゴリ親子関係を削除します。',
   })
   @Delete('parent-child')
-  async deleteCategoryParentChild(@Body() body: { id: number }) {
+  async deleteCategoryParentChild(
+    @Body(new ZodValidationPipe(deleteCategoryParentChildAPIRequestSchema))
+    body: DeleteCategoryParentChildAPIRequestDto,
+  ) {
     return await this.categoryService.deleteCategoryParentChild(body.id);
   }
 

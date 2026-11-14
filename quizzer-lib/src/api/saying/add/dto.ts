@@ -1,6 +1,5 @@
+import type { z } from 'zod'
+import type { addSayingAPIRequestSchema } from './schema'
+
 // 格言追加リクエスト型
-export interface AddSayingAPIRequestDto {
-  book_id: number
-  saying: string
-  explanation: string
-}
+export type AddSayingAPIRequestDto = z.infer<typeof addSayingAPIRequestSchema>
