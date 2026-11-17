@@ -1,5 +1,9 @@
 import { z } from 'zod'
-import { categoryListStringSchema, idSchema } from '../../schema'
+import {
+  categoryListStringSchema,
+  idSchema,
+  quizIdListStringSchema
+} from '../../schema'
 import { MESSAGES } from '../../../constant/messages'
 
 // 四択問題の形式ID
@@ -17,7 +21,7 @@ export const quizContentSchema = z.object({
   answer: z.string().optional(),
   category: categoryListStringSchema.optional(), // カンマ区切り（各カテゴリ名の前後の空白と空のものは除く）
   img_file: z.string().optional(),
-  matched_basic_quiz_id: z.string().optional(), // カンマ区切りの問題番号
+  matched_basic_quiz_id: quizIdListStringSchema.optional(), // カンマ区切りの問題ID（空の要素・重複は除く）
   // 四択問題(format_id=3)の場合のみ
   dummyChoice: z
     .array(

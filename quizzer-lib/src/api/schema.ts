@@ -25,6 +25,29 @@ export const categoryListStringSchema = z
     ).join(',')
   )
 
+// カンマ区切りの問題ID（関連基礎問題番号など）
+// 各番号の前後の空白(全角を含む)を除き、空のものと重複を除いたカンマ区切りの文字列にする
+// 正の整数でない番号があれば、その番号を示すエラーにする（例: " 3, ,5,3," → "3,5"、"1,x" → エラー）
+export const quizIdListStringSchema = z.string().transform((value, ctx) => {
+  const ids = Array.from(
+    new Set(
+      value
+        .split(',')
+        .map((id) => id.trim())
+        .filter((id) => id !== '')
+    )
+  )
+  const invalid = ids.find((id) => !/^[1-9][0-9]*$/.test(id))
+  if (invalid !== undefined) {
+    ctx.addIssue({
+      code: 'custom',
+      message: `関連基礎問題番号は正の整数で入力してください("${invalid}")`
+    })
+    return z.NEVER
+  }
+  return ids.join(',')
+})
+
 // 追加・更新を兼ねるAPIで、更新対象のID。-1は新規追加
 export const idOrNewSchema = z.union([idSchema, z.literal(-1)])
 

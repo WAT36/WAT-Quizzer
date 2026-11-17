@@ -684,4 +684,52 @@ describe('QuizController', () => {
         .expect(201);
     });
   });
+
+  describe('関連基礎問題番号(カンマ区切り)', () => {
+    const addBody = { file_num: 1, format_id: 2, question: 'Q', answer: 'A' };
+    const editBody = { ...addBody, quiz_id: 10, quiz_num: 2 };
+
+    it.each([
+      ['問題追加', '/quiz', addBody, 'add'],
+      ['問題編集', '/quiz/edit', editBody, 'edit'],
+    ] as const)(
+      '%sでは、各番号の前後の空白と空の要素・重複を除いて渡す',
+      async (_, path, body, svc) => {
+        await request(app.getHttpServer())
+          .post(path)
+          .send({ ...body, matched_basic_quiz_id: ' 3, ,5\u3000,3,' })
+          .expect(201);
+        expect(quizService[svc]).toHaveBeenCalledWith(
+          expect.objectContaining({ matched_basic_quiz_id: '3,5' }),
+        );
+      },
+    );
+
+    it('空白とカンマだけなら空にして渡す（問題編集では関連付けを全部外す）', async () => {
+      await request(app.getHttpServer())
+        .post('/quiz/edit')
+        .send({ ...editBody, matched_basic_quiz_id: ' , ' })
+        .expect(201);
+      expect(quizService.edit).toHaveBeenCalledWith(
+        expect.objectContaining({ matched_basic_quiz_id: '' }),
+      );
+    });
+
+    it.each([
+      ['数値でない番号', '1,x', 'x'],
+      ['番号0', '1,0', '0'],
+      ['小数の番号', '1.5', '1.5'],
+      ['負の数の番号', '-2', '-2'],
+    ])(
+      '%sがあれば、その番号を示して400でサービスを呼ばない',
+      async (_, matched_basic_quiz_id, bad) => {
+        const res = await request(app.getHttpServer())
+          .post('/quiz')
+          .send({ ...addBody, matched_basic_quiz_id })
+          .expect(400);
+        expect(res.body.message).toContain(`"${bad}"`);
+        expect(quizService.add).not.toHaveBeenCalled();
+      },
+    );
+  });
 });
