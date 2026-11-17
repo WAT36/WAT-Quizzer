@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { idSchema, PULLDOWN_OTHER, sourceSelectSchema } from '../../../schema'
+import { PULLDOWN_OTHER, sourceSelectSchema } from '../../../schema'
 
 // 英単語追加APIのリクエスト
 export const addWordAPIRequestSchema = z.object({
@@ -18,7 +18,14 @@ export const addWordAPIRequestSchema = z.object({
   meanArrayData: z.array(
     z
       .object({
-        partOfSpeechId: z.union([idSchema, z.literal(PULLDOWN_OTHER)]),
+        // 品詞のID、またはその他(-2)。未選択(-1)は不可
+        partOfSpeechId: z
+          .number({ error: '品詞を入力してください' })
+          .int('品詞を入力してください')
+          .refine(
+            (x) => x > 0 || x === PULLDOWN_OTHER,
+            '品詞を入力してください'
+          ),
         meaning: z.string().min(1, '意味を入力してください'),
         partOfSpeechName: z.string().optional() // 品詞がその他の場合必要
       })

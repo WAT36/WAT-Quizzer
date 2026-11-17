@@ -5,6 +5,10 @@ import { z } from 'zod'
 // DBのID・番号（正の整数）
 export const idSchema = z.number().int().positive()
 
+// 画面のプルダウンなどで選ぶID。未選択(-1)・未設定なら指定したメッセージにする
+export const selectedIdSchema = (message: string) =>
+  z.number({ error: message }).int(message).positive(message)
+
 // 追加・更新を兼ねるAPIで、更新対象のID。-1は新規追加
 export const idOrNewSchema = z.union([idSchema, z.literal(-1)])
 
