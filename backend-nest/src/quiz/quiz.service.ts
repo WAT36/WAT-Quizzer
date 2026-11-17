@@ -189,10 +189,11 @@ export class QuizService {
             },
           }),
         },
+        // 関連基礎問題は、応用問題・四択問題(format_id>1)に紐付ける（問題編集と同じ）
         quiz_advanced_linkage: {
           createMany: {
             data:
-              matched_basic_quiz_id && format_id === 1
+              matched_basic_quiz_id && format_id > 1
                 ? matched_basic_quiz_id_list.map((x) => {
                     return { basis_quiz_id: x };
                   })

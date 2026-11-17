@@ -124,6 +124,18 @@ describe('QuizService', () => {
     });
   });
 
+  // 問題取得 関連基礎問題・関連応用問題は、削除済みの関連付けを除いて取得する
+  it('getQuiz - 削除済みの関連付けは取得しない', async () => {
+    (prisma.quiz.findMany as jest.Mock).mockClear();
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce(
+      getQuizResultTest,
+    );
+    await quizService.getQuiz({ file_num: 1, quiz_num: 1 });
+    const { select } = (prisma.quiz.findMany as jest.Mock).mock.calls[0][0];
+    expect(select.quiz_advanced_linkage.where).toEqual({ deleted_at: null });
+    expect(select.quiz_basis_linkage.where).toEqual({ deleted_at: null });
+  });
+
   // 問題取得 format_idで形式を絞り込む（番号指定・条件指定とも）
   it('getQuiz - format_id', async () => {
     (prisma.quiz.findMany as jest.Mock).mockClear();
@@ -407,6 +419,34 @@ describe('QuizService', () => {
     (prisma.category_quiz as any).create.mockResolvedValue({});
     (prisma.category_parent_child as any).findMany.mockResolvedValue([]);
     expect(await quizService.add(req)).toEqual(correctData);
+  });
+
+  // add 関連基礎問題は、応用問題・四択問題に紐付け、基礎問題には紐付けない
+  it.each([
+    [2, [{ basis_quiz_id: 3 }, { basis_quiz_id: 5 }]],
+    [3, [{ basis_quiz_id: 3 }, { basis_quiz_id: 5 }]],
+    [1, []],
+  ])('add - 関連基礎問題 format_id=%i', async (format_id, expected) => {
+    (prisma.quiz.findFirst as jest.Mock).mockResolvedValue({ quiz_num: 1 });
+    (prisma.quiz.create as jest.Mock).mockClear();
+    (prisma.quiz.create as jest.Mock).mockResolvedValue({ id: 99 });
+
+    await quizService.add({
+      file_num: 1,
+      format_id,
+      question: '問題文',
+      answer: '答え',
+      matched_basic_quiz_id: '3,5',
+      dummyChoice:
+        format_id === 3
+          ? [1, 2, 3].map((i) => ({ sentense: `ダミー${i}`, isCorrect: false }))
+          : undefined,
+    });
+
+    expect(
+      (prisma.quiz.create as jest.Mock).mock.calls[0][0].data
+        .quiz_advanced_linkage,
+    ).toEqual({ createMany: { data: expected } });
   });
 
   // add 問題文と答えの前後の半角・全角スペースが削除されて登録されること
