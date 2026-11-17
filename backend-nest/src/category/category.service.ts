@@ -87,16 +87,23 @@ export class CategoryService {
           HttpStatus.NOT_FOUND,
         );
       }
+      // 子カテゴリに持たせられる親カテゴリは一つまで。有効な親子関係があれば登録しない
       const existing = await prisma.category_parent_child.findFirst({
         where: {
-          parent_category_id: parent.id,
           child_category_id: child.id,
           deleted_at: null,
+        },
+        include: {
+          parent_category: {
+            select: { name: true },
+          },
         },
       });
       if (existing) {
         throw new HttpException(
-          '既に登録されている親子関係です',
+          existing.parent_category_id === parent.id
+            ? '既に登録されている親子関係です'
+            : `子カテゴリ「${child_category}」は既に親カテゴリ「${existing.parent_category.name}」に紐づいているため登録できません`,
           HttpStatus.CONFLICT,
         );
       }

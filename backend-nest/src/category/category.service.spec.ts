@@ -162,11 +162,42 @@ describe('CategoryService', () => {
       .mockResolvedValueOnce({ id: 2 });
     (prisma.category_parent_child.findFirst as jest.Mock).mockResolvedValue({
       id: 10,
+      parent_category_id: 1,
+      parent_category: { name: 'parent' },
     });
     (prisma.category_parent_child.upsert as jest.Mock).mockClear();
     await expect(
       categoryService.addCategoryParentChild(0, 'parent', 'child'),
-    ).rejects.toMatchObject({ status: 409 });
+    ).rejects.toMatchObject({
+      status: 409,
+      message: '既に登録されている親子関係です',
+    });
+    expect(prisma.category_parent_child.upsert).not.toHaveBeenCalled();
+  });
+
+  // カテゴリ親子関係追加 異常系（子カテゴリが既に別の親カテゴリに紐づいている）
+  it('addCategoryParentChild - NG (child already has another parent)', async () => {
+    (prisma.category.findFirst as jest.Mock)
+      .mockResolvedValueOnce({ id: 1 })
+      .mockResolvedValueOnce({ id: 2 });
+    (prisma.category_parent_child.findFirst as jest.Mock).mockResolvedValue({
+      id: 11,
+      parent_category_id: 3,
+      parent_category: { name: 'other' },
+    });
+    (prisma.category_parent_child.upsert as jest.Mock).mockClear();
+    await expect(
+      categoryService.addCategoryParentChild(0, 'parent', 'child'),
+    ).rejects.toMatchObject({
+      status: 409,
+      message:
+        '子カテゴリ「child」は既に親カテゴリ「other」に紐づいているため登録できません',
+    });
+    expect(prisma.category_parent_child.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { child_category_id: 2, deleted_at: null },
+      }),
+    );
     expect(prisma.category_parent_child.upsert).not.toHaveBeenCalled();
   });
 });
