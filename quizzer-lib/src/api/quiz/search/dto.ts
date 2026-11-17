@@ -1,4 +1,6 @@
-import type { ApiResponse, QueryReceivedDto } from '../..'
+import type { z } from 'zod'
+import type { ApiResponse } from '../..'
+import type { searchQuizAPIRequestSchema } from './schema'
 
 export interface SearchQuizAPIRequestDto {
   query: string
@@ -17,18 +19,8 @@ export interface SearchQuizAPIRequestDto {
   result_to?: number
 }
 
-// API側で受け取った時のDTO（Pipeで下のParsedDtoに変換する）
-// カテゴリ条件(category_and,category_not)はJSON文字列化した配列で受け取る
-export type SearchQuizAPIRequestReceivedDto =
-  QueryReceivedDto<SearchQuizAPIRequestDto>
-
-// API側でPipe変換した後のDTO（format_idはチェックされた形式IDの配列）
-export type SearchQuizAPIRequestParsedDto = Omit<
-  SearchQuizAPIRequestDto,
-  'format_id'
-> & {
-  format_id?: number[]
-}
+// API側でクエリを検証・変換した後のDTO
+export type SearchQuizAPIRequestParsedDto = z.output<typeof searchQuizAPIRequestSchema>
 
 // 問題検索APIのレスポンスの1件分
 export interface SearchQuizResultDto extends ApiResponse {

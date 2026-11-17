@@ -51,6 +51,15 @@ export const queryIdSchema = z.preprocess(
   z.coerce.number().int().positive().optional()
 )
 
+// クエリの必須のID・番号（未指定・-1・正の整数でない値は400）
+export const requiredQueryIdSchema = z.coerce.number().int().positive()
+
+// クエリの文字列。未指定（空文字・-1）ならundefined
+export const queryStringSchema = z.preprocess(
+  toUndefinedIfUnspecified,
+  z.string().optional()
+)
+
 // クエリの率(%)。0〜100の数値、未指定ならundefined
 export const queryRateSchema = z.preprocess(
   toUndefinedIfUnspecified,

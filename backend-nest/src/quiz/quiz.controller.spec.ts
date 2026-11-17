@@ -27,6 +27,8 @@ describe('QuizController', () => {
     uncheck: jest.fn(),
     reverseCheck: jest.fn(),
     deleteAnswerLogByFile: jest.fn(),
+    getQuiz: jest.fn(),
+    search: jest.fn(),
   };
 
   beforeAll(async () => {
@@ -327,6 +329,130 @@ describe('QuizController', () => {
       expect(
         quizStatisticsService.getAnswerLogStatistics,
       ).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /quiz (問題取得)', () => {
+    it.each([
+      [
+        // 番号指定で取得（画面の初期値: 形式なし・キーワード対象は問題文と答え）
+        '番号指定',
+        '/quiz?file_num=1&quiz_num=2&format_id=&keywordTarget=sentence_answer',
+        { file_num: 1, quiz_num: 2, keywordTarget: 'sentence_answer' },
+        undefined,
+      ],
+      [
+        '出題方法と条件をすべて指定',
+        '/quiz/random?file_num=1&quiz_num=-1&format_id=1,3&min_rate=0&max_rate=90&category=A,B&checked=true&keyword=k&keywordTarget=explanation&count=5',
+        {
+          file_num: 1,
+          format_id: [1, 3],
+          min_rate: 0,
+          max_rate: 90,
+          category: 'A,B',
+          checked: true,
+          keyword: 'k',
+          keywordTarget: 'explanation',
+          count: 5,
+        },
+        'random',
+      ],
+      [
+        '未選択(-1)のカテゴリ・正解率は指定なしにする',
+        '/quiz/lru?file_num=1&category=-1&max_rate=-1',
+        { file_num: 1 },
+        'LRU',
+      ],
+    ])('%s', async (_, url, expected, method) => {
+      await request(app.getHttpServer()).get(url).expect(200);
+      expect(quizService.getQuiz).toHaveBeenCalledWith(
+        expected,
+        ...(method ? [method] : []),
+      );
+    });
+
+    it.each([
+      ['ファイル番号がない', '/quiz?quiz_num=1'],
+      ['ファイル番号が-1(未選択)', '/quiz/random?file_num=-1'],
+      ['問題番号が数値でない', '/quiz?file_num=1&quiz_num=x'],
+      ['問題形式IDが数値でない', '/quiz/random?file_num=1&format_id=1,abc'],
+      ['checkedがtrue/false以外', '/quiz/random?file_num=1&checked=yes'],
+      ['正解率が100より大きい', '/quiz/worst?file_num=1&max_rate=101'],
+      ['出題数が0', '/quiz/random?file_num=1&count=0'],
+      ['キーワード対象が定義外', '/quiz/random?file_num=1&keywordTarget=x'],
+    ])('%sなら400でサービスを呼ばない', async (_, url) => {
+      await request(app.getHttpServer()).get(url).expect(400);
+      expect(quizService.getQuiz).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /quiz/search (問題検索)', () => {
+    it('画面で条件を指定した形のクエリを変換してサービスに渡す', async () => {
+      const query = new URLSearchParams({
+        query: 'キーワード',
+        file_num: '1',
+        format_id: '2,1',
+        min_rate: '0',
+        max_rate: '100',
+        category_and: JSON.stringify([' A ', 'A', '', 'B,C']),
+        category_not: JSON.stringify(['E']),
+        checked: 'false',
+        searchInOnlySentense: 'true',
+        searchInOnlyAnswer: 'false',
+        searchInExplanation: 'false',
+        onlyDirectCategory: 'true',
+        result_from: '1',
+        result_to: '20',
+      });
+      await request(app.getHttpServer())
+        .get('/quiz/search?' + query.toString())
+        .expect(200);
+      expect(quizService.search).toHaveBeenCalledWith({
+        query: 'キーワード',
+        file_num: 1,
+        format_id: [2, 1],
+        min_rate: 0,
+        max_rate: 100,
+        category_and: ['A', 'B,C'],
+        category_not: ['E'],
+        checked: false,
+        searchInOnlySentense: true,
+        searchInOnlyAnswer: false,
+        searchInExplanation: false,
+        onlyDirectCategory: true,
+        result_from: 1,
+        result_to: 20,
+      });
+    });
+
+    it('キーワード・条件なしなら空のキーワードで検索する', async () => {
+      await request(app.getHttpServer())
+        .get('/quiz/search?file_num=1&format_id=')
+        .expect(200);
+      expect(quizService.search).toHaveBeenCalledWith({
+        query: '',
+        file_num: 1,
+      });
+    });
+
+    it.each([
+      ['ファイル番号がない', 'query=a'],
+      ['カテゴリ条件がJSONでない', 'file_num=1&category_and=not%20json'],
+      [
+        'カテゴリ条件が配列でない',
+        'file_num=1&category_not=' + encodeURIComponent('"A"'),
+      ],
+      [
+        'カテゴリ条件に文字列以外',
+        'file_num=1&category_not=' + encodeURIComponent('["A",1]'),
+      ],
+      ['onlyDirectCategoryがtrue/false以外', 'file_num=1&onlyDirectCategory=1'],
+      ['件数の開始が数値でない', 'file_num=1&result_from=abc'],
+    ])('%sなら400でサービスを呼ばない', async (_, query) => {
+      await request(app.getHttpServer())
+        .get('/quiz/search?' + query)
+        .expect(400);
+      expect(quizService.search).not.toHaveBeenCalled();
     });
   });
 });

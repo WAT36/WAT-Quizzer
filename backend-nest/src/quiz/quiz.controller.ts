@@ -39,18 +39,21 @@ import {
   DeleteCategoryOfQuizAPIRequestDto,
   deleteCategoryOfQuizAPIRequestSchema,
   GetQuizAPIRequestParsedDto,
+  getQuizAPIRequestSchema,
   SearchQuizAPIRequestParsedDto,
+  searchQuizAPIRequestSchema,
   GetAnswerLogStatisticsAPIRequestDto,
   getAnswerLogStatisticsAPIRequestSchema,
 } from 'quizzer-lib';
-import { GetQuizPipe } from './pipe/getQuiz.pipe';
-import { SearchQuizPipe } from './pipe/searchQuiz.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { quizImageUploadOptions } from './image/quizImageUpload.options';
 import { Express } from 'express';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ZodValidationPipe } from '../common/zodValidation.pipe';
+
+// 問題取得APIのクエリの検証（出題方法ごとのAPIで共通）
+const getQuizQueryPipe = new ZodValidationPipe(getQuizAPIRequestSchema);
 
 @ApiTags('クイズ')
 @UseGuards(CognitoAuthGuard)
@@ -68,7 +71,7 @@ export class QuizController {
     description: '指定した条件でクイズを1件取得します。',
   })
   @Get()
-  async getQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestParsedDto) {
+  async getQuiz(@Query(getQuizQueryPipe) req: GetQuizAPIRequestParsedDto) {
     return await this.quizService.getQuiz(req);
   }
 
@@ -77,7 +80,9 @@ export class QuizController {
     description: '指定した条件でランダムなクイズを1件取得します。',
   })
   @Get('/random')
-  async getRandomQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestParsedDto) {
+  async getRandomQuiz(
+    @Query(getQuizQueryPipe) req: GetQuizAPIRequestParsedDto,
+  ) {
     return await this.quizService.getQuiz(req, 'random');
   }
 
@@ -86,7 +91,9 @@ export class QuizController {
     description: '正答率が最も低いクイズを1件取得します。',
   })
   @Get('/worst')
-  async getWorstRateQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestParsedDto) {
+  async getWorstRateQuiz(
+    @Query(getQuizQueryPipe) req: GetQuizAPIRequestParsedDto,
+  ) {
     return await this.quizService.getQuiz(req, 'worstRate');
   }
 
@@ -96,7 +103,7 @@ export class QuizController {
   })
   @Get('/minimum')
   async getMinimumAnsweredQuiz(
-    @Query(GetQuizPipe) req: GetQuizAPIRequestParsedDto,
+    @Query(getQuizQueryPipe) req: GetQuizAPIRequestParsedDto,
   ) {
     return await this.quizService.getQuiz(req, 'leastClear');
   }
@@ -106,7 +113,7 @@ export class QuizController {
     description: '最も長期間解かれていないクイズを1件取得します。',
   })
   @Get('/lru')
-  async getLRUQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestParsedDto) {
+  async getLRUQuiz(@Query(getQuizQueryPipe) req: GetQuizAPIRequestParsedDto) {
     return await this.quizService.getQuiz(req, 'LRU');
   }
 
@@ -115,7 +122,9 @@ export class QuizController {
     description: '先日間違えたクイズを1件取得します。',
   })
   @Get('/review')
-  async getReviewQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestParsedDto) {
+  async getReviewQuiz(
+    @Query(getQuizQueryPipe) req: GetQuizAPIRequestParsedDto,
+  ) {
     return await this.quizService.getQuiz(req, 'review');
   }
 
@@ -124,7 +133,9 @@ export class QuizController {
     description: '今日まだ解いてないクイズを1件取得します。',
   })
   @Get('/remaining')
-  async getRemainingQuiz(@Query(GetQuizPipe) req: GetQuizAPIRequestParsedDto) {
+  async getRemainingQuiz(
+    @Query(getQuizQueryPipe) req: GetQuizAPIRequestParsedDto,
+  ) {
     return await this.quizService.getQuiz(req, 'todayNotAnswered');
   }
 
@@ -135,7 +146,7 @@ export class QuizController {
   })
   @Get('/recent')
   async getRecentlyUpdatedQuiz(
-    @Query(GetQuizPipe) req: GetQuizAPIRequestParsedDto,
+    @Query(getQuizQueryPipe) req: GetQuizAPIRequestParsedDto,
   ) {
     return await this.quizService.getQuiz(req, 'recentlyUpdated');
   }
@@ -193,7 +204,10 @@ export class QuizController {
     description: '条件に合致するクイズを検索します。',
   })
   @Get('/search')
-  async search(@Query(SearchQuizPipe) req: SearchQuizAPIRequestParsedDto) {
+  async search(
+    @Query(new ZodValidationPipe(searchQuizAPIRequestSchema))
+    req: SearchQuizAPIRequestParsedDto,
+  ) {
     return await this.quizService.search(req);
   }
 
