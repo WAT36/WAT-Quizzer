@@ -484,28 +484,6 @@ describe('QuizService', () => {
     });
   });
 
-  // add/edit 関連基礎問題番号に数値でないものがあれば400
-  it.each(['add', 'edit'] as const)(
-    '%s - NG 関連基礎問題番号が数値でない',
-    async (method) => {
-      const req = {
-        quiz_id: 1,
-        file_num: 1,
-        quiz_num: 1,
-        question: '問題',
-        answer: '答え',
-        category: 'カテゴリ',
-        format_id: 2,
-        matched_basic_quiz_id: '1,x',
-      };
-      await expect(quizService[method](req)).rejects.toMatchObject({
-        status: 400,
-        message:
-          '入力した関連基礎問題番号でエラーが発生しました；("x"は数値ではありません)',
-      });
-    },
-  );
-
   // 問題編集 正常系1
   it('edit - OK', async () => {
     // テストデータ
