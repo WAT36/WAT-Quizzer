@@ -87,6 +87,22 @@ test.describe('quizzer / 問題追加', () => {
     await expect(page.getByLabel('(多答設定、この選択肢も正解にする)').nth(2)).not.toBeChecked();
   });
 
+  test('四択問題でダミー選択肢が空(空白だけを含む)の場合は、何番目かを示すエラーを表示して登録しない', async ({
+    page,
+    api
+  }) => {
+    await page.getByLabel('四択問題').check();
+    await page.getByLabel('問題文').fill('JavaScriptで配列の要素数を表すプロパティは？');
+    await page.getByLabel('答え').fill('length');
+    await page.getByLabel('ダミー選択肢1：').fill('size');
+    await page.getByLabel('ダミー選択肢2：').fill('\u3000');
+    await page.getByLabel('ダミー選択肢3：').fill('count');
+    await page.getByRole('button', { name: '問題登録' }).click();
+
+    await expect(page.getByText('エラー:ダミー選択肢2を入力してください')).toBeVisible();
+    expect(api.requests('POST', '/quiz')).toHaveLength(0);
+  });
+
   test('答えにカンマが含まれている場合は登録しない', async ({ page, api }) => {
     await page.getByLabel('問題文').fill('JavaScriptの変数宣言キーワードは？');
     await page.getByLabel('答え').fill('let, const');

@@ -634,4 +634,54 @@ describe('QuizController', () => {
       },
     );
   });
+
+  describe('四択問題のダミー選択肢の文', () => {
+    const dummies = (second: string) => [
+      { sentense: ' ダミー1 ', isCorrect: false },
+      { sentense: second, isCorrect: true },
+      { sentense: 'ダミー3', isCorrect: false },
+    ];
+    const addBody = { file_num: 1, format_id: 3, question: 'Q', answer: 'A' };
+    const editBody = { ...addBody, quiz_id: 10, quiz_num: 2 };
+
+    it.each([
+      ['問題追加', '/quiz', addBody, 'add'],
+      ['問題編集', '/quiz/edit', editBody, 'edit'],
+    ] as const)(
+      '%sで空・空白だけのダミー選択肢があれば、何番目かを示して400',
+      async (_, path, body, svc) => {
+        for (const second of ['', ' \u3000']) {
+          const res = await request(app.getHttpServer())
+            .post(path)
+            .send({ ...body, dummyChoice: dummies(second) })
+            .expect(400);
+          expect(res.body.message).toContain('ダミー選択肢2を入力してください');
+        }
+        expect(quizService[svc]).not.toHaveBeenCalled();
+      },
+    );
+
+    it('ダミー選択肢の文は前後の空白を除いて渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/quiz')
+        .send({ ...addBody, dummyChoice: dummies('ダミー2\u3000') })
+        .expect(201);
+      expect(quizService.add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          dummyChoice: [
+            { sentense: 'ダミー1', isCorrect: false },
+            { sentense: 'ダミー2', isCorrect: true },
+            { sentense: 'ダミー3', isCorrect: false },
+          ],
+        }),
+      );
+    });
+
+    it('四択以外では、画面の初期値の空のダミー選択肢があってもよい', async () => {
+      await request(app.getHttpServer())
+        .post('/quiz')
+        .send({ ...addBody, format_id: 1, dummyChoice: dummies('') })
+        .expect(201);
+    });
+  });
 });
