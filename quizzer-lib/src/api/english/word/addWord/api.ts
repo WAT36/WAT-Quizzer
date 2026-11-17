@@ -1,5 +1,5 @@
 import type { ApiResult } from '../../..'
-import { post, onSuccess, validateRequest } from '../../..'
+import { post, onSuccess, toErrorMessage, validateRequest } from '../../..'
 import { addWordAPIRequestSchema } from './schema'
 import type { AddWordAPIRequestDto } from './dto'
 
@@ -15,10 +15,10 @@ export const addWordAPI = async ({
   const invalid = validateRequest(
     addWordAPIRequestSchema,
     addWordData,
-    ({ path, message }) =>
-      path[0] === 'meanArrayData' && typeof path[1] === 'number'
-        ? `${path[1] + 1}行目の${message}`
-        : message
+    (issue) =>
+      issue.path[0] === 'meanArrayData' && typeof issue.path[1] === 'number'
+        ? `エラー:${issue.path[1] + 1}行目の${issue.message}`
+        : toErrorMessage(issue)
   )
   if (invalid) return invalid
 
