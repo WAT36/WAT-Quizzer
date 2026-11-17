@@ -220,4 +220,46 @@ describe('EnglishController', () => {
       expect(englishService.getExampleTestService).not.toHaveBeenCalled();
     });
   });
+
+  describe('名前の前後の空白(全角を含む)', () => {
+    it('例文追加では、前後の空白を除いてサービスに渡し、空白だけの単語名は紐付けない扱いになる', async () => {
+      await request(app.getHttpServer())
+        .post('/english/example')
+        .send({
+          exampleEn: ' I eat. ',
+          exampleJa: '\u3000食べる',
+          wordName: '\u3000',
+          sourceId: -2,
+          newSourceName: ' 洋書 ',
+        })
+        .expect(201);
+      expect(englishService.addExampleService).toHaveBeenCalledWith({
+        exampleEn: 'I eat.',
+        exampleJa: '食べる',
+        wordName: '',
+        sourceId: -2,
+        newSourceName: '洋書',
+      });
+    });
+
+    it.each([
+      ['英文が空白だけ', { exampleEn: ' ', exampleJa: '食べる' }],
+      ['和文が空白だけ', { exampleEn: 'I eat.', exampleJa: '\u3000' }],
+      [
+        '出典がその他(-2)で出典名が空白だけ',
+        {
+          exampleEn: 'I eat.',
+          exampleJa: '食べる',
+          sourceId: -2,
+          newSourceName: ' ',
+        },
+      ],
+    ])('例文追加で%sなら400でサービスを呼ばない', async (_, body) => {
+      await request(app.getHttpServer())
+        .post('/english/example')
+        .send(body)
+        .expect(400);
+      expect(englishService.addExampleService).not.toHaveBeenCalled();
+    });
+  });
 });

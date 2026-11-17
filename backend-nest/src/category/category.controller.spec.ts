@@ -140,4 +140,39 @@ describe('CategoryController', () => {
       expect(service.getAccuracyRateByCategory).not.toHaveBeenCalled();
     });
   });
+
+  describe('カテゴリ親子関係のカテゴリ名の前後の空白(全角を含む)', () => {
+    it('前後の空白を除いてサービスに渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/category/parent-child')
+        .send({
+          file_num: 1,
+          parent_category: ' 親 ',
+          child_category: '子\u3000',
+        })
+        .expect(201);
+      expect(service.addCategoryParentChild).toHaveBeenCalledWith(
+        1,
+        '親',
+        '子',
+      );
+    });
+
+    it.each([
+      [
+        '親カテゴリが空白だけ',
+        { file_num: 1, parent_category: ' ', child_category: '子' },
+      ],
+      [
+        '空白を除くと親と子が同じ',
+        { file_num: 1, parent_category: ' 親', child_category: '親\u3000' },
+      ],
+    ])('%sなら400でサービスを呼ばない', async (_, body) => {
+      await request(app.getHttpServer())
+        .post('/category/parent-child')
+        .send(body)
+        .expect(400);
+      expect(service.addCategoryParentChild).not.toHaveBeenCalled();
+    });
+  });
 });

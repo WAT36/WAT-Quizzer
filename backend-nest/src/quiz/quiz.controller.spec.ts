@@ -520,4 +520,31 @@ describe('QuizController', () => {
       ).not.toHaveBeenCalled();
     });
   });
+
+  describe('問題へのカテゴリ追加・削除のカテゴリ名の前後の空白(全角を含む)', () => {
+    it('前後の空白を除いてサービスに渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/quiz/category')
+        .send({ quiz_ids: [1], category: ' JavaScript\u3000' })
+        .expect(201);
+      expect(quizService.addCategoryToQuiz).toHaveBeenCalledWith({
+        quiz_ids: [1],
+        category: 'JavaScript',
+      });
+    });
+
+    it.each([
+      ['post', 'addCategoryToQuiz'],
+      ['put', 'removeCategoryFromQuiz'],
+    ] as const)(
+      '%s /quiz/category でカテゴリが空白だけなら400',
+      async (method, svc) => {
+        await request(app.getHttpServer())
+          [method]('/quiz/category')
+          .send({ quiz_ids: [1], category: '\u3000 ' })
+          .expect(400);
+        expect(quizService[svc]).not.toHaveBeenCalled();
+      },
+    );
+  });
 });

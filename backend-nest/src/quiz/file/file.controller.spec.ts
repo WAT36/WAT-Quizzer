@@ -150,4 +150,25 @@ describe('QuizFileController', () => {
       expect(quizFileService.downloadCsv).not.toHaveBeenCalled();
     });
   });
+
+  describe('ファイル名の前後の空白(全角を含む)', () => {
+    it('前後の空白を除いてサービスに渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/quiz/file')
+        .send({ file_name: 'abc', file_nickname: '\u3000新しい問題集 ' })
+        .expect(201);
+      expect(quizFileService.addFile).toHaveBeenCalledWith({
+        file_name: 'abc',
+        file_nickname: '新しい問題集',
+      });
+    });
+
+    it('空白だけなら400でサービスを呼ばない', async () => {
+      await request(app.getHttpServer())
+        .post('/quiz/file')
+        .send({ file_name: 'abc', file_nickname: ' \u3000 ' })
+        .expect(400);
+      expect(quizFileService.addFile).not.toHaveBeenCalled();
+    });
+  });
 });

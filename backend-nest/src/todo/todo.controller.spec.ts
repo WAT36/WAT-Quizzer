@@ -125,4 +125,22 @@ describe('TodoController', () => {
       expect(service.saveTodoCheckStatusService).not.toHaveBeenCalled();
     });
   });
+
+  describe('Todoの前後の空白(全角を含む)', () => {
+    it('前後の空白を除いてサービスに渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/todo')
+        .send({ todo: ' 単語を覚える\u3000' })
+        .expect(201);
+      expect(service.addTodoService).toHaveBeenCalledWith('単語を覚える');
+    });
+
+    it('空白だけなら400でサービスを呼ばない', async () => {
+      await request(app.getHttpServer())
+        .post('/todo')
+        .send({ todo: '\u3000 ' })
+        .expect(400);
+      expect(service.addTodoService).not.toHaveBeenCalled();
+    });
+  });
 });

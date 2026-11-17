@@ -416,4 +416,94 @@ describe('EnglishWordController', () => {
       expect(wordService[service]).not.toHaveBeenCalled();
     });
   });
+
+  describe('名前の前後の空白(全角を含む)', () => {
+    it('英単語追加では、前後の空白を除いてサービスに渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/english/word')
+        .send({
+          inputWord: {
+            wordName: ' apple\u3000',
+            sourceId: -2,
+            newSourceName: '\u3000洋書 ',
+            subSourceName: ' Part5 ',
+          },
+          pronounce: '',
+          meanArrayData: [
+            {
+              partOfSpeechId: -2,
+              partOfSpeechName: ' 名詞 ',
+              meaning: ' りんご ',
+            },
+          ],
+        })
+        .expect(201);
+      expect(wordService.addWordAndMeanService).toHaveBeenCalledWith({
+        inputWord: {
+          wordName: 'apple',
+          sourceId: -2,
+          newSourceName: '洋書',
+          subSourceName: 'Part5',
+        },
+        pronounce: '',
+        meanArrayData: [
+          { partOfSpeechId: -2, partOfSpeechName: '名詞', meaning: 'りんご' },
+        ],
+      });
+    });
+
+    it.each([
+      [
+        '単語名が空白だけ',
+        '/english/word',
+        {
+          inputWord: { wordName: ' \u3000', sourceId: -1, subSourceName: '' },
+          pronounce: '',
+          meanArrayData: [],
+        },
+      ],
+      [
+        '品詞がその他(-2)で品詞名が空白だけ',
+        '/english/word',
+        {
+          inputWord: { wordName: 'apple', sourceId: -1, subSourceName: '' },
+          pronounce: '',
+          meanArrayData: [
+            {
+              partOfSpeechId: -2,
+              partOfSpeechName: '\u3000',
+              meaning: 'りんご',
+            },
+          ],
+        },
+      ],
+      [
+        '類義語名が空白だけ',
+        '/english/word/synonym',
+        { wordId: 1, synonymWordName: '  ' },
+      ],
+      [
+        '対義語名が空白だけ',
+        '/english/word/antonym',
+        { wordId: 1, antonymWordName: '\u3000' },
+      ],
+      [
+        '派生語名が空白だけ',
+        '/english/word/derivative',
+        { wordName: 'eat', derivativeName: ' ' },
+      ],
+      ['語源名が空白だけ', '/english/word/etymology', { etymologyName: ' ' }],
+      [
+        'サブ出典が空白だけ',
+        '/english/word/subsource',
+        { id: -1, wordId: 1, subSource: '\u3000' },
+      ],
+    ])('%sなら400', async (_, path, body) => {
+      const res = await request(app.getHttpServer())
+        .post(path)
+        .send(body)
+        .expect(400);
+      expect(typeof res.body.message).toBe('string');
+    });
+  });
 });

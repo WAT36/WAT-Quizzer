@@ -97,6 +97,12 @@ test.describe('quizzer / 設定', () => {
     await page.getByRole('button', { name: '追加', exact: true }).click();
 
     await expect(page.getByText('エラー:ファイル名を入力してください')).toBeVisible();
+
+    // 空白(全角を含む)だけでも同じ
+    await page.getByLabel('新規ファイル名').fill('\u3000 ');
+    await page.getByRole('button', { name: '追加', exact: true }).first().click();
+    await expect(page.getByText('エラー:ファイル名を入力してください')).toBeVisible();
+
     expect(api.requests('POST', '/quiz/file')).toHaveLength(0);
   });
 

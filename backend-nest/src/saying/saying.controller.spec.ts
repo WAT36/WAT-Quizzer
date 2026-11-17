@@ -120,4 +120,31 @@ describe('SayingController', () => {
       });
     },
   );
+
+  describe('前後の空白(全角を含む)', () => {
+    it('格言は前後の空白を除いてサービスに渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/saying')
+        .send({ book_id: 1, saying: ' 継続は力なり\u3000', explanation: '' })
+        .expect(201);
+      expect(service.addSayingService).toHaveBeenCalledWith({
+        book_id: 1,
+        saying: '継続は力なり',
+        explanation: '',
+      });
+    });
+
+    it.each([
+      [
+        '格言が空白だけ',
+        '/saying',
+        { book_id: 1, saying: '\u3000', explanation: '' },
+      ],
+      ['本の名前が空白だけ', '/saying/book', { book_name: '  ' }],
+    ])('%sなら400', async (_, path, body) => {
+      await request(app.getHttpServer()).post(path).send(body).expect(400);
+      expect(service.addSayingService).not.toHaveBeenCalled();
+      expect(service.addBookService).not.toHaveBeenCalled();
+    });
+  });
 });
