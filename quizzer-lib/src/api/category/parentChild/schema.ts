@@ -5,8 +5,8 @@ import { idSchema } from '../../schema'
 export const addCategoryParentChildAPIRequestSchema = z
   .object({
     file_num: idSchema,
-    parent_category: z.string().min(1, '親カテゴリを選択して下さい'),
-    child_category: z.string().min(1, '子カテゴリを選択して下さい')
+    parent_category: z.string().trim().min(1, '親カテゴリを選択して下さい'),
+    child_category: z.string().trim().min(1, '子カテゴリを選択して下さい')
   })
   .refine((x) => x.parent_category !== x.child_category, {
     message: '親カテゴリと子カテゴリに同じカテゴリは設定できません',

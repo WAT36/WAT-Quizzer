@@ -3,7 +3,7 @@ import { idSchema } from '../../../schema'
 
 // 例文紐付け変更APIのリクエスト
 export const changeExampleAssociationAPIRequestSchema = z.object({
-  wordName: z.string().min(1, '単語を入力してください'),
+  wordName: z.string().trim().min(1, '単語を入力してください'),
   exampleIdList: z
     .array(idSchema)
     .min(1, '紐付けを変更する例文が選択されていません'),

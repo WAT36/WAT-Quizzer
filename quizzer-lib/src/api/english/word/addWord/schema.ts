@@ -5,10 +5,10 @@ import { PULLDOWN_OTHER, sourceSelectSchema } from '../../../schema'
 export const addWordAPIRequestSchema = z.object({
   inputWord: z
     .object({
-      wordName: z.string().min(1, '単語を入力してください'),
+      wordName: z.string().trim().min(1, '単語を入力してください'),
       sourceId: sourceSelectSchema,
-      newSourceName: z.string().optional(), // 出典がその他の場合必要
-      subSourceName: z.string()
+      newSourceName: z.string().trim().optional(), // 出典がその他の場合必要
+      subSourceName: z.string().trim()
     })
     .refine((x) => x.sourceId !== PULLDOWN_OTHER || !!x.newSourceName, {
       message: '新規追加する出典を入力してください',
@@ -26,8 +26,8 @@ export const addWordAPIRequestSchema = z.object({
             (x) => x > 0 || x === PULLDOWN_OTHER,
             '品詞を入力してください'
           ),
-        meaning: z.string().min(1, '意味を入力してください'),
-        partOfSpeechName: z.string().optional() // 品詞がその他の場合必要
+        meaning: z.string().trim().min(1, '意味を入力してください'),
+        partOfSpeechName: z.string().trim().optional() // 品詞がその他の場合必要
       })
       .refine(
         (x) => x.partOfSpeechId !== PULLDOWN_OTHER || !!x.partOfSpeechName,

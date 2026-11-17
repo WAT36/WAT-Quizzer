@@ -5,5 +5,5 @@ import { idOrNewSchema, idSchema } from '../../../../schema'
 export const editWordSubSourceAPIRequestSchema = z.object({
   id: idOrNewSchema, // word_subsourceのid（-1は新規追加）
   wordId: idSchema,
-  subSource: z.string().min(1, 'サブ出典を入力してください')
+  subSource: z.string().trim().min(1, 'サブ出典を入力してください')
 })

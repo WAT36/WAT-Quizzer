@@ -8,5 +8,5 @@ export const editWordMeanAPIRequestSchema = z.object({
   wordMeanId: z.number().int().nonnegative(),
   meanId: idOrNewSchema, // meanのid（-1は新規追加）
   partofspeechId: selectedIdSchema('品詞を選択してください'),
-  meaning: z.string()
+  meaning: z.string().trim()
 })

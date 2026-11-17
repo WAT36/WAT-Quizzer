@@ -4,6 +4,7 @@ import { idSchema } from '../../schema'
 // 格言本文（DBの列はVARCHAR(256)）
 export const sayingTextSchema = z
   .string()
+  .trim()
   .min(1, '格言を入力してください')
   .max(256, '格言は256文字以内で入力してください')
 
