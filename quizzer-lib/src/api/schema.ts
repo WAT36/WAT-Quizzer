@@ -54,6 +54,9 @@ export const queryIdSchema = z.preprocess(
 // クエリの必須のID・番号（未指定・-1・正の整数でない値は400）
 export const requiredQueryIdSchema = z.coerce.number().int().positive()
 
+// パスパラメータのID（/xxx/:id）。正の整数でなければ400
+export const idParamSchema = z.object({ id: requiredQueryIdSchema })
+
 // クエリの文字列。未指定（空文字・-1）ならundefined
 export const queryStringSchema = z.preprocess(
   toUndefinedIfUnspecified,
