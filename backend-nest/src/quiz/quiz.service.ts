@@ -282,12 +282,9 @@ export class QuizService {
           format_id,
         },
       });
-      // 関連問題更新
-      if (
-        matched_basic_quiz_id &&
-        matched_basic_quiz_id_list.length > 0 &&
-        format_id > 1 // 応用問題
-      ) {
+      // 関連基礎問題の更新（応用・四択問題のみ）
+      // 空なら全部外す。項目が送られていなければ今の関連付けのままにする
+      if (matched_basic_quiz_id !== undefined && format_id > 1) {
         // 一度削除
         await prisma.quiz_basis_advanced_linkage.updateMany({
           data: {

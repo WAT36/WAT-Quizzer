@@ -632,6 +632,43 @@ describe('QuizService', () => {
     expect(prisma.category.upsert).not.toHaveBeenCalled();
   });
 
+  // 問題編集 関連基礎問題 空なら全部外し、項目がなければ変えない
+  it.each([
+    ['空なら、関連付けを全部外して新しく紐付けない', '', true],
+    ['項目がなければ、関連付けは変えない', undefined, false],
+  ])('edit - 関連基礎問題 %s', async (_, matched_basic_quiz_id, unlinked) => {
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.quiz.update as jest.Mock).mockResolvedValueOnce({ id: 22 });
+    (prisma.quiz_basis_advanced_linkage.updateMany as jest.Mock).mockClear();
+    (prisma.quiz_basis_advanced_linkage.upsert as jest.Mock).mockClear();
+
+    await quizService.edit({
+      quiz_id: 22,
+      format_id: 2,
+      file_num: 1,
+      quiz_num: 1,
+      question: '問題文',
+      answer: '答え',
+      matched_basic_quiz_id,
+    });
+
+    if (unlinked) {
+      expect(
+        prisma.quiz_basis_advanced_linkage.updateMany,
+      ).toHaveBeenCalledWith({
+        data: { deleted_at: expect.any(Date) },
+        where: { advanced_quiz_id: 22 },
+      });
+    } else {
+      expect(
+        prisma.quiz_basis_advanced_linkage.updateMany,
+      ).not.toHaveBeenCalled();
+    }
+    expect(prisma.quiz_basis_advanced_linkage.upsert).not.toHaveBeenCalled();
+  });
+
   // 問題編集 異常系2 ダミー選択肢の件数が登録済みのものと異なる
   it('edit - NG2 dummyChoice count mismatch', async () => {
     // テストデータ
