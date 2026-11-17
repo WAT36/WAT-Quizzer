@@ -567,6 +567,31 @@ describe('QuizService', () => {
     );
   });
 
+  // 問題編集 正常系3 カテゴリが空・未指定なら、紐付けを外すだけで空の名前のカテゴリは登録しない
+  it.each([[''], [undefined]])('edit - OK3 category=%j', async (category) => {
+    const req = {
+      quiz_id: 22,
+      format_id: 1,
+      file_num: 1,
+      quiz_num: 1,
+      question: '問題文',
+      answer: '答え',
+      category,
+    };
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.quiz.update as jest.Mock).mockResolvedValueOnce({ id: 22 });
+    (prisma.category.upsert as jest.Mock).mockClear();
+    (prisma.category_quiz.updateMany as jest.Mock).mockClear();
+
+    expect(await quizService.edit(req)).toEqual({ id: 22 });
+    expect(prisma.category_quiz.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { quiz_id: 22 } }),
+    );
+    expect(prisma.category.upsert).not.toHaveBeenCalled();
+  });
+
   // 問題編集 異常系2 ダミー選択肢の件数が登録済みのものと異なる
   it('edit - NG2 dummyChoice count mismatch', async () => {
     // テストデータ

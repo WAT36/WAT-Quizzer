@@ -368,7 +368,10 @@ export class QuizService {
           deleted_at: new Date(),
         },
       });
-      await linkCategories(prisma, quiz_id, file_num, category.split(','));
+      // カテゴリが空・未指定なら紐付けを外すだけにする（空の名前のカテゴリを登録しない）
+      if (category) {
+        await linkCategories(prisma, quiz_id, file_num, category.split(','));
+      }
       // ログ削除
       await prisma.answer_log.updateMany({
         data: {
