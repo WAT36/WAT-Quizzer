@@ -1,6 +1,7 @@
 import type { LinkWordEtymologyAPIRequestDto } from '.'
 import type { ApiResult } from '../../../..'
-import { post, onSuccess } from '../../../..'
+import { post, onSuccess, validateRequest } from '../../../..'
+import { linkWordEtymologyAPIRequestSchema } from './schema'
 
 interface LinkWordEtymologyAPIProps {
   linkWordEtymologyData: LinkWordEtymologyAPIRequestDto
@@ -9,29 +10,8 @@ interface LinkWordEtymologyAPIProps {
 export const linkWordEtymologyAPI = async ({
   linkWordEtymologyData
 }: LinkWordEtymologyAPIProps): Promise<ApiResult> => {
-  if (
-    !linkWordEtymologyData.etymologyName ||
-    linkWordEtymologyData.etymologyName === ''
-  ) {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:語源名が入力されていません',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
-  if (linkWordEtymologyData.wordId === -1) {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:追加する単語IDを入力して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
+  const invalid = validateRequest(linkWordEtymologyAPIRequestSchema, linkWordEtymologyData)
+  if (invalid) return invalid
 
   const result = await post(
     '/english/word/etymology/link',

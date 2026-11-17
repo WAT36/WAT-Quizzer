@@ -1,5 +1,6 @@
 import type { ApiResult } from '../../../..'
-import { post, onSuccess } from '../../../..'
+import { post, onSuccess, validateRequest } from '../../../..'
+import { addSynonymAPIRequestSchema } from './schema'
 import type { AddSynonymAPIRequestDto } from '.'
 
 interface AddSynonymAPIProps {
@@ -7,6 +8,9 @@ interface AddSynonymAPIProps {
 }
 
 export const addSynonymAPI = async ({ addSynonymData }: AddSynonymAPIProps): Promise<ApiResult> => {
+  const invalid = validateRequest(addSynonymAPIRequestSchema, addSynonymData)
+  if (invalid) return invalid
+
   const result = await post(
     '/english/word/synonym',
     addSynonymData,

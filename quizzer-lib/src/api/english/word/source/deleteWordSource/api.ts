@@ -1,6 +1,7 @@
 import type { DeleteWordSourceAPIRequestDto } from '.'
 import type { ApiResult } from '../../../..'
-import { del, onSuccess } from '../../../..'
+import { del, onSuccess, validateRequest } from '../../../..'
+import { deleteWordSourceAPIRequestSchema } from './schema'
 
 interface DeleteEnglishWordSourceAPIRequestProps {
   deleteWordSourceData: DeleteWordSourceAPIRequestDto
@@ -9,6 +10,9 @@ interface DeleteEnglishWordSourceAPIRequestProps {
 export const deleteEnglishWordSourceAPI = async ({
   deleteWordSourceData
 }: DeleteEnglishWordSourceAPIRequestProps): Promise<ApiResult> => {
+  const invalid = validateRequest(deleteWordSourceAPIRequestSchema, deleteWordSourceData)
+  if (invalid) return invalid
+
   const result = await del(
     '/english/word/source',
     deleteWordSourceData,

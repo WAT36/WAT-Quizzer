@@ -1,6 +1,7 @@
 import type { AddDerivativeAPIRequestDto } from '.'
 import type { ApiResult } from '../../../..'
-import { post, onSuccess } from '../../../..'
+import { post, onSuccess, validateRequest } from '../../../..'
+import { addDerivativeAPIRequestSchema } from './schema'
 
 interface AddDerivativeAPIProps {
   addDerivativeData: AddDerivativeAPIRequestDto
@@ -9,29 +10,8 @@ interface AddDerivativeAPIProps {
 export const addDerivativeAPI = async ({
   addDerivativeData
 }: AddDerivativeAPIProps): Promise<ApiResult> => {
-  if (!addDerivativeData.wordName || addDerivativeData.wordName === '') {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:元単語名が入力されていません',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
-  if (
-    !addDerivativeData.derivativeName ||
-    addDerivativeData.derivativeName === ''
-  ) {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:追加する単語名を入力して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
+  const invalid = validateRequest(addDerivativeAPIRequestSchema, addDerivativeData)
+  if (invalid) return invalid
 
   const result = await post(
     '/english/word/derivative',

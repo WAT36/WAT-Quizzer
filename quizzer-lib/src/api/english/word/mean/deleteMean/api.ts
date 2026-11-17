@@ -1,5 +1,6 @@
 import type { ApiResult } from '../../../..'
-import { del, onSuccess } from '../../../..'
+import { del, onSuccess, validateRequest } from '../../../..'
+import { deleteMeanAPIRequestSchema } from './schema'
 import type { DeleteMeanAPIRequestDto } from '.'
 
 interface DeleteEnglishMeanAPIButtonProps {
@@ -9,6 +10,9 @@ interface DeleteEnglishMeanAPIButtonProps {
 export const deleteEnglishMeanAPI = async ({
   deleteMeanData
 }: DeleteEnglishMeanAPIButtonProps): Promise<ApiResult> => {
+  const invalid = validateRequest(deleteMeanAPIRequestSchema, deleteMeanData)
+  if (invalid) return invalid
+
   return await del(
     '/english/word/mean',
     deleteMeanData,

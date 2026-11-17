@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { idOrNewSchema, idSchema } from '../../../../schema'
+import { idOrNewSchema, idSchema, selectedIdSchema } from '../../../../schema'
 
 // 英単語意味編集APIのリクエスト
 export const editWordMeanAPIRequestSchema = z.object({
@@ -7,6 +7,6 @@ export const editWordMeanAPIRequestSchema = z.object({
   // 単語内での意味の番号。意味がまだない単語に追加する場合は0で送られてくる
   wordMeanId: z.number().int().nonnegative(),
   meanId: idOrNewSchema, // meanのid（-1は新規追加）
-  partofspeechId: idSchema,
+  partofspeechId: selectedIdSchema('品詞を選択してください'),
   meaning: z.string()
 })

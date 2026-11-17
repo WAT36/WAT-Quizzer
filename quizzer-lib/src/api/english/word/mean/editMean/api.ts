@@ -1,5 +1,6 @@
 import type { ApiResult } from '../../../..'
-import { patch, onSuccess } from '../../../..'
+import { patch, onSuccess, validateRequest } from '../../../..'
+import { editWordMeanAPIRequestSchema } from './schema'
 import type { EditWordMeanAPIRequestDto } from '.'
 
 interface EditEnglishWordMeanButtonProps {
@@ -9,16 +10,8 @@ interface EditEnglishWordMeanButtonProps {
 export const editEnglishWordMeanAPI = async ({
   editMeanData
 }: EditEnglishWordMeanButtonProps): Promise<ApiResult> => {
-  if (editMeanData.partofspeechId === -1) {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:品詞を選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
+  const invalid = validateRequest(editWordMeanAPIRequestSchema, editMeanData)
+  if (invalid) return invalid
 
   const result = await patch(
     '/english/word/' + String(editMeanData.wordId),
