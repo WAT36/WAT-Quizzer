@@ -159,18 +159,6 @@ export class QuizService {
       matched_basic_quiz_id,
     );
 
-    // 四択問題の場合　ダミー選択肢全部ない場合エラー
-    if (
-      format_id === 3 &&
-      dummyChoice &&
-      dummyChoice.length < 3 &&
-      dummyChoice.reduce((accummulate, currentValue) => {
-        return accummulate || currentValue.sentense === '';
-      }, false)
-    ) {
-      throw new HttpException(MESSAGES.ERROR.MSG00018, HttpStatus.BAD_REQUEST);
-    }
-
     // 新問題番号を取得しINSERT
     const res = await prisma.quiz.findFirst({
       select: {
