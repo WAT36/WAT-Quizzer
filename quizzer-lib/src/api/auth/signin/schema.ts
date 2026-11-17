@@ -11,5 +11,5 @@ export const authSigninRequestSchema = z.object({
 
 // 新パスワード設定APIのリクエスト（サインイン時に返されたsessionが必須）
 export const authNewPasswordRequestSchema = authSigninRequestSchema.extend({
-  session: z.string().min(1)
+  session: z.string().min(1, 'ログインからやり直してください')
 })

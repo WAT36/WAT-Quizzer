@@ -1,9 +1,14 @@
+import type { ZodType } from 'zod'
 import type { SignInResult } from '../../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import type { ApiResult } from '../..'
-import { baseURL } from '../..'
+import { baseURL, validateRequest } from '../..'
 import { setAccessToken } from '../token'
 import type { AuthSigninRequestDto } from './dto'
+import {
+  authNewPasswordRequestSchema,
+  authSigninRequestSchema
+} from './schema'
 
 interface AuthSigninAPIProps {
   authSigninRequestData: AuthSigninRequestDto
@@ -11,10 +16,15 @@ interface AuthSigninAPIProps {
 
 // サインイン系API共通処理
 // refreshTokenのCookieを受け取るためcredentials: 'include'で送る。成功時はaccessTokenをメモリに保持する
+// 送信前の検証で止めた場合や通信に失敗した場合は、resultなしでmessageだけを返す
 const signinRequest = async (
   path: string,
+  schema: ZodType,
   authSigninRequestData: AuthSigninRequestDto
 ): Promise<ApiResult> => {
+  const invalid = validateRequest(schema, authSigninRequestData)
+  if (invalid) return invalid
+
   return await fetch(baseURL + path, {
     method: 'POST',
     body: JSON.stringify(authSigninRequestData),
@@ -56,11 +66,19 @@ const signinRequest = async (
 export const authSigninAPI = async ({
   authSigninRequestData
 }: AuthSigninAPIProps): Promise<ApiResult> => {
-  return await signinRequest('/auth/signin', authSigninRequestData)
+  return await signinRequest(
+    '/auth/signin',
+    authSigninRequestSchema,
+    authSigninRequestData
+  )
 }
 
 export const authNewPasswordSigninAPI = async ({
   authSigninRequestData
 }: AuthSigninAPIProps): Promise<ApiResult> => {
-  return await signinRequest('/auth/newpassword', authSigninRequestData)
+  return await signinRequest(
+    '/auth/newpassword',
+    authNewPasswordRequestSchema,
+    authSigninRequestData
+  )
 }

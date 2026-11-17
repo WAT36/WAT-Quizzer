@@ -50,9 +50,12 @@ export const LoginForm = ({ setShowNewPasswordForm, setSession, username, setUse
         setMessage('新しいパスワードが必要です');
         setSession(data.session);
         setShowNewPasswordForm(true);
+      } else if (!res.result) {
+        // 送信前の検証で止めた・通信に失敗した場合は、APIの処理のメッセージを出す
+        setMessage(res.message.message);
       } else {
-        const errorBody = res.result as { error?: string; message?: string } | undefined;
-        setMessage('ログイン失敗: ' + errorBody?.error + ' - ' + errorBody?.message);
+        const errorBody = res.result as { error?: string; message?: string };
+        setMessage('ログイン失敗: ' + errorBody.error + ' - ' + errorBody.message);
       }
     } catch (err: any) {
       setMessage('ログイン失敗: ' + err.message);

@@ -49,6 +49,9 @@ export const ReauthModal = () => {
       close(true);
     } else if (data?.status === 'NEW_PASSWORD_REQUIRED') {
       setMessage('パスワードの変更が必要です。ログイン画面からログインしてください');
+    } else if (!res.result) {
+      // 送信前の検証で止めた・通信に失敗した場合は、APIの処理のメッセージを出す
+      setMessage(res.message.message);
     } else {
       setMessage('ログインに失敗しました。ユーザー名とパスワードを確認してください');
     }

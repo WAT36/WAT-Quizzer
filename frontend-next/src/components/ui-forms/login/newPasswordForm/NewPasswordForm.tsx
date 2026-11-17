@@ -36,6 +36,9 @@ export const NewPasswordForm = ({ username, session }: NewPasswordFormProps) => 
       if (data?.status === 'SUCCESS') {
         localStorage.setItem(LAST_USERNAME_STORAGE_KEY, username);
         void router.push('/');
+      } else if (!res.result) {
+        // 送信前の検証で止めた・通信に失敗した場合は、APIの処理のメッセージを出す
+        setMessage(res.message.message);
       } else {
         // 200以外のときはエラー内容のbodyが返る
         const errorBody = res.result as { error?: string; message?: string } | undefined;
