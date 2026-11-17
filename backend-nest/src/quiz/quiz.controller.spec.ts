@@ -109,6 +109,23 @@ describe('QuizController', () => {
         'ダミー選択肢の形が違う',
         { file_num: 1, format_id: 3, dummyChoice: ['ダミー'] },
       ],
+      [
+        '四択問題でダミー選択肢がない',
+        { file_num: 1, format_id: 3, question: 'Q', answer: 'A' },
+      ],
+      [
+        '四択問題でダミー選択肢が3つ未満',
+        {
+          file_num: 1,
+          format_id: 3,
+          question: 'Q',
+          answer: 'A',
+          dummyChoice: [
+            { sentense: 'ダミー1', isCorrect: false },
+            { sentense: 'ダミー2', isCorrect: false },
+          ],
+        },
+      ],
     ])('%sなら400でサービスを呼ばない', async (_, body) => {
       const res = await request(app.getHttpServer())
         .post('/quiz')
