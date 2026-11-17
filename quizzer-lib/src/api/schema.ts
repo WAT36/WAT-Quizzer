@@ -9,6 +9,22 @@ export const idSchema = z.number().int().positive()
 export const selectedIdSchema = (message: string) =>
   z.number({ error: message }).int(message).positive(message)
 
+// カンマ区切りのカテゴリ名
+// 各カテゴリ名の前後の空白(全角を含む)を除き、空のものと重複を除いたカンマ区切りの文字列にする
+// （例: " JavaScript, ,非同期処理,JavaScript," → "JavaScript,非同期処理"。カテゴリがなければ空文字）
+export const categoryListStringSchema = z
+  .string()
+  .transform((value) =>
+    Array.from(
+      new Set(
+        value
+          .split(',')
+          .map((name) => name.trim())
+          .filter((name) => name !== '')
+      )
+    ).join(',')
+  )
+
 // 追加・更新を兼ねるAPIで、更新対象のID。-1は新規追加
 export const idOrNewSchema = z.union([idSchema, z.literal(-1)])
 

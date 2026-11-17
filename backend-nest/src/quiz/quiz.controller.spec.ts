@@ -547,4 +547,74 @@ describe('QuizController', () => {
       },
     );
   });
+
+  describe('カンマ区切りのカテゴリ名', () => {
+    const messy = ' JavaScript ,\u3000, 非同期処理\u3000,JavaScript,';
+
+    it('問題追加では、各カテゴリ名の前後の空白と空のもの・重複を除いて渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/quiz')
+        .send({
+          file_num: 1,
+          format_id: 1,
+          question: 'Q',
+          answer: 'A',
+          category: messy,
+        })
+        .expect(201);
+      expect(quizService.add).toHaveBeenCalledWith(
+        expect.objectContaining({ category: 'JavaScript,非同期処理' }),
+      );
+    });
+
+    it('問題編集でも同じように整えて渡し、カテゴリが空白とカンマだけなら空にする', async () => {
+      const body = {
+        quiz_id: 10,
+        file_num: 1,
+        quiz_num: 2,
+        question: 'Q',
+        answer: 'A',
+      };
+      await request(app.getHttpServer())
+        .post('/quiz/edit')
+        .send({ ...body, category: messy })
+        .expect(201);
+      expect(quizService.edit).toHaveBeenLastCalledWith(
+        expect.objectContaining({ category: 'JavaScript,非同期処理' }),
+      );
+
+      await request(app.getHttpServer())
+        .post('/quiz/edit')
+        .send({ ...body, category: ' , \u3000,' })
+        .expect(201);
+      expect(quizService.edit).toHaveBeenLastCalledWith(
+        expect.objectContaining({ category: '' }),
+      );
+    });
+
+    it('問題へのカテゴリ追加でも同じように整えて渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/quiz/category')
+        .send({ quiz_ids: [1], category: messy })
+        .expect(201);
+      expect(quizService.addCategoryToQuiz).toHaveBeenCalledWith({
+        quiz_ids: [1],
+        category: 'JavaScript,非同期処理',
+      });
+    });
+
+    it.each([
+      ['post', 'addCategoryToQuiz'],
+      ['put', 'removeCategoryFromQuiz'],
+    ] as const)(
+      '%s /quiz/category でカテゴリが空白とカンマだけなら400',
+      async (method, svc) => {
+        await request(app.getHttpServer())
+          [method]('/quiz/category')
+          .send({ quiz_ids: [1], category: ' ,\u3000,' })
+          .expect(400);
+        expect(quizService[svc]).not.toHaveBeenCalled();
+      },
+    );
+  });
 });
