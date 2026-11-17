@@ -38,3 +38,42 @@ export const dateStringSchema = z
     abort: true
   })
   .refine(isExistingDate, '有効な日付を入力してください')
+
+// ---- クエリパラメータ用（値はすべて文字列で届く） ----
+
+// クエリで「未指定」を表す値（画面は未選択を-1、空欄を空文字で送ってくる）
+const toUndefinedIfUnspecified = (value: unknown): unknown =>
+  value === '' || value === '-1' ? undefined : value
+
+// クエリのID・番号。未指定ならundefined、正の整数として読めなければ400
+export const queryIdSchema = z.preprocess(
+  toUndefinedIfUnspecified,
+  z.coerce.number().int().positive().optional()
+)
+
+// クエリの日付（YYYY-MM-DD）。空ならundefined
+export const queryDateSchema = z.preprocess(
+  toUndefinedIfUnspecified,
+  dateStringSchema.optional()
+)
+
+// クエリの問題形式ID（カンマ区切り）を数値の配列にする
+// 空・未指定ならundefined（形式で絞り込まない）、数値でないIDがあれば400
+export const queryFormatIdsSchema = z
+  .string()
+  .optional()
+  .transform((value, ctx) => {
+    const ids = (value ?? '')
+      .split(',')
+      .map((id) => id.trim())
+      .filter((id) => id !== '')
+    const invalidId = ids.find((id) => !/^\d+$/.test(id))
+    if (invalidId !== undefined) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `問題形式IDが不正です(${invalidId})`
+      })
+      return z.NEVER
+    }
+    return ids.length > 0 ? Array.from(new Set(ids.map(Number))) : undefined
+  })

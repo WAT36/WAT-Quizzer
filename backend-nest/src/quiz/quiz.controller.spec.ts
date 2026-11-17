@@ -13,6 +13,7 @@ import { AllExceptionsFilter } from 'src/common/filter/allExceptions.filter';
 // コントローラーでのリクエストの検証を確認する（サービスはモック、認証は通す）
 describe('QuizController', () => {
   let app: INestApplication;
+  const quizStatisticsService = { getAnswerLogStatistics: jest.fn() };
   const quizService = {
     add: jest.fn(),
     cleared: jest.fn(),
@@ -35,7 +36,7 @@ describe('QuizController', () => {
         { provide: QuizService, useValue: quizService },
         { provide: QuizCsvService, useValue: {} },
         { provide: QuizImageService, useValue: {} },
-        { provide: QuizStatisticsService, useValue: {} },
+        { provide: QuizStatisticsService, useValue: quizStatisticsService },
         { provide: APP_FILTER, useClass: AllExceptionsFilter },
       ],
     })
@@ -51,6 +52,8 @@ describe('QuizController', () => {
   });
 
   beforeEach(() => {
+    quizStatisticsService.getAnswerLogStatistics.mockReset();
+    quizStatisticsService.getAnswerLogStatistics.mockResolvedValue([]);
     Object.values(quizService).forEach((fn) => {
       fn.mockReset();
       fn.mockResolvedValue({ id: 1 });
@@ -289,4 +292,41 @@ describe('QuizController', () => {
       });
     },
   );
+
+  describe('GET /quiz/statistics (解答数統計)', () => {
+    it.each([
+      // 画面は未選択・未指定の値を送らないか-1を送る
+      ['未指定なら全ファイル・日単位', '', { file_num: -1, date_unit: 'day' }],
+      [
+        'file_numが-1なら全ファイル',
+        '?file_num=-1',
+        { file_num: -1, date_unit: 'day' },
+      ],
+      [
+        'ファイルと単位を指定',
+        '?file_num=2&date_unit=week',
+        { file_num: 2, date_unit: 'week' },
+      ],
+    ])('%s', async (_, query, expected) => {
+      await request(app.getHttpServer())
+        .get('/quiz/statistics' + query)
+        .expect(200);
+      expect(quizStatisticsService.getAnswerLogStatistics).toHaveBeenCalledWith(
+        expected,
+      );
+    });
+
+    it.each([
+      ['file_numが数値でない', '?file_num=abc'],
+      ['file_numが0', '?file_num=0'],
+      ['date_unitが定義外', '?date_unit=year'],
+    ])('%sなら400でサービスを呼ばない', async (_, query) => {
+      await request(app.getHttpServer())
+        .get('/quiz/statistics' + query)
+        .expect(400);
+      expect(
+        quizStatisticsService.getAnswerLogStatistics,
+      ).not.toHaveBeenCalled();
+    });
+  });
 });

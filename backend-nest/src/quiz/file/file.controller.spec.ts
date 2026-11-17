@@ -13,6 +13,7 @@ describe('QuizFileController', () => {
   const quizFileService = {
     addFile: jest.fn(),
     deleteFile: jest.fn(),
+    getFileStatisticsData: jest.fn(),
   };
 
   beforeAll(async () => {
@@ -99,6 +100,31 @@ describe('QuizFileController', () => {
         .send(body)
         .expect(400);
       expect(quizFileService.deleteFile).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /quiz/file/statistics (問題ファイル統計)', () => {
+    it.each([
+      ['未指定なら全ファイル(-1)', '', -1],
+      ['-1なら全ファイル', '?file_num=-1', -1],
+      ['ファイルを指定', '?file_num=3', 3],
+    ])('%s', async (_, query, file_num) => {
+      await request(app.getHttpServer())
+        .get('/quiz/file/statistics' + query)
+        .expect(200);
+      expect(quizFileService.getFileStatisticsData).toHaveBeenCalledWith({
+        file_num,
+      });
+    });
+
+    it.each([
+      ['数値でない', '?file_num=abc'],
+      ['小数', '?file_num=1.5'],
+    ])('file_numが%sなら400でサービスを呼ばない', async (_, query) => {
+      await request(app.getHttpServer())
+        .get('/quiz/file/statistics' + query)
+        .expect(400);
+      expect(quizFileService.getFileStatisticsData).not.toHaveBeenCalled();
     });
   });
 });

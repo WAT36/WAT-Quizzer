@@ -13,6 +13,7 @@ describe('CategoryController', () => {
   const service = {
     addCategoryParentChild: jest.fn(),
     deleteCategoryParentChild: jest.fn(),
+    getAccuracyRateByCategory: jest.fn(),
   };
 
   beforeAll(async () => {
@@ -92,6 +93,51 @@ describe('CategoryController', () => {
         .send(body)
         .expect(400);
       expect(service.deleteCategoryParentChild).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /category/rate (カテゴリ別正答率)', () => {
+    it('ファイルだけ指定', async () => {
+      await request(app.getHttpServer())
+        .get('/category/rate?file_num=2')
+        .expect(200);
+      expect(service.getAccuracyRateByCategory).toHaveBeenCalledWith(
+        2,
+        undefined,
+        undefined,
+        undefined,
+      );
+    });
+
+    it('期間と問題形式を指定すると、日付はDate・形式IDは配列にして渡す', async () => {
+      await request(app.getHttpServer())
+        .get(
+          '/category/rate?file_num=2&startDate=2026-11-01&endDate=2026-11-14&format_id=1,3',
+        )
+        .expect(200);
+      expect(service.getAccuracyRateByCategory).toHaveBeenCalledWith(
+        2,
+        new Date('2026-11-01'),
+        new Date('2026-11-14'),
+        [1, 3],
+      );
+    });
+
+    it.each([
+      ['file_numがない', ''],
+      ['file_numが数値でない', '?file_num=abc'],
+      ['日付の形式が違う', '?file_num=2&startDate=2026/11/01'],
+      ['存在しない日付', '?file_num=2&endDate=2026-02-30'],
+      [
+        '開始日が終了日より後',
+        '?file_num=2&startDate=2026-11-15&endDate=2026-11-14',
+      ],
+      ['問題形式IDが数値でない', '?file_num=2&format_id=1,abc'],
+    ])('%sなら400でサービスを呼ばない', async (_, query) => {
+      await request(app.getHttpServer())
+        .get('/category/rate' + query)
+        .expect(400);
+      expect(service.getAccuracyRateByCategory).not.toHaveBeenCalled();
     });
   });
 });

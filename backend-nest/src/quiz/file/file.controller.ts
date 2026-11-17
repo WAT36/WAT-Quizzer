@@ -16,8 +16,8 @@ import {
   DeleteQuizFileApiRequest,
   deleteQuizFileApiRequestSchema,
   GetQuizFileStatisticsAPIRequestDto,
+  getQuizFileStatisticsAPIRequestSchema,
 } from 'quizzer-lib';
-import { GetQuizFileStatisticsPipe } from './pipe/getQuizFileStatistics.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { Response } from 'express';
 import { ZodValidationPipe } from '../../common/zodValidation.pipe';
@@ -43,7 +43,8 @@ export class QuizFileController {
     description: '指定したクイズファイルの統計情報を取得します。',
   })
   async getFileStatistics(
-    @Query(GetQuizFileStatisticsPipe) req: GetQuizFileStatisticsAPIRequestDto,
+    @Query(new ZodValidationPipe(getQuizFileStatisticsAPIRequestSchema))
+    req: GetQuizFileStatisticsAPIRequestDto,
   ) {
     return await this.quizFileService.getFileStatisticsData(req);
   }

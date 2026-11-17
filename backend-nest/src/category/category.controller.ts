@@ -7,20 +7,17 @@ import {
   Post,
   Query,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CategoryService } from './category.service';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import {
-  AccuracyRateQueryPipe,
-  AccuracyRateQueryDto,
-} from './pipes/accuracy-rate-query.pipe';
-import {
   AddCategoryParentChildAPIRequestDto,
   addCategoryParentChildAPIRequestSchema,
   DeleteCategoryParentChildAPIRequestDto,
   deleteCategoryParentChildAPIRequestSchema,
+  GetCategoryRateAPIRequestParsedDto,
+  getCategoryRateAPIRequestQuerySchema,
 } from 'quizzer-lib';
 import { ZodValidationPipe } from '../common/zodValidation.pipe';
 
@@ -98,8 +95,10 @@ export class CategoryController {
     description: '認証が必要です。',
   })
   @Get('rate')
-  @UsePipes(AccuracyRateQueryPipe)
-  async getAccuracyRateByCategory(@Query() query: AccuracyRateQueryDto) {
+  async getAccuracyRateByCategory(
+    @Query(new ZodValidationPipe(getCategoryRateAPIRequestQuerySchema))
+    query: GetCategoryRateAPIRequestParsedDto,
+  ) {
     return await this.categoryService.getAccuracyRateByCategory(
       query.file_num,
       query.startDate,

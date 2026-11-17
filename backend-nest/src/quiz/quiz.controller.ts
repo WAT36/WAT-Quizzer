@@ -41,13 +41,13 @@ import {
   GetQuizAPIRequestParsedDto,
   SearchQuizAPIRequestParsedDto,
   GetAnswerLogStatisticsAPIRequestDto,
+  getAnswerLogStatisticsAPIRequestSchema,
 } from 'quizzer-lib';
 import { GetQuizPipe } from './pipe/getQuiz.pipe';
 import { SearchQuizPipe } from './pipe/searchQuiz.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { quizImageUploadOptions } from './image/quizImageUpload.options';
 import { Express } from 'express';
-import { GetAnswerLogStatisticsPipe } from './pipe/getAnswerLogStatistics.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ZodValidationPipe } from '../common/zodValidation.pipe';
@@ -308,7 +308,8 @@ export class QuizController {
   })
   @Get('/statistics')
   async getAnswerLogStatistics(
-    @Query(GetAnswerLogStatisticsPipe) req: GetAnswerLogStatisticsAPIRequestDto,
+    @Query(new ZodValidationPipe(getAnswerLogStatisticsAPIRequestSchema))
+    req: GetAnswerLogStatisticsAPIRequestDto,
   ) {
     return await this.quizStatisticsService.getAnswerLogStatistics(req);
   }
