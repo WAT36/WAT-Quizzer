@@ -220,6 +220,11 @@ describe('QuizController', () => {
       invalids: [
         ['quiz_idsが空', { quiz_ids: [], category: 'カテゴリ' }],
         ['quiz_idsに文字列', { quiz_ids: [1, '2'], category: 'カテゴリ' }],
+        ['quiz_idsに小数', { quiz_ids: [1.5], category: 'カテゴリ' }],
+        [
+          'quiz_idsがカンマ区切りの文字列',
+          { quiz_ids: '1,2', category: 'カテゴリ' },
+        ],
         ['categoryが空', { quiz_ids: [1], category: '' }],
         ['categoryがない', { quiz_ids: [1] }],
       ],
@@ -232,6 +237,9 @@ describe('QuizController', () => {
       valid: { quiz_ids: [1, 2], category: 'カテゴリ' },
       invalids: [
         ['quiz_idsが配列でない', { quiz_ids: 1, category: 'カテゴリ' }],
+        ['quiz_idsが空', { quiz_ids: [], category: 'カテゴリ' }],
+        ['quiz_idsに文字列', { quiz_ids: ['1'], category: 'カテゴリ' }],
+        ['quiz_idsに小数', { quiz_ids: [1.5], category: 'カテゴリ' }],
         ['categoryが空', { quiz_ids: [1], category: '' }],
       ],
     },
@@ -245,6 +253,8 @@ describe('QuizController', () => {
         ['quiz_idsがない', {}],
         ['quiz_idsが空', { quiz_ids: [] }],
         ['quiz_idsに小数', { quiz_ids: [1.5] }],
+        ['quiz_idsに文字列', { quiz_ids: ['1'] }],
+        ['quiz_idsがカンマ区切りの文字列', { quiz_ids: '1,2' }],
       ],
     },
     {
@@ -264,6 +274,7 @@ describe('QuizController', () => {
       invalids: [
         ['quiz_idがない', {}],
         ['quiz_idが文字列', { quiz_id: 'abc' }],
+        ['quiz_idが数字の文字列', { quiz_id: '1' }],
       ],
     },
     {

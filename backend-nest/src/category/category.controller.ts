@@ -51,7 +51,7 @@ export class CategoryController {
   })
   @Get()
   async getCategory(@Query('file_num', ParseIntPipe) file_num: number) {
-    return await this.categoryService.getCategoryList(+file_num);
+    return await this.categoryService.getCategoryList(file_num);
   }
 
   @ApiOperation({
@@ -126,7 +126,7 @@ export class CategoryController {
   async getCategoryQuizCount(
     @Query('file_num', ParseIntPipe) file_num: number,
   ) {
-    return await this.categoryService.getCategoryQuizCount(+file_num);
+    return await this.categoryService.getCategoryQuizCount(file_num);
   }
 
   @ApiOperation({
@@ -143,7 +143,7 @@ export class CategoryController {
   async getCategoryParentChildList(
     @Query('file_num', ParseIntPipe) file_num: number,
   ) {
-    return await this.categoryService.getCategoryParentChildList(+file_num);
+    return await this.categoryService.getCategoryParentChildList(file_num);
   }
 
   @ApiOperation({

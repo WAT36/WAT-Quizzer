@@ -25,11 +25,7 @@ import {
   linkCategories,
   linkNewQuizCategoriesWithAncestors,
 } from './quizCategory';
-import {
-  assertQuizIds,
-  parseMatchedBasicQuizIds,
-  trimSpaces,
-} from './quizRequest';
+import { parseMatchedBasicQuizIds, trimSpaces } from './quizRequest';
 import {
   getQuizOrderBy,
   getQuizSelect,
@@ -546,7 +542,6 @@ export class QuizService {
   // 問題にカテゴリ追加
   async addCategoryToQuiz(req: AddCategoryToQuizAPIRequestDto) {
     const { quiz_ids, category } = req;
-    assertQuizIds(quiz_ids);
     const categories = category.split(',');
     // トランザクション
     const updatedQuizzes = await prisma.$transaction(async (prisma) => {
@@ -583,7 +578,6 @@ export class QuizService {
   // 問題からカテゴリ削除
   async removeCategoryFromQuiz(body: DeleteCategoryOfQuizAPIRequestDto) {
     const { quiz_ids, category } = body;
-    assertQuizIds(quiz_ids);
     const categories = category.split(',');
     // トランザクション
     const updatedQuizzes = await prisma.$transaction(async (prisma) => {
@@ -636,8 +630,7 @@ export class QuizService {
 
   // 指定した問題のチェック状態をまとめて更新する
   // 存在しない問題が含まれていたら、どれも更新せずに404にする
-  private async updateChecked(quiz_ids: unknown, checked: boolean) {
-    assertQuizIds(quiz_ids);
+  private async updateChecked(quiz_ids: number[], checked: boolean) {
     return await prisma.$transaction(async (prisma) => {
       const existingIds = new Set(
         (
@@ -672,12 +665,6 @@ export class QuizService {
   // 問題のチェック反転
   async reverseCheck(req: ReverseCheckQuizAPIRequestDto) {
     const { quiz_id } = req;
-    if (!Number.isInteger(quiz_id)) {
-      throw new HttpException(
-        `問題番号が不正です(${quiz_id})`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const quiz = await prisma.quiz.findUnique({
       select: { checked: true },
       where: { id: quiz_id },

@@ -97,6 +97,6 @@ export class SayingController {
   @ApiOperation({ summary: '格言IDを指定して格言を取得します。' })
   @ApiParam({ name: 'id', type: Number, description: '格言ID' })
   async getSayingById(@Param('id', ParseIntPipe) id: number) {
-    return await this.sayingService.getSayingByIdService(+id);
+    return await this.sayingService.getSayingByIdService(id);
   }
 }

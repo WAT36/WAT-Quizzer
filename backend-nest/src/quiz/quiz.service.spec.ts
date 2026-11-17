@@ -1047,25 +1047,6 @@ describe('QuizService', () => {
     );
   });
 
-  // 問題にカテゴリ追加・削除 異常系2 問題IDが不正なら更新せず400
-  it.each([[[]], [['1']], [[1.5]], ['1,2']])(
-    'addCategoryToQuiz / removeCategoryFromQuiz - NG2 quiz_ids=%j',
-    async (quiz_ids) => {
-      (prisma.$transaction as jest.Mock).mockClear();
-      const req = { quiz_ids, category: 'カテゴリ1' } as unknown as {
-        quiz_ids: number[];
-        category: string;
-      };
-      await expect(quizService.addCategoryToQuiz(req)).rejects.toMatchObject({
-        status: 400,
-      });
-      await expect(
-        quizService.removeCategoryFromQuiz(req),
-      ).rejects.toMatchObject({ status: 400 });
-      expect(prisma.$transaction).not.toHaveBeenCalled();
-    },
-  );
-
   // 問題にカテゴリ追加 異常系3 存在しない問題は500にせず404のまま返す
   it('addCategoryToQuiz - NG3', async () => {
     (prisma.$transaction as jest.Mock).mockRejectedValueOnce(
@@ -1169,18 +1150,6 @@ describe('QuizService', () => {
     });
   });
 
-  // 問題にチェック追加 異常系2 問題IDが不正なら更新せず400
-  it.each([[[]], [['1']], [[1.5]], ['1,2']])(
-    'check - NG2 quiz_ids=%j',
-    async (quiz_ids) => {
-      (prisma.$transaction as jest.Mock).mockClear();
-      await expect(
-        quizService.check({ quiz_ids } as unknown as { quiz_ids: number[] }),
-      ).rejects.toMatchObject({ status: 400 });
-      expect(prisma.$transaction).not.toHaveBeenCalled();
-    },
-  );
-
   // 問題のチェック反転 正常系1
   it('reverseCheck - OK', async () => {
     // テストデータ
@@ -1207,15 +1176,6 @@ describe('QuizService', () => {
     await expect(quizService.reverseCheck(req)).rejects.toMatchObject({
       message: 'error test by jest.',
     });
-  });
-
-  // 問題のチェック反転 異常系2 問題IDが数値でなければ400
-  it('reverseCheck - NG2', async () => {
-    await expect(
-      quizService.reverseCheck({ quiz_id: '1' } as unknown as {
-        quiz_id: number;
-      }),
-    ).rejects.toMatchObject({ status: 400 });
   });
 
   // 問題のチェック反転 異常系3 問題が存在しなければ更新せず404

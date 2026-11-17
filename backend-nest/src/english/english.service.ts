@@ -188,13 +188,6 @@ export class EnglishService {
   ) {
     const { wordName, exampleIdList, isAssociation } = req;
 
-    if (!Array.isArray(exampleIdList) || exampleIdList.length === 0) {
-      throw new HttpException(
-        'エラー:紐付けを変更する例文が選択されていません',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     // 入力単語存在チェック
     const wordData = await prisma.word.findUnique({
       where: {
