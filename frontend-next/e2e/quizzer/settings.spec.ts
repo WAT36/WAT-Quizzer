@@ -41,6 +41,18 @@ test.describe('quizzer / 設定', () => {
     await expect(page.getByLabel('親カテゴリ')).toBeVisible();
   });
 
+  test('sessionStorageに保存した問題ファイル一覧の形が違う場合は、APIから取り直す', async ({ page, api }) => {
+    await page.addInitScript(() => sessionStorage.setItem('fileName', JSON.stringify({ file_num: 'abc' })));
+    await page.reload();
+
+    await page.getByRole('combobox').nth(0).click();
+    await expect(page.getByRole('option', { name: 'プログラミング基礎問題集' })).toBeVisible();
+    expect(api.requests('GET', '/quiz/file').length).toBeGreaterThan(0);
+    // 取り直した一覧で保存し直す
+    const saved = await page.evaluate(() => sessionStorage.getItem('fileName'));
+    expect(JSON.parse(saved ?? 'null')).toEqual(expect.arrayContaining([expect.objectContaining({ file_num: 1 })]));
+  });
+
   test('カテゴリ親子関係で親・子カテゴリを選ばずに追加すると、エラーを表示してAPIは呼ばない', async ({ page, api }) => {
     api.on('GET', '/category/parent-child', { json: [] });
     api.on('GET', '/category/count', { json: [] });

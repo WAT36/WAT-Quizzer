@@ -1,12 +1,13 @@
 import type { GetQuizFileApiResponseDto } from '.'
 import { defaultMessage, MESSAGES } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { get, onSuccess } from '../../..'
+import { get, onSuccess, readSessionCache } from '../../..'
+import { quizFileListCacheSchema } from './schema'
 
 // quizzer各画面用 問題ファイルリストをapi通信して取ってくる
 export const getQuizFileListAPI = async (): Promise<ApiResult> => {
   const storageKey = 'fileName'
-  const savedFileList = sessionStorage.getItem(storageKey)
+  const savedFileList = readSessionCache(storageKey, quizFileListCacheSchema)
   if (!savedFileList) {
     const result = get(
       '/quiz/file',
@@ -28,7 +29,7 @@ export const getQuizFileListAPI = async (): Promise<ApiResult> => {
     return {
       isSuccess: true,
       message: defaultMessage(MESSAGES.DEFAULT.MSG00001),
-      result: JSON.parse(savedFileList) as GetQuizFileApiResponseDto[]
+      result: savedFileList as GetQuizFileApiResponseDto[]
     }
   }
 }

@@ -45,4 +45,14 @@ test.describe('englishBot / トップ', () => {
     expect(api.requests('GET', '/english/source/statistics')).toHaveLength(1);
     expect(api.requests('GET', '/english/word/test/statistics/week')).toHaveLength(1);
   });
+
+  test('sessionStorageに保存した単語数のまとめの形が違う場合は、APIから取り直す', async ({ page, api }) => {
+    await page.addInitScript(() =>
+      sessionStorage.setItem('wordSummaryData', JSON.stringify([{ name: 'all', count: '30' }]))
+    );
+    await page.goto('/englishBot/');
+
+    await expect(page.locator('canvas[aria-label="単熟語登録数グラフ"]')).toBeVisible();
+    await expect.poll(() => api.requests('GET', '/english/word/summary').length).toBeGreaterThan(0);
+  });
 });

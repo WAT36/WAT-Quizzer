@@ -1,11 +1,12 @@
 import type { WordSummaryApiResponse } from '.'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { get } from '../../..'
+import { get, readSessionCache } from '../../..'
+import { wordSummaryCacheSchema } from './schema'
 
 // englishbot用 単語熟語統計データを取ってくる
 export const getWordSummaryDataAPI = async (): Promise<ApiResult> => {
   const storageKey = 'wordSummaryData'
-  const savedSummaryData = sessionStorage.getItem(storageKey)
+  const savedSummaryData = readSessionCache(storageKey, wordSummaryCacheSchema)
   if (!savedSummaryData) {
     const result = get(
       '/english/word/summary',
@@ -46,7 +47,7 @@ export const getWordSummaryDataAPI = async (): Promise<ApiResult> => {
         messageColor: 'common.black',
         isDisplay: false
       },
-      result: JSON.parse(savedSummaryData) as WordSummaryApiResponse[]
+      result: savedSummaryData as WordSummaryApiResponse[]
     }
   }
 }
