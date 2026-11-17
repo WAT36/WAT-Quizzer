@@ -11,6 +11,7 @@ import { AllExceptionsFilter } from 'src/common/filter/allExceptions.filter';
 // コントローラーでのリクエストの検証を確認する（サービスはモック、認証は通す）
 describe('EnglishWordController', () => {
   let app: INestApplication;
+  const wordTestService = { getTestData: jest.fn() };
   const wordService = {
     addWordAndMeanService: jest.fn(),
     wordTestClearedService: jest.fn(),
@@ -34,7 +35,7 @@ describe('EnglishWordController', () => {
       controllers: [EnglishWordController],
       providers: [
         { provide: EnglishWordService, useValue: wordService },
-        { provide: EnglishWordTestService, useValue: {} },
+        { provide: EnglishWordTestService, useValue: wordTestService },
         { provide: APP_FILTER, useClass: AllExceptionsFilter },
       ],
     })
@@ -50,6 +51,8 @@ describe('EnglishWordController', () => {
   });
 
   beforeEach(() => {
+    wordTestService.getTestData.mockReset();
+    wordTestService.getTestData.mockResolvedValue({});
     Object.values(wordService).forEach((fn) => {
       fn.mockReset();
       fn.mockResolvedValue({});
@@ -318,5 +321,55 @@ describe('EnglishWordController', () => {
     expect(res.body.message).toBe(
       'inputWord.newSourceName: 新規追加する出典を入力してください',
     );
+  });
+
+  describe('GET /english/word/test (英単語テストデータ取得)', () => {
+    it.each([
+      ['出題形式だけ指定', '?format=random', { format: 'random' }],
+      [
+        // 画面で出典・期間・チェック・正解率・件数・単語種別を指定した場合
+        '条件をすべて指定',
+        '?format=lru&source=1&startDate=2026-11-01&endDate=2026-11-14&checked=true&min_rate=0&max_rate=100&result_from=1&result_to=10&word_type=phrase',
+        {
+          format: 'lru',
+          source: 1,
+          startDate: '2026-11-01',
+          endDate: '2026-11-14',
+          checked: true,
+          min_rate: 0,
+          max_rate: 100,
+          result_from: 1,
+          result_to: 10,
+          word_type: 'phrase',
+        },
+      ],
+      [
+        '未選択(-1)の出典・正解率は指定なしにする',
+        '?format=review&source=-1&checked=false&min_rate=10&max_rate=-1',
+        { format: 'review', checked: false, min_rate: 10 },
+      ],
+    ])('%s', async (_, query, expected) => {
+      await request(app.getHttpServer())
+        .get('/english/word/test' + query)
+        .expect(200);
+      expect(wordTestService.getTestData).toHaveBeenCalledWith(expected);
+    });
+
+    it.each([
+      ['出題形式がない', ''],
+      ['出題形式が空', '?format='],
+      ['出題形式が定義外', '?format=unknown'],
+      ['出典IDが数値でない', '?format=random&source=abc'],
+      ['checkedがtrue/false以外', '?format=random&checked=yes'],
+      ['正解率が100より大きい', '?format=random&min_rate=101'],
+      ['日付の形式が違う', '?format=random&startDate=NaN-NaN-NaN'],
+      ['件数の開始が0', '?format=random&result_from=0'],
+      ['単語種別が定義外', '?format=random&word_type=x'],
+    ])('%sなら400でサービスを呼ばない', async (_, query) => {
+      await request(app.getHttpServer())
+        .get('/english/word/test' + query)
+        .expect(400);
+      expect(wordTestService.getTestData).not.toHaveBeenCalled();
+    });
   });
 });

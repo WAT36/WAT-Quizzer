@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   getDateForSqlString,
-  GetEnglishWordTestDataAPIRequestDto,
+  GetEnglishWordTestDataAPIRequestParsedDto,
   getPastDate,
   getPrismaPastDayRange,
   getRandomElementsFromArray,
@@ -13,7 +13,7 @@ import {
 @Injectable()
 export class EnglishWordTestService {
   // 英単語テストで利用するデータ（単語データ・四択ダミー選択肢）を取得する
-  async getTestData(req: GetEnglishWordTestDataAPIRequestDto) {
+  async getTestData(req: GetEnglishWordTestDataAPIRequestParsedDto) {
     try {
       const {
         format,

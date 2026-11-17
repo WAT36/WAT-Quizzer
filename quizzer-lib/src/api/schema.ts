@@ -51,6 +51,18 @@ export const queryIdSchema = z.preprocess(
   z.coerce.number().int().positive().optional()
 )
 
+// クエリの率(%)。0〜100の数値、未指定ならundefined
+export const queryRateSchema = z.preprocess(
+  toUndefinedIfUnspecified,
+  z.coerce.number().min(0).max(100).optional()
+)
+
+// クエリの真偽値。'true'・'false'のみ受け付け、未指定ならundefined
+export const queryBooleanSchema = z
+  .enum(['true', 'false'])
+  .optional()
+  .transform((value) => (value === undefined ? undefined : value === 'true'))
+
 // クエリの日付（YYYY-MM-DD）。空ならundefined
 export const queryDateSchema = z.preprocess(
   toUndefinedIfUnspecified,

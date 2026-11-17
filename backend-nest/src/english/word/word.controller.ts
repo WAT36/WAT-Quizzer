@@ -40,10 +40,10 @@ import {
   SubmitEnglishWordTestDataAPIRequestDto,
   submitEnglishWordTestDataAPIRequestSchema,
   SearchWordAPIRequestDto,
-  GetEnglishWordTestDataAPIRequestDto,
+  GetEnglishWordTestDataAPIRequestParsedDto,
+  getEnglishWordTestDataAPIRequestSchema,
 } from 'quizzer-lib';
 import { EnglishWordTestService } from './test/test.service';
-import { WordTestPipe } from './test/pipe/wordTest.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ZodValidationPipe } from '../../common/zodValidation.pipe';
@@ -104,7 +104,8 @@ export class EnglishWordController {
   @UseGuards(CognitoAuthGuard)
   @Get('test')
   async getEnglishWordTestData(
-    @Query(WordTestPipe) req: GetEnglishWordTestDataAPIRequestDto,
+    @Query(new ZodValidationPipe(getEnglishWordTestDataAPIRequestSchema))
+    req: GetEnglishWordTestDataAPIRequestParsedDto,
   ) {
     return await this.englishWordTestService.getTestData(req);
   }
