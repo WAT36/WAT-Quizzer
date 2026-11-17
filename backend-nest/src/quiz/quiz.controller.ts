@@ -44,6 +44,8 @@ import {
   searchQuizAPIRequestSchema,
   GetAnswerLogStatisticsAPIRequestDto,
   getAnswerLogStatisticsAPIRequestSchema,
+  getAccuracyRateHistgramAPIRequestSchema,
+  getRecommendedCategoriesAPIRequestSchema,
 } from 'quizzer-lib';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { quizImageUploadOptions } from './image/quizImageUpload.options';
@@ -372,9 +374,12 @@ export class QuizController {
     description: '指定ファイル番号の正答率ヒストグラムデータを取得します。',
   })
   @Get('/statistics/histgram')
-  async getAccuracyRateHistgramData(@Query('file_num') file_num: string) {
+  async getAccuracyRateHistgramData(
+    @Query(new ZodValidationPipe(getAccuracyRateHistgramAPIRequestSchema))
+    { file_num }: { file_num: number },
+  ) {
     return await this.quizStatisticsService.getAccuracyRateHistgramData(
-      +file_num,
+      file_num,
     );
   }
 
@@ -384,7 +389,10 @@ export class QuizController {
       '最近解いていない、または最近の正解率が低いカテゴリを最大5件返します。',
   })
   @Get('/recommend-categories')
-  async getRecommendedCategories(@Query('file_num') file_num: string) {
-    return await this.quizStatisticsService.getRecommendedCategories(+file_num);
+  async getRecommendedCategories(
+    @Query(new ZodValidationPipe(getRecommendedCategoriesAPIRequestSchema))
+    { file_num }: { file_num: number },
+  ) {
+    return await this.quizStatisticsService.getRecommendedCategories(file_num);
   }
 }

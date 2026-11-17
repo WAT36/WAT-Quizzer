@@ -17,6 +17,7 @@ import {
   changeExampleAssociationAPIRequestSchema,
   SubmitExampleTestDataAPIRequestDto,
   submitExampleTestDataAPIRequestSchema,
+  getExampleTestDataAPIRequestSchema,
 } from 'quizzer-lib';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -69,10 +70,11 @@ export class EnglishController {
 
   @ApiOperation({ summary: '例文テストデータを取得する' })
   @Get('/example/test')
-  async getExampleTest(@Query('sourceId') sourceId?: string) {
-    return await this.englishService.getExampleTestService(
-      sourceId !== undefined ? +sourceId : undefined,
-    );
+  async getExampleTest(
+    @Query(new ZodValidationPipe(getExampleTestDataAPIRequestSchema))
+    { sourceId }: { sourceId?: number },
+  ) {
+    return await this.englishService.getExampleTestService(sourceId);
   }
 
   @ApiOperation({ summary: '例文テストを正解として記録' })

@@ -14,6 +14,7 @@ describe('QuizFileController', () => {
     addFile: jest.fn(),
     deleteFile: jest.fn(),
     getFileStatisticsData: jest.fn(),
+    downloadCsv: jest.fn(),
   };
 
   beforeAll(async () => {
@@ -125,6 +126,28 @@ describe('QuizFileController', () => {
         .get('/quiz/file/statistics' + query)
         .expect(400);
       expect(quizFileService.getFileStatisticsData).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /quiz/file/csv (問題ファイルCSVダウンロード)', () => {
+    it('ファイル番号を数値にして渡し、CSVを返す', async () => {
+      quizFileService.downloadCsv.mockResolvedValue('a,b');
+      const res = await request(app.getHttpServer())
+        .get('/quiz/file/csv?file_num=3')
+        .expect(200);
+      expect(quizFileService.downloadCsv).toHaveBeenCalledWith(3);
+      expect(res.text).toBe('a,b');
+    });
+
+    it.each([
+      ['ない', ''],
+      ['-1(未選択)', '?file_num=-1'],
+      ['数値でない', '?file_num=abc'],
+    ])('ファイル番号が%sなら400', async (_, query) => {
+      await request(app.getHttpServer())
+        .get('/quiz/file/csv' + query)
+        .expect(400);
+      expect(quizFileService.downloadCsv).not.toHaveBeenCalled();
     });
   });
 });

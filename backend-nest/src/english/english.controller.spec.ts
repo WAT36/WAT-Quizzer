@@ -16,6 +16,7 @@ describe('EnglishController', () => {
     exampleTestClearedService: jest.fn(),
     exampleTestFailedService: jest.fn(),
     registerWordsToSource: jest.fn(),
+    getExampleTestService: jest.fn(),
   };
 
   beforeAll(async () => {
@@ -194,6 +195,29 @@ describe('EnglishController', () => {
         .send(body)
         .expect(400);
       expect(englishService.registerWordsToSource).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /english/example/test (例文テストデータ取得)', () => {
+    it.each([
+      ['出典が未指定なら全出典', '', undefined],
+      // プルダウンで「選択なし」を選ぶと-1が送られる
+      ['出典が-1(選択なし)なら全出典', '?sourceId=-1', undefined],
+      ['出典を指定', '?sourceId=3', 3],
+    ])('%s', async (_, query, sourceId) => {
+      await request(app.getHttpServer())
+        .get('/english/example/test' + query)
+        .expect(200);
+      expect(englishService.getExampleTestService).toHaveBeenCalledWith(
+        sourceId,
+      );
+    });
+
+    it('出典IDが数値でなければ400', async () => {
+      await request(app.getHttpServer())
+        .get('/english/example/test?sourceId=abc')
+        .expect(400);
+      expect(englishService.getExampleTestService).not.toHaveBeenCalled();
     });
   });
 });

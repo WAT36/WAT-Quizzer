@@ -28,6 +28,10 @@ describe('EnglishWordController', () => {
     linkWordEtymologyService: jest.fn(),
     toggleCheckService: jest.fn(),
     editWordMeanService: jest.fn(),
+    searchWordService: jest.fn(),
+    getSourceOfWordById: jest.fn(),
+    getSubSourceOfWordById: jest.fn(),
+    getWordByIdService: jest.fn(),
   };
 
   beforeAll(async () => {
@@ -370,6 +374,46 @@ describe('EnglishWordController', () => {
         .get('/english/word/test' + query)
         .expect(400);
       expect(wordTestService.getTestData).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /english/word/search (英単語検索)', () => {
+    it('検索条件をサービスに渡す', async () => {
+      await request(app.getHttpServer())
+        .get('/english/word/search?wordName=app&meanQuery=&subSourceName=p.1')
+        .expect(200);
+      expect(wordService.searchWordService).toHaveBeenCalledWith({
+        wordName: 'app',
+        meanQuery: '',
+        subSourceName: 'p.1',
+      });
+    });
+
+    it('同じ条件を複数指定したら400', async () => {
+      await request(app.getHttpServer())
+        .get('/english/word/search?wordName=a&wordName=b')
+        .expect(400);
+      expect(wordService.searchWordService).not.toHaveBeenCalled();
+    });
+  });
+
+  describe.each([
+    ['/english/word/:id', '', 'getWordByIdService'],
+    ['/english/word/:id/source', '/source', 'getSourceOfWordById'],
+    ['/english/word/:id/subsource', '/subsource', 'getSubSourceOfWordById'],
+  ] as const)('GET %s', (_, suffix, service) => {
+    it('IDを数値にして渡す', async () => {
+      await request(app.getHttpServer())
+        .get('/english/word/12' + suffix)
+        .expect(200);
+      expect(wordService[service]).toHaveBeenCalledWith(12);
+    });
+
+    it.each(['abc', '0', '1.5'])('IDが%sなら400', async (id) => {
+      await request(app.getHttpServer())
+        .get('/english/word/' + id + suffix)
+        .expect(400);
+      expect(wordService[service]).not.toHaveBeenCalled();
     });
   });
 });

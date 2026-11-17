@@ -42,6 +42,8 @@ import {
   SearchWordAPIRequestDto,
   GetEnglishWordTestDataAPIRequestParsedDto,
   getEnglishWordTestDataAPIRequestSchema,
+  searchWordAPIRequestSchema,
+  idParamSchema,
 } from 'quizzer-lib';
 import { EnglishWordTestService } from './test/test.service';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
@@ -75,7 +77,10 @@ export class EnglishWordController {
   @ApiOperation({ summary: '英単語を検索' })
   @UseGuards(CognitoAuthGuard)
   @Get('search')
-  async searchWord(@Query() req: SearchWordAPIRequestDto) {
+  async searchWord(
+    @Query(new ZodValidationPipe(searchWordAPIRequestSchema))
+    req: SearchWordAPIRequestDto,
+  ) {
     return await this.englishWordService.searchWordService(req);
   }
 
@@ -258,22 +263,28 @@ export class EnglishWordController {
   @ApiOperation({ summary: 'ID指定で英単語の出典情報を取得' })
   @UseGuards(CognitoAuthGuard)
   @Get(':id/source')
-  async getSourceOfWordById(@Param('id') id: string) {
-    return await this.englishWordService.getSourceOfWordById(+id);
+  async getSourceOfWordById(
+    @Param(new ZodValidationPipe(idParamSchema)) { id }: { id: number },
+  ) {
+    return await this.englishWordService.getSourceOfWordById(id);
   }
 
   @ApiOperation({ summary: 'ID指定で英単語のサブ出典情報を取得' })
   @UseGuards(CognitoAuthGuard)
   @Get(':id/subsource')
-  async getSubSourceOfWordById(@Param('id') id: string) {
-    return await this.englishWordService.getSubSourceOfWordById(+id);
+  async getSubSourceOfWordById(
+    @Param(new ZodValidationPipe(idParamSchema)) { id }: { id: number },
+  ) {
+    return await this.englishWordService.getSubSourceOfWordById(id);
   }
 
   @ApiOperation({ summary: 'ID指定で英単語を取得' })
   @UseGuards(CognitoAuthGuard)
   @Get(':id')
-  async getWordById(@Param('id') id: string) {
-    return await this.englishWordService.getWordByIdService(+id);
+  async getWordById(
+    @Param(new ZodValidationPipe(idParamSchema)) { id }: { id: number },
+  ) {
+    return await this.englishWordService.getWordByIdService(id);
   }
 
   @ApiOperation({ summary: '英単語の意味を編集' })

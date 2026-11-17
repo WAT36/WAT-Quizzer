@@ -13,7 +13,11 @@ import { AllExceptionsFilter } from 'src/common/filter/allExceptions.filter';
 // コントローラーでのリクエストの検証を確認する（サービスはモック、認証は通す）
 describe('QuizController', () => {
   let app: INestApplication;
-  const quizStatisticsService = { getAnswerLogStatistics: jest.fn() };
+  const quizStatisticsService = {
+    getAnswerLogStatistics: jest.fn(),
+    getAccuracyRateHistgramData: jest.fn(),
+    getRecommendedCategories: jest.fn(),
+  };
   const quizService = {
     add: jest.fn(),
     cleared: jest.fn(),
@@ -54,8 +58,10 @@ describe('QuizController', () => {
   });
 
   beforeEach(() => {
-    quizStatisticsService.getAnswerLogStatistics.mockReset();
-    quizStatisticsService.getAnswerLogStatistics.mockResolvedValue([]);
+    Object.values(quizStatisticsService).forEach((fn) => {
+      fn.mockReset();
+      fn.mockResolvedValue([]);
+    });
     Object.values(quizService).forEach((fn) => {
       fn.mockReset();
       fn.mockResolvedValue({ id: 1 });
@@ -453,6 +459,54 @@ describe('QuizController', () => {
         .get('/quiz/search?' + query)
         .expect(400);
       expect(quizService.search).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /quiz/statistics/histgram (正答率ヒストグラム)', () => {
+    it.each([
+      ['未指定なら全ファイル(-1)', '', -1],
+      ['-1なら全ファイル', '?file_num=-1', -1],
+      ['ファイルを指定', '?file_num=2', 2],
+    ])('%s', async (_, query, file_num) => {
+      await request(app.getHttpServer())
+        .get('/quiz/statistics/histgram' + query)
+        .expect(200);
+      expect(
+        quizStatisticsService.getAccuracyRateHistgramData,
+      ).toHaveBeenCalledWith(file_num);
+    });
+
+    it('file_numが数値でなければ400', async () => {
+      await request(app.getHttpServer())
+        .get('/quiz/statistics/histgram?file_num=abc')
+        .expect(400);
+      expect(
+        quizStatisticsService.getAccuracyRateHistgramData,
+      ).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /quiz/recommend-categories (おすすめカテゴリ)', () => {
+    it('ファイル番号を数値にして渡す', async () => {
+      await request(app.getHttpServer())
+        .get('/quiz/recommend-categories?file_num=2')
+        .expect(200);
+      expect(
+        quizStatisticsService.getRecommendedCategories,
+      ).toHaveBeenCalledWith(2);
+    });
+
+    it.each([
+      ['ない', ''],
+      ['-1(未選択)', '?file_num=-1'],
+      ['数値でない', '?file_num=abc'],
+    ])('ファイル番号が%sなら400', async (_, query) => {
+      await request(app.getHttpServer())
+        .get('/quiz/recommend-categories' + query)
+        .expect(400);
+      expect(
+        quizStatisticsService.getRecommendedCategories,
+      ).not.toHaveBeenCalled();
     });
   });
 });

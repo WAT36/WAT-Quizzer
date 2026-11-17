@@ -17,6 +17,7 @@ import {
   deleteQuizFileApiRequestSchema,
   GetQuizFileStatisticsAPIRequestDto,
   getQuizFileStatisticsAPIRequestSchema,
+  downloadQuizCsvAPIRequestSchema,
 } from 'quizzer-lib';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { Response } from 'express';
@@ -78,8 +79,12 @@ export class QuizFileController {
     summary: 'クイズファイルCSVダウンロード',
     description: '指定したクイズファイルの内容をCSV形式でダウンロードします。',
   })
-  async downloadCsv(@Query('file_num') file_num: string, @Res() res: Response) {
-    const csv = await this.quizFileService.downloadCsv(+file_num);
+  async downloadCsv(
+    @Query(new ZodValidationPipe(downloadQuizCsvAPIRequestSchema))
+    { file_num }: { file_num: number },
+    @Res() res: Response,
+  ) {
+    const csv = await this.quizFileService.downloadCsv(file_num);
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename="data.csv"');
     res.send(csv);
