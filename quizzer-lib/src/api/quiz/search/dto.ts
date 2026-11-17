@@ -1,23 +1,12 @@
 import type { z } from 'zod'
 import type { ApiResponse } from '../..'
-import type { searchQuizAPIRequestSchema } from './schema'
+import type {
+  searchQuizAPIRequestSchema,
+  searchQuizRequestDataSchema
+} from './schema'
 
-export interface SearchQuizAPIRequestDto {
-  query: string
-  file_num: number
-  format_id?: { [key: string]: boolean }
-  min_rate?: number
-  max_rate?: number
-  category_and?: string[]
-  category_not?: string[]
-  checked?: boolean
-  searchInOnlySentense?: boolean
-  searchInOnlyAnswer?: boolean
-  searchInExplanation?: boolean
-  onlyDirectCategory?: boolean
-  result_from?: number
-  result_to?: number
-}
+// 問題検索画面の検索条件（APIにはクエリ文字列にして送る）
+export type SearchQuizAPIRequestDto = z.output<typeof searchQuizRequestDataSchema>
 
 // API側でクエリを検証・変換した後のDTO
 export type SearchQuizAPIRequestParsedDto = z.output<typeof searchQuizAPIRequestSchema>

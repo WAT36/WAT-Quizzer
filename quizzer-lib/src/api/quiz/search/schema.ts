@@ -53,3 +53,29 @@ export const searchQuizAPIRequestSchema = z.object({
   result_from: queryIdSchema, // 検索結果のx件目からy件目までに絞る
   result_to: queryIdSchema
 })
+
+// 検索結果の件数範囲の入力値
+// 入力欄の値を数値にできなかった場合(NaN)はJSONにするとnullになるため、未入力として扱う
+const resultRangeSchema = z.preprocess(
+  (x) => x ?? undefined,
+  z.number().int().optional()
+)
+
+// 問題検索画面の検索条件（画面のstateと、sessionStorageに保存して復元する値の形）
+// 入力途中の値も持つため、APIのクエリより緩くしている（範囲などはAPI側で検証する）
+export const searchQuizRequestDataSchema = z.object({
+  query: z.string(),
+  file_num: z.number().int(), // 未選択は-1
+  format_id: z.record(z.string(), z.boolean()).optional(), // 問題形式ID→チェック有無
+  min_rate: z.number().optional(),
+  max_rate: z.number().optional(),
+  category_and: z.array(z.string()).optional(),
+  category_not: z.array(z.string()).optional(),
+  checked: z.boolean().optional(),
+  searchInOnlySentense: z.boolean().optional(),
+  searchInOnlyAnswer: z.boolean().optional(),
+  searchInExplanation: z.boolean().optional(),
+  onlyDirectCategory: z.boolean().optional(),
+  result_from: resultRangeSchema,
+  result_to: resultRangeSchema
+})
