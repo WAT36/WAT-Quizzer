@@ -11,13 +11,13 @@ import { CategoryCleanupSection } from '@/components/ui-forms/quizzer/settings/c
 import { useQuizFileList } from '@/hooks/useQuizFileList';
 
 export default function QuizzerSettingPage() {
-  const { filelistoption } = useQuizFileList();
+  const { filelistoption, reloadFileList } = useQuizFileList();
   const setMessage = useSetRecoilState(messageState);
 
   const contents = () => {
     return (
       <Container>
-        <FileConfigSection setMessage={setMessage} filelistoption={filelistoption} />
+        <FileConfigSection setMessage={setMessage} filelistoption={filelistoption} onFileListChanged={reloadFileList} />
         <LogConfigSection filelistoption={filelistoption} setMessage={setMessage} />
         <DownloadQuizCsvSection filelistoption={filelistoption} setMessage={setMessage} />
         <CategoryParentChildConfigSection filelistoption={filelistoption} setMessage={setMessage} />

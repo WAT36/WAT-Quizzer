@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { test, expect } from '../support/fixtures';
-import { mockQuizzerMasterData } from '../support/data';
+import { mockQuizzerMasterData, quizFiles } from '../support/data';
 
 test.describe('quizzer / 設定', () => {
   test.beforeEach(async ({ page, api }) => {
@@ -115,5 +115,53 @@ test.describe('quizzer / 設定', () => {
 
     expect(api.requests('DELETE', '/quiz/file')).toHaveLength(0);
     expect(api.requests('PATCH', '/quiz/answer_log/file')).toHaveLength(0);
+  });
+
+  test('ファイルを追加すると、設定画面と他の画面のファイル一覧に追加したファイルが出る', async ({ page, api }) => {
+    const added = { file_num: 3, file_name: 'go', file_nickname: 'Go言語' };
+    api.on('POST', '/quiz/file', { status: 201, json: added });
+    // 追加した後に取り直したときは、追加したファイルが含まれている
+    api.on('GET', '/quiz/file', () => ({
+      json: api.requests('POST', '/quiz/file').length > 0 ? [...quizFiles, added] : quizFiles
+    }));
+
+    await page.getByLabel('新規ファイル名').fill('Go言語');
+    await page.getByRole('button', { name: '追加', exact: true }).first().click();
+    await expect(page.getByText('新規ファイル「Go言語」を追加しました')).toBeVisible();
+
+    // 問題ファイルのプルダウンは、ファイル削除・解答データ削除・CSVダウンロード・カテゴリ親子関係の順に並ぶ
+    await page.getByRole('combobox').nth(0).click();
+    await expect(page.getByRole('option', { name: 'Go言語' })).toBeVisible();
+    await page.keyboard.press('Escape');
+    // 追加の結果のメッセージは、一覧の取り直しで消えない
+    await expect(page.getByText('新規ファイル「Go言語」を追加しました')).toBeVisible();
+
+    await page.goto('/quizzer/addQuiz/');
+    await page.getByLabel('問題ファイル', { exact: true }).click();
+    await expect(page.getByRole('option', { name: 'Go言語' })).toBeVisible();
+  });
+
+  test('ファイルを削除すると、設定画面と他の画面のファイル一覧から消える', async ({ page, api }) => {
+    api.on('DELETE', '/quiz/file', { json: {} });
+    // 削除した後に取り直したときは、削除したファイルが含まれていない
+    api.on('GET', '/quiz/file', () => ({
+      json: api.requests('DELETE', '/quiz/file').length > 0 ? quizFiles.slice(0, 1) : quizFiles
+    }));
+
+    await page.getByRole('combobox').nth(0).click();
+    await page.getByRole('option', { name: 'AWS認定試験対策' }).click();
+    await page.getByRole('button', { name: '削除', exact: true }).nth(0).click();
+    await page.getByRole('dialog').getByRole('button', { name: '削除', exact: true }).click();
+    await expect(page.getByText('ファイルを削除しました(id:2)')).toBeVisible();
+
+    await page.getByRole('combobox').nth(1).click();
+    await expect(page.getByRole('option', { name: 'プログラミング基礎問題集' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'AWS認定試験対策' })).toHaveCount(0);
+    await page.keyboard.press('Escape');
+
+    await page.goto('/quizzer/addQuiz/');
+    await page.getByLabel('問題ファイル', { exact: true }).click();
+    await expect(page.getByRole('option', { name: 'プログラミング基礎問題集' })).toBeVisible();
+    await expect(page.getByRole('option', { name: 'AWS認定試験対策' })).toHaveCount(0);
   });
 });

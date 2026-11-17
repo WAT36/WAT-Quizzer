@@ -1,6 +1,7 @@
 import type { AddQuizApiResponseDto } from '../../../../..'
 import { MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
+import { clearQuizFileListCache } from '../list'
 import { post, onSuccess, validateRequest } from '../../..'
 import { addQuizFileApiRequestSchema } from './schema'
 import type { AddQuizFileApiRequest } from './dto'
@@ -25,6 +26,7 @@ export const addQuizFileAPI = async ({
     },
     onSuccess((data: ProcessingApiReponse) => {
       const result: AddQuizApiResponseDto = data.body as AddQuizApiResponseDto
+      clearQuizFileListCache()
       return {
         message: successMessage(
           MESSAGES.SUCCESS.MSG00012,
