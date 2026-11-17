@@ -27,14 +27,6 @@ export const DeleteFileSection = ({ filelistoption, setMessage }: DeleteFileSect
   // ファイルと問題削除
   const deleteFile = async () => {
     handleClose();
-    if (deleteFileNum === -1) {
-      setMessage({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      });
-      return;
-    }
     setMessage({
       message: '通信中...',
       messageColor: '#d3d3d3',

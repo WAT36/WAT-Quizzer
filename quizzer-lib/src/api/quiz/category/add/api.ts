@@ -1,7 +1,8 @@
 import type { AddCategoryToQuizAPIRequestDto } from './dto'
 import type { QuizWithCategoryApiResponseDto } from '../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { post } from '../../..'
+import { post, toErrorMessage, validateRequest } from '../../..'
+import { addCategoryToQuizAPIRequestSchema } from './schema'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 
 interface AddCategoryToQuizAPIProps {
@@ -11,15 +12,15 @@ interface AddCategoryToQuizAPIProps {
 export const addCategoryToQuizAPI = async ({
   addCategoryToQuizRequestData
 }: AddCategoryToQuizAPIProps): Promise<ApiResult> => {
-  if (
-    !addCategoryToQuizRequestData.quiz_ids ||
-    addCategoryToQuizRequestData.quiz_ids.length === 0
-  ) {
-    return {
-      isSuccess: false,
-      message: errorMessage(MESSAGES.ERROR.MSG00001)
-    }
-  }
+  const invalid = validateRequest(
+    addCategoryToQuizAPIRequestSchema,
+    addCategoryToQuizRequestData,
+    (issue) =>
+      issue.path[0] === 'quiz_ids'
+        ? MESSAGES.ERROR.MSG00001
+        : toErrorMessage(issue)
+  )
+  if (invalid) return invalid
 
   const result = await post(
     '/quiz/category',

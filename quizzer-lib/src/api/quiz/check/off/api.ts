@@ -1,7 +1,8 @@
 import type { CheckQuizAPIRequestDto, QuizApiResponseDto } from '../..'
-import { errorMessage, MESSAGES, successMessage } from '../../../../..'
+import { MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { put, onSuccess } from '../../..'
+import { put, onSuccess, validateRequest } from '../../..'
+import { checkQuizAPIRequestSchema } from '../schema'
 
 interface CheckOffQuizButtonProps {
   checkQuizRequestData: CheckQuizAPIRequestDto
@@ -10,12 +11,12 @@ interface CheckOffQuizButtonProps {
 export const checkOffQuizAPI = async ({
   checkQuizRequestData
 }: CheckOffQuizButtonProps): Promise<ApiResult> => {
-  if (
-    !checkQuizRequestData.quiz_ids ||
-    checkQuizRequestData.quiz_ids.length === 0
-  ) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00007) }
-  }
+  const invalid = validateRequest(
+    checkQuizAPIRequestSchema,
+    checkQuizRequestData,
+    () => MESSAGES.ERROR.MSG00007
+  )
+  if (invalid) return invalid
 
   const result = await put(
     '/quiz/uncheck',

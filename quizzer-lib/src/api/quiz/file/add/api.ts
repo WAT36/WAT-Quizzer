@@ -1,7 +1,8 @@
 import type { AddQuizApiResponseDto } from '../../../../..'
 import { MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { post, onSuccess } from '../../..'
+import { post, onSuccess, validateRequest } from '../../..'
+import { addQuizFileApiRequestSchema } from './schema'
 import type { AddQuizFileApiRequest } from './dto'
 
 interface AddQuizFileAPIProps {
@@ -11,6 +12,12 @@ interface AddQuizFileAPIProps {
 export const addQuizFileAPI = async ({
   addQuizFileApiRequest
 }: AddQuizFileAPIProps): Promise<ApiResult> => {
+  const invalid = validateRequest(
+    addQuizFileApiRequestSchema,
+    addQuizFileApiRequest
+  )
+  if (invalid) return invalid
+
   const result = await post(
     '/quiz/file',
     {

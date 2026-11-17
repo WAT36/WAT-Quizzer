@@ -1,6 +1,7 @@
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import type { ApiResult, ProcessingApiReponse, QuizApiResponseDto } from '../..'
-import { del } from '../..'
+import { del, validateRequest } from '../..'
+import { deleteQuizAPIRequestSchema } from './schema'
 import type { DeleteQuizAPIRequestDto } from './dto'
 
 interface DeleteQuizAPIProps {
@@ -9,14 +10,13 @@ interface DeleteQuizAPIProps {
 export const deleteQuiz = async ({
   deleteQuizAPIRequestData
 }: DeleteQuizAPIProps): Promise<ApiResult> => {
-  if (
-    !deleteQuizAPIRequestData.file_num ||
-    !deleteQuizAPIRequestData.quiz_num ||
-    deleteQuizAPIRequestData.file_num === -1 ||
-    deleteQuizAPIRequestData.quiz_num === -1
-  ) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00009) }
-  }
+  // ファイル・問題番号が未指定(-1)なら、削除する問題を取得していない
+  const invalid = validateRequest(
+    deleteQuizAPIRequestSchema,
+    deleteQuizAPIRequestData,
+    () => MESSAGES.ERROR.MSG00009
+  )
+  if (invalid) return invalid
 
   const result = await del(
     '/quiz',

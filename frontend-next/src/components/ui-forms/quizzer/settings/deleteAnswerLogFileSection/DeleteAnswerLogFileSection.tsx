@@ -20,15 +20,6 @@ export const DeleteAnswerLogFileSection = ({ filelistoption, setMessage }: Delet
   const deleteAnswerData = async () => {
     setDeleteLogOfFileAlertOpen(false);
 
-    if (deleteLogOfFileNum === -1) {
-      setMessage({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      });
-      return;
-    }
-
     setMessage({
       message: '通信中...',
       messageColor: '#d3d3d3',

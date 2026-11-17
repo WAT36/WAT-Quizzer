@@ -66,4 +66,28 @@ test.describe('quizzer / 設定', () => {
     await expect(page.getByText('エラー:問題ファイルを選択して下さい')).toBeVisible();
     expect(api.requests('GET', '/quiz/file/csv')).toHaveLength(0);
   });
+
+  test('ファイル名を入力せずに問題ファイルを追加すると、エラーを表示してAPIは呼ばない', async ({ page, api }) => {
+    await page.getByRole('button', { name: '追加', exact: true }).click();
+
+    await expect(page.getByText('エラー:ファイル名を入力してください')).toBeVisible();
+    expect(api.requests('POST', '/quiz/file')).toHaveLength(0);
+  });
+
+  test('ファイルを選ばずにファイル削除・解答データ削除をすると、エラーを表示してAPIは呼ばない', async ({
+    page,
+    api
+  }) => {
+    // 削除ボタンは、ファイル削除・解答データ削除の順に並ぶ
+    await page.getByRole('button', { name: '削除', exact: true }).nth(0).click();
+    await page.getByRole('dialog').getByRole('button', { name: '削除', exact: true }).click();
+    await expect(page.getByText('エラー:問題ファイルを選択して下さい')).toBeVisible();
+
+    await page.getByRole('button', { name: '削除', exact: true }).nth(1).click();
+    await page.getByRole('dialog').getByRole('button', { name: '削除', exact: true }).click();
+    await expect(page.getByText('エラー:問題ファイルを選択して下さい')).toBeVisible();
+
+    expect(api.requests('DELETE', '/quiz/file')).toHaveLength(0);
+    expect(api.requests('PATCH', '/quiz/answer_log/file')).toHaveLength(0);
+  });
 });

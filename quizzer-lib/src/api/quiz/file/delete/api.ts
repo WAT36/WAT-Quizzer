@@ -1,7 +1,8 @@
 import type { AddQuizApiResponseDto } from '../../../../..'
 import { MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { del, onSuccess } from '../../..'
+import { del, onSuccess, validateRequest } from '../../..'
+import { deleteQuizFileApiRequestSchema } from './schema'
 import type { DeleteQuizFileApiRequest } from './dto'
 
 interface DeleteQuizFileAPIProps {
@@ -11,6 +12,14 @@ interface DeleteQuizFileAPIProps {
 export const deleteQuizFileAPI = async ({
   deleteQuizFileApiRequest
 }: DeleteQuizFileAPIProps): Promise<ApiResult> => {
+  // ファイル未選択(-1)なら送らない
+  const invalid = validateRequest(
+    deleteQuizFileApiRequestSchema,
+    deleteQuizFileApiRequest,
+    () => MESSAGES.ERROR.MSG00001
+  )
+  if (invalid) return invalid
+
   const result = await del(
     '/quiz/file',
     {

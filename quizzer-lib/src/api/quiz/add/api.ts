@@ -1,6 +1,7 @@
 import type { AddQuizAPIRequestDto, AddQuizApiResponseDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post, onSuccess } from '../..'
+import { post, onSuccess, toErrorMessage, validateRequest } from '../..'
+import { addQuizAPIRequestSchema } from './schema'
 import {
   containsAny,
   errorMessage,
@@ -16,9 +17,18 @@ interface AddQuizAPIProps {
 export const addQuizAPI = async ({
   addQuizRequestData
 }: AddQuizAPIProps): Promise<ApiResult> => {
-  if (addQuizRequestData.file_num === -1) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
-  } else if (!addQuizRequestData.question || !addQuizRequestData.answer) {
+  // ファイル未選択(-1)は、画面向けのメッセージにする
+  const invalid = validateRequest(
+    addQuizAPIRequestSchema,
+    addQuizRequestData,
+    (issue) =>
+      issue.path[0] === 'file_num'
+        ? MESSAGES.ERROR.MSG00001
+        : toErrorMessage(issue)
+  )
+  if (invalid) return invalid
+  // 問題文・答えはスキーマでは任意項目（入力途中の状態も持つため）なので、ここで確認する
+  if (!addQuizRequestData.question || !addQuizRequestData.answer) {
     return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00005) }
   }
 
