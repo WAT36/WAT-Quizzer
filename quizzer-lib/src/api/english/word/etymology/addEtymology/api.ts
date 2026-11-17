@@ -1,6 +1,7 @@
 import type { AddEtymologyAPIRequestDto } from '.'
 import type { ApiResult } from '../../../..'
-import { post, onSuccess } from '../../../..'
+import { post, onSuccess, validateRequest } from '../../../..'
+import { addEtymologyAPIRequestSchema } from './schema'
 
 interface AddEtymologyAPIProps {
   addEtymologyData: AddEtymologyAPIRequestDto
@@ -9,19 +10,8 @@ interface AddEtymologyAPIProps {
 export const addEtymologyAPI = async ({
   addEtymologyData
 }: AddEtymologyAPIProps): Promise<ApiResult> => {
-  if (
-    !addEtymologyData.etymologyName ||
-    addEtymologyData.etymologyName === ''
-  ) {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:語源名が入力されていません',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
+  const invalid = validateRequest(addEtymologyAPIRequestSchema, addEtymologyData)
+  if (invalid) return invalid
 
   const result = await post(
     '/english/word/etymology',

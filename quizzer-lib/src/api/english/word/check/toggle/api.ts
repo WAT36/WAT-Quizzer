@@ -1,6 +1,7 @@
 import type { ToggleCheckAPIRequestDto } from '.'
 import type { ApiResult } from '../../../..'
-import { post, onSuccess } from '../../../..'
+import { post, onSuccess, validateRequest } from '../../../..'
+import { toggleCheckAPIRequestSchema } from './schema'
 
 interface ToggleCheckAPIButtonProps {
   toggleCheckData: ToggleCheckAPIRequestDto
@@ -9,6 +10,9 @@ interface ToggleCheckAPIButtonProps {
 export const toggleWordCheckAPI = async ({
   toggleCheckData
 }: ToggleCheckAPIButtonProps): Promise<ApiResult> => {
+  const invalid = validateRequest(toggleCheckAPIRequestSchema, toggleCheckData)
+  if (invalid) return invalid
+
   const result = await post(
     '/english/word/check/toggle',
     toggleCheckData,

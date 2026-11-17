@@ -1,6 +1,7 @@
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { put } from '../../..'
+import { put, toErrorMessage, validateRequest } from '../../..'
+import { deleteCategoryOfQuizAPIRequestSchema } from './schema'
 import type { DeleteCategoryOfQuizAPIRequestDto } from './dto'
 import type { QuizWithCategoryApiResponseDto } from '../..'
 
@@ -11,12 +12,15 @@ interface DeleteCategoryOfQuizAPIProps {
 export const deleteCategoryOfQuizAPI = async ({
   deleteCategoryOfQuizRequestData
 }: DeleteCategoryOfQuizAPIProps): Promise<ApiResult> => {
-  if (
-    !deleteCategoryOfQuizRequestData.quiz_ids ||
-    deleteCategoryOfQuizRequestData.quiz_ids.length === 0
-  ) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
-  }
+  const invalid = validateRequest(
+    deleteCategoryOfQuizAPIRequestSchema,
+    deleteCategoryOfQuizRequestData,
+    (issue) =>
+      issue.path[0] === 'quiz_ids'
+        ? MESSAGES.ERROR.MSG00001
+        : toErrorMessage(issue)
+  )
+  if (invalid) return invalid
 
   const result = await put(
     '/quiz/category',

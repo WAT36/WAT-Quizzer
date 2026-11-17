@@ -444,4 +444,17 @@ test.describe('englishBot / 単語詳細', () => {
     });
     expect(api.requests('GET', `/english/word/${wordDetail.id}`)).toHaveLength(2);
   });
+
+  test('類義語・語源名を入力せずに追加すると、エラーを表示してAPIを呼ばない', async ({ page, api }) => {
+    await page.getByRole('button', { name: '類義語追加' }).click();
+    await page.getByRole('button', { name: '類義語追加' }).last().click();
+    await expect(page.getByText('エラー:類義語を入力してください')).toBeVisible();
+
+    await page.getByRole('button', { name: '語源紐付け' }).click();
+    await page.getByRole('button', { name: '語源紐付け' }).last().click();
+    await expect(page.getByText('エラー:語源名を入力してください')).toBeVisible();
+
+    expect(api.requests('POST', '/english/word/synonym')).toHaveLength(0);
+    expect(api.requests('POST', '/english/word/etymology/link')).toHaveLength(0);
+  });
 });

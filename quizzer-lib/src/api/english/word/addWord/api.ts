@@ -1,5 +1,6 @@
 import type { ApiResult } from '../../..'
-import { post, onSuccess } from '../../..'
+import { post, onSuccess, toErrorMessage, validateRequest } from '../../..'
+import { addWordAPIRequestSchema } from './schema'
 import type { AddWordAPIRequestDto } from './dto'
 
 interface AddWordAPIProps {
@@ -10,44 +11,16 @@ interface AddWordAPIProps {
 export const addWordAPI = async ({
   addWordData
 }: AddWordAPIProps): Promise<ApiResult> => {
-  if (addWordData.inputWord.wordName === '') {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:単語が入力されておりません',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
-  for (let i = 0; i < addWordData.meanArrayData.length; i++) {
-    if (
-      addWordData.meanArrayData[i].partOfSpeechId === -1 ||
-      (addWordData.meanArrayData[i].partOfSpeechId === -2 &&
-        !addWordData.meanArrayData[i].partOfSpeechName)
-    ) {
-      return {
-        isSuccess: false,
-        message: {
-          message: `エラー:${i + 1}行目の品詞を入力してください`,
-          messageColor: 'error',
-          isDisplay: true
-        }
-      }
-    } else if (
-      !addWordData.meanArrayData[i].meaning ||
-      addWordData.meanArrayData[i].meaning === ''
-    ) {
-      return {
-        isSuccess: false,
-        message: {
-          message: `エラー:${i + 1}行目の意味を入力してください`,
-          messageColor: 'error',
-          isDisplay: true
-        }
-      }
-    }
-  }
+  // 意味の行のエラーは「N行目の〜」と表示する
+  const invalid = validateRequest(
+    addWordAPIRequestSchema,
+    addWordData,
+    (issue) =>
+      issue.path[0] === 'meanArrayData' && typeof issue.path[1] === 'number'
+        ? `エラー:${issue.path[1] + 1}行目の${issue.message}`
+        : toErrorMessage(issue)
+  )
+  if (invalid) return invalid
 
   const result = await post(
     '/english/word',

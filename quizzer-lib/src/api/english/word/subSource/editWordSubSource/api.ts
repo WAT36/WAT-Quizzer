@@ -1,6 +1,7 @@
 import type { EditWordSubSourceAPIRequestDto } from '.'
 import type { ApiResult } from '../../../..'
-import { post, onSuccess } from '../../../..'
+import { post, onSuccess, validateRequest } from '../../../..'
+import { editWordSubSourceAPIRequestSchema } from './schema'
 
 interface EditEnglishWordSubSourceButtonProps {
   editWordSubSourceData: EditWordSubSourceAPIRequestDto
@@ -9,19 +10,8 @@ interface EditEnglishWordSubSourceButtonProps {
 export const editEnglishWordSubSourceAPI = async ({
   editWordSubSourceData
 }: EditEnglishWordSubSourceButtonProps): Promise<ApiResult> => {
-  if (
-    !editWordSubSourceData.subSource ||
-    editWordSubSourceData.subSource === ''
-  ) {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:サブ出典を入力して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
+  const invalid = validateRequest(editWordSubSourceAPIRequestSchema, editWordSubSourceData)
+  if (invalid) return invalid
 
   const result = await post(
     '/english/word/subsource',

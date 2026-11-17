@@ -10,9 +10,11 @@ import React from 'react';
 interface DeleteFileSectionProps {
   filelistoption: PullDownOptionDto[];
   setMessage: React.Dispatch<React.SetStateAction<Message>>;
+  // ファイルを削除した後に呼ぶ
+  onFileDeleted?: () => Promise<void> | void;
 }
 
-export const DeleteFileSection = ({ filelistoption, setMessage }: DeleteFileSectionProps) => {
+export const DeleteFileSection = ({ filelistoption, setMessage, onFileDeleted }: DeleteFileSectionProps) => {
   const [deleteFileNum, setDeleteFileNum] = useState<number>(-1); // 削除する問題ファイルの番号
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
 
@@ -27,14 +29,6 @@ export const DeleteFileSection = ({ filelistoption, setMessage }: DeleteFileSect
   // ファイルと問題削除
   const deleteFile = async () => {
     handleClose();
-    if (deleteFileNum === -1) {
-      setMessage({
-        message: 'エラー:問題ファイルを選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      });
-      return;
-    }
     setMessage({
       message: '通信中...',
       messageColor: '#d3d3d3',
@@ -44,6 +38,7 @@ export const DeleteFileSection = ({ filelistoption, setMessage }: DeleteFileSect
     setMessage(result.message);
     if (result.isSuccess) {
       setDeleteFileNum(-1);
+      await onFileDeleted?.();
     }
   };
 

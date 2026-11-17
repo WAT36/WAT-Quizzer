@@ -11,8 +11,15 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CookieOptions, Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { AuthSigninRequestDto, SignInResult } from 'quizzer-lib';
+import {
+  AuthNewPasswordRequestDto,
+  authNewPasswordRequestSchema,
+  AuthSigninRequestDto,
+  authSigninRequestSchema,
+  SignInResult,
+} from 'quizzer-lib';
 import { CognitoSignInResult } from './cognito/cognito-auth.service';
+import { ZodValidationPipe } from '../common/zodValidation.pipe';
 
 // refreshTokenを入れるCookie。JSから読めないようHttpOnlyにし、/auth配下へのリクエストにだけ送らせる
 const REFRESH_TOKEN_COOKIE = 'quizzer_refresh_token';
@@ -44,7 +51,8 @@ export class AuthController {
     description: 'サインイン成功またはパスワード変更要求。',
   })
   async signin(
-    @Body() req: AuthSigninRequestDto,
+    @Body(new ZodValidationPipe(authSigninRequestSchema))
+    req: AuthSigninRequestDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<SignInResult> {
     const result = await this.authService.signIn(req.username, req.password);
@@ -63,13 +71,14 @@ export class AuthController {
     description: '新しいパスワード設定後のサインイン成功。',
   })
   async completeNewPassword(
-    @Body() req: AuthSigninRequestDto,
+    @Body(new ZodValidationPipe(authNewPasswordRequestSchema))
+    req: AuthNewPasswordRequestDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<SignInResult> {
     const result = await this.authService.completeNewPassword(
       req.username,
       req.password,
-      req.session ?? '',
+      req.session,
     );
     return this.toSignInResponse(result, res);
   }

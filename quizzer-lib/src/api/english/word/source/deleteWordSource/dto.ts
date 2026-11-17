@@ -1,5 +1,5 @@
+import type { z } from 'zod'
+import type { deleteWordSourceAPIRequestSchema } from './schema'
+
 // 英単語出典削除APIリクエスト型
-export interface DeleteWordSourceAPIRequestDto {
-  // word_sourceのid
-  id: number
-}
+export type DeleteWordSourceAPIRequestDto = z.infer<typeof deleteWordSourceAPIRequestSchema>

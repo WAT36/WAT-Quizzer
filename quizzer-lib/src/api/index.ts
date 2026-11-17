@@ -1,5 +1,8 @@
 export * from './API'
 export * from './dto'
+export * from './schema'
+export * from './validateRequest'
+export * from './sessionCache'
 
 export * from './english'
 export * from './saying'

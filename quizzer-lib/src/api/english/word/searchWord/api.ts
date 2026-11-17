@@ -9,10 +9,11 @@ interface SearchWordAPIProps {
 export const searchWordAPI = async ({
   searchWordData
 }: SearchWordAPIProps): Promise<ApiResult> => {
+  // 単語名・意味・サブ出典のどれも入力されていなければ検索しない
   const isEmptyQuery =
-    (!searchWordData.wordName || searchWordData.wordName === '') &&
-    (!searchWordData.wordName || searchWordData.wordName === '') &&
-    (!searchWordData.meanQuery || searchWordData.meanQuery === '')
+    !searchWordData.wordName &&
+    !searchWordData.meanQuery &&
+    !searchWordData.subSourceName
 
   if (isEmptyQuery) {
     return {

@@ -1,4 +1,6 @@
-export interface AddCategoryToQuizAPIRequestDto {
-  quiz_ids: number[] // 問題のID(quiz.id)
-  category: string
-}
+import type { z } from 'zod'
+import type { addCategoryToQuizAPIRequestSchema } from './schema'
+
+export type AddCategoryToQuizAPIRequestDto = z.infer<
+  typeof addCategoryToQuizAPIRequestSchema
+>

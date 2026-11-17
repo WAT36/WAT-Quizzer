@@ -1,6 +1,7 @@
 import type { EditQuizAPIRequestDto, EditQuizApiResponseDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post, onSuccess } from '../..'
+import { post, onSuccess, toErrorMessage, validateRequest } from '../..'
+import { editQuizAPIRequestSchema } from './schema'
 import {
   containsAny,
   errorMessage,
@@ -15,9 +16,21 @@ interface EditQuizAPIProps {
 export const editQuizAPI = async ({
   editQuizRequestData
 }: EditQuizAPIProps): Promise<ApiResult> => {
-  if (editQuizRequestData.file_num === -1) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00001) }
-  } else if (!editQuizRequestData.question || !editQuizRequestData.answer) {
+  // ファイル未選択・問題未取得(-1)は、画面向けのメッセージにする
+  const invalid = validateRequest(
+    editQuizAPIRequestSchema,
+    editQuizRequestData,
+    (issue) => {
+      if (issue.path[0] === 'file_num') return MESSAGES.ERROR.MSG00001
+      if (issue.path[0] === 'quiz_id' || issue.path[0] === 'quiz_num') {
+        return MESSAGES.ERROR.MSG00002
+      }
+      return toErrorMessage(issue)
+    }
+  )
+  if (invalid) return invalid
+  // 問題文・答えはスキーマでは任意項目（入力途中の状態も持つため）なので、ここで確認する
+  if (!editQuizRequestData.question || !editQuizRequestData.answer) {
     return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00005) }
   }
 

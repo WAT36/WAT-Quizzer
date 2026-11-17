@@ -1,5 +1,6 @@
 import type { ApiResult } from '../../..'
-import { post, onSuccess } from '../../..'
+import { post, onSuccess, validateRequest } from '../../..'
+import { addExampleAPIRequestSchema } from './schema'
 import type { AddExampleAPIRequestDto } from '.'
 
 // 例文データ登録
@@ -10,6 +11,9 @@ interface SubmitExampleSentenseAPIProps {
 export const submitExampleSentenseAPI = async ({
   addExampleData
 }: SubmitExampleSentenseAPIProps): Promise<ApiResult> => {
+  const invalid = validateRequest(addExampleAPIRequestSchema, addExampleData)
+  if (invalid) return invalid
+
   const result = await post(
     '/english/example',
     addExampleData,

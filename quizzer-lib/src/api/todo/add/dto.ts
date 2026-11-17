@@ -1,8 +1,8 @@
+import type { z } from 'zod'
 import type { ApiResponse } from '../..'
+import type { addTodoAPIRequestSchema } from './schema'
 
-export interface AddTodoAPIRequestDto {
-  todo: string
-}
+export type AddTodoAPIRequestDto = z.infer<typeof addTodoAPIRequestSchema>
 
 export interface AddTodoApiResponseDto extends ApiResponse {
   id: number

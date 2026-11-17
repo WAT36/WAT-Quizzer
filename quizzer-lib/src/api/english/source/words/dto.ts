@@ -1,6 +1,6 @@
-import type { ApiResponse } from '../../..'
+import type { z } from 'zod'
+import type { registerWordsToSourceSchema } from './schema'
 
-export interface RegisterWordsToSourceDto extends ApiResponse {
-  sourceId: string
-  words: string[]
-}
+export type RegisterWordsToSourceDto = z.infer<
+  typeof registerWordsToSourceSchema
+>

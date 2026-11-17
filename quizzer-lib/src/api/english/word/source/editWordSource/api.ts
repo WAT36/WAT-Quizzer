@@ -1,6 +1,7 @@
 import type { EditWordSourceAPIRequestDto } from '.'
 import type { ApiResult } from '../../../..'
-import { post, onSuccess } from '../../../..'
+import { post, onSuccess, validateRequest } from '../../../..'
+import { editWordSourceAPIRequestSchema } from './schema'
 
 interface EditEnglishWordSourceAPIProps {
   editWordSourceData: EditWordSourceAPIRequestDto
@@ -9,16 +10,8 @@ interface EditEnglishWordSourceAPIProps {
 export const editEnglishWordSourceAPI = async ({
   editWordSourceData
 }: EditEnglishWordSourceAPIProps): Promise<ApiResult> => {
-  if (editWordSourceData.sourceId === -1) {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:出典を選択して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
+  const invalid = validateRequest(editWordSourceAPIRequestSchema, editWordSourceData)
+  if (invalid) return invalid
 
   const result = await post(
     '/english/word/source',

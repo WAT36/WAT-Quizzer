@@ -1,8 +1,9 @@
 import type { AddSayingAPIRequestDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post, onSuccess } from '../..'
+import { post, onSuccess, toErrorMessage, validateRequest } from '../..'
+import { addSayingAPIRequestSchema } from './schema'
 import type { AddQuizApiResponseDto } from '../../../..'
-import { errorMessage, MESSAGES, successMessage } from '../../../..'
+import { MESSAGES, successMessage } from '../../../..'
 
 interface AddSayingButtonProps {
   addSayingAPIRequest: AddSayingAPIRequestDto
@@ -11,11 +12,16 @@ interface AddSayingButtonProps {
 export const addSayingAPI = async ({
   addSayingAPIRequest
 }: AddSayingButtonProps): Promise<ApiResult> => {
-  if (!addSayingAPIRequest.book_id || addSayingAPIRequest.book_id === -1) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00011) }
-  } else if (!addSayingAPIRequest.saying || addSayingAPIRequest.saying === '') {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00012) }
-  }
+  // 本の未選択(-1)は、画面向けのメッセージにする
+  const invalid = validateRequest(
+    addSayingAPIRequestSchema,
+    addSayingAPIRequest,
+    (issue) =>
+      issue.path[0] === 'book_id'
+        ? MESSAGES.ERROR.MSG00011
+        : toErrorMessage(issue)
+  )
+  if (invalid) return invalid
 
   const result = await post(
     '/saying',

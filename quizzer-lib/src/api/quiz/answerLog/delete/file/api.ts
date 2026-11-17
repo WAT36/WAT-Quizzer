@@ -1,6 +1,7 @@
 import { MESSAGES, successMessage } from '../../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../../..'
-import { patch, onSuccess } from '../../../..'
+import { patch, onSuccess, validateRequest } from '../../../..'
+import { deleteAnswerLogOfFileApiRequestSchema } from './schema'
 import type {
   DeleteAnswerLogOfFileApiRequestDto,
   DeleteAnswerLogOfFileApiResponseDto
@@ -13,6 +14,14 @@ interface DeleteAnswerLogOfFileAPIProps {
 export const deleteAnswerLogOfQuizFileAPI = async ({
   deleteLogOfFileRequest
 }: DeleteAnswerLogOfFileAPIProps): Promise<ApiResult> => {
+  // ファイル未選択(-1)なら送らない
+  const invalid = validateRequest(
+    deleteAnswerLogOfFileApiRequestSchema,
+    deleteLogOfFileRequest,
+    () => MESSAGES.ERROR.MSG00001
+  )
+  if (invalid) return invalid
+
   const result = await patch(
     '/quiz/answer_log/file',
     {

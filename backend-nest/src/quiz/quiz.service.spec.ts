@@ -124,6 +124,18 @@ describe('QuizService', () => {
     });
   });
 
+  // 問題取得 関連基礎問題・関連応用問題は、削除済みの関連付けを除いて取得する
+  it('getQuiz - 削除済みの関連付けは取得しない', async () => {
+    (prisma.quiz.findMany as jest.Mock).mockClear();
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce(
+      getQuizResultTest,
+    );
+    await quizService.getQuiz({ file_num: 1, quiz_num: 1 });
+    const { select } = (prisma.quiz.findMany as jest.Mock).mock.calls[0][0];
+    expect(select.quiz_advanced_linkage.where).toEqual({ deleted_at: null });
+    expect(select.quiz_basis_linkage.where).toEqual({ deleted_at: null });
+  });
+
   // 問題取得 format_idで形式を絞り込む（番号指定・条件指定とも）
   it('getQuiz - format_id', async () => {
     (prisma.quiz.findMany as jest.Mock).mockClear();
@@ -409,6 +421,34 @@ describe('QuizService', () => {
     expect(await quizService.add(req)).toEqual(correctData);
   });
 
+  // add 関連基礎問題は、応用問題・四択問題に紐付け、基礎問題には紐付けない
+  it.each([
+    [2, [{ basis_quiz_id: 3 }, { basis_quiz_id: 5 }]],
+    [3, [{ basis_quiz_id: 3 }, { basis_quiz_id: 5 }]],
+    [1, []],
+  ])('add - 関連基礎問題 format_id=%i', async (format_id, expected) => {
+    (prisma.quiz.findFirst as jest.Mock).mockResolvedValue({ quiz_num: 1 });
+    (prisma.quiz.create as jest.Mock).mockClear();
+    (prisma.quiz.create as jest.Mock).mockResolvedValue({ id: 99 });
+
+    await quizService.add({
+      file_num: 1,
+      format_id,
+      question: '問題文',
+      answer: '答え',
+      matched_basic_quiz_id: '3,5',
+      dummyChoice:
+        format_id === 3
+          ? [1, 2, 3].map((i) => ({ sentense: `ダミー${i}`, isCorrect: false }))
+          : undefined,
+    });
+
+    expect(
+      (prisma.quiz.create as jest.Mock).mock.calls[0][0].data
+        .quiz_advanced_linkage,
+    ).toEqual({ createMany: { data: expected } });
+  });
+
   // add 問題文と答えの前後の半角・全角スペースが削除されて登録されること
   it('add - 問題文と答えを前後トリムして登録', async () => {
     const req = {
@@ -443,28 +483,6 @@ describe('QuizService', () => {
       message: 'ファイル番号または問題文または答えが入力されていません。',
     });
   });
-
-  // add/edit 関連基礎問題番号に数値でないものがあれば400
-  it.each(['add', 'edit'] as const)(
-    '%s - NG 関連基礎問題番号が数値でない',
-    async (method) => {
-      const req = {
-        quiz_id: 1,
-        file_num: 1,
-        quiz_num: 1,
-        question: '問題',
-        answer: '答え',
-        category: 'カテゴリ',
-        format_id: 2,
-        matched_basic_quiz_id: '1,x',
-      };
-      await expect(quizService[method](req)).rejects.toMatchObject({
-        status: 400,
-        message:
-          '入力した関連基礎問題番号でエラーが発生しました；("x"は数値ではありません)',
-      });
-    },
-  );
 
   // 問題編集 正常系1
   it('edit - OK', async () => {
@@ -565,6 +583,68 @@ describe('QuizService', () => {
         where: { id },
       })),
     );
+  });
+
+  // 問題編集 正常系3 カテゴリが空・未指定なら、紐付けを外すだけで空の名前のカテゴリは登録しない
+  it.each([[''], [undefined]])('edit - OK3 category=%j', async (category) => {
+    const req = {
+      quiz_id: 22,
+      format_id: 1,
+      file_num: 1,
+      quiz_num: 1,
+      question: '問題文',
+      answer: '答え',
+      category,
+    };
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.quiz.update as jest.Mock).mockResolvedValueOnce({ id: 22 });
+    (prisma.category.upsert as jest.Mock).mockClear();
+    (prisma.category_quiz.updateMany as jest.Mock).mockClear();
+
+    expect(await quizService.edit(req)).toEqual({ id: 22 });
+    expect(prisma.category_quiz.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { quiz_id: 22 } }),
+    );
+    expect(prisma.category.upsert).not.toHaveBeenCalled();
+  });
+
+  // 問題編集 関連基礎問題 空なら全部外し、項目がなければ変えない
+  it.each([
+    ['空なら、関連付けを全部外して新しく紐付けない', '', true],
+    ['項目がなければ、関連付けは変えない', undefined, false],
+  ])('edit - 関連基礎問題 %s', async (_, matched_basic_quiz_id, unlinked) => {
+    (prisma.$transaction as jest.Mock).mockImplementationOnce((callback) =>
+      callback(prisma),
+    );
+    (prisma.quiz.update as jest.Mock).mockResolvedValueOnce({ id: 22 });
+    (prisma.quiz_basis_advanced_linkage.updateMany as jest.Mock).mockClear();
+    (prisma.quiz_basis_advanced_linkage.upsert as jest.Mock).mockClear();
+
+    await quizService.edit({
+      quiz_id: 22,
+      format_id: 2,
+      file_num: 1,
+      quiz_num: 1,
+      question: '問題文',
+      answer: '答え',
+      matched_basic_quiz_id,
+    });
+
+    if (unlinked) {
+      expect(
+        prisma.quiz_basis_advanced_linkage.updateMany,
+      ).toHaveBeenCalledWith({
+        data: { deleted_at: expect.any(Date) },
+        where: { advanced_quiz_id: 22 },
+      });
+    } else {
+      expect(
+        prisma.quiz_basis_advanced_linkage.updateMany,
+      ).not.toHaveBeenCalled();
+    }
+    expect(prisma.quiz_basis_advanced_linkage.upsert).not.toHaveBeenCalled();
   });
 
   // 問題編集 異常系2 ダミー選択肢の件数が登録済みのものと異なる
@@ -1047,25 +1127,6 @@ describe('QuizService', () => {
     );
   });
 
-  // 問題にカテゴリ追加・削除 異常系2 問題IDが不正なら更新せず400
-  it.each([[[]], [['1']], [[1.5]], ['1,2']])(
-    'addCategoryToQuiz / removeCategoryFromQuiz - NG2 quiz_ids=%j',
-    async (quiz_ids) => {
-      (prisma.$transaction as jest.Mock).mockClear();
-      const req = { quiz_ids, category: 'カテゴリ1' } as unknown as {
-        quiz_ids: number[];
-        category: string;
-      };
-      await expect(quizService.addCategoryToQuiz(req)).rejects.toMatchObject({
-        status: 400,
-      });
-      await expect(
-        quizService.removeCategoryFromQuiz(req),
-      ).rejects.toMatchObject({ status: 400 });
-      expect(prisma.$transaction).not.toHaveBeenCalled();
-    },
-  );
-
   // 問題にカテゴリ追加 異常系3 存在しない問題は500にせず404のまま返す
   it('addCategoryToQuiz - NG3', async () => {
     (prisma.$transaction as jest.Mock).mockRejectedValueOnce(
@@ -1169,18 +1230,6 @@ describe('QuizService', () => {
     });
   });
 
-  // 問題にチェック追加 異常系2 問題IDが不正なら更新せず400
-  it.each([[[]], [['1']], [[1.5]], ['1,2']])(
-    'check - NG2 quiz_ids=%j',
-    async (quiz_ids) => {
-      (prisma.$transaction as jest.Mock).mockClear();
-      await expect(
-        quizService.check({ quiz_ids } as unknown as { quiz_ids: number[] }),
-      ).rejects.toMatchObject({ status: 400 });
-      expect(prisma.$transaction).not.toHaveBeenCalled();
-    },
-  );
-
   // 問題のチェック反転 正常系1
   it('reverseCheck - OK', async () => {
     // テストデータ
@@ -1207,15 +1256,6 @@ describe('QuizService', () => {
     await expect(quizService.reverseCheck(req)).rejects.toMatchObject({
       message: 'error test by jest.',
     });
-  });
-
-  // 問題のチェック反転 異常系2 問題IDが数値でなければ400
-  it('reverseCheck - NG2', async () => {
-    await expect(
-      quizService.reverseCheck({ quiz_id: '1' } as unknown as {
-        quiz_id: number;
-      }),
-    ).rejects.toMatchObject({ status: 400 });
   });
 
   // 問題のチェック反転 異常系3 問題が存在しなければ更新せず404

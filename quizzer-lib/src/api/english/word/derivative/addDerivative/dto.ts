@@ -1,5 +1,5 @@
+import type { z } from 'zod'
+import type { addDerivativeAPIRequestSchema } from './schema'
+
 // 派生語追加APIリクエスト型
-export interface AddDerivativeAPIRequestDto {
-  wordName: string
-  derivativeName: string
-}
+export type AddDerivativeAPIRequestDto = z.infer<typeof addDerivativeAPIRequestSchema>

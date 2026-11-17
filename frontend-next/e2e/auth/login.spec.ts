@@ -53,6 +53,19 @@ test.describe('認証 / ログイン', () => {
     await expect(page).toHaveURL(/\/login\/?$/);
   });
 
+  test('ユーザー名・パスワードを入力せずにログインすると、エラーを表示してAPIは呼ばない', async ({ page, api }) => {
+    await page.goto('/login/');
+    await page.getByRole('button', { name: 'ログイン' }).click();
+    await expect(page.getByText('エラー:ユーザー名を入力してください')).toBeVisible();
+
+    await page.getByLabel('ユーザー名').fill('wat');
+    await page.getByRole('button', { name: 'ログイン' }).click();
+    await expect(page.getByText('エラー:パスワードを入力してください')).toBeVisible();
+
+    expect(api.requests('POST', '/auth/signin')).toHaveLength(0);
+    await expect(page).toHaveURL(/\/login\/?$/);
+  });
+
   test('新しいパスワードが必要な場合は、パスワード設定のフォームが表示される', async ({ page, api }) => {
     api.on('POST', '/auth/signin', {
       json: { status: 'NEW_PASSWORD_REQUIRED', session: 'session-123', username: 'wat' }

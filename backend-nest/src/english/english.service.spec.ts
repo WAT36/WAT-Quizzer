@@ -185,17 +185,6 @@ describe('EnglishService', () => {
       ).rejects.toMatchObject({ status: 404 });
     });
 
-    // 例文紐付け 異常系 例文が選択されていない
-    it('changeAssociationOfExampleService - 例文なし', async () => {
-      await expect(
-        englishService.changeAssociationOfExampleService({
-          wordName: 'test',
-          exampleIdList: [],
-          isAssociation: true,
-        }),
-      ).rejects.toMatchObject({ status: 400 });
-    });
-
     // 例文紐付け 異常系 トランザクションが失敗したらそのエラーを返す（500への変換は例外フィルタが行う）
     it('changeAssociationOfExampleService - NG', async () => {
       (prisma.word.findUnique as jest.Mock).mockResolvedValueOnce({ id: 10 });

@@ -9,9 +9,11 @@ import React from 'react';
 
 interface AddFileSectionProps {
   setMessage: React.Dispatch<React.SetStateAction<Message>>;
+  // ファイルを追加した後に呼ぶ
+  onFileAdded?: () => Promise<void> | void;
 }
 
-export const AddFileSection = ({ setMessage }: AddFileSectionProps) => {
+export const AddFileSection = ({ setMessage, onFileAdded }: AddFileSectionProps) => {
   const [fileName, setFileName] = useState<string>('');
 
   const addFile = async () => {
@@ -27,6 +29,9 @@ export const AddFileSection = ({ setMessage }: AddFileSectionProps) => {
       }
     });
     setMessage(result.message);
+    if (result.isSuccess) {
+      await onFileAdded?.();
+    }
   };
 
   return (

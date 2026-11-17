@@ -1,8 +1,5 @@
+import type { z } from 'zod'
+import type { editWordMeanAPIRequestSchema } from './schema'
+
 // 英単語意味編集APIリクエスト型
-export interface EditWordMeanAPIRequestDto {
-  wordId: number
-  wordMeanId: number
-  meanId: number
-  partofspeechId: number
-  meaning: string
-}
+export type EditWordMeanAPIRequestDto = z.infer<typeof editWordMeanAPIRequestSchema>

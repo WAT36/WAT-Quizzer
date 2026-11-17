@@ -12,12 +12,16 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { QuizFileService } from './file.service';
 import {
   AddQuizFileApiRequest,
+  addQuizFileApiRequestSchema,
   DeleteQuizFileApiRequest,
+  deleteQuizFileApiRequestSchema,
   GetQuizFileStatisticsAPIRequestDto,
+  getQuizFileStatisticsAPIRequestSchema,
+  downloadQuizCsvAPIRequestSchema,
 } from 'quizzer-lib';
-import { GetQuizFileStatisticsPipe } from './pipe/getQuizFileStatistics.pipe';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { Response } from 'express';
+import { ZodValidationPipe } from '../../common/zodValidation.pipe';
 
 @UseGuards(CognitoAuthGuard)
 @ApiTags('クイズファイル')
@@ -40,7 +44,8 @@ export class QuizFileController {
     description: '指定したクイズファイルの統計情報を取得します。',
   })
   async getFileStatistics(
-    @Query(GetQuizFileStatisticsPipe) req: GetQuizFileStatisticsAPIRequestDto,
+    @Query(new ZodValidationPipe(getQuizFileStatisticsAPIRequestSchema))
+    req: GetQuizFileStatisticsAPIRequestDto,
   ) {
     return await this.quizFileService.getFileStatisticsData(req);
   }
@@ -50,7 +55,10 @@ export class QuizFileController {
     summary: 'クイズファイル追加',
     description: '新しいクイズファイルを追加します。',
   })
-  async addFile(@Body() req: AddQuizFileApiRequest) {
+  async addFile(
+    @Body(new ZodValidationPipe(addQuizFileApiRequestSchema))
+    req: AddQuizFileApiRequest,
+  ) {
     return await this.quizFileService.addFile(req);
   }
 
@@ -59,7 +67,10 @@ export class QuizFileController {
     summary: 'クイズファイル削除',
     description: '指定したクイズファイルを削除します。',
   })
-  async deleteFile(@Body() req: DeleteQuizFileApiRequest) {
+  async deleteFile(
+    @Body(new ZodValidationPipe(deleteQuizFileApiRequestSchema))
+    req: DeleteQuizFileApiRequest,
+  ) {
     return await this.quizFileService.deleteFile(req);
   }
 
@@ -68,8 +79,12 @@ export class QuizFileController {
     summary: 'クイズファイルCSVダウンロード',
     description: '指定したクイズファイルの内容をCSV形式でダウンロードします。',
   })
-  async downloadCsv(@Query('file_num') file_num: string, @Res() res: Response) {
-    const csv = await this.quizFileService.downloadCsv(+file_num);
+  async downloadCsv(
+    @Query(new ZodValidationPipe(downloadQuizCsvAPIRequestSchema))
+    { file_num }: { file_num: number },
+    @Res() res: Response,
+  ) {
+    const csv = await this.quizFileService.downloadCsv(file_num);
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename="data.csv"');
     res.send(csv);

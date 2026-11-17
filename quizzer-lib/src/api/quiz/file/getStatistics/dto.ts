@@ -1,12 +1,8 @@
-import type { ApiResponse, QueryReceivedDto } from '../../..'
+import type { ApiResponse } from '../../..'
 
 export interface GetQuizFileStatisticsAPIRequestDto {
   file_num?: number
 }
-
-// API側で受け取った時のDTO（Pipeで上に変換する）
-export type GetQuizFileStatisticsAPIRequestReceivedDto =
-  QueryReceivedDto<GetQuizFileStatisticsAPIRequestDto>
 
 // quiz/file/statisticsからの取得結果（file_num未指定なら全ファイル合計）
 export interface QuizFileStatisticsApiResponse extends ApiResponse {

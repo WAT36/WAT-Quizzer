@@ -1,7 +1,8 @@
 import type { QuizWithCategoryApiResponseDto } from '..'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post } from '../..'
+import { post, validateRequest } from '../..'
+import { integrateToQuizAPIRequestSchema } from './schema'
 import type { IntegrateToQuizAPIRequestDto } from './dto'
 
 interface IntegrateQuizAPIProps {
@@ -11,12 +12,12 @@ interface IntegrateQuizAPIProps {
 export const integrateQuizAPI = async ({
   integrateToQuizAPIRequestData
 }: IntegrateQuizAPIProps): Promise<ApiResult> => {
-  if (
-    !integrateToQuizAPIRequestData.fromQuizId ||
-    !integrateToQuizAPIRequestData.toQuizId
-  ) {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00010) }
-  }
+  const invalid = validateRequest(
+    integrateToQuizAPIRequestSchema,
+    integrateToQuizAPIRequestData,
+    () => MESSAGES.ERROR.MSG00010
+  )
+  if (invalid) return invalid
 
   const result = await post(
     '/quiz/integrate',

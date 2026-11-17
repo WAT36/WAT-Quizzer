@@ -13,17 +13,17 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SayingService } from './saying.service';
-import { AddBookDto } from './dto/add-book.dto';
-import { AddSayingDto } from './dto/add-saying.dto';
-import { EditSayingDto } from './dto/edit-saying.dto';
-import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import {
-  ApiOperation,
-  ApiTags,
-  ApiBody,
-  ApiQuery,
-  ApiParam,
-} from '@nestjs/swagger';
+  AddBookAPIRequestDto,
+  addBookAPIRequestSchema,
+  AddSayingAPIRequestDto,
+  addSayingAPIRequestSchema,
+  EditSayingAPIRequestDto,
+  editSayingAPIRequestSchema,
+} from 'quizzer-lib';
+import { ZodValidationPipe } from '../common/zodValidation.pipe';
+import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
+import { ApiOperation, ApiTags, ApiQuery, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Saying（格言関連API）')
 @UseGuards(CognitoAuthGuard)
@@ -48,8 +48,10 @@ export class SayingController {
 
   @Post('/book')
   @ApiOperation({ summary: '啓発本を追加します。' })
-  @ApiBody({ type: AddBookDto })
-  async addBook(@Body() req: AddBookDto) {
+  async addBook(
+    @Body(new ZodValidationPipe(addBookAPIRequestSchema))
+    req: AddBookAPIRequestDto,
+  ) {
     return await this.sayingService.addBookService(req);
   }
 
@@ -61,8 +63,10 @@ export class SayingController {
 
   @Post()
   @ApiOperation({ summary: '格言を追加します。' })
-  @ApiBody({ type: AddSayingDto })
-  async addSaying(@Body() req: AddSayingDto) {
+  async addSaying(
+    @Body(new ZodValidationPipe(addSayingAPIRequestSchema))
+    req: AddSayingAPIRequestDto,
+  ) {
     return await this.sayingService.addSayingService(req);
   }
 
@@ -75,8 +79,10 @@ export class SayingController {
 
   @Patch()
   @ApiOperation({ summary: '格言を編集します。' })
-  @ApiBody({ type: EditSayingDto })
-  async editSaying(@Body() req: EditSayingDto) {
+  async editSaying(
+    @Body(new ZodValidationPipe(editSayingAPIRequestSchema))
+    req: EditSayingAPIRequestDto,
+  ) {
     return await this.sayingService.editSayingService(req);
   }
 
@@ -91,6 +97,6 @@ export class SayingController {
   @ApiOperation({ summary: '格言IDを指定して格言を取得します。' })
   @ApiParam({ name: 'id', type: Number, description: '格言ID' })
   async getSayingById(@Param('id', ParseIntPipe) id: number) {
-    return await this.sayingService.getSayingByIdService(+id);
+    return await this.sayingService.getSayingByIdService(id);
   }
 }

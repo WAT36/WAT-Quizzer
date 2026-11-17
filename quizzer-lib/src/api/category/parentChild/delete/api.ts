@@ -1,5 +1,6 @@
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { del } from '../../..'
+import { del, validateRequest } from '../../..'
+import { deleteCategoryParentChildAPIRequestSchema } from '../schema'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 import type { DeleteCategoryParentChildAPIRequestDto } from '../dto'
 
@@ -10,6 +11,12 @@ interface DeleteCategoryParentChildAPIProps {
 export const deleteCategoryParentChildAPI = async ({
   deleteCategoryParentChildData
 }: DeleteCategoryParentChildAPIProps): Promise<ApiResult> => {
+  const invalid = validateRequest(
+    deleteCategoryParentChildAPIRequestSchema,
+    deleteCategoryParentChildData
+  )
+  if (invalid) return invalid
+
   const result = await del(
     '/category/parent-child',
     { ...deleteCategoryParentChildData },

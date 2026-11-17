@@ -21,10 +21,6 @@ export const formatString = (str: string, ...value: string[]) => {
   return result
 }
 
-// クエリなどの文字列を真偽値にする（空・'false'・'undefined'・'0'はfalse）
-export const parseStrToBool = (val?: string): boolean =>
-  !!val && !['false', 'undefined', '0'].includes(val.toLowerCase())
-
 export const getRandomStr = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyz'
   let rand_str = ''

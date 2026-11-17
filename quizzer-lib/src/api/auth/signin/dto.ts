@@ -1,9 +1,14 @@
-export interface AuthSigninRequestDto {
-  username: string
-  password: string
-  // 新パスワード設定時のみ。サインインでNEW_PASSWORD_REQUIREDが返った時のsession
-  session?: string
-}
+import type { z } from 'zod'
+import type {
+  authNewPasswordRequestSchema,
+  authSigninRequestSchema
+} from './schema'
+
+export type AuthSigninRequestDto = z.infer<typeof authSigninRequestSchema>
+
+export type AuthNewPasswordRequestDto = z.infer<
+  typeof authNewPasswordRequestSchema
+>
 
 // 返り値の型を定義
 // refreshTokenはHttpOnly Cookieで返すためbodyには含めない

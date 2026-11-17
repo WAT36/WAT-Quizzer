@@ -25,11 +25,7 @@ import {
   linkCategories,
   linkNewQuizCategoriesWithAncestors,
 } from './quizCategory';
-import {
-  assertQuizIds,
-  parseMatchedBasicQuizIds,
-  trimSpaces,
-} from './quizRequest';
+import { parseMatchedBasicQuizIds, trimSpaces } from './quizRequest';
 import {
   getQuizOrderBy,
   getQuizSelect,
@@ -163,18 +159,6 @@ export class QuizService {
       matched_basic_quiz_id,
     );
 
-    // 四択問題の場合　ダミー選択肢全部ない場合エラー
-    if (
-      format_id === 3 &&
-      dummyChoice &&
-      dummyChoice.length < 3 &&
-      dummyChoice.reduce((accummulate, currentValue) => {
-        return accummulate || currentValue.sentense === '';
-      }, false)
-    ) {
-      throw new HttpException(MESSAGES.ERROR.MSG00018, HttpStatus.BAD_REQUEST);
-    }
-
     // 新問題番号を取得しINSERT
     const res = await prisma.quiz.findFirst({
       select: {
@@ -205,10 +189,11 @@ export class QuizService {
             },
           }),
         },
+        // 関連基礎問題は、応用問題・四択問題(format_id>1)に紐付ける（問題編集と同じ）
         quiz_advanced_linkage: {
           createMany: {
             data:
-              matched_basic_quiz_id && format_id === 1
+              matched_basic_quiz_id && format_id > 1
                 ? matched_basic_quiz_id_list.map((x) => {
                     return { basis_quiz_id: x };
                   })
@@ -297,12 +282,9 @@ export class QuizService {
           format_id,
         },
       });
-      // 関連問題更新
-      if (
-        matched_basic_quiz_id &&
-        matched_basic_quiz_id_list.length > 0 &&
-        format_id > 1 // 応用問題
-      ) {
+      // 関連基礎問題の更新（応用・四択問題のみ）
+      // 空なら全部外す。項目が送られていなければ今の関連付けのままにする
+      if (matched_basic_quiz_id !== undefined && format_id > 1) {
         // 一度削除
         await prisma.quiz_basis_advanced_linkage.updateMany({
           data: {
@@ -372,7 +354,10 @@ export class QuizService {
           deleted_at: new Date(),
         },
       });
-      await linkCategories(prisma, quiz_id, file_num, category.split(','));
+      // カテゴリが空・未指定なら紐付けを外すだけにする（空の名前のカテゴリを登録しない）
+      if (category) {
+        await linkCategories(prisma, quiz_id, file_num, category.split(','));
+      }
       // ログ削除
       await prisma.answer_log.updateMany({
         data: {
@@ -546,7 +531,6 @@ export class QuizService {
   // 問題にカテゴリ追加
   async addCategoryToQuiz(req: AddCategoryToQuizAPIRequestDto) {
     const { quiz_ids, category } = req;
-    assertQuizIds(quiz_ids);
     const categories = category.split(',');
     // トランザクション
     const updatedQuizzes = await prisma.$transaction(async (prisma) => {
@@ -583,7 +567,6 @@ export class QuizService {
   // 問題からカテゴリ削除
   async removeCategoryFromQuiz(body: DeleteCategoryOfQuizAPIRequestDto) {
     const { quiz_ids, category } = body;
-    assertQuizIds(quiz_ids);
     const categories = category.split(',');
     // トランザクション
     const updatedQuizzes = await prisma.$transaction(async (prisma) => {
@@ -636,8 +619,7 @@ export class QuizService {
 
   // 指定した問題のチェック状態をまとめて更新する
   // 存在しない問題が含まれていたら、どれも更新せずに404にする
-  private async updateChecked(quiz_ids: unknown, checked: boolean) {
-    assertQuizIds(quiz_ids);
+  private async updateChecked(quiz_ids: number[], checked: boolean) {
     return await prisma.$transaction(async (prisma) => {
       const existingIds = new Set(
         (
@@ -672,12 +654,6 @@ export class QuizService {
   // 問題のチェック反転
   async reverseCheck(req: ReverseCheckQuizAPIRequestDto) {
     const { quiz_id } = req;
-    if (!Number.isInteger(quiz_id)) {
-      throw new HttpException(
-        `問題番号が不正です(${quiz_id})`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const quiz = await prisma.quiz.findUnique({
       select: { checked: true },
       where: { id: quiz_id },

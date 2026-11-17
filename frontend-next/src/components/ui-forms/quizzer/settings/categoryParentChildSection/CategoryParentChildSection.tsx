@@ -85,18 +85,6 @@ export const CategoryParentChildSection = ({
   const toCategory = (value: number | string) => (value === -1 ? '' : String(value));
 
   const handleAdd = async () => {
-    if (fileNum === -1) {
-      setMessage({ message: 'エラー:問題ファイルを選択して下さい', messageColor: 'error', isDisplay: true });
-      return;
-    }
-    if (!parentCategory || !childCategory) {
-      setMessage({ message: 'エラー:親カテゴリと子カテゴリを選択して下さい', messageColor: 'error', isDisplay: true });
-      return;
-    }
-    if (parentCategory === childCategory) {
-      setMessage({ message: 'エラー:親カテゴリと子カテゴリに同じカテゴリは設定できません', messageColor: 'error', isDisplay: true });
-      return;
-    }
     setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
     const result = await addCategoryParentChildAPI({
       addCategoryParentChildData: {

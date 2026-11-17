@@ -120,23 +120,6 @@ export const AddExampleSection = ({ sourceList }: AddExampleSectionProps) => {
           variant="contained"
           color="primary"
           onClick={async (e) => {
-            if (addExampleData.exampleEn === '') {
-              setMessage &&
-                setMessage({
-                  message: 'エラー:例文(英文)が入力されていません',
-                  messageColor: 'error',
-                  isDisplay: true
-                });
-              return;
-            } else if (addExampleData.exampleJa === '') {
-              setMessage &&
-                setMessage({
-                  message: 'エラー:例文(和文)が入力されていません',
-                  messageColor: 'error',
-                  isDisplay: true
-                });
-              return;
-            }
             setMessage && setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
             const result = await addExampleAPI({ addExampleData });
             setMessage && setMessage(result.message);

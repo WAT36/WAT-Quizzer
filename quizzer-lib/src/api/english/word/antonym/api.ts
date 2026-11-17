@@ -1,12 +1,16 @@
 import type { AddAntonymAPIRequestDto } from '.'
 import type { ApiResult } from '../../..'
-import { post, onSuccess } from '../../..'
+import { post, onSuccess, validateRequest } from '../../..'
+import { addAntonymAPIRequestSchema } from './schema'
 
 interface AddAntonymAPIProps {
   addAntonymData: AddAntonymAPIRequestDto
 }
 
 export const addAntonymAPI = async ({ addAntonymData }: AddAntonymAPIProps): Promise<ApiResult> => {
+  const invalid = validateRequest(addAntonymAPIRequestSchema, addAntonymData)
+  if (invalid) return invalid
+
   const result = await post(
     '/english/word/antonym',
     addAntonymData,

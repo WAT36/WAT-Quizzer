@@ -1,5 +1,3 @@
-import type { QueryReceivedDto } from '../../../..'
-
 // 英単語テストデータ取得APIリクエスト型
 export interface GetEnglishWordTestDataAPIRequestDto {
   format: 'random' | 'lru' | 'review'
@@ -13,10 +11,6 @@ export interface GetEnglishWordTestDataAPIRequestDto {
   result_to?: number
   word_type?: 'all' | 'word' | 'phrase'
 }
-
-// API側で受け取った時のDTO（Pipeで上に変換する）
-export type GetEnglishWordTestDataAPIRequestReceivedDto =
-  QueryReceivedDto<GetEnglishWordTestDataAPIRequestDto>
 
 // 英単語テストデータ取得APIレスポンス型
 export interface GetEnglishWordTestDataAPIResponseDto extends FourChoiceData {

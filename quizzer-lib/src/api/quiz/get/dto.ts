@@ -1,4 +1,6 @@
-import type { ApiResponse, QueryReceivedDto } from '../..'
+import type { z } from 'zod'
+import type { ApiResponse } from '../..'
+import type { getQuizAPIRequestSchema } from './schema'
 
 // キーワード検索の対象（問題文・解答 or 解説のどちらか一方）
 export type KeywordSearchTarget = 'sentence_answer' | 'explanation'
@@ -26,17 +28,8 @@ export interface GetQuizAPIRequestDto {
   count?: number // 指定した場合、method指定時に条件に合う問題を最大count件まとめて取得する
 }
 
-// API側で受け取った時のDTO（Pipeで下のParsedDtoに変換する）
-export type GetQuizAPIRequestReceivedDto =
-  QueryReceivedDto<GetQuizAPIRequestDto>
-
-// API側でPipe変換した後のDTO（format_idはチェックされた形式IDの配列）
-export type GetQuizAPIRequestParsedDto = Omit<
-  GetQuizAPIRequestDto,
-  'format_id'
-> & {
-  format_id?: number[]
-}
+// API側でクエリを検証・変換した後のDTO
+export type GetQuizAPIRequestParsedDto = z.output<typeof getQuizAPIRequestSchema>
 
 // 問題取得APIのレスポンス
 // DBの値をバックエンドで変換して返す（カテゴリ名の配列化・統計値の数値化など）ため、Prismaの型ではなくAPIの形で定義する

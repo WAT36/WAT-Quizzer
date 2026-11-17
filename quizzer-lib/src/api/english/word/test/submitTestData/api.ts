@@ -1,5 +1,6 @@
 import type { ApiResult } from '../../../..'
-import { post, onSuccess } from '../../../..'
+import { post, onSuccess, validateRequest } from '../../../..'
+import { submitEnglishWordTestDataAPIRequestSchema } from './schema'
 import type { SubmitEnglishWordTestDataAPIRequestDto } from '.'
 
 interface SubmitEnglishBotTestButtonProps {
@@ -21,6 +22,11 @@ export const submitEnglishBotTestAPI = async ({
       }
     }
   }
+  const invalid = validateRequest(
+    submitEnglishWordTestDataAPIRequestSchema,
+    testResult
+  )
+  if (invalid) return invalid
 
   const result = await post(
     selectedValue ? '/english/word/test/clear' : '/english/word/test/fail',

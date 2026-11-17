@@ -94,4 +94,23 @@ test.describe('englishBot / 単語追加', () => {
     await expect(page.getByText('エラー:1行目の品詞を入力してください')).toBeVisible();
     expect(api.requests('POST', '/english/word')).toHaveLength(0);
   });
+
+  test('品詞・出典に「その他」を選んで名前を入力していない場合はエラーになり、登録しない', async ({ page, api }) => {
+    await page.getByLabel('New Word').fill('serendipity');
+    await page.getByRole('button', { name: '行追加' }).click();
+    await page.getByRole('combobox', { name: '品詞' }).click();
+    await page.getByRole('option', { name: 'その他' }).click();
+    await page.getByLabel('意味').fill('思いがけない幸運');
+
+    await page.getByRole('button', { name: '登録' }).click();
+    await expect(page.getByText('エラー:1行目の新規追加する品詞を入力してください')).toBeVisible();
+
+    await page.getByRole('textbox', { name: '品詞' }).fill('名詞(不可算)');
+    await page.getByRole('combobox', { name: '出典' }).click();
+    await page.getByRole('option', { name: 'その他' }).click();
+    await page.getByRole('button', { name: '登録' }).click();
+    await expect(page.getByText('エラー:新規追加する出典を入力してください')).toBeVisible();
+
+    expect(api.requests('POST', '/english/word')).toHaveLength(0);
+  });
 });

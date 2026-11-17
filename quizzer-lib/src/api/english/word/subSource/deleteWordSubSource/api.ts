@@ -1,6 +1,7 @@
 import type { DeleteWordSubSourceAPIRequestDto } from '.'
 import type { ApiResult } from '../../../..'
-import { del, onSuccess } from '../../../..'
+import { del, onSuccess, validateRequest } from '../../../..'
+import { deleteWordSubSourceAPIRequestSchema } from './schema'
 
 interface DeleteWordSubSourceAPIProps {
   deleteWordSubSourceData: DeleteWordSubSourceAPIRequestDto
@@ -9,16 +10,8 @@ interface DeleteWordSubSourceAPIProps {
 export const deleteEnglishWordSubSourceAPI = async ({
   deleteWordSubSourceData
 }: DeleteWordSubSourceAPIProps): Promise<ApiResult> => {
-  if (!deleteWordSubSourceData.id || deleteWordSubSourceData.id === -1) {
-    return {
-      isSuccess: false,
-      message: {
-        message: 'エラー:サブ出典を入力して下さい',
-        messageColor: 'error',
-        isDisplay: true
-      }
-    }
-  }
+  const invalid = validateRequest(deleteWordSubSourceAPIRequestSchema, deleteWordSubSourceData)
+  if (invalid) return invalid
 
   const result = await del(
     '/english/word/subsource',

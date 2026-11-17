@@ -5,6 +5,7 @@ import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import { addCategoryToQuizAPI, checkOffQuizAPI, checkOnQuizAPI, deleteCategoryOfQuizAPI } from '@/utils/api-wrapper';
 import { expandCategoriesWithAncestors } from '@/utils/categoryUtils';
+import { loadSavedSearchQuizRequestData } from '@/utils/savedSearchQuizRequestData';
 
 interface EditSearchResultFormProps {
   checkedIdList: number[];
@@ -43,19 +44,12 @@ export const EditSearchResultForm = ({ checkedIdList, setCheckedIdList }: EditSe
       return;
     }
 
-    // sessionStorageからfile_numを取得して親カテゴリも含めて展開
+    // sessionStorageに保存された検索条件のfile_numで、親カテゴリも含めて展開
     let categoriesToRegister = [changedCategory];
-    try {
-      const saved = sessionStorage.getItem('searchQuizRequestData');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const fileNum = parsed.file_num ?? -1;
-        if (fileNum !== -1) {
-          categoriesToRegister = await expandCategoriesWithAncestors([changedCategory], fileNum);
-        }
-      }
-    } catch (e) {
-      // 取得失敗時は指定カテゴリのみ登録
+    const fileNum = loadSavedSearchQuizRequestData()?.file_num ?? -1;
+    if (fileNum !== -1) {
+      // 親子関係の取得に失敗した場合は指定カテゴリのみ返る
+      categoriesToRegister = await expandCategoriesWithAncestors([changedCategory], fileNum);
     }
 
     const chunks = chunkArray(checkedIdList, BATCH_SIZE);

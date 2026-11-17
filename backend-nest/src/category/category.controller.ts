@@ -7,15 +7,19 @@ import {
   Post,
   Query,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CategoryService } from './category.service';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import {
-  AccuracyRateQueryPipe,
-  AccuracyRateQueryDto,
-} from './pipes/accuracy-rate-query.pipe';
+  AddCategoryParentChildAPIRequestDto,
+  addCategoryParentChildAPIRequestSchema,
+  DeleteCategoryParentChildAPIRequestDto,
+  deleteCategoryParentChildAPIRequestSchema,
+  GetCategoryRateAPIRequestParsedDto,
+  getCategoryRateAPIRequestQuerySchema,
+} from 'quizzer-lib';
+import { ZodValidationPipe } from '../common/zodValidation.pipe';
 
 @ApiTags('カテゴリ')
 @UseGuards(CognitoAuthGuard)
@@ -47,7 +51,7 @@ export class CategoryController {
   })
   @Get()
   async getCategory(@Query('file_num', ParseIntPipe) file_num: number) {
-    return await this.categoryService.getCategoryList(+file_num);
+    return await this.categoryService.getCategoryList(file_num);
   }
 
   @ApiOperation({
@@ -91,8 +95,10 @@ export class CategoryController {
     description: '認証が必要です。',
   })
   @Get('rate')
-  @UsePipes(AccuracyRateQueryPipe)
-  async getAccuracyRateByCategory(@Query() query: AccuracyRateQueryDto) {
+  async getAccuracyRateByCategory(
+    @Query(new ZodValidationPipe(getCategoryRateAPIRequestQuerySchema))
+    query: GetCategoryRateAPIRequestParsedDto,
+  ) {
     return await this.categoryService.getAccuracyRateByCategory(
       query.file_num,
       query.startDate,
@@ -120,7 +126,7 @@ export class CategoryController {
   async getCategoryQuizCount(
     @Query('file_num', ParseIntPipe) file_num: number,
   ) {
-    return await this.categoryService.getCategoryQuizCount(+file_num);
+    return await this.categoryService.getCategoryQuizCount(file_num);
   }
 
   @ApiOperation({
@@ -137,7 +143,7 @@ export class CategoryController {
   async getCategoryParentChildList(
     @Query('file_num', ParseIntPipe) file_num: number,
   ) {
-    return await this.categoryService.getCategoryParentChildList(+file_num);
+    return await this.categoryService.getCategoryParentChildList(file_num);
   }
 
   @ApiOperation({
@@ -146,12 +152,8 @@ export class CategoryController {
   })
   @Post('parent-child')
   async addCategoryParentChild(
-    @Body()
-    body: {
-      file_num: number;
-      parent_category: string;
-      child_category: string;
-    },
+    @Body(new ZodValidationPipe(addCategoryParentChildAPIRequestSchema))
+    body: AddCategoryParentChildAPIRequestDto,
   ) {
     return await this.categoryService.addCategoryParentChild(
       body.file_num,
@@ -165,7 +167,10 @@ export class CategoryController {
     description: '指定されたIDのカテゴリ親子関係を削除します。',
   })
   @Delete('parent-child')
-  async deleteCategoryParentChild(@Body() body: { id: number }) {
+  async deleteCategoryParentChild(
+    @Body(new ZodValidationPipe(deleteCategoryParentChildAPIRequestSchema))
+    body: DeleteCategoryParentChildAPIRequestDto,
+  ) {
     return await this.categoryService.deleteCategoryParentChild(body.id);
   }
 

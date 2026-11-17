@@ -1,10 +1,8 @@
+import type { z } from 'zod'
 import type { ApiResponse } from '../..'
-import type { EditQuizAPIRequestDto } from '../edit/dto'
+import type { addQuizAPIRequestSchema } from './schema'
 
-export type AddQuizAPIRequestDto = Omit<
-  EditQuizAPIRequestDto,
-  'quiz_num' | 'quiz_id'
->
+export type AddQuizAPIRequestDto = z.infer<typeof addQuizAPIRequestSchema>
 
 // 問題追加APIのレスポンス（ログだけ）
 export interface AddQuizApiResponseDto extends ApiResponse {

@@ -41,11 +41,14 @@ export const getQuizSelect = {
     select: { dummy_choice_sentense: true, is_corrected: true },
     orderBy: { id: 'asc' },
   },
+  // 関連付けは、問題編集で外したもの(削除済み)を除く
   quiz_basis_linkage: {
     select: { basis_quiz_id: true, advanced_quiz_id: true },
+    where: { deleted_at: null },
   },
   quiz_advanced_linkage: {
     select: { basis_quiz_id: true, advanced_quiz_id: true },
+    where: { deleted_at: null },
   },
 } satisfies Prisma.quizSelect;
 

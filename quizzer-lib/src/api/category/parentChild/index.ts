@@ -1,4 +1,5 @@
 export * from './dto'
+export * from './schema'
 export * from './list'
 export * from './add'
 export * from './delete'
