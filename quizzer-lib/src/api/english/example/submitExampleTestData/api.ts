@@ -1,5 +1,6 @@
 import type { ApiResult } from '../../..'
-import { post, onSuccess } from '../../..'
+import { post, onSuccess, validateRequest } from '../../..'
+import { submitExampleTestDataAPIRequestSchema } from './schema'
 import type { SubmitExampleTestDataAPIRequestDto } from '.'
 
 interface SubmitExampleTestDataAPIProps {
@@ -21,6 +22,11 @@ export const submitExampleTestDataAPI = async ({
       }
     }
   }
+  const invalid = validateRequest(
+    submitExampleTestDataAPIRequestSchema,
+    testResult
+  )
+  if (invalid) return invalid
 
   const result = await post(
     selectedValue

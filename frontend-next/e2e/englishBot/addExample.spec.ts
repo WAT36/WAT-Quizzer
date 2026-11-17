@@ -48,6 +48,23 @@ test.describe('englishBot / 例文追加', () => {
     await expect(page.getByRole('textbox', { name: '出典', exact: true })).toHaveValue('洋書');
   });
 
+  test('英文・和文が空のときや、「その他」の出典名が空のときはエラーを表示して登録しない', async ({ page, api }) => {
+    await page.getByRole('button', { name: '登録', exact: true }).click();
+    await expect(page.getByText('エラー:例文(英文)を入力してください')).toBeVisible();
+
+    await page.getByLabel('例文(英語)').fill('She abandoned the plan.');
+    await page.getByRole('button', { name: '登録', exact: true }).click();
+    await expect(page.getByText('エラー:例文(和文)を入力してください')).toBeVisible();
+
+    await page.getByLabel('例文(和訳)').fill('彼女はその計画を断念した。');
+    await page.getByRole('combobox', { name: '出典' }).click();
+    await page.getByRole('option', { name: 'その他' }).click();
+    await page.getByRole('button', { name: '登録', exact: true }).click();
+    await expect(page.getByText('エラー:新規追加する出典を入力してください')).toBeVisible();
+
+    expect(api.requests('POST', '/english/example')).toHaveLength(0);
+  });
+
   test.describe('単語例文紐付け', () => {
     const examples = [
       { id: 11, en_example_sentense: 'She abandoned the plan.', ja_example_sentense: '彼女はその計画を断念した。' },
