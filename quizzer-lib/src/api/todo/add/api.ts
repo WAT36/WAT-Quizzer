@@ -1,7 +1,8 @@
 import type { AddTodoAPIRequestDto, AddTodoApiResponseDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { post, onSuccess } from '../..'
-import { errorMessage, MESSAGES, successMessage } from '../../../..'
+import { post, onSuccess, validateRequest } from '../..'
+import { addTodoAPIRequestSchema } from './schema'
+import { MESSAGES, successMessage } from '../../../..'
 
 interface AddTodoAPIProps {
   addTodoAPIRequest: AddTodoAPIRequestDto
@@ -10,9 +11,8 @@ interface AddTodoAPIProps {
 export const addTodoAPI = async ({
   addTodoAPIRequest
 }: AddTodoAPIProps): Promise<ApiResult> => {
-  if (!addTodoAPIRequest.todo || addTodoAPIRequest.todo === '') {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00012) }
-  }
+  const invalid = validateRequest(addTodoAPIRequestSchema, addTodoAPIRequest)
+  if (invalid) return invalid
 
   const result = await post(
     '/todo',

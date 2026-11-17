@@ -1,7 +1,8 @@
 import type { AddQuizApiResponseDto } from '../../../../..'
-import { errorMessage, MESSAGES, successMessage } from '../../../../..'
+import { MESSAGES, successMessage } from '../../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { post, onSuccess } from '../../..'
+import { post, onSuccess, validateRequest } from '../../..'
+import { addBookAPIRequestSchema } from './schema'
 import type { AddBookAPIRequestDto } from './dto'
 
 interface AddBookButtonProps {
@@ -11,9 +12,8 @@ interface AddBookButtonProps {
 export const addBookAPI = async ({
   addBookAPIRequest
 }: AddBookButtonProps): Promise<ApiResult> => {
-  if (!addBookAPIRequest.book_name || addBookAPIRequest.book_name === '') {
-    return { isSuccess: false, message: errorMessage(MESSAGES.ERROR.MSG00013) }
-  }
+  const invalid = validateRequest(addBookAPIRequestSchema, addBookAPIRequest)
+  if (invalid) return invalid
 
   const result = await post(
     '/saying/book',

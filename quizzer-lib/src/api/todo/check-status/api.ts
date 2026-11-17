@@ -1,6 +1,7 @@
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { get, put, onSuccess } from '../..'
+import { get, put, onSuccess, validateRequest } from '../..'
+import { saveTodoCheckStatusAPIRequestSchema } from './schema'
 import type {
   GetTodoCheckStatusAPIRequestDto,
   GetTodoCheckStatusApiResponseDto,
@@ -48,17 +49,11 @@ interface SaveTodoCheckStatusAPIProps {
 export const saveTodoCheckStatusAPI = async ({
   saveTodoCheckStatusAPIRequest
 }: SaveTodoCheckStatusAPIProps): Promise<ApiResult> => {
-  // 日付形式のバリデーション（YYYY-MM-DD形式）
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-  if (
-    !saveTodoCheckStatusAPIRequest.date ||
-    !dateRegex.test(saveTodoCheckStatusAPIRequest.date)
-  ) {
-    return {
-      isSuccess: false,
-      message: errorMessage('エラー:日付はYYYY-MM-DD形式で入力してください')
-    }
-  }
+  const invalid = validateRequest(
+    saveTodoCheckStatusAPIRequestSchema,
+    saveTodoCheckStatusAPIRequest
+  )
+  if (invalid) return invalid
 
   const result = await put(
     '/todo/check-status',

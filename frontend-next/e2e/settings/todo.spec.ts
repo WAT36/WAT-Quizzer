@@ -36,4 +36,20 @@ test.describe('設定 / TODO', () => {
     await expect.poll(() => api.requests('PUT', '/todo/3/restore').length).toBe(1);
     await expect.poll(() => api.requests('GET', '/todo/all').length).toBe(2);
   });
+
+  test('TODO・啓発本名・格言を入力せずに登録すると、エラーを表示してAPIは呼ばない', async ({ page, api }) => {
+    await page.getByRole('button', { name: 'TODO登録' }).click();
+    await expect(page.getByText('エラー:Todoを入力してください')).toBeVisible();
+
+    await page.getByRole('button', { name: '啓発本登録' }).click();
+    await expect(page.getByText('エラー:本の名前を入力してください')).toBeVisible();
+
+    // 本を選んでいなければ、格言より先に本の選択を求める
+    await page.getByRole('button', { name: '格言登録' }).click();
+    await expect(page.getByText('エラー:本名を選択して下さい')).toBeVisible();
+
+    expect(api.requests('POST', '/todo')).toHaveLength(0);
+    expect(api.requests('POST', '/saying/book')).toHaveLength(0);
+    expect(api.requests('POST', '/saying')).toHaveLength(0);
+  });
 });

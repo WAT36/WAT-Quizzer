@@ -41,6 +41,20 @@ test.describe('quizzer / 設定', () => {
     await expect(page.getByLabel('親カテゴリ')).toBeVisible();
   });
 
+  test('カテゴリ親子関係で親・子カテゴリを選ばずに追加すると、エラーを表示してAPIは呼ばない', async ({ page, api }) => {
+    api.on('GET', '/category/parent-child', { json: [] });
+    api.on('GET', '/category/count', { json: [] });
+
+    await page.getByRole('combobox').nth(3).click();
+    await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+    await expect(page.getByLabel('親カテゴリ')).toBeVisible();
+    // 追加ボタンは、ファイル新規追加・親子関係追加の順に並ぶ
+    await page.getByRole('button', { name: '追加', exact: true }).last().click();
+
+    await expect(page.getByText('エラー:親カテゴリを選択して下さい')).toBeVisible();
+    expect(api.requests('POST', '/category/parent-child')).toHaveLength(0);
+  });
+
   test('ファイルを選んでCSVをダウンロードでき、中身はAPIのレスポンスと同じになる', async ({ page, api }) => {
     const csv = '"file_num","quiz_num","quiz_sentense"\n1,1,"Promiseとは？"';
     api.on('GET', '/quiz/file/csv', { text: csv });

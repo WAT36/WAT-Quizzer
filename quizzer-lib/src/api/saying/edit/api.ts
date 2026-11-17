@@ -1,6 +1,7 @@
 import type { EditSayingAPIRequestDto } from './dto'
 import type { ApiResult, ProcessingApiReponse } from '../..'
-import { patch } from '../..'
+import { patch, validateRequest } from '../..'
+import { editSayingAPIRequestSchema } from './schema'
 import type { AddQuizApiResponseDto } from '../../../..'
 import { errorMessage, MESSAGES, successMessage } from '../../../..'
 
@@ -11,6 +12,12 @@ interface editSayingAPIProps {
 export const editSayingAPI = async ({
   editSayingRequestData
 }: editSayingAPIProps): Promise<ApiResult> => {
+  const invalid = validateRequest(
+    editSayingAPIRequestSchema,
+    editSayingRequestData
+  )
+  if (invalid) return invalid
+
   const result = await patch(
     '/saying',
     {

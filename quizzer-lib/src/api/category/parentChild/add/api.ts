@@ -1,5 +1,6 @@
 import type { ApiResult, ProcessingApiReponse } from '../../..'
-import { post } from '../../..'
+import { post, toErrorMessage, validateRequest } from '../../..'
+import { addCategoryParentChildAPIRequestSchema } from '../schema'
 import { errorMessage, MESSAGES, successMessage } from '../../../../..'
 import type { AddCategoryParentChildAPIRequestDto } from '../dto'
 
@@ -10,6 +11,17 @@ interface AddCategoryParentChildAPIProps {
 export const addCategoryParentChildAPI = async ({
   addCategoryParentChildData
 }: AddCategoryParentChildAPIProps): Promise<ApiResult> => {
+  // ファイル未選択(-1)は、画面向けのメッセージにする
+  const invalid = validateRequest(
+    addCategoryParentChildAPIRequestSchema,
+    addCategoryParentChildData,
+    (issue) =>
+      issue.path[0] === 'file_num'
+        ? MESSAGES.ERROR.MSG00001
+        : toErrorMessage(issue)
+  )
+  if (invalid) return invalid
+
   const result = await post(
     '/category/parent-child',
     { ...addCategoryParentChildData },
