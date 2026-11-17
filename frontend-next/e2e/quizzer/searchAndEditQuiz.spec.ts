@@ -235,4 +235,31 @@ test.describe('quizzer / 問題検索 → 編集', () => {
       'false'
     );
   });
+
+  test('件数の入力欄が数値にできずnullで保存された検索条件は、件数未入力として復元される', async ({ page, api }) => {
+    await page.addInitScript(() =>
+      sessionStorage.setItem(
+        'searchQuizRequestData',
+        JSON.stringify({ query: 'Promise', file_num: 1, format_id: {}, result_from: null, result_to: 5 })
+      )
+    );
+    await page.reload();
+
+    await expect(page.getByRole('row', { name: target.quiz_sentense })).toBeVisible();
+    const query = api.requests('GET', '/quiz/search')[0].query;
+    expect(query).toMatchObject({ file_num: '1', query: 'Promise', result_to: '5' });
+    expect(query).not.toHaveProperty('result_from');
+  });
+
+  test('検索条件の形でない値が保存されていたら、復元せず初期状態で開く', async ({ page, api }) => {
+    await page.addInitScript(() =>
+      sessionStorage.setItem('searchQuizRequestData', JSON.stringify({ query: 'Promise', file_num: 'abc' }))
+    );
+    await page.reload();
+
+    await expect(page.getByLabel('検索語句')).toHaveValue('');
+    // 復元しないので自動検索もしない
+    await page.waitForTimeout(500);
+    expect(api.requests('GET', '/quiz/search')).toHaveLength(0);
+  });
 });

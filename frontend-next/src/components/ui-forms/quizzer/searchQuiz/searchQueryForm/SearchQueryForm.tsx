@@ -16,22 +16,11 @@ import { useQuizFormatList } from '@/hooks/useQuizFormatList';
 import { useSelectedFileChange } from '@/hooks/useSelectedFileChange';
 import { getCategoryListOptions } from '@/utils/getCategoryListOptions';
 import { CategoryConditionInput } from '@/components/ui-parts/categoryConditionInput/CategoryConditionInput';
+import { loadSavedSearchQuizRequestData, SEARCH_QUIZ_STORAGE_KEY } from '@/utils/savedSearchQuizRequestData';
 
 // カテゴリ条件のキー（AND:すべて含む / NOT:含まない）
 const CATEGORY_CONDITION_KEYS = ['category_and', 'category_not'] as const;
 type CategoryConditionKey = (typeof CATEGORY_CONDITION_KEYS)[number];
-
-// 旧形式（category: 単一の文字列）で保存された検索条件を、AND条件に変換する
-const migrateSavedSearchQuizRequestData = (
-  saved: SearchQuizAPIRequestDto & { category?: string }
-): SearchQuizAPIRequestDto => {
-  const { category, ...rest } = saved;
-  return {
-    ...rest,
-    category_and: rest.category_and ?? (category && category !== '-1' ? [category] : []),
-    category_not: rest.category_not ?? []
-  };
-};
 
 const toSearchResultRows = (quizzes: SearchQuizResultDto[]): QuizSearchRow[] =>
   quizzes.map((x) => {
@@ -58,9 +47,6 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
   // sessionStorageからの復元が済んだか（済む前に初期値で上書き保存しないため）
   const [isRestored, setIsRestored] = useState(false);
 
-  // セッションストレージキー
-  const STORAGE_KEY = 'searchQuizRequestData';
-
   const runSearch = useCallback(
     async (requestData: SearchQuizAPIRequestDto) => {
       setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
@@ -76,26 +62,21 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
 
   // 初期化・復元・自動検索
   useEffect(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
+    const saved = loadSavedSearchQuizRequestData();
     // sessionStorageから検索条件を復元するため(サーバー側では読めないのでマウント後に行う)、effect内でstateを更新する
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsRestored(true);
     if (saved) {
-      try {
-        const parsed = migrateSavedSearchQuizRequestData(JSON.parse(saved));
-        setSearchQuizRequestData(parsed);
-        // file_numが有効な場合のみカテゴリリストも取得
-        if (parsed.file_num !== -1) {
-          void (async () => {
-            const { pullDownOption } = await getCategoryListOptions(String(parsed.file_num));
-            setCategorylistoption(pullDownOption);
-          })();
+      setSearchQuizRequestData(saved);
+      // file_numが有効な場合のみカテゴリリストも取得
+      if (saved.file_num !== -1) {
+        void (async () => {
+          const { pullDownOption } = await getCategoryListOptions(String(saved.file_num));
+          setCategorylistoption(pullDownOption);
+        })();
 
-          // 自動検索
-          void runSearch(parsed);
-        }
-      } catch (e) {
-        // パース失敗時は何もしない
+        // 自動検索
+        void runSearch(saved);
       }
     }
   }, [runSearch]);
@@ -103,7 +84,7 @@ export const SearchQueryForm = ({ setSearchResult, setTotalCount }: SearchQueryF
   // 検索条件が変わったらsessionStorageに保存（ファイル選択など、どの入力経路からの変更も漏らさないよう一箇所で行う）
   useEffect(() => {
     if (!isRestored) return;
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(searchQuizRequestData));
+    sessionStorage.setItem(SEARCH_QUIZ_STORAGE_KEY, JSON.stringify(searchQuizRequestData));
   }, [isRestored, searchQuizRequestData]);
 
   // カテゴリリストが更新されたとき、リストに含まれないカテゴリを各条件から取り除く
