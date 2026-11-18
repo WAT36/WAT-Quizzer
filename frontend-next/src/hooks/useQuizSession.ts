@@ -2,7 +2,7 @@ import { useCallback, useReducer } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { messageState } from '@/atoms/Message';
 import type { GetQuizAPIRequestDto, GetQuizApiResponseDto, GetQuizMethod } from 'quizzer-lib';
-import { initGetQuizResponseData } from 'quizzer-lib';
+import { initGetQuizResponseData, shuffleArray } from 'quizzer-lib';
 import { getQuizAPI, clearQuizAPI, failQuizAPI } from '@/utils/api-wrapper';
 import { initialQuizSessionState, quizSessionReducer } from './quizSession/reducer';
 
@@ -10,6 +10,8 @@ export interface StartQuizSessionParams {
   getQuizRequestData: GetQuizAPIRequestDto;
   getQuizMethod: GetQuizMethod;
   count: number;
+  // 取得した問題の出題順をランダムに並び替えるか
+  shuffle: boolean;
 }
 
 // 出題設定の条件・出題形式・出題数からN問取得し、1問ずつ出題〜正解不正解登録〜次の問題へ進めるセッションを管理するフック
@@ -19,7 +21,12 @@ export const useQuizSession = () => {
 
   // 出題設定の内容を元に条件に合う問題をcount件取得し、出題を開始する
   const startSession = useCallback(
-    async ({ getQuizRequestData, getQuizMethod, count }: StartQuizSessionParams): Promise<GetQuizApiResponseDto[]> => {
+    async ({
+      getQuizRequestData,
+      getQuizMethod,
+      count,
+      shuffle
+    }: StartQuizSessionParams): Promise<GetQuizApiResponseDto[]> => {
       setMessage({ message: '通信中...', messageColor: '#d3d3d3', isDisplay: true });
       const result = await getQuizAPI({
         getQuizRequestData: { ...getQuizRequestData, count },
@@ -27,8 +34,10 @@ export const useQuizSession = () => {
       });
       setMessage(result.message);
       const quizzes = Array.isArray(result.result) ? (result.result as GetQuizApiResponseDto[]) : [];
-      dispatch({ type: 'START', queue: quizzes });
-      return quizzes;
+      // シャッフル指定時は、取得した問題の中で出題順だけを並び替える（どの問題を取得するかは変えない）
+      const queue = shuffle ? shuffleArray(quizzes) : quizzes;
+      dispatch({ type: 'START', queue });
+      return queue;
     },
     [setMessage]
   );

@@ -1,7 +1,8 @@
-// リストからランダムにx個要素を取り出す
+// リストからランダムにx個要素を取り出す（取り出した要素の並びもランダム）
 export const getRandomElementsFromArray = <T>(arr: T[], n: number) => {
+  // 全件取り出す場合も、元の並び（DBの取得順など）のまま返さず並び替える
   if (n >= arr.length) {
-    return arr
+    return shuffleArray(arr)
   }
 
   const extractArr: T[] = []

@@ -3,6 +3,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material
 import { Button } from '@/components/ui-elements/button/Button';
 import { TextField } from '@/components/ui-elements/textField/TextField';
 import { PullDown } from '@/components/ui-elements/pullDown/PullDown';
+import { Checkbox } from '@/components/ui-elements/checkBox/CheckBox';
 import type { GetQuizAPIRequestDto, GetQuizMethod } from 'quizzer-lib';
 import { InputQueryForm } from '../inputQueryForm/InputQueryForm';
 import type { StartQuizSessionParams } from '@/hooks/useQuizSession';
@@ -38,6 +39,8 @@ export const QuizSettingsPanel = ({
   // PullDownは共通コンポーネントの仕様上、常に「選択なし」(-1)を選べてしまうため、未選択を検知できる型にしている
   const [method, setMethod] = useState<GetQuizMethod | -1>('random');
   const [count, setCount] = useState<number>(DEFAULT_QUIZ_COUNT);
+  // 出題形式の並び順（最低正解率順など）を保ちたい場合もあるので、既定はシャッフルしない
+  const [shuffle, setShuffle] = useState(false);
   const [starting, setStarting] = useState(false);
 
   const isValid = getQuizRequestData.file_num !== -1 && method !== -1 && count > 0;
@@ -46,7 +49,7 @@ export const QuizSettingsPanel = ({
     if (method === -1 || !isValid || starting) return;
     setStarting(true);
     try {
-      await onStart({ getQuizRequestData, getQuizMethod: method, count });
+      await onStart({ getQuizRequestData, getQuizMethod: method, count, shuffle });
       onClose();
     } finally {
       setStarting(false);
@@ -72,6 +75,12 @@ export const QuizSettingsPanel = ({
             const parsed = parseInt(value, 10);
             setCount(isNaN(parsed) ? 0 : parsed);
           }}
+        />
+        <Checkbox
+          value="shuffle"
+          label="出題順をシャッフルする"
+          checked={shuffle}
+          onChange={(e) => setShuffle(e.target.checked)}
         />
       </DialogContent>
       <DialogActions>
