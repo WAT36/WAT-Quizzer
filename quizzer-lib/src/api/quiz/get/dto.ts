@@ -26,6 +26,8 @@ export interface GetQuizAPIRequestDto {
   keyword?: string
   keywordTarget?: KeywordSearchTarget
   count?: number // 指定した場合、method指定時に条件に合う問題を最大count件まとめて取得する
+  min_answer_count?: number // これまでの回答数(正解+不正解)が何回以上か
+  max_answer_count?: number // これまでの回答数(正解+不正解)が何回以下か
 }
 
 // API側でクエリを検証・変換した後のDTO

@@ -94,6 +94,12 @@ export const queryIdSchema = z.preprocess(
   z.coerce.number().int().positive().optional()
 )
 
+// クエリの回数（0以上の整数）。未指定ならundefined、0以上の整数として読めなければ400
+export const queryCountSchema = z.preprocess(
+  toUndefinedIfUnspecified,
+  z.coerce.number().int().min(0).optional()
+)
+
 // クエリの必須のID・番号（未指定・-1・正の整数でない値は400）
 export const requiredQueryIdSchema = z.coerce.number().int().positive()
 

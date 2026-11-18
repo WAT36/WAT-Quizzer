@@ -114,6 +114,20 @@ const answerLogCondition = (
   }
 };
 
+// これまでの回答数(正解+不正解)の範囲の条件。指定された側だけ絞り込む（0回=未回答も指定できる）
+const answerCountCondition = (
+  min?: number,
+  max?: number,
+): Prisma.quiz_statistics_viewWhereInput =>
+  min === undefined && max === undefined
+    ? {}
+    : {
+        answer_count: {
+          ...(min !== undefined && { gte: min }),
+          ...(max !== undefined && { lte: max }),
+        },
+      };
+
 // 問題取得の条件
 // methodがある時は条件指定、ない時は問題番号指定
 export const getQuizWhere = (
@@ -130,6 +144,8 @@ export const getQuizWhere = (
     format_id,
     keyword,
     keywordTarget,
+    min_answer_count,
+    max_answer_count,
   } = req;
   if (!method) {
     return {
@@ -160,6 +176,7 @@ export const getQuizWhere = (
     deleted_at: null,
     quiz_statistics_view: {
       accuracy_rate: { gte: min_rate || 0, lte: max_rate || 100 },
+      ...answerCountCondition(min_answer_count, max_answer_count),
       ...answerLogCondition(method),
     },
     ...(checked && { checked: true }),

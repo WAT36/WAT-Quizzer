@@ -33,11 +33,36 @@ const KEYWORD_TARGET_BY_LABEL: Record<string, KeywordSearchTarget> = {
   [KEYWORD_TARGET_LABELS.explanation]: 'explanation'
 };
 
+// 回答数を「〜回以上」「〜回以下」のどちらで絞り込むか
+type AnswerCountDirection = '以上' | '以下';
+const ANSWER_COUNT_DIRECTIONS: AnswerCountDirection[] = ['以上', '以下'];
+
+// 回答数の入力値を数値にする（空欄・数値でない・負の値は未指定扱い）
+const toAnswerCount = (value: string): number | undefined => {
+  const parsed = parseInt(value, 10);
+  return isNaN(parsed) || parsed < 0 ? undefined : parsed;
+};
+
 export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: InputQueryFormProps) => {
   const [categorylistoption, setCategorylistoption] = useState<PullDownOptionDto[]>([]);
   const [categoryResetKey, setCategoryResetKey] = useState(0);
   const [categorySeedValue, setCategorySeedValue] = useState<string[]>([]);
   const { quizFormatListoption } = useQuizFormatList();
+  // 回答数は入力欄1つにして、以上・以下を切り替えて指定する（APIには選んだ側だけを送る）
+  const [answerCountDirection, setAnswerCountDirection] = useState<AnswerCountDirection>(
+    getQuizRequestData.max_answer_count !== undefined && getQuizRequestData.min_answer_count === undefined
+      ? '以下'
+      : '以上'
+  );
+  const answerCount = getQuizRequestData.min_answer_count ?? getQuizRequestData.max_answer_count;
+  const setAnswerCountCondition = (count: number | undefined, direction: AnswerCountDirection) => {
+    setAnswerCountDirection(direction);
+    setQuizRequestData({
+      ...getQuizRequestData,
+      min_answer_count: direction === '以上' ? count : undefined,
+      max_answer_count: direction === '以下' ? count : undefined
+    });
+  };
   const setMessage = useSetRecoilState(messageState);
 
   const selectedFileChangeHandler = useSelectedFileChange({
@@ -165,6 +190,23 @@ export const InputQueryForm = ({ getQuizRequestData, setQuizRequestData }: Input
             });
           }}
         />
+      </FormControl>
+
+      <FormControl>
+        <FormLabel>回答数指定</FormLabel>
+        <div className="flex flex-wrap items-center gap-x-2">
+          <TextField
+            label="回答数"
+            type="number"
+            value={answerCount === undefined ? '' : String(answerCount)}
+            setStater={(value: string) => setAnswerCountCondition(toAnswerCount(value), answerCountDirection)}
+          />
+          <ToggleButton
+            alignment={answerCountDirection}
+            setAlignment={(direction) => setAnswerCountCondition(answerCount, direction)}
+            buttonValues={ANSWER_COUNT_DIRECTIONS}
+          />
+        </div>
       </FormControl>
 
       <FormControl className="!block">

@@ -101,6 +101,48 @@ describe('quizQuery', () => {
     });
   });
 
+  describe('getQuizWhere - 回答数の範囲指定', () => {
+    it('以上・以下の両方を指定すると、回答数をその範囲で絞り込む', () => {
+      const where = getQuizWhere(
+        { file_num: 1, min_answer_count: 3, max_answer_count: 10 },
+        'random',
+      );
+      expect(where.quiz_statistics_view).toMatchObject({
+        answer_count: { gte: 3, lte: 10 },
+      });
+    });
+
+    it('片方だけ指定すると、指定した側だけで絞り込む', () => {
+      expect(
+        getQuizWhere({ file_num: 1, min_answer_count: 5 }, 'random')
+          .quiz_statistics_view,
+      ).toMatchObject({ answer_count: { gte: 5 } });
+      expect(
+        getQuizWhere({ file_num: 1, max_answer_count: 0 }, 'random')
+          .quiz_statistics_view,
+      ).toMatchObject({ answer_count: { lte: 0 } });
+    });
+
+    it('指定がなければ回答数で絞り込まない', () => {
+      const where = getQuizWhere({ file_num: 1 }, 'random');
+      expect(where.quiz_statistics_view).not.toHaveProperty('answer_count');
+    });
+
+    it('出題方法ごとの解答履歴の条件と同時に指定できる', () => {
+      const where = getQuizWhere(
+        { file_num: 1, min_answer_count: 1 },
+        'todayNotAnswered',
+      );
+      expect(where.quiz_statistics_view).toMatchObject({
+        answer_count: { gte: 1 },
+        OR: [
+          { last_answer_log: { lt: expect.any(Date) } },
+          { last_answer_log: null },
+        ],
+      });
+    });
+  });
+
   describe('searchQuizRange', () => {
     it('result_from〜result_to件目を取得し、上限件数を超えない', () => {
       expect(searchQuizRange({ result_from: 3, result_to: 10 })).toEqual({
