@@ -5,6 +5,7 @@ import {
   S3Client
 } from '@aws-sdk/client-s3'
 import type { Readable } from 'stream'
+import { randomBytes } from 'crypto'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -46,6 +47,42 @@ export const uploadQuizImageToS3 = async (
   const s3Client = getS3Client()
   await s3Client.send(new PutObjectCommand(uploadParams))
   return file.originalname
+}
+
+// Webから取り込んだ画像のファイル名を作る
+// 手動アップロードの画像（元のファイル名のまま保存）を上書きしないよう、問題ID・日時・乱数で一意な名前にする
+// 例: auto_q123_20261120153045_a1b2c3d4.jpg
+export const generateAutoQuizImageFileName = (
+  quizId: number,
+  extension: string,
+  now: Date = new Date()
+): string => {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const timestamp =
+    String(now.getFullYear()) +
+    pad(now.getMonth() + 1) +
+    pad(now.getDate()) +
+    pad(now.getHours()) +
+    pad(now.getMinutes()) +
+    pad(now.getSeconds())
+  return `auto_q${quizId}_${timestamp}_${randomBytes(4).toString('hex')}.${extension}`
+}
+
+// 画像データを指定したファイル名でS3に保存する（Webから取り込んだ画像用）
+export const putQuizImageToS3 = async (
+  fileName: string,
+  body: Buffer,
+  contentType: string
+): Promise<void> => {
+  const s3Client = getS3Client()
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: process.env.QUIZ_IMAGE_S3_BUCKET,
+      Key: `uploads/${fileName}`,
+      Body: body,
+      ContentType: contentType
+    })
+  )
 }
 
 export const getQuizImageFromS3 = async (fileName: string): Promise<Buffer> => {
