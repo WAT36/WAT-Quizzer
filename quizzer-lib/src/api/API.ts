@@ -58,7 +58,8 @@ const send = async (
 
 // バックエンドのエラー理由をそのまま画面に出してよいステータス
 // 401は再ログインで処理し、5xxの内部エラー文は利用者に見せない
-const DISPLAYABLE_ERROR_STATUSES = [400, 404, 409]
+// 422は「選んだ画像を取り込めなかった」など、利用者が別の操作をすれば解決できる理由
+const DISPLAYABLE_ERROR_STATUSES = [400, 404, 409, 422]
 
 const toErrorMessage = ({ status, body }: ProcessingApiReponse): Message => {
   const reason = (body as Partial<ErrorResponse> | null)?.message

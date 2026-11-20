@@ -15,6 +15,7 @@ import { QuizService } from './quiz.service';
 import { QuizCsvService } from './csv/quizCsv.service';
 import { QuizImageService } from './image/quizImage.service';
 import { QuizImageSearchService } from './image/search/quizImageSearch.service';
+import { QuizImageImportService } from './image/import/quizImageImport.service';
 import { QuizStatisticsService } from './statistics/quizStatistics.service';
 import {
   ClearQuizAPIRequestDto,
@@ -48,6 +49,8 @@ import {
   getAccuracyRateHistgramAPIRequestSchema,
   getRecommendedCategoriesAPIRequestSchema,
   searchImageCandidatesOfQuizAPIRequestSchema,
+  ImportImageOfQuizAPIRequestDto,
+  importImageOfQuizAPIRequestSchema,
 } from 'quizzer-lib';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { quizImageUploadOptions } from './image/quizImageUpload.options';
@@ -68,6 +71,7 @@ export class QuizController {
     private readonly quizCsvService: QuizCsvService,
     private readonly quizImageService: QuizImageService,
     private readonly quizImageSearchService: QuizImageSearchService,
+    private readonly quizImageImportService: QuizImageImportService,
     private readonly quizStatisticsService: QuizStatisticsService,
   ) {}
 
@@ -386,6 +390,19 @@ export class QuizController {
     },
   ) {
     return await this.quizImageSearchService.searchCandidates(req);
+  }
+
+  @ApiOperation({
+    summary: 'クイズ画像の候補を登録',
+    description:
+      '画像の候補検索で返した画像をダウンロードしてS3に保存し、問題に紐付けます。',
+  })
+  @Post('/image/import')
+  async importImage(
+    @Body(new ZodValidationPipe(importImageOfQuizAPIRequestSchema))
+    req: ImportImageOfQuizAPIRequestDto,
+  ) {
+    return await this.quizImageImportService.importImage(req);
   }
 
   @ApiOperation({

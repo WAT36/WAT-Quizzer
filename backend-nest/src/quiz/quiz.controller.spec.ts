@@ -7,6 +7,7 @@ import { QuizService } from './quiz.service';
 import { QuizCsvService } from './csv/quizCsv.service';
 import { QuizImageService } from './image/quizImage.service';
 import { QuizImageSearchService } from './image/search/quizImageSearch.service';
+import { QuizImageImportService } from './image/import/quizImageImport.service';
 import { QuizStatisticsService } from './statistics/quizStatistics.service';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { AllExceptionsFilter } from 'src/common/filter/allExceptions.filter';
@@ -21,6 +22,9 @@ describe('QuizController', () => {
   };
   const quizImageSearchService = {
     searchCandidates: jest.fn(),
+  };
+  const quizImageImportService = {
+    importImage: jest.fn(),
   };
   const quizService = {
     add: jest.fn(),
@@ -47,6 +51,7 @@ describe('QuizController', () => {
         { provide: QuizCsvService, useValue: {} },
         { provide: QuizImageService, useValue: {} },
         { provide: QuizImageSearchService, useValue: quizImageSearchService },
+        { provide: QuizImageImportService, useValue: quizImageImportService },
         { provide: QuizStatisticsService, useValue: quizStatisticsService },
         { provide: APP_FILTER, useClass: AllExceptionsFilter },
       ],
@@ -70,6 +75,10 @@ describe('QuizController', () => {
     Object.values(quizImageSearchService).forEach((fn) => {
       fn.mockReset();
       fn.mockResolvedValue({ candidates: [] });
+    });
+    Object.values(quizImageImportService).forEach((fn) => {
+      fn.mockReset();
+      fn.mockResolvedValue({ fileName: 'a.png' });
     });
     Object.values(quizService).forEach((fn) => {
       fn.mockReset();
@@ -765,6 +774,39 @@ describe('QuizController', () => {
         .query(query)
         .expect(400);
       expect(quizImageSearchService.searchCandidates).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('POST /quiz/image/import', () => {
+    const body = {
+      quiz_id: 3,
+      image_url: 'https://a.example/x.png',
+      thumbnail_url: null,
+      signature: 'sig',
+    };
+
+    it('正しいリクエストはサービスに渡す', async () => {
+      await request(app.getHttpServer())
+        .post('/quiz/image/import')
+        .send(body)
+        .expect(201);
+      expect(quizImageImportService.importImage).toHaveBeenCalledWith(body);
+    });
+
+    it.each([
+      ['問題IDなし', { quiz_id: undefined }],
+      ['問題IDが-1', { quiz_id: -1 }],
+      ['元画像がfileスキーム', { image_url: 'file:///etc/passwd' }],
+      ['元画像がURLでない', { image_url: 'abc' }],
+      ['サムネイルがftp', { thumbnail_url: 'ftp://a.example/t.png' }],
+      ['サムネイルの項目なし', { thumbnail_url: undefined }],
+      ['署名が空', { signature: '' }],
+    ])('%sなら400でサービスを呼ばない', async (_, change) => {
+      await request(app.getHttpServer())
+        .post('/quiz/image/import')
+        .send({ ...body, ...change })
+        .expect(400);
+      expect(quizImageImportService.importImage).not.toHaveBeenCalled();
     });
   });
 });
