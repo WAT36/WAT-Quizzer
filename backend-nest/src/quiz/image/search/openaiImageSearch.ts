@@ -12,6 +12,18 @@ const MAX_RESULTS_PER_SEARCH = 8;
 // Lambda(28秒)とAPI Gateway(29秒)の制限に収まるよう、OpenAIの応答は20秒で打ち切る
 export const OPENAI_TIMEOUT_MS = 20000;
 
+// OpenAIのクレジット（残高）不足・利用上限への到達を表すエラーの種類
+// 混雑による一時的な制限（rate_limit_exceeded）は同じ429でも含めない
+const QUOTA_ERROR_CODES = ['insufficient_quota', 'billing_hard_limit_reached'];
+
+// OpenAIのクレジット不足で検索できない時のエラー（時間をおいても解決しないので、他の失敗と区別する）
+export class OpenAIQuotaExceededError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'OpenAIQuotaExceededError';
+  }
+}
+
 // web_search_callの検索結果のうち画像のもの
 export interface OpenAIImageResult {
   image_url: string;
@@ -112,12 +124,21 @@ export const searchImagesWithOpenAI = async ({
   });
   const body: unknown = await response.json().catch(() => null);
   if (!response.ok) {
-    const reason =
-      (body as { error?: { message?: unknown } } | null)?.error?.message ??
-      response.statusText;
-    throw new Error(
-      `OpenAI APIがエラーを返しました(${response.status}): ${String(reason)}`,
-    );
+    const error = (
+      body as {
+        error?: { message?: unknown; code?: unknown; type?: unknown };
+      } | null
+    )?.error;
+    const message = `OpenAI APIがエラーを返しました(${response.status}): ${String(
+      error?.message ?? response.statusText,
+    )}`;
+    if (
+      QUOTA_ERROR_CODES.includes(String(error?.code)) ||
+      QUOTA_ERROR_CODES.includes(String(error?.type))
+    ) {
+      throw new OpenAIQuotaExceededError(message);
+    }
+    throw new Error(message);
   }
   return parseImageResults(body);
 };

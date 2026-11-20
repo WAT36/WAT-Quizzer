@@ -26,9 +26,7 @@ export const searchImageCandidatesOfQuizAPI = async ({
   if (invalid) return invalid
 
   const { quiz_id, hint } = searchImageCandidatesRequestData
-  return await get(
-    '/quiz/image/candidates',
-    onSuccess((data: ProcessingApiReponse) => {
+  const onResponse = onSuccess((data: ProcessingApiReponse) => {
       const result = data.body as SearchImageCandidatesOfQuizAPIResponseDto
       return {
         message:
@@ -38,9 +36,16 @@ export const searchImageCandidatesOfQuizAPI = async ({
                 String(result.candidates.length)
               )
             : errorMessage(MESSAGES.ERROR.MSG00021),
-        result
-      }
-    }),
+      result
+    }
+  })
+  return await get(
+    '/quiz/image/candidates',
+    // OpenAIのクレジット不足(402)は、時間をおいても解決しないので専用のメッセージにする
+    (data: ProcessingApiReponse) =>
+      data.status === 402
+        ? { message: errorMessage(MESSAGES.ERROR.MSG00022) }
+        : onResponse(data),
     { quiz_id, ...(hint?.trim() ? { hint: hint.trim() } : {}) }
   )
 }

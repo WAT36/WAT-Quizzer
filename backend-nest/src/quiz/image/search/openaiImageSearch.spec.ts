@@ -1,4 +1,5 @@
 import {
+  OpenAIQuotaExceededError,
   buildImageSearchPrompt,
   parseImageResults,
   searchImagesWithOpenAI,
@@ -143,6 +144,47 @@ describe('openaiImageSearch', () => {
           fetchFn,
         }),
       ).rejects.toThrow('OpenAI APIがエラーを返しました(429): Rate limit');
+    });
+
+    it.each([
+      [
+        'クレジット不足',
+        { code: 'insufficient_quota', type: 'insufficient_quota' },
+      ],
+      ['利用上限への到達', { code: 'billing_hard_limit_reached' }],
+      ['種類だけがクレジット不足', { code: null, type: 'insufficient_quota' }],
+    ])('%sは、クレジット不足のエラーにする', async (_, error) => {
+      const fetchFn = jest.fn().mockResolvedValue(
+        jsonResponse(429, {
+          error: { message: 'You exceeded your current quota', ...error },
+        }),
+      );
+      const promise = searchImagesWithOpenAI({
+        prompt: 'p',
+        apiKey: 'k',
+        model: 'm',
+        fetchFn,
+      });
+      await expect(promise).rejects.toBeInstanceOf(OpenAIQuotaExceededError);
+      await expect(promise).rejects.toThrow(
+        'OpenAI APIがエラーを返しました(429): You exceeded your current quota',
+      );
+    });
+
+    it('混雑による429(rate_limit_exceeded)は、クレジット不足として扱わない', async () => {
+      const fetchFn = jest.fn().mockResolvedValue(
+        jsonResponse(429, {
+          error: { message: 'Rate limit', code: 'rate_limit_exceeded' },
+        }),
+      );
+      const error = await searchImagesWithOpenAI({
+        prompt: 'p',
+        apiKey: 'k',
+        model: 'm',
+        fetchFn,
+      }).catch((e: unknown) => e);
+      expect(error).toBeInstanceOf(Error);
+      expect(error).not.toBeInstanceOf(OpenAIQuotaExceededError);
     });
   });
 });

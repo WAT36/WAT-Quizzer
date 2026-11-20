@@ -311,6 +311,21 @@ test.describe('quizzer / 問題出題', () => {
       await expect(page.getByAltText('取得した画像')).toHaveCount(0);
     });
 
+    test('OpenAIのクレジットが不足していたら、その旨を表示する', async ({ page, api }) => {
+      api.on('GET', '/quiz/image/candidates', {
+        status: 402,
+        json: { statusCode: 402, message: 'OpenAIのクレジットが不足しているため、画像を検索できません' }
+      });
+
+      await openImageSearch(page);
+
+      await expect(
+        imageSearchDialog(page).getByText(
+          'エラー:OpenAIのクレジットが不足しているため、画像を検索できません。OpenAIの残高・利用上限を確認してください'
+        )
+      ).toBeVisible();
+    });
+
     test('候補の検索に失敗したら、エラーを表示する', async ({ page, api }) => {
       api.on('GET', '/quiz/image/candidates', {
         status: 502,

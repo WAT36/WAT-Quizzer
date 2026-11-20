@@ -4,7 +4,10 @@ import {
   QuizImageSearchService,
   toImageCandidates,
 } from './quizImageSearch.service';
-import { searchImagesWithOpenAI } from './openaiImageSearch';
+import {
+  OpenAIQuotaExceededError,
+  searchImagesWithOpenAI,
+} from './openaiImageSearch';
 import { verifyImageCandidate } from './candidateSignature';
 
 jest.mock('quizzer-lib', () => ({
@@ -159,6 +162,21 @@ describe('QuizImageSearchService', () => {
         status: 502,
         message:
           '画像の検索に失敗しました: OpenAI APIがエラーを返しました(429): Rate limit',
+      });
+    });
+
+    it('OpenAIのクレジット不足は、他の失敗と区別して402', async () => {
+      (prisma.quiz.findFirst as jest.Mock).mockResolvedValue(quiz);
+      (searchImagesWithOpenAI as jest.Mock).mockRejectedValue(
+        new OpenAIQuotaExceededError(
+          'OpenAI APIがエラーを返しました(429): quota',
+        ),
+      );
+      await expect(
+        service.searchCandidates({ quiz_id: 5 }),
+      ).rejects.toMatchObject({
+        status: 402,
+        message: 'OpenAIのクレジットが不足しているため、画像を検索できません',
       });
     });
 

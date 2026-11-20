@@ -1,5 +1,7 @@
 import {
   BadGatewayException,
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -13,6 +15,7 @@ import {
   buildImageSearchPrompt,
   DEFAULT_IMAGE_SEARCH_MODEL,
   OpenAIImageResult,
+  OpenAIQuotaExceededError,
   searchImagesWithOpenAI,
 } from './openaiImageSearch';
 import { signImageCandidate } from './candidateSignature';
@@ -103,6 +106,13 @@ export class QuizImageSearchService {
       });
     } catch (error: unknown) {
       console.error(error);
+      // クレジット不足は残高を補充するまで解決しないので、他の失敗（502）と区別して402で返す
+      if (error instanceof OpenAIQuotaExceededError) {
+        throw new HttpException(
+          'OpenAIのクレジットが不足しているため、画像を検索できません',
+          HttpStatus.PAYMENT_REQUIRED,
+        );
+      }
       const reason =
         error instanceof Error && error.name === 'TimeoutError'
           ? 'タイムアウトしました'
