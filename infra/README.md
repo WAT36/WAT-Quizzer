@@ -23,10 +23,10 @@ WAT-Quizzer の AWS インフラを定義する [AWS CDK](https://aws.amazon.com
 `backend-nest` の API は CDK ではなく AWS SAM（`template.yaml` / `samconfig.toml`）でデプロイする。`BackendStack` は `SAM_APIGATEWAY_ID` でこの API Gateway を参照する。
 
 - `ApiGatewayRestApi` — API Gateway（カスタムドメイン `QuizzerApiDomainName`）。CORS は `FrontOrigin` パラメータのオリジンのみ許可し、credentials（Cookie）を許可する
-- `SamQuizzerApiFunction` — `backend-nest` を動かす Lambda（リポジトリルートの `Dockerfile` からビルドするコンテナイメージ。`/{proxy+}` の全メソッドを受ける。メモリは 512MB）
+- `SamQuizzerApiFunction` — `backend-nest` を動かす Lambda（リポジトリルートの `Dockerfile` からビルドするコンテナイメージ。`/{proxy+}` の全メソッドを受ける。メモリは 512MB、タイムアウトは 28 秒。OpenAI の API キー（`OpenAiApiKey`）・画像候補の署名用の秘密鍵（`QuizImageSigningSecret`）・画像検索のモデル（`OpenAiImageSearchModel`、既定値あり）をパラメータで受け、環境変数として渡す）
 - `WordDerivativesFunction` — 下記 `lambda/word-derivatives/` の Lambda
 
-develop ブランチへの push で `.github/workflows/develop.yml` の `deploy-backend` ジョブが `sam build` / `sam deploy` を実行する（バックエンドに関係する変更があるときのみ。パラメータは同ワークフローの `--parameter-overrides` を参照）。CDK の `BackendStack` / `FrontendStack` は `deploy-frontend` ジョブでデプロイする。`UsEast1Stack` / `MockStack` はワークフローからはデプロイされないため、変更時は `infra/` で `pnpm exec cdk deploy <スタック名> --context env=<env>` を手動で実行する。
+develop ブランチへの push で `.github/workflows/develop.yml` の `deploy-backend` ジョブが `sam build` / `sam deploy` を実行する（バックエンドに関係する変更があるときのみ。パラメータは同ワークフローの `--parameter-overrides` を参照。`OpenAiApiKey` / `QuizImageSigningSecret` は GitHub Secrets の `OPENAI_API_KEY` / `QUIZ_IMAGE_SIGNING_SECRET` から渡すため、事前に登録が必要）。CDK の `BackendStack` / `FrontendStack` は `deploy-frontend` ジョブでデプロイする。`UsEast1Stack` / `MockStack` はワークフローからはデプロイされないため、変更時は `infra/` で `pnpm exec cdk deploy <スタック名> --context env=<env>` を手動で実行する。
 
 ## Lambda (`lambda/`)
 
