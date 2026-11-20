@@ -49,6 +49,18 @@ Parameters:
   FrontOrigin:
     Type: String
     Description: 'Frontend origin allowed by CORS with credentials (e.g. https://dev.quizzer.wat-notes.com)'
+  OpenAiApiKey:
+    Type: String
+    NoEcho: true
+    Description: 'OpenAI API key for searching reference images of quizzes'
+  OpenAiImageSearchModel:
+    Type: String
+    Default: 'gpt-6.2-astra'
+    Description: 'OpenAI model used for the image search of quizzes'
+  QuizImageSigningSecret:
+    Type: String
+    NoEcho: true
+    Description: 'Secret key for signing image candidates (e.g. openssl rand -hex 32)'
 
 Resources:
   ApiGatewayRestApi:
@@ -89,6 +101,9 @@ Resources:
         - x86_64
       # 既定の128MBでは問題取得時にメモリ不足→タイムアウトしたため増量（メモリに比例してCPUも増える）
       MemorySize: 512
+      # 問題画像の候補検索（OpenAIの画像検索、最大20秒で打ち切り）が収まるよう延長
+      # API Gateway(EDGE)は29秒で打ち切るので、それより短くする
+      Timeout: 28
       Environment:
         Variables:
           REGION: !Ref Region
@@ -102,6 +117,9 @@ Resources:
           TODO_CHECK_STATUS_TABLE_ARN: !Ref TodoCheckStatusTableArn
           WORD_DERIVATIVES_FUNCTION_NAME: !Ref WordDerivativesFunction
           FRONT_ORIGIN: !Ref FrontOrigin
+          OPENAI_API_KEY: !Ref OpenAiApiKey
+          OPENAI_IMAGE_SEARCH_MODEL: !Ref OpenAiImageSearchModel
+          QUIZ_IMAGE_SIGNING_SECRET: !Ref QuizImageSigningSecret
           # PRISMA_QUERY_ENGINE_LIBRARY: ../node_modules/.prisma/client/libquery_engine-rhel-openssl-3.0.x.so.node
       Policies:
         - Statement:

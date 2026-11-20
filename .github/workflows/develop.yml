@@ -189,10 +189,14 @@ jobs:
                         SAkey=$SAKEY \
                         WiktionaryApiUrl=$WIKTIONARY_API_URL \
                         FreeDictionaryApiUrl=$FREE_DICTIONARY_API_URL \
-                        FrontOrigin=https://$FRONT_DOMAIN_NAME
+                        FrontOrigin=https://$FRONT_DOMAIN_NAME \
+                        OpenAiApiKey=$OPENAI_API_KEY \
+                        QuizImageSigningSecret=$QUIZ_IMAGE_SIGNING_SECRET
         env:
           AKEY: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
           SAKEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          QUIZ_IMAGE_SIGNING_SECRET: ${{ secrets.QUIZ_IMAGE_SIGNING_SECRET }}
 
       # ECRの古いイメージを手動削除とライフサイクルポリシー適用
       - name: cleanup old ECR images and apply lifecycle policy

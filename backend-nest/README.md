@@ -89,6 +89,9 @@ pnpm run lint:check  # --fix なしでチェックだけ行う（CI・pre-push �
 - `WORD_DERIVATIVES_FUNCTION_NAME` — 派生語取得で呼び出す Lambda 関数名（`english/derivatives/`）
 - `ENV` — ToDo チェック状況を保存する DynamoDB テーブル名 `<ENV>-todo-check-status` の接頭辞（未設定時は `dev`）
 - `FRONT_ORIGIN` — CORS で許可するフロントエンドのオリジン（未設定時は `http://localhost:3000`）。Lambda では `infra/template.yaml` の `FrontOrigin` パラメータから渡される
+- `OPENAI_API_KEY` — 問題の参考画像の候補検索（`quiz/image/search/`）で使う OpenAI の API キー。Lambda では GitHub Secrets の `OPENAI_API_KEY` から `infra/template.yaml` の `OpenAiApiKey` パラメータ経由で渡される
+- `OPENAI_IMAGE_SEARCH_MODEL` — 画像の候補検索で使うモデル（未設定時は `gpt-6.2-astra`）
+- `QUIZ_IMAGE_SIGNING_SECRET` — 画像の候補に付ける署名の秘密鍵（`openssl rand -hex 32` などで生成）。候補の登録（`quiz/image/import/`）で、候補検索が返したURLかを確認するのに使う。GitHub Secrets の `QUIZ_IMAGE_SIGNING_SECRET` から渡される
 
 ## Docker
 
