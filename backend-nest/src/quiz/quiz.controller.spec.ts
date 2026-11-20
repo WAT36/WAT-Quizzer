@@ -6,6 +6,7 @@ import { QuizController } from './quiz.controller';
 import { QuizService } from './quiz.service';
 import { QuizCsvService } from './csv/quizCsv.service';
 import { QuizImageService } from './image/quizImage.service';
+import { QuizImageSearchService } from './image/search/quizImageSearch.service';
 import { QuizStatisticsService } from './statistics/quizStatistics.service';
 import { CognitoAuthGuard } from 'src/auth/cognito/cognito-auth.guard';
 import { AllExceptionsFilter } from 'src/common/filter/allExceptions.filter';
@@ -17,6 +18,9 @@ describe('QuizController', () => {
     getAnswerLogStatistics: jest.fn(),
     getAccuracyRateHistgramData: jest.fn(),
     getRecommendedCategories: jest.fn(),
+  };
+  const quizImageSearchService = {
+    searchCandidates: jest.fn(),
   };
   const quizService = {
     add: jest.fn(),
@@ -42,6 +46,7 @@ describe('QuizController', () => {
         { provide: QuizService, useValue: quizService },
         { provide: QuizCsvService, useValue: {} },
         { provide: QuizImageService, useValue: {} },
+        { provide: QuizImageSearchService, useValue: quizImageSearchService },
         { provide: QuizStatisticsService, useValue: quizStatisticsService },
         { provide: APP_FILTER, useClass: AllExceptionsFilter },
       ],
@@ -61,6 +66,10 @@ describe('QuizController', () => {
     Object.values(quizStatisticsService).forEach((fn) => {
       fn.mockReset();
       fn.mockResolvedValue([]);
+    });
+    Object.values(quizImageSearchService).forEach((fn) => {
+      fn.mockReset();
+      fn.mockResolvedValue({ candidates: [] });
     });
     Object.values(quizService).forEach((fn) => {
       fn.mockReset();
@@ -731,5 +740,31 @@ describe('QuizController', () => {
         expect(quizService.add).not.toHaveBeenCalled();
       },
     );
+  });
+
+  describe('GET /quiz/image/candidates', () => {
+    it('問題IDを数値に、追加指示を前後の空白を除いて渡す', async () => {
+      await request(app.getHttpServer())
+        .get('/quiz/image/candidates')
+        .query({ quiz_id: '12', hint: '  地図で  ' })
+        .expect(200);
+      expect(quizImageSearchService.searchCandidates).toHaveBeenCalledWith({
+        quiz_id: 12,
+        hint: '地図で',
+      });
+    });
+
+    it.each([
+      ['問題IDなし', {}],
+      ['問題IDが数値でない', { quiz_id: 'x' }],
+      ['問題IDが-1', { quiz_id: '-1' }],
+      ['追加指示が101文字', { quiz_id: '1', hint: 'あ'.repeat(101) }],
+    ])('%sなら400でサービスを呼ばない', async (_, query) => {
+      await request(app.getHttpServer())
+        .get('/quiz/image/candidates')
+        .query(query)
+        .expect(400);
+      expect(quizImageSearchService.searchCandidates).not.toHaveBeenCalled();
+    });
   });
 });

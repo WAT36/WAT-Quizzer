@@ -3,6 +3,7 @@ import { QuizController } from './quiz.controller';
 import { QuizService } from './quiz.service';
 import { QuizCsvService } from './csv/quizCsv.service';
 import { QuizImageService } from './image/quizImage.service';
+import { QuizImageSearchService } from './image/search/quizImageSearch.service';
 import { QuizStatisticsService } from './statistics/quizStatistics.service';
 import { QuizFileModule } from './file/file.module';
 import { CognitoAuthService } from 'src/auth/cognito/cognito-auth.service';
@@ -14,6 +15,7 @@ import { CognitoAuthService } from 'src/auth/cognito/cognito-auth.service';
     QuizService,
     QuizCsvService,
     QuizImageService,
+    QuizImageSearchService,
     QuizStatisticsService,
     CognitoAuthService,
   ],

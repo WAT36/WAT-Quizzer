@@ -14,6 +14,7 @@ import {
 import { QuizService } from './quiz.service';
 import { QuizCsvService } from './csv/quizCsv.service';
 import { QuizImageService } from './image/quizImage.service';
+import { QuizImageSearchService } from './image/search/quizImageSearch.service';
 import { QuizStatisticsService } from './statistics/quizStatistics.service';
 import {
   ClearQuizAPIRequestDto,
@@ -46,6 +47,7 @@ import {
   getAnswerLogStatisticsAPIRequestSchema,
   getAccuracyRateHistgramAPIRequestSchema,
   getRecommendedCategoriesAPIRequestSchema,
+  searchImageCandidatesOfQuizAPIRequestSchema,
 } from 'quizzer-lib';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { quizImageUploadOptions } from './image/quizImageUpload.options';
@@ -65,6 +67,7 @@ export class QuizController {
     private readonly quizService: QuizService,
     private readonly quizCsvService: QuizCsvService,
     private readonly quizImageService: QuizImageService,
+    private readonly quizImageSearchService: QuizImageSearchService,
     private readonly quizStatisticsService: QuizStatisticsService,
   ) {}
 
@@ -367,6 +370,22 @@ export class QuizController {
   @Get('/image')
   async downloadQuizImage(@Query('fileName') fileName: string) {
     return await this.quizImageService.downloadQuizImage(fileName);
+  }
+
+  @ApiOperation({
+    summary: 'クイズ画像の候補検索',
+    description:
+      '問題文と答えから、参考画像の候補をWebで探して返します（OpenAIの画像検索を使用）。',
+  })
+  @Get('/image/candidates')
+  async searchImageCandidates(
+    @Query(new ZodValidationPipe(searchImageCandidatesOfQuizAPIRequestSchema))
+    req: {
+      quiz_id: number;
+      hint?: string;
+    },
+  ) {
+    return await this.quizImageSearchService.searchCandidates(req);
   }
 
   @ApiOperation({
