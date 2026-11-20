@@ -10,13 +10,15 @@ interface DialogModalProps {
   children?: ReactNode;
   // 右寄せで並べるボタン類
   actions?: ReactNode;
+  // 中身の最大幅（Tailwindのクラス。既定はmax-w-md）
+  maxWidthClassName?: string;
 }
 
 // タイトル・本文・ボタン列の3段で構成するモーダル（入力フォームや確認ダイアログで共通のレイアウト）
 // globals.cssの「* { padding: 0; margin: 0 }」がTailwindの余白クラスより優先されるため、余白は!付きで指定する
-export const DialogModal = ({ isOpen, setIsOpen, title, children, actions }: DialogModalProps) => {
+export const DialogModal = ({ isOpen, setIsOpen, title, children, actions, maxWidthClassName }: DialogModalProps) => {
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen} maxWidthClassName={maxWidthClassName}>
       <div className="!p-6">
         <Typography id="modal-modal-title" variant="h6" component="h2" className="!mb-4 font-bold">
           {title}

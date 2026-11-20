@@ -181,6 +181,24 @@ export const uploadImageOfQuizAPI = async (params: any): Promise<ApiResult> => {
   return originalUploadImageOfQuizAPI(params);
 };
 
+export const searchImageCandidatesOfQuizAPI = async (params: any): Promise<ApiResult> => {
+  if (isMockMode()) {
+    return mockAPI.mockSearchImageCandidatesOfQuizAPI(params);
+  }
+
+  const { searchImageCandidatesOfQuizAPI: originalSearchImageCandidatesOfQuizAPI } = await import('quizzer-lib');
+  return originalSearchImageCandidatesOfQuizAPI(params);
+};
+
+export const importImageOfQuizAPI = async (params: any): Promise<ApiResult> => {
+  if (isMockMode()) {
+    return mockAPI.mockImportImageOfQuizAPI(params);
+  }
+
+  const { importImageOfQuizAPI: originalImportImageOfQuizAPI } = await import('quizzer-lib');
+  return originalImportImageOfQuizAPI(params);
+};
+
 export const getRandomSayingAPI = async (): Promise<ApiResult> => {
   if (isMockMode()) {
     return mockAPI.mockGetRandomSayingAPI();

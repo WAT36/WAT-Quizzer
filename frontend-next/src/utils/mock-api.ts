@@ -371,6 +371,51 @@ export const mockUploadImageOfQuizAPI = async (params: any): Promise<ApiResult> 
   };
 };
 
+// 画像候補のモック用の画像（外部に通信しないよう、色と番号だけのSVGをdata URLで持つ）
+const mockCandidateImage = (index: number, width: number, height: number) => {
+  const hue = (index * 47) % 360;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+    `<rect width="100%" height="100%" fill="hsl(${hue},60%,75%)"/>` +
+    `<text x="50%" y="50%" font-size="${Math.round(height / 4)}" text-anchor="middle" dominant-baseline="middle">${index + 1}</text>` +
+    `</svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+};
+
+// 画像の候補検索のモック。追加指示に「なし」を含めると候補0件を返す（見つからない時の表示確認用）
+export const mockSearchImageCandidatesOfQuizAPI = async (params: any): Promise<ApiResult> => {
+  const hint: string = params?.searchImageCandidatesRequestData?.hint ?? '';
+  const candidates = hint.includes('なし')
+    ? []
+    : Array.from({ length: 9 }, (_, i) => ({
+        image_url: `https://example.com/mock/${i + 1}.jpg`,
+        // 元画像のURLは実在しないので、表示にはサムネイル（data URL）を使わせる
+        thumbnail_url: mockCandidateImage(i, i % 3 === 0 ? 320 : 240, i % 3 === 0 ? 180 : 240),
+        source_url: `https://example.com/page/${i + 1}`,
+        caption: i === 4 ? null : `モックの画像候補${i + 1}${hint ? `（${hint}）` : ''}`,
+        signature: `mock-signature-${i + 1}`
+      }));
+  return {
+    isSuccess: true,
+    message:
+      candidates.length > 0
+        ? successMessage(MESSAGES.SUCCESS.MSG00026, String(candidates.length))
+        : errorMessage(MESSAGES.ERROR.MSG00021),
+    result: { candidates }
+  };
+};
+
+// 画像候補の登録のモック
+export const mockImportImageOfQuizAPI = async (params: any): Promise<ApiResult> => {
+  const quizId: number = params?.importImageRequestData?.quiz_id ?? 0;
+  const fileName = `auto_q${quizId}_mock.jpg`;
+  return {
+    isSuccess: true,
+    message: successMessage(MESSAGES.SUCCESS.MSG00027, fileName),
+    result: { fileName }
+  };
+};
+
 export const mockGetRandomSayingAPI = async (): Promise<ApiResult> => {
   // ランダムな格言を返す
   const randomSaying = sayingMockData[Math.floor(Math.random() * sayingMockData.length)];
@@ -1708,11 +1753,41 @@ export const mockSubmitExampleTestDataAPI = async (params: any): Promise<ApiResu
 
 // カテゴリ親子関係のモックデータ（メモリ上で管理）
 let categoryParentChildMockData: CategoryParentChildAPIResponseDto[] = [
-  { id: 1, parent_category_id: 100, parent_category_name: 'AWS', child_category_id: 101, child_category_name: 'コンピューティング' },
-  { id: 2, parent_category_id: 100, parent_category_name: 'AWS', child_category_id: 102, child_category_name: 'ストレージ' },
-  { id: 3, parent_category_id: 100, parent_category_name: 'AWS', child_category_id: 103, child_category_name: 'ネットワーク' },
-  { id: 4, parent_category_id: 200, parent_category_name: 'データベース', child_category_id: 201, child_category_name: '正規化' },
-  { id: 5, parent_category_id: 200, parent_category_name: 'データベース', child_category_id: 202, child_category_name: 'SQL' }
+  {
+    id: 1,
+    parent_category_id: 100,
+    parent_category_name: 'AWS',
+    child_category_id: 101,
+    child_category_name: 'コンピューティング'
+  },
+  {
+    id: 2,
+    parent_category_id: 100,
+    parent_category_name: 'AWS',
+    child_category_id: 102,
+    child_category_name: 'ストレージ'
+  },
+  {
+    id: 3,
+    parent_category_id: 100,
+    parent_category_name: 'AWS',
+    child_category_id: 103,
+    child_category_name: 'ネットワーク'
+  },
+  {
+    id: 4,
+    parent_category_id: 200,
+    parent_category_name: 'データベース',
+    child_category_id: 201,
+    child_category_name: '正規化'
+  },
+  {
+    id: 5,
+    parent_category_id: 200,
+    parent_category_name: 'データベース',
+    child_category_id: 202,
+    child_category_name: 'SQL'
+  }
 ];
 
 export const mockGetCategoryParentChildListAPI = async (params: any): Promise<ApiResult> => {
@@ -1808,7 +1883,12 @@ export const mockGetRecommendedCategoriesAPI = async (params: { file_num: number
   }
 
   const result: RecommendedCategoryDto[] = [
-    { category_name: 'ネットワーク', reason: 'neverAnswered', days_since_last_answered: null, recent_accuracy_rate: null },
+    {
+      category_name: 'ネットワーク',
+      reason: 'neverAnswered',
+      days_since_last_answered: null,
+      recent_accuracy_rate: null
+    },
     { category_name: '正規化', reason: 'notRecent', days_since_last_answered: 14, recent_accuracy_rate: null },
     { category_name: 'SQL', reason: 'lowAccuracy', days_since_last_answered: null, recent_accuracy_rate: 0.35 }
   ];
