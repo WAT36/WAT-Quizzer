@@ -68,6 +68,11 @@ export const useQuizSession = () => {
     dispatch({ type: 'REVERSE_CHECKED', quizId });
   }, []);
 
+  // 画像の登録に成功した問題の画像ファイル名を記録する（以降の画像の自動表示で使う）
+  const imageRegistered = useCallback((quizId: number, fileName: string) => {
+    dispatch({ type: 'SET_IMAGE_FILE', quizId, fileName });
+  }, []);
+
   // 全問終わる前に出題を終了し、それまでの解答結果で終了画面を表示する
   const finishSession = useCallback(() => {
     dispatch({ type: 'FINISH' });
@@ -84,6 +89,7 @@ export const useQuizSession = () => {
     status: state.status,
     currentQuiz,
     currentChecked: state.checkedByQuizId[currentQuiz.id] ?? currentQuiz.checked,
+    currentImageFile: state.imageFileByQuizId[currentQuiz.id] ?? currentQuiz.img_file ?? null,
     currentIndex: state.currentIndex,
     totalCount: state.queue.length,
     correctCount: state.correctCount,
@@ -92,6 +98,7 @@ export const useQuizSession = () => {
     startSession,
     answer,
     reverseChecked,
+    imageRegistered,
     finishSession,
     resetSession
   };

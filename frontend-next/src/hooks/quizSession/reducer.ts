@@ -17,6 +17,8 @@ export interface QuizSessionState {
   results: QuizAnswerResult[];
   // 出題中に反転した後のチェック状態。問題データを書き換えると四択の選択肢が並び替わってしまうため別に持つ
   checkedByQuizId: Record<number, boolean>;
+  // 出題中に登録した画像のファイル名（チェック状態と同じ理由で、問題データとは別に持つ）
+  imageFileByQuizId: Record<number, string>;
 }
 
 export const initialQuizSessionState: QuizSessionState = {
@@ -26,13 +28,15 @@ export const initialQuizSessionState: QuizSessionState = {
   correctCount: 0,
   answeredCount: 0,
   results: [],
-  checkedByQuizId: {}
+  checkedByQuizId: {},
+  imageFileByQuizId: {}
 };
 
 export type QuizSessionAction =
   | { type: 'START'; queue: GetQuizApiResponseDto[] }
   | { type: 'ANSWER'; isCorrect: boolean }
   | { type: 'REVERSE_CHECKED'; quizId: number }
+  | { type: 'SET_IMAGE_FILE'; quizId: number; fileName: string }
   | { type: 'FINISH' }
   | { type: 'RESET' };
 
@@ -40,6 +44,7 @@ export type QuizSessionAction =
 // START: 取得したN問をキューにセットし、出題を開始する
 // ANSWER: 現在の問題に解答し、正解数と解答結果を記録しつつ次の問題に進める。全問終了していればfinishedにする
 // REVERSE_CHECKED: 指定した問題のチェック状態を反転する
+// SET_IMAGE_FILE: 指定した問題に登録した画像のファイル名を記録する
 // FINISH: 全問終わる前に出題を終了し、それまでの解答結果で終了画面にする（1問も解答していなければ何もしない）
 // RESET: 出題設定に戻るため状態を初期化する
 export const quizSessionReducer = (state: QuizSessionState, action: QuizSessionAction): QuizSessionState => {
@@ -52,7 +57,8 @@ export const quizSessionReducer = (state: QuizSessionState, action: QuizSessionA
         correctCount: 0,
         answeredCount: 0,
         results: [],
-        checkedByQuizId: {}
+        checkedByQuizId: {},
+        imageFileByQuizId: {}
       };
     case 'ANSWER': {
       // 出題中でなければ何もしない（多重送信対策）
@@ -74,6 +80,8 @@ export const quizSessionReducer = (state: QuizSessionState, action: QuizSessionA
         state.checkedByQuizId[action.quizId] ?? state.queue.find((quiz) => quiz.id === action.quizId)?.checked;
       return { ...state, checkedByQuizId: { ...state.checkedByQuizId, [action.quizId]: !checked } };
     }
+    case 'SET_IMAGE_FILE':
+      return { ...state, imageFileByQuizId: { ...state.imageFileByQuizId, [action.quizId]: action.fileName } };
     case 'FINISH':
       if (state.status !== 'active' || state.answeredCount === 0) {
         return state;

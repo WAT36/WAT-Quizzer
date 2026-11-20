@@ -200,4 +200,127 @@ test.describe('quizzer / 問題出題', () => {
       await expect(page.getByAltText('取得した画像')).toHaveCount(0);
     });
   });
+
+  test.describe('画像を探して登録', () => {
+    // 候補の画像は外部サイトにせず、画面と同じオリジンのURLをテスト内で返す
+    const imageBase = 'http://127.0.0.1:3000/e2e-images';
+    const candidates = [
+      {
+        image_url: `${imageBase}/a.png`,
+        thumbnail_url: `${imageBase}/a-thumb.png`,
+        source_url: 'https://example.com/a',
+        caption: '候補Aの説明',
+        signature: 'sig-a'
+      },
+      {
+        image_url: `${imageBase}/b.png`,
+        thumbnail_url: null,
+        source_url: 'https://example.org/b',
+        caption: '候補Bの説明',
+        signature: 'sig-b'
+      }
+    ];
+
+    // MUIのModalはrole="dialog"を持たないので、見出し(aria-labelledby)から付く名前でモーダルを特定する
+    const imageSearchDialog = (page: Page) => page.getByLabel('画像を探して登録', { exact: true });
+
+    const openImageSearch = async (page: Page) => {
+      await page.route(`${imageBase}/**`, (route) =>
+        route.fulfill({ status: 200, contentType: 'image/png', body: Buffer.from('iVBORw0KGgo=', 'base64') })
+      );
+      await page.getByRole('button', { name: '出題設定を開く' }).click();
+      await page.getByLabel('問題ファイル').click();
+      await page.getByRole('option', { name: 'プログラミング基礎問題集' }).click();
+      await page.getByRole('button', { name: '出題スタート' }).click();
+      await page.getByRole('button', { name: '答え' }).click();
+      await page.getByRole('button', { name: '画像を探して登録' }).click();
+    };
+
+    test('候補から1枚選んで登録すると、署名付きで登録し、すぐに画像を表示する', async ({ page, api }) => {
+      api.on('GET', '/quiz/image/candidates', { json: { candidates } });
+      api.on('POST', '/quiz/image/import', { status: 201, json: { fileName: 'auto_q101_x.png' } });
+      api.on('GET', '/quiz/image', { json: { base64: 'iVBORw0KGgo=', mimeType: 'image/png' } });
+
+      await openImageSearch(page);
+
+      const dialog = imageSearchDialog(page);
+      await expect(dialog.getByRole('heading', { name: '画像を探して登録' })).toBeVisible();
+      // 開いた時に、追加指示なしで出題中の問題の候補を探す
+      expect(api.requests('GET', '/quiz/image/candidates')[0].query).toEqual({ quiz_id: String(quizzes[0].id) });
+
+      // 選ぶまでは登録できない
+      await expect(dialog.getByRole('button', { name: 'この画像で登録' })).toBeDisabled();
+      await dialog.getByRole('button', { name: /候補Bの説明/ }).click();
+      await expect(dialog.getByRole('button', { name: /候補Bの説明/ })).toHaveAttribute('aria-pressed', 'true');
+      await dialog.getByRole('button', { name: 'この画像で登録' }).click();
+
+      await expect(imageSearchDialog(page)).toHaveCount(0);
+      expect(api.requests('POST', '/quiz/image/import')[0].body).toEqual({
+        quiz_id: quizzes[0].id,
+        image_url: candidates[1].image_url,
+        thumbnail_url: null,
+        signature: 'sig-b'
+      });
+      // 自動表示がOFFでも、登録した画像をすぐ表示する
+      await expect(page.getByAltText('取得した画像')).toHaveAttribute('src', 'data:image/png;base64,iVBORw0KGgo=');
+      expect(api.requests('GET', '/quiz/image')[0].query).toEqual({ fileName: 'auto_q101_x.png' });
+      await expect(page.getByText('画像を登録しました(auto_q101_x.png)')).toBeVisible();
+      // 以降は差し替えになる
+      await expect(page.getByRole('button', { name: '画像を探して差し替え' })).toBeVisible();
+    });
+
+    test('追加指示を入れて再検索すると、追加指示を付けて探し直す', async ({ page, api }) => {
+      api.on('GET', '/quiz/image/candidates', { json: { candidates } });
+
+      await openImageSearch(page);
+      const dialog = imageSearchDialog(page);
+      await expect(dialog.getByRole('button', { name: /候補Aの説明/ })).toBeVisible();
+
+      await dialog.getByLabel('追加指示（任意）').fill('  図解で  ');
+      await dialog.getByRole('button', { name: '再検索' }).click();
+
+      await expect.poll(() => api.requests('GET', '/quiz/image/candidates').length).toBe(2);
+      expect(api.requests('GET', '/quiz/image/candidates')[1].query).toEqual({
+        quiz_id: String(quizzes[0].id),
+        hint: '図解で'
+      });
+    });
+
+    test('候補が見つからなければ、その旨を表示する', async ({ page, api }) => {
+      api.on('GET', '/quiz/image/candidates', { json: { candidates: [] } });
+
+      await openImageSearch(page);
+
+      await expect(imageSearchDialog(page).getByText('画像の候補が見つかりませんでした。再検索するか')).toBeVisible();
+    });
+
+    test('選んだ画像を取得できなければ、理由を表示し、別の候補を選べるよう開いたままにする', async ({ page, api }) => {
+      api.on('GET', '/quiz/image/candidates', { json: { candidates } });
+      api.on('POST', '/quiz/image/import', {
+        status: 422,
+        json: { statusCode: 422, message: 'この画像は取得できませんでした(HTTP 403)。別の画像を選んでください' }
+      });
+
+      await openImageSearch(page);
+      const dialog = imageSearchDialog(page);
+      await dialog.getByRole('button', { name: /候補Aの説明/ }).click();
+      await dialog.getByRole('button', { name: 'この画像で登録' }).click();
+
+      await expect(page.getByText('この画像は取得できませんでした(HTTP 403)。別の画像を選んでください')).toBeVisible();
+      await expect(dialog.getByRole('button', { name: 'この画像で登録' })).toBeEnabled();
+      await expect(page.getByAltText('取得した画像')).toHaveCount(0);
+    });
+
+    test('候補の検索に失敗したら、エラーを表示する', async ({ page, api }) => {
+      api.on('GET', '/quiz/image/candidates', {
+        status: 502,
+        json: { statusCode: 502, message: '画像の検索に失敗しました: タイムアウトしました' }
+      });
+
+      await openImageSearch(page);
+
+      // 5xxの理由は画面に出さず、共通のメッセージにする
+      await expect(imageSearchDialog(page).getByText('エラー:外部APIとの連携に失敗しました')).toBeVisible();
+    });
+  });
 });

@@ -69,6 +69,8 @@ export default function GetQuizPage() {
               setImageUrl={setImageUrl}
               onAnswer={quizSession.answer}
               onCheckReversed={quizSession.reverseChecked}
+              imageFile={quizSession.currentImageFile}
+              onImageRegistered={quizSession.imageRegistered}
             />
           </>
         )}

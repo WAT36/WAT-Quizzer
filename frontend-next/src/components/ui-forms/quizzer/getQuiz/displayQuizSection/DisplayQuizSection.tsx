@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import {
   Button as MuiButton,
   CardActions,
@@ -18,6 +18,7 @@ import { reverseCheckQuizAPI, getImageOfQuizAPI } from '@/utils/api-wrapper';
 import { Chip } from '@/components/ui-elements/chip/Chip';
 import { DisplaySentence } from '@/components/ui-elements/sentence/DisplaySentence';
 import { EditQuizIconButton } from '@/components/ui-parts/editQuizIconButton/EditQuizIconButton';
+import { ImageSearchModal } from '@/components/ui-forms/quizzer/getQuiz/imageSearchModal/ImageSearchModal';
 
 interface DisplayQuizSectionProps {
   getQuizResponseData: GetQuizApiResponseDto;
@@ -30,6 +31,10 @@ interface DisplayQuizSectionProps {
   onAnswer: (isCorrect: boolean) => Promise<(() => void) | null>;
   // チェックの登録が成功した後に呼ぶ
   onCheckReversed: (quizId: number) => void;
+  // 問題に紐付いている画像のファイル名（出題中に登録した画像を含む。未指定なら問題データのimg_file）
+  imageFile?: string | null;
+  // 画像を探して登録できた後に呼ぶ
+  onImageRegistered?: (quizId: number, fileName: string) => void;
 }
 
 export const DisplayQuizSection = ({
@@ -38,12 +43,16 @@ export const DisplayQuizSection = ({
   imageUrl,
   setImageUrl,
   onAnswer,
-  onCheckReversed
+  onCheckReversed,
+  imageFile,
+  onImageRegistered
 }: DisplayQuizSectionProps) => {
   const setMessage = useSetRecoilState(messageState);
   const [expanded, setExpanded] = useState<boolean>(false);
   const [hideAccuracyRate, setHideAccuracyRate] = useState<boolean>(false);
   const [autoDisplayImage, setAutoDisplayImage] = useState<boolean>(false);
+  const [imageSearchOpen, setImageSearchOpen] = useState<boolean>(false);
+  const currentImageFile = imageFile === undefined ? getQuizResponseData.img_file : imageFile;
   const prevQuizSentenseRef = useRef<string>(getQuizResponseData.quiz_sentense);
   const pendingAdvanceRef = useRef<(() => void) | null>(null);
   const displayQuiz = useMemo(() => {
@@ -74,6 +83,26 @@ export const DisplayQuizSection = ({
     setExpanded(false);
   };
 
+  // 画像を取得して問題文の下に表示する
+  // keepMessage: 直前のメッセージ（「画像を登録しました」など）を残し、取得に失敗した時だけメッセージを出す
+  const displayImage = useCallback(
+    async (fileName: string, { keepMessage = false }: { keepMessage?: boolean } = {}) => {
+      if (!setImageUrl) return;
+      if (!keepMessage) {
+        setMessage({ message: '画像取得中...', messageColor: '#d3d3d3', isDisplay: true });
+      }
+      const result = await getImageOfQuizAPI({ getImageOfQuizRequestData: { fileName } });
+      if (!keepMessage || !result.isSuccess) {
+        setMessage(result.message);
+      }
+      if (result.result) {
+        const res = result.result as GetImageOfQuizAPIResponseDto;
+        setImageUrl(res.imageUrl);
+      }
+    },
+    [setImageUrl, setMessage]
+  );
+
   // 出題変わったら閉じる、画像自動表示の場合は画像を取得
   useEffect(() => {
     if (prevQuizSentenseRef.current !== getQuizResponseData.quiz_sentense) {
@@ -84,21 +113,11 @@ export const DisplayQuizSection = ({
       setImageUrl && setImageUrl('');
 
       // 自動画像表示がONで、画像ファイル名がある場合は自動的に画像を取得
-      if (autoDisplayImage && getQuizResponseData.img_file && setImageUrl) {
-        void (async () => {
-          setMessage({ message: '画像取得中...', messageColor: '#d3d3d3', isDisplay: true });
-          const result = await getImageOfQuizAPI({
-            getImageOfQuizRequestData: { fileName: getQuizResponseData.img_file || '' }
-          });
-          setMessage(result.message);
-          if (result.result) {
-            const res = result.result as GetImageOfQuizAPIResponseDto;
-            setImageUrl(res.imageUrl);
-          }
-        })();
+      if (autoDisplayImage && currentImageFile) {
+        void displayImage(currentImageFile);
       }
     }
-  }, [getQuizResponseData.quiz_sentense, getQuizResponseData.img_file, autoDisplayImage, setImageUrl, setMessage]);
+  }, [getQuizResponseData.quiz_sentense, currentImageFile, autoDisplayImage, displayImage, setImageUrl]);
 
   return (
     <>
@@ -207,9 +226,32 @@ export const DisplayQuizSection = ({
                 }
               }}
             />
+            {/* 正解・不正解（押すと次の問題に進む）と押し間違えないよう、枠線だけのボタンにする */}
+            <Button
+              label={currentImageFile ? '画像を探して差し替え' : '画像を探して登録'}
+              attr={'button-array'}
+              variant="outlined"
+              color="info"
+              disabled={getQuizResponseData.quiz_num === -1 || !onImageRegistered}
+              onClick={() => setImageSearchOpen(true)}
+            />
           </CardContent>
         </Collapse>
       </Card>
+      {/* 開いた時に検索を始めるので、開いている間だけ描画する */}
+      {imageSearchOpen && (
+        <ImageSearchModal
+          isOpen={imageSearchOpen}
+          setIsOpen={setImageSearchOpen}
+          quizId={getQuizResponseData.id}
+          hasImage={!!currentImageFile}
+          onRegistered={(fileName) => {
+            onImageRegistered?.(getQuizResponseData.id, fileName);
+            // 登録できたことが分かるよう、自動表示の設定にかかわらずすぐ表示する
+            void displayImage(fileName, { keepMessage: true });
+          }}
+        />
+      )}
     </>
   );
 };
