@@ -64,9 +64,11 @@ export const getQuizAPI = async ({
         if (isBatchRequest) {
           const body = data.body as { total: number; quizzes: GetQuizApiResponseDto[] }
           return {
+            // 取得した問題数と、条件に合う問題の総数(例:忘却曲線に基づく復習なら今日の復習対象の数)を表示する
             message: successMessage(
-              MESSAGES.SUCCESS.MSG00015,
-              String(body.quizzes.length)
+              MESSAGES.SUCCESS.MSG00028,
+              String(body.quizzes.length),
+              body.total.toLocaleString()
             ),
             result: body.quizzes,
             total: body.total

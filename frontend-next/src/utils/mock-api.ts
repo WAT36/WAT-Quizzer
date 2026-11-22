@@ -32,7 +32,7 @@ export const mockGetQuizAPI = async (params: any): Promise<ApiResult> => {
     const quizzes = [...quizList].sort(() => Math.random() - 0.5).slice(0, count);
     return {
       isSuccess: true,
-      message: successMessage(MESSAGES.SUCCESS.MSG00015, String(quizzes.length)),
+      message: successMessage(MESSAGES.SUCCESS.MSG00028, String(quizzes.length), quizList.length.toLocaleString()),
       result: quizzes,
       total: quizList.length
     };
