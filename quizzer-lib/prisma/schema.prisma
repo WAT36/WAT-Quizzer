@@ -47,9 +47,9 @@ model category {
   updated_at             DateTime                @updatedAt
   deleted_at             DateTime?               @db.Timestamp(6)
   quiz_file              quiz_file               @relation(fields: [file_num], references: [file_num])
-  category_quiz          category_quiz[]
-  parent_child_as_parent category_parent_child[] @relation("CategoryAsParent")
   parent_child_as_child  category_parent_child[] @relation("CategoryAsChild")
+  parent_child_as_parent category_parent_child[] @relation("CategoryAsParent")
+  category_quiz          category_quiz[]
 
   @@unique([name, file_num])
 }
@@ -61,8 +61,8 @@ model category_parent_child {
   created_at         DateTime  @default(now()) @db.Timestamp(6)
   updated_at         DateTime  @updatedAt
   deleted_at         DateTime? @db.Timestamp(6)
-  parent_category    category  @relation("CategoryAsParent", fields: [parent_category_id], references: [id])
   child_category     category  @relation("CategoryAsChild", fields: [child_category_id], references: [id])
+  parent_category    category  @relation("CategoryAsParent", fields: [parent_category_id], references: [id])
 
   @@unique([parent_category_id, child_category_id])
 }
@@ -524,4 +524,13 @@ view source_statistics_view {
   count         BigInt?
   not_answered  BigInt?
   accuracy_rate Decimal? @db.Decimal
+}
+
+view quiz_review_schedule_view {
+  id                   Int?
+  review_stage         Int?
+  review_interval_days Int?
+  last_answered_date   DateTime? @db.Date
+  next_review_date     DateTime? @db.Date
+  overdue_ratio        Float?
 }
