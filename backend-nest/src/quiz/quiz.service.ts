@@ -33,6 +33,7 @@ import {
   searchQuizRange,
   searchQuizSelect,
   searchQuizWhere,
+  sortBySpacedReviewPriority,
 } from './quizQuery';
 
 @Injectable()
@@ -71,17 +72,45 @@ export class QuizService {
         .filter((quiz) => quiz !== undefined);
       return [shuffled, ids.length] as const;
     };
+    // 忘却曲線に基づく復習：期日が来た問題のIDと期日超過の度合いを全件取得 → 優先順に並べて必要件数を選ぶ → 詳細を取得する
+    // （DBで並べ替えると遅くなるため。理由は sortBySpacedReviewPriority を参照）
+    const fetchSpacedReviewQuizzes = async () => {
+      const candidates = await prisma.quiz.findMany({
+        select: {
+          id: true,
+          quiz_review_schedule_view: { select: { overdue_ratio: true } },
+        },
+        where,
+      });
+      const pickedIds = sortBySpacedReviewPriority(candidates)
+        .slice(0, isBatchRequest ? count : 1)
+        .map((x) => x.id);
+      const picked =
+        pickedIds.length > 0
+          ? await prisma.quiz.findMany({
+              select: getQuizSelect,
+              where: { id: { in: pickedIds } },
+            })
+          : [];
+      // 優先順に並べ直す
+      const sorted = pickedIds
+        .map((id) => picked.find((quiz) => quiz.id === id))
+        .filter((quiz) => quiz !== undefined);
+      return [sorted, candidates.length] as const;
+    };
     const [results, totalCount] = isRandomMethod
       ? await fetchRandomQuizzes()
-      : await Promise.all([
-          prisma.quiz.findMany({
-            select: getQuizSelect,
-            where,
-            orderBy: getQuizOrderBy(method),
-            ...(method ? { take: isBatchRequest ? count : 1 } : {}),
-          }),
-          method ? prisma.quiz.count({ where }) : Promise.resolve(null),
-        ]);
+      : method === 'spacedReview'
+        ? await fetchSpacedReviewQuizzes()
+        : await Promise.all([
+            prisma.quiz.findMany({
+              select: getQuizSelect,
+              where,
+              orderBy: getQuizOrderBy(method),
+              ...(method ? { take: isBatchRequest ? count : 1 } : {}),
+            }),
+            method ? prisma.quiz.count({ where }) : Promise.resolve(null),
+          ]);
     if (results.length === 0) {
       throw new HttpException(
         `条件に合致するデータはありません`,

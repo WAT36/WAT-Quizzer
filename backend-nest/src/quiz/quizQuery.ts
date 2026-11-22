@@ -68,6 +68,7 @@ const GET_QUIZ_ORDER_BY: Partial<Record<GetQuizMethod, QuizOrderBy>> = {
   },
   review: { quiz_statistics_view: { last_failed_answer_log: 'desc' } },
   recentlyUpdated: [{ updated_at: 'desc' }, { id: 'desc' }],
+  // spacedReview はここで並べない（sortBySpacedReviewPriority を参照）
 };
 
 export const getQuizOrderBy = (method?: GetQuizMethod): QuizOrderBy =>
@@ -113,6 +114,32 @@ const answerLogCondition = (
       return {};
   }
 };
+
+// 忘却曲線(間隔反復)の復習期日が来ている条件（未回答の問題はビューに行がないので対象外になる）
+// 期日の判定はDB側(CURRENT_DATE)で計算した overdue_ratio(経過日数÷間隔) を使い、日付の区切りのずれを避ける
+const reviewScheduleCondition = (
+  method: GetQuizMethod,
+): Prisma.quizWhereInput =>
+  method === 'spacedReview'
+    ? { quiz_review_schedule_view: { overdue_ratio: { gte: 1 } } }
+    : {};
+
+// 忘却曲線に基づく復習の出題順：期日超過の度合い(経過日数÷間隔)が大きい＝忘れている可能性が高い順（同じならID順）
+// ビューの行数見積もりが実際より極端に少なく、PrismaのorderByでビューを並び替えるとビューが2回結合されて
+// ネステッドループになり非常に遅くなる（本番で約10秒）ため、DBでは並べずに取得後に並べ替える
+export const sortBySpacedReviewPriority = <
+  T extends {
+    id: number;
+    quiz_review_schedule_view: { overdue_ratio: number | null } | null;
+  },
+>(
+  quizzes: T[],
+): T[] =>
+  [...quizzes].sort(
+    (a, b) =>
+      (b.quiz_review_schedule_view?.overdue_ratio ?? 0) -
+        (a.quiz_review_schedule_view?.overdue_ratio ?? 0) || a.id - b.id,
+  );
 
 // これまでの回答数(正解+不正解)の範囲の条件。指定された側だけ絞り込む（0回=未回答も指定できる）
 const answerCountCondition = (
@@ -179,6 +206,7 @@ export const getQuizWhere = (
       ...answerCountCondition(min_answer_count, max_answer_count),
       ...answerLogCondition(method),
     },
+    ...reviewScheduleCondition(method),
     ...(checked && { checked: true }),
     ...(andConditions.length > 0 && { AND: andConditions }),
   };

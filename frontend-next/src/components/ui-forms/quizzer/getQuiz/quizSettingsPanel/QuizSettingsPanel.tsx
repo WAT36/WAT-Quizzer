@@ -15,7 +15,8 @@ const QUIZ_METHOD_OPTIONS: { value: GetQuizMethod; label: string }[] = [
   { value: 'LRU', label: 'LRU(最も長期間未回答)' },
   { value: 'review', label: '以前間違えた問題' },
   { value: 'todayNotAnswered', label: '今日まだ解いてない問題' },
-  { value: 'recentlyUpdated', label: '直近更新のあった問題' }
+  { value: 'recentlyUpdated', label: '直近更新のあった問題' },
+  { value: 'spacedReview', label: '忘却曲線に基づく復習' }
 ];
 
 const DEFAULT_QUIZ_COUNT = 10;

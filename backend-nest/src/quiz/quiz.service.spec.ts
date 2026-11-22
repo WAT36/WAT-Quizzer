@@ -354,6 +354,53 @@ describe('QuizService', () => {
     });
   });
 
+  // 忘却曲線に基づく復習問題取得（出題数指定）正常系
+  it('getSpacedReviewQuiz - 期日超過の度合いが大きい順に、出題数分だけ詳細を取得する', async () => {
+    // 1回目: 期日が来た問題のIDと期日超過の度合い、2回目: 選んだ問題の詳細（DBの返却順は不定）
+    (prisma.quiz.findMany as jest.Mock)
+      .mockResolvedValueOnce([
+        { id: 0, quiz_review_schedule_view: { overdue_ratio: 1.5 } },
+        { id: 2, quiz_review_schedule_view: { overdue_ratio: 1 } },
+        { id: 1, quiz_review_schedule_view: { overdue_ratio: 30 } },
+      ])
+      .mockResolvedValueOnce(getQuizResultTestBatch);
+    const result = await quizService.getQuiz(
+      { file_num: 1, count: 2 },
+      'spacedReview',
+    );
+    // 上位2件(id:1, id:0)だけ詳細を取得する
+    expect(prisma.quiz.findMany).toHaveBeenLastCalledWith(
+      expect.objectContaining({ where: { id: { in: [1, 0] } } }),
+    );
+    // 総数は期日が来た問題すべての件数、並びは優先順
+    expect(result).toEqual({
+      total: 3,
+      quizzes: [getQuizResultTestBatch[1], getQuizResultTestBatch[0]].map(
+        (quiz) => ({
+          ...quiz,
+          quiz_statistics_view: {
+            clear_count: 1,
+            fail_count: 1,
+            accuracy_rate: 50,
+          },
+        }),
+      ),
+    });
+  });
+
+  // 忘却曲線に基づく復習問題取得 期日が来た問題がない
+  it('getSpacedReviewQuiz - 期日が来た問題がなければ404', async () => {
+    (prisma.quiz.findMany as jest.Mock).mockResolvedValueOnce([]);
+    await expect(
+      quizService.getQuiz({ file_num: 1 }, 'spacedReview'),
+    ).rejects.toThrow(
+      new HttpException(
+        '条件に合致するデータはありません',
+        HttpStatus.NOT_FOUND,
+      ),
+    );
+  });
+
   // 正解登録 正常系
   it('cleared - OK', async () => {
     // テストデータ

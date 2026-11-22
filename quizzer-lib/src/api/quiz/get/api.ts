@@ -49,6 +49,8 @@ export const getQuizAPI = async ({
       ? '/quiz/remaining'
       : getQuizMethod === 'recentlyUpdated'
       ? '/quiz/recent'
+      : getQuizMethod === 'spacedReview'
+      ? '/quiz/spaced-review'
       : '/quiz'
   // 出題数(count)が指定されている場合は、条件に合う問題を複数件まとめて取得する
   const isBatchRequest = !!getQuizMethod && !!getQuizRequestData.count && getQuizRequestData.count > 0

@@ -447,7 +447,7 @@ erDiagram
   
 
   "quiz_review_schedule_view" {
-    Int id "❓"
+    Int id 
     Int review_stage "❓"
     Int review_interval_days "❓"
     DateTime last_answered_date "❓"
@@ -470,6 +470,7 @@ erDiagram
     "mean" }o--|| "word" : "word"
     "quiz" }o--|| "quiz_format" : "quiz_format"
     "quiz" }o--|o "quiz_statistics_view" : "quiz_statistics_view"
+    "quiz" }o--|o "quiz_review_schedule_view" : "quiz_review_schedule_view"
     "quiz_basis_advanced_linkage" }o--|| "quiz" : "quiz_advanced_link"
     "quiz_basis_advanced_linkage" }o--|| "quiz" : "quiz_basis_link"
     "quiz_dummy_choice" }o--|| "quiz" : "quiz"

@@ -14,6 +14,7 @@ export type GetQuizMethod =
   | 'review'
   | 'todayNotAnswered'
   | 'recentlyUpdated'
+  | 'spacedReview' // 忘却曲線(間隔反復)に基づき、復習期日が来た問題
 
 export interface GetQuizAPIRequestDto {
   file_num: number

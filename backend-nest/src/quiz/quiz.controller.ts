@@ -161,6 +161,18 @@ export class QuizController {
   }
 
   @ApiOperation({
+    summary: '忘却曲線に基づく復習クイズ取得',
+    description:
+      '間隔反復(連続正解の段階に応じて1/3/7/14/30/60/120日)で復習期日が来たクイズを、期日超過の度合い(経過日数÷間隔)が大きい順に取得します。未回答のクイズは対象外です。',
+  })
+  @Get('/spaced-review')
+  async getSpacedReviewQuiz(
+    @Query(getQuizQueryPipe) req: GetQuizAPIRequestParsedDto,
+  ) {
+    return await this.quizService.getQuiz(req, 'spacedReview');
+  }
+
+  @ApiOperation({
     summary: 'クイズ正解登録',
     description: 'クイズを正解したことを記録します。',
   })

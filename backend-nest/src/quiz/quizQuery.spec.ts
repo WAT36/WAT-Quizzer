@@ -3,6 +3,7 @@ import {
   getQuizWhere,
   searchQuizRange,
   searchQuizWhere,
+  sortBySpacedReviewPriority,
 } from './quizQuery';
 
 jest.mock('quizzer-lib', () => ({
@@ -42,6 +43,49 @@ describe('quizQuery', () => {
           { last_answer_log: null },
         ],
       });
+    });
+
+    it('忘却曲線に基づく復習は、復習期日が来た(経過日数÷間隔が1以上の)問題に絞り込む', () => {
+      const where = getQuizWhere({ file_num: 1 }, 'spacedReview');
+      expect(where.quiz_review_schedule_view).toEqual({
+        overdue_ratio: { gte: 1 },
+      });
+      // 正解率などの統計の絞り込みはそのまま併用できる
+      expect(where.quiz_statistics_view).toEqual({
+        accuracy_rate: { gte: 0, lte: 100 },
+      });
+      // 並び替えはDBでは行わない（sortBySpacedReviewPriorityで行う）
+      expect(getQuizOrderBy('spacedReview')).toEqual({});
+    });
+
+    it('忘却曲線に基づく復習以外では、復習スケジュールで絞り込まない', () => {
+      expect(
+        getQuizWhere({ file_num: 1 }, 'random').quiz_review_schedule_view,
+      ).toBeUndefined();
+    });
+  });
+
+  describe('sortBySpacedReviewPriority', () => {
+    const quiz = (id: number, overdue_ratio: number | null) => ({
+      id,
+      quiz_review_schedule_view: { overdue_ratio },
+    });
+
+    it('期日超過の度合いが大きい順に並べ、同じならID順にする', () => {
+      expect(
+        sortBySpacedReviewPriority([
+          quiz(3, 1),
+          quiz(2, 5.5),
+          quiz(4, 2),
+          quiz(1, 2),
+        ]).map((q) => q.id),
+      ).toEqual([2, 1, 4, 3]);
+    });
+
+    it('渡した配列は並べ替えない', () => {
+      const quizzes = [quiz(1, 1), quiz(2, 3)];
+      sortBySpacedReviewPriority(quizzes);
+      expect(quizzes.map((q) => q.id)).toEqual([1, 2]);
     });
   });
 
