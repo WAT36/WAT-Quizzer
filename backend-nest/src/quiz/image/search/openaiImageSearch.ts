@@ -14,8 +14,13 @@ const MAX_RESULTS_PER_SEARCH = 8;
 export const OPENAI_TIMEOUT_MS = 20000;
 
 // OpenAIのクレジット（残高）不足・利用上限への到達を表すエラーの種類
+// credit_balance_exhausted は前払いクレジットが尽きた時のもの（OpenAIのヘルプ記事に記載）
 // 混雑による一時的な制限（rate_limit_exceeded）は同じ429でも含めない
-const QUOTA_ERROR_CODES = ['insufficient_quota', 'billing_hard_limit_reached'];
+const QUOTA_ERROR_CODES = [
+  'credit_balance_exhausted',
+  'insufficient_quota',
+  'billing_hard_limit_reached',
+];
 
 // OpenAIのクレジット不足で検索できない時のエラー（時間をおいても解決しないので、他の失敗と区別する）
 export class OpenAIQuotaExceededError extends Error {

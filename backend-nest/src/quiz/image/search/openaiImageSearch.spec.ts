@@ -147,6 +147,7 @@ describe('openaiImageSearch', () => {
     });
 
     it.each([
+      ['前払いクレジットの枯渇', { code: 'credit_balance_exhausted' }],
       [
         'クレジット不足',
         { code: 'insufficient_quota', type: 'insufficient_quota' },
