@@ -19,6 +19,9 @@ export const Register: Story = {
     isOpen: true,
     setIsOpen: () => {},
     quizId: 1,
+    quizSentence:
+      '層状の流体を下側から均一に熱した時に生じる細胞状の対流構造を、発見したフランスの物理学者の名前から何渦というでしょう？',
+    answer: 'ベナール渦',
     onRegistered: () => {}
   }
 };

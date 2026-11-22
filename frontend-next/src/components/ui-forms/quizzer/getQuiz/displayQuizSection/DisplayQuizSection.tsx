@@ -244,6 +244,8 @@ export const DisplayQuizSection = ({
           isOpen={imageSearchOpen}
           setIsOpen={setImageSearchOpen}
           quizId={getQuizResponseData.id}
+          quizSentence={getQuizResponseData.quiz_sentense}
+          answer={getQuizResponseData.answer}
           hasImage={!!currentImageFile}
           onRegistered={(fileName) => {
             onImageRegistered?.(getQuizResponseData.id, fileName);

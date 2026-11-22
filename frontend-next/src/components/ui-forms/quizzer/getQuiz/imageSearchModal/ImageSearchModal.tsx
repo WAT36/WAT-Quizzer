@@ -16,6 +16,9 @@ interface ImageSearchModalProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   quizId: number;
+  // 画像を探す元になる問題文と答え（どの問題の画像を選んでいるか分かるよう、上部に小さく表示する）
+  quizSentence?: string;
+  answer?: string;
   // 既に画像が紐付いているか（タイトルを「差し替え」にし、上書きになることを伝える）
   hasImage?: boolean;
   // 画像を登録できた後に呼ぶ（保存したファイル名を渡す）
@@ -28,6 +31,9 @@ type SearchState =
   | { status: 'error'; message: string };
 
 const SKELETON_COUNT = 9;
+
+// 問題文・答えの改行（文字としての「\n」を含む）を空白にして1つの文にする
+const toSingleLine = (text: string): string => text.replaceAll('\\n', ' ').replace(/\s+/g, ' ').trim();
 
 const hostnameOf = (url: string | null): string => {
   if (!url) return '';
@@ -73,7 +79,15 @@ const CandidateImage = ({
 
 // 問題文と答えからWebで画像の候補を探し、選んだ1枚を問題に登録するモーダル
 // 開いた時に検索を始めるため、呼び出し側では開いている間だけ描画する
-export const ImageSearchModal = ({ isOpen, setIsOpen, quizId, hasImage, onRegistered }: ImageSearchModalProps) => {
+export const ImageSearchModal = ({
+  isOpen,
+  setIsOpen,
+  quizId,
+  quizSentence,
+  answer,
+  hasImage,
+  onRegistered
+}: ImageSearchModalProps) => {
   const setMessage = useSetRecoilState(messageState);
   const [hint, setHint] = useState('');
   const [searchState, setSearchState] = useState<SearchState>({ status: 'searching' });
@@ -164,6 +178,26 @@ export const ImageSearchModal = ({ isOpen, setIsOpen, quizId, hasImage, onRegist
       }
     >
       <div className="max-h-[70vh] overflow-y-auto !pr-1">
+        {(quizSentence || answer) && (
+          <dl className="!mb-3 text-xs text-gray-600 dark:text-gray-300 grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+            {quizSentence && (
+              <>
+                <dt className="font-bold whitespace-nowrap">問題</dt>
+                <dd className="line-clamp-3" title={toSingleLine(quizSentence)}>
+                  {toSingleLine(quizSentence)}
+                </dd>
+              </>
+            )}
+            {answer && (
+              <>
+                <dt className="font-bold whitespace-nowrap">答え</dt>
+                <dd className="line-clamp-2" title={toSingleLine(answer)}>
+                  {toSingleLine(answer)}
+                </dd>
+              </>
+            )}
+          </dl>
+        )}
         <form
           className="flex gap-2 items-start"
           onSubmit={(e) => {

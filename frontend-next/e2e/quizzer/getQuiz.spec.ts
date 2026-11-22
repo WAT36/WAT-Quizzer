@@ -245,6 +245,9 @@ test.describe('quizzer / 問題出題', () => {
 
       const dialog = imageSearchDialog(page);
       await expect(dialog.getByRole('heading', { name: '画像を探して登録' })).toBeVisible();
+      // どの問題の画像を選んでいるか分かるよう、元の問題文と答えを表示する
+      await expect(dialog.getByText(quizzes[0].quiz_sentense)).toBeVisible();
+      await expect(dialog.getByText(quizzes[0].answer, { exact: true })).toBeVisible();
       // 開いた時に、追加指示なしで出題中の問題の候補を探す
       expect(api.requests('GET', '/quiz/image/candidates')[0].query).toEqual({ quiz_id: String(quizzes[0].id) });
 
