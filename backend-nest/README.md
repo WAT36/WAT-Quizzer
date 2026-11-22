@@ -93,7 +93,7 @@ pnpm run lint:check  # --fix なしでチェックだけ行う（CI・pre-push �
 | `DATABASE_URL` / `DIRECT_URL` | `quizzer-lib/.env` | Prisma 接続先 |
 | `QUIZ_IMAGE_S3_BUCKET`, `AKEY`, `SAKEY` | `quizzer-lib/.env` | 問題画像の S3 保存・取得（`quizzer-lib` の `src/lib/aws/s3.ts`） |
 | `OPENAI_API_KEY` | `backend-nest/.env` | 問題の参考画像の候補検索で使う OpenAI の API キー。Lambda には GitHub Secrets の `OPENAI_API_KEY` から `OpenAiApiKey` パラメータ経由で渡される |
-| `OPENAI_IMAGE_SEARCH_MODEL` | `backend-nest/.env`（任意） | 画像の候補検索で使うモデル（未設定時は `gpt-6.2-astra`） |
+| `OPENAI_IMAGE_SEARCH_MODEL` | `backend-nest/.env`（任意） | 画像の候補検索で使うモデル（未設定時は `gpt-6.2-sol`） |
 | `QUIZ_IMAGE_SIGNING_SECRET` | `backend-nest/.env` | 画像の候補に付ける署名の秘密鍵（`openssl rand -hex 32` などで生成）。Lambda には GitHub Secrets の `QUIZ_IMAGE_SIGNING_SECRET` から渡される |
 | `WORD_DERIVATIVES_FUNCTION_NAME` | — | 派生語取得で呼び出す Lambda 関数名（`english/derivatives/`） |
 | `ENV` | — | ToDo チェック状況を保存する DynamoDB テーブル名 `<ENV>-todo-check-status` の接頭辞（未設定時は `dev`） |

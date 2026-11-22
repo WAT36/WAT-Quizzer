@@ -113,7 +113,7 @@ describe('QuizImageSearchService', () => {
       const params = (searchImagesWithOpenAI as jest.Mock).mock.calls[0][0];
       expect(params).toMatchObject({
         apiKey: 'sk-test',
-        model: 'gpt-6.2-astra',
+        model: 'gpt-6.2-sol',
       });
       expect(params.prompt).toContain('答え: 答え');
       expect(params.prompt).toContain('利用者からの追加の指示: 図で');

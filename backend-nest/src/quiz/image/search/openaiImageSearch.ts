@@ -6,7 +6,8 @@
 // - 検索結果はweb_search_callから直接読むので、モデルの最終回答は短くさせて待ち時間を減らす
 
 const OPENAI_RESPONSES_URL = 'https://api.openai.com/v1/responses';
-export const DEFAULT_IMAGE_SEARCH_MODEL = 'gpt-6.2-astra';
+// 費用を抑えるため、検証で使ったgpt-6.2-astraより安いモデルにしている（環境変数で変えられる）
+export const DEFAULT_IMAGE_SEARCH_MODEL = 'gpt-6.2-sol';
 const MAX_TOOL_CALLS = 2;
 const MAX_RESULTS_PER_SEARCH = 8;
 // Lambda(28秒)とAPI Gateway(29秒)の制限に収まるよう、OpenAIの応答は20秒で打ち切る

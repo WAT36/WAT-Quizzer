@@ -55,7 +55,7 @@ Parameters:
     Description: 'OpenAI API key for searching reference images of quizzes'
   OpenAiImageSearchModel:
     Type: String
-    Default: 'gpt-6.2-astra'
+    Default: 'gpt-6.2-sol'
     Description: 'OpenAI model used for the image search of quizzes'
   QuizImageSigningSecret:
     Type: String
