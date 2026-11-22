@@ -23,6 +23,8 @@ jest.mock('quizzer-lib', () => {
   return {
     prisma: mockPrisma,
     containsAny: jest.requireActual('quizzer-lib').containsAny,
+    // CSVの読み込み(parseCsv)で使う
+    removeNullChars: jest.requireActual('quizzer-lib').removeNullChars,
   };
 });
 

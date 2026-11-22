@@ -1,7 +1,8 @@
 import { parse, ParseResult } from 'papaparse';
 import { Readable } from 'stream';
+import { removeNullChars } from 'quizzer-lib';
 
-// アップロードされたCSVファイルを行ごとの文字列配列に変換する（各値は前後の空白を除く）
+// アップロードされたCSVファイルを行ごとの文字列配列に変換する（各値はNUL文字と前後の空白を除く）
 export const parseCsv = async (
   file: Express.Multer.File,
 ): Promise<ParseResult<string[]>> => {
@@ -13,7 +14,8 @@ export const parseCsv = async (
       delimiter: ',',
       skipEmptyLines: true,
       transform: (value: string): string => {
-        return value.trim();
+        // NUL文字はPostgreSQLのテキストに保存できないため取り除く
+        return removeNullChars(value).trim();
       },
       complete: (results: ParseResult<string[]>) => {
         return resolve(results);

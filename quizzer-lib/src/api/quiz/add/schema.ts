@@ -2,7 +2,8 @@ import { z } from 'zod'
 import {
   categoryListStringSchema,
   idSchema,
-  quizIdListStringSchema
+  quizIdListStringSchema,
+  textSchema
 } from '../../schema'
 import { MESSAGES } from '../../../constant/messages'
 
@@ -17,8 +18,9 @@ const MIN_DUMMY_CHOICE_COUNT = 3
 export const quizContentSchema = z.object({
   file_num: idSchema,
   format_id: idSchema.optional(),
-  question: z.string().optional(),
-  answer: z.string().optional(),
+  // 問題文・答え・解説・ダミー選択肢はコピペでNUL文字が紛れ込むことがあるので取り除く
+  question: textSchema.optional(),
+  answer: textSchema.optional(),
   category: categoryListStringSchema.optional(), // カンマ区切り（各カテゴリ名の前後の空白と空のものは除く）
   img_file: z.string().optional(),
   matched_basic_quiz_id: quizIdListStringSchema.optional(), // カンマ区切りの問題ID（空の要素・重複は除く）
@@ -26,12 +28,12 @@ export const quizContentSchema = z.object({
   dummyChoice: z
     .array(
       z.object({
-        sentense: z.string().trim(), // 前後の空白(全角を含む)は除く
+        sentense: textSchema.transform((value) => value.trim()), // 前後の空白(全角を含む)は除く
         isCorrect: z.boolean()
       })
     )
     .optional(),
-  explanation: z.string().optional() // 解説
+  explanation: textSchema.optional() // 解説
 })
 
 // 四択問題のダミー選択肢の文が空(空白だけを含む)でないことを確認する

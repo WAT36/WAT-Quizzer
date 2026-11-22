@@ -9,6 +9,14 @@ export const idSchema = z.number().int().positive()
 export const selectedIdSchema = (message: string) =>
   z.number({ error: message }).int(message).positive(message)
 
+// NUL文字(\u0000)を取り除く
+// PDFなどからコピーした文字列に紛れ込むことがあり、PostgreSQLのテキストには保存できない(22021エラーになる)ため
+export const removeNullChars = (value: string): string =>
+  value.replaceAll('\u0000', '')
+
+// 入力されたテキスト。NUL文字は取り除く
+export const textSchema = z.string().transform(removeNullChars)
+
 // カンマ区切りのカテゴリ名
 // 各カテゴリ名の前後の空白(全角を含む)を除き、空のものと重複を除いたカンマ区切りの文字列にする
 // （例: " JavaScript, ,非同期処理,JavaScript," → "JavaScript,非同期処理"。カテゴリがなければ空文字）
@@ -17,7 +25,7 @@ export const categoryListStringSchema = z
   .transform((value) =>
     Array.from(
       new Set(
-        value
+        removeNullChars(value)
           .split(',')
           .map((name) => name.trim())
           .filter((name) => name !== '')

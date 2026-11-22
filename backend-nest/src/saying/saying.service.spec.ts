@@ -19,7 +19,12 @@ jest.mock('quizzer-lib', () => {
       update: jest.fn(),
     },
   };
-  return { prisma: mockPrisma, getRandomElementFromArray: jest.fn() };
+  return {
+    prisma: mockPrisma,
+    getRandomElementFromArray: jest.fn(),
+    // CSVの読み込み(parseCsv)で使う
+    removeNullChars: jest.requireActual('quizzer-lib').removeNullChars,
+  };
 });
 
 describe('SayingService', () => {
